@@ -18,10 +18,10 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input rounded outlined v-model="Id" label="아이디" />
+          <q-input rounded outlined v-model="text" label="아이디" />
         </q-card-section>
         <q-card-section class="q-pt-none">
-          <q-input rounded outlined v-model="Pw" label="비밀번호" />
+          <q-input rounded outlined v-model="text" label="비밀번호" />
         </q-card-section>
 
         <q-card-actions align="center" class="text-primary">

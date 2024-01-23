@@ -65,8 +65,6 @@
         <!-- <q-icon name="style" size="56px" /> -->
         <div class="q-mt-md text-center">{{ lorem5 }}<br /></div>
       </q-carousel-slide>
-      <SignIn />
-      <StartBtn />
     </q-carousel>
   </div>
 </template>
@@ -96,3 +94,4 @@ export default defineComponent({
 </script>
 
 <style scoped></style>
+
