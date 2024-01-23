@@ -74,14 +74,12 @@
 <script>
 import { ref } from "vue";
 import SignIn from "src/components/SignIn.vue";
-// import StartBtn from "src/components/StartBtn.vue";
 import StartTest from "src/components/StartTest.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   components: {
     SignIn,
-    StartBtn,
     StartTest,
   },
   setup() {
@@ -98,4 +96,3 @@ export default defineComponent({
 </script>
 
 <style scoped></style>
-
