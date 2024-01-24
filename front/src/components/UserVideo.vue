@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import OvVideo from './OvVideo';
+import OvVideo from './OvVideo.vue';
 
 export default {
 	name: 'UserVideo',

@@ -34,14 +34,14 @@
         <user-video :stream-manager="mainStreamManager" />
       </div>
       <div id="video-container" class="col-md-6">
-        <user-video :stream-manager="publisher" @click.native="updateMainVideoStreamManager(publisher)" />
+        <user-video :stream-manager="publisher" @click="updateMainVideoStreamManager(publisher)" />
         <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub"
-          @click.native="updateMainVideoStreamManager(sub)" />
+          @click="updateMainVideoStreamManager(sub)" />
       </div>
     </div>
   </div>
 
-  
+
   <router-view />
   <!-- <signIn/> -->
 </template>
@@ -49,7 +49,7 @@
 <script>
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
-import UserVideo from "./components/UserVideo";
+import UserVideo from "./components/UserVideo.vue";
 
 import { defineComponent } from 'vue'
 // import signIn from './components/signIn.vue'
