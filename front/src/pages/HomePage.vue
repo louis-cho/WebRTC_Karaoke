@@ -1,31 +1,9 @@
-<!-- <template>
-  <div>
-    <p>homepage!</p>
-    <div>
-      <img
-        src="src/assets/로고1-removebg-preview.png"
-        alt="Logo"
-        width="150"
-        class="d-inline-block align-text-top"
-      />
-    </div>
-
-    <SignIn />
-    <StartBtn />
-
-    <div>
-      <p>노래하고 싶어?<br />여기서 노래해방!</p>
-      <p>어디서나 노래와 함께하는 새로운 자유, 노래해방( 解放 )</p>
-    </div>
-  </div>
-</template> -->
-
 <template>
   <!-- class="bg-purple" -->
   <div>
 
     <TabItem/>
-    <StartTest />
+    <TabItemStart/>
     <!-- <SignIn /> -->
     <q-carousel
       v-model="slide"
@@ -67,15 +45,15 @@
 <script>
 import { ref } from "vue";
 import SignIn from "src/components/SignIn.vue";
-import StartTest from "src/components/StartTest.vue";
+import TabItemStart from "src/components/TabItemStart.vue"
 import TabItem from "src/components/TabItem.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   components: {
     // SignIn,
-    StartTest,
-    TabItem
+    TabItem,
+    TabItemStart
   },
   setup() {
     return {
@@ -90,5 +68,12 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.carousel_height {
+  height:100%;
+  /* position: fixed; */
+  /* bottom: 0; */
+  width: 100%;
+}
+</style>
 

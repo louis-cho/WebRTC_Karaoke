@@ -1,6 +1,7 @@
 <template>
   <div class="q-pa-md q-gutter-sm">
-    <q-btn label="시작하기!" color="black" @click="prompt = true" />
+  <!-- <div class="q-pa-md q-gutter-sm"> -->
+    <q-btn label="시작하기" color="black" @click="prompt = true" />
     <q-dialog v-model="prompt" persistent>
       <q-card style="min-width: 350px">
         <!-- <q-card-actions
@@ -18,10 +19,10 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input rounded outlined v-model="text" label="아이디" />
+          <q-input rounded outlined v-model="text1" label="아이디" />
         </q-card-section>
         <q-card-section class="q-pt-none">
-          <q-input rounded outlined v-model="text" label="비밀번호" />
+          <q-input rounded outlined v-model="text2" label="비밀번호" />
         </q-card-section>
 
         <q-card-actions align="center" class="text-primary">
@@ -77,16 +78,19 @@ import { ref } from "vue";
 export default {
   setup() {
     const prompt = ref(false);
-    const text = ref("");
-    const password = ref("");
+    const text1 = ref('');
+    const text2 = ref('');
+    const password = ref('');
 
     return {
       prompt,
-      text,
+      text1,
+      text2,
       password,
     };
   },
 };
 </script>
 
-<style></style>
+<style scoped>
+</style>

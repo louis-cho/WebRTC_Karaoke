@@ -1,7 +1,8 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-gutter-y-md">
-      <div>
+  <!-- <div class="q-pa-md"> -->
+    <div class="parent">
+
+      <div >
         <img
           src="src/assets/로고1-removebg-preview.png"
           alt="Logo"
@@ -9,19 +10,31 @@
           class="d-inline-block align-text-top"
         />
       </div>
-      <q-tabs
-        v-model="tab"
-        class=" full-width"
-      >
-        <q-tab name="feed" icon="feed" label="피드" />
-        <q-tab name="karaoke" icon="music_note" label="노래방" />
-        <q-tab name="karaoke" icon="library_music" label="노래방" />
-        <q-tab name="karaoke" icon="interpreter_mode" label="노래방" />
-        <q-tab name="message" icon="send" label="메시지" />
-        <q-tab name="person" icon="person"  />
-        <q-tab name="notifications" icon="notifications" />
-        <q-tab name="menu" icon="menu" />
-      </q-tabs>
+
+      <div>
+        <q-tabs
+          v-model="tab"
+        >
+          <q-tab name="feed" icon="feed" label="피드" />
+          <q-tab name="karaoke" icon="music_note" label="노래방" />
+          <q-tab name="karaoke" icon="library_music" label="노래방" />
+          <q-tab name="message" icon="send" label="메시지" />
+          <!-- <q-tab name="person" icon="person"  />
+          <q-tab name="notifications" icon="notifications" />
+          <q-tab name="menu" icon="menu" /> -->
+        </q-tabs>
+      </div>
+
+      <div class="container">
+        <q-tabs
+          v-model="tab"
+        >
+          <q-tab name="person" icon="person"  />
+          <q-tab name="notifications" icon="notifications" />
+          <q-tab name="menu" icon="menu" />
+        </q-tabs>
+      </div>
+
 
       <!-- <q-tabs
         v-model="tab"
@@ -39,7 +52,7 @@
       </q-tabs> -->
 
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -53,3 +66,28 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.parent {
+  /* width : 300px; */
+  /* height : 100px; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  /* border : 3px solid red; */
+}
+
+/* .full-width {
+  width: 100%;
+  flex-grow: 1;
+} */
+
+/* .container {
+  display: flex;
+  justify-content: center;
+  gap: 150x;
+
+} */
+
+
+</style>
