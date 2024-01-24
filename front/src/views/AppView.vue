@@ -1,7 +1,4 @@
 <template>
-  <router-view />
-  <!-- <signIn/> -->
-
   <div id="main-container">
     <!-- session이 false일때! 즉, 방에 들어가지 않았을때 -->
     <div id="join" v-if="!session">
@@ -44,12 +41,12 @@
       </div>
       <!-- 모든 캠 -->
       <div id="video-container">
-        <UserVideo :stream-manager="publisherComputed" @click="updateMainVideoStreamManager(publisher)" />
+        <UserVideo :stream-manager="publisherComputed" @click.native="updateMainVideoStreamManager(publisher)" />
         <UserVideo
           v-for="sub in subscribersComputed"
           :key="sub.stream.connection.connectionId"
           :stream-manager="sub"
-          @click="updateMainVideoStreamManager(sub)"
+          @click.native="updateMainVideoStreamManager(sub)"
         />
       </div>
       <!-- 방에 들어갔을 때 같이 보이게 될 채팅창 -->
@@ -81,9 +78,9 @@
       </div>
     </div>
   </div>
-
 </template>
-
+    
+  
 <script setup>
   import { ref, computed } from 'vue'
   import axios from 'axios'
@@ -104,8 +101,8 @@
   // Join form
   const mySessionId = ref("SessionCrome")
   const myUserName = ref("Participant" + Math.floor(Math.random() * 100))
-
-
+  
+  
   /////////////////////채팅창을 위한 부분임.
   const inputMessage = ref("")
   const messages = ref([])
@@ -113,7 +110,7 @@
   ///////////////////카메라 및 오디오 설정을 위한 부분임
   const muted = ref(false)       // 기본은 음소거 비활성화
   const camerOff = ref(false)    // 기본 카메라 활성화
-  const selectedCamera = ref("")  // 카메라 변경시 사용할 변수
+  const selectedCamera = ref("")  // 카메라 변경시 사용할 변수 
   const selectedAudio  = ref("")  // 오디오 변경시 사용할 변수
   ////다시그려내기 위해 computed 작성
   const mainStreamManagerComputed = computed(() => mainStreamManager.value);
@@ -130,7 +127,7 @@
   function joinSession() {
     // --- 1) Get an OpenVidu object ---
     OV.value = new OpenVidu()
-
+    
     // --- 2) Init a session ---
     session.value = OV.value.initSession()
 
@@ -216,7 +213,7 @@
   function leaveSession(){
     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
     if(session.value) session.value.disconnect()
-
+    
     // Empty all properties...
     session.value = undefined;
     mainStreamManager.value = undefined;
@@ -285,7 +282,7 @@
 
       const cameraSelect = document.querySelector('select[name="cameras"]');
       const audioSelect = document.querySelector('select[name="audios"]');
-
+      
       // 카메라 및 오디오 선택기 요소가 존재하는지 확인
       // if (cameraSelect && audioSelect) {
       if (cameras) {
@@ -329,7 +326,7 @@
     }else{                //카메라 활성화상태
       cameraActivate.innerText = '카메라 비활성화'
     }
-
+    
     // 카메라 작동 상태를 적용
     publisher.value.publishVideo(!camerOff.value);
   }
@@ -348,7 +345,7 @@
     // 음소거 설정을 적용
     publisher.value.publishAudio(!muted.value);
   }
-
+  
   // select태그에서 사용할 기기를 선택했을때
   async function handleCameraChange(event) {
     selectedCamera.value = event.target.value;
@@ -398,5 +395,5 @@
     }
   }
 
-
+  
 </script>
