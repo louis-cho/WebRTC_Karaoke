@@ -1,26 +1,40 @@
 {
-  "name": "openvidu-vue",
-  "version": "2.29.0",
+  "name": "quasar-project",
+  "version": "0.0.1",
+  "description": "A Quasar Project",
+  "productName": "Quasar App",
+  "author": "sungeun <seroh00@naver.com>",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "build": "vue-cli-service build && quasar build",
+    "lint": "eslint --ext .js,.vue ./",
+    "format": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",
+    "test": "echo \"No test specified\" && exit 0",
+    "dev": "quasar dev"
   },
   "dependencies": {
     "axios": "^1.6.5",
     "core-js": "3.9.1",
     "openvidu-browser": "^2.20.0",
-    "vue": "2.6.12"
+    "@quasar/extras": "^1.16.4",
+    "quasar": "^2.3.0",
+    "vue": "^3.4.15",
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.19.1",
     "@vue/cli-plugin-babel": "5.0.8",
     "@vue/cli-plugin-eslint": "5.0.8",
     "@vue/cli-service": "^5.0.8",
-    "eslint": "8.31.0",
-    "eslint-plugin-vue": "9.8.0",
-    "vue-template-compiler": "2.6.12"
+    "vue-template-compiler": "2.6.12",
+    "eslint": "^8.11.0",
+    "eslint-plugin-vue": "^9.0.0",
+    "eslint-config-prettier": "^8.1.0",
+    "prettier": "^2.5.1",
+    "@quasar/app-vite": "^1.4.3",
+    "autoprefixer": "^10.4.2",
+    "postcss": "^8.4.14"
   },
   "eslintConfig": {
     "root": true,
@@ -44,5 +58,10 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:OpenVidu/openvidu-tutorials.git"
+  },
+  "engines": {
+    "node": "^20 || ^18 || ^16",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
   }
 }

@@ -40,12 +40,24 @@
       </div>
     </div>
   </div>
+
+  
+  <router-view />
+  <!-- <signIn/> -->
 </template>
 
 <script>
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import UserVideo from "./components/UserVideo";
+
+import { defineComponent } from 'vue'
+// import signIn from './components/signIn.vue'
+
+// export default defineComponent({
+//   components: { signIn },
+//   name: 'App'
+// })
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
