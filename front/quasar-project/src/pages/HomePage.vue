@@ -21,17 +21,12 @@
 </template> -->
 
 <template>
-  <div class="bg-purple">
-    <div class="left-corner-image">
-      <img
-        src="src/assets/로고1-removebg-preview.png"
-        alt="Logo"
-        width="150"
-        class="d-inline-block align-text-top"
-      />
-    </div>
+  <!-- class="bg-purple" -->
+  <div>
+
+    <TabItem/>
     <StartTest />
-    <SignIn />
+    <!-- <SignIn /> -->
     <q-carousel
       v-model="slide"
       vertical
@@ -73,12 +68,14 @@
 import { ref } from "vue";
 import SignIn from "src/components/SignIn.vue";
 import StartTest from "src/components/StartTest.vue";
+import TabItem from "src/components/TabItem.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   components: {
-    SignIn,
+    // SignIn,
     StartTest,
+    TabItem
   },
   setup() {
     return {
