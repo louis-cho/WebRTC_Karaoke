@@ -1,9 +1,15 @@
 <template>
+  <router-view />
+  <!-- <signIn/> -->
+
+
   <div id="main-container" class="container">
     <div id="join" v-if="!session">
+      <!--
       <div id="img-div">
         <img src="resources/images/openvidu_grey_bg_transp_cropped.png" />
       </div>
+      -->
       <div id="join-dialog" class="jumbotron vertical-center">
         <h1>Join a video session</h1>
         <div class="form-group">
@@ -41,9 +47,6 @@
     </div>
   </div>
 
-
-  <router-view />
-  <!-- <signIn/> -->
 </template>
 
 <script>
