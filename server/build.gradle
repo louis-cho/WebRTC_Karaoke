@@ -9,8 +9,6 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	sourceCompatibility = 'VERSION_11'
-	//젠킨스로 빌드시 에러해결을 위해 추가
-	targetCompatibility = 'VERSION_11'
 }
 
 configurations {
