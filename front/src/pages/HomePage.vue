@@ -47,6 +47,7 @@ import { ref } from "vue";
 import SignIn from "src/components/SignIn.vue";
 import TabItemStart from "src/components/TabItemStart.vue"
 import TabItem from "src/components/TabItem.vue";
+import StartTest from "../components/StartTest.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({

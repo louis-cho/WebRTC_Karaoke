@@ -12,11 +12,11 @@ const routes = [
   // but you can also remove it
   {
     path: '/',
-    component: () => import('pages/HomePage.vue')
+    component: () => import('../pages/HomePage.vue')
   },
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
+    component: () => import('../pages/ErrorNotFound.vue')
   }
 ]
 
