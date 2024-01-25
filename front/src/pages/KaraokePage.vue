@@ -1,4 +1,5 @@
 <template>
+  <NavBar/>
   <div id="main-container">
     <!-- session이 false일때! 즉, 방에 들어가지 않았을때 -->
     <div id="join" v-if="!session">
@@ -85,7 +86,8 @@
   import { ref, computed } from 'vue'
   import axios from 'axios'
   import { OpenVidu } from "openvidu-browser";
-  import UserVideo from "@/components/UserVideo.vue";
+  import UserVideo from "@/components/karaoke/UserVideo.vue";
+  import NavBar from "@/layouts/NavBar.vue";
 
   axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -125,135 +127,136 @@
 
   // vue2에서의 methods 부분을 vue3화 시키기
   function joinSession() {
-    // --- 1) Get an OpenVidu object ---
+    // --- 1) OpenVidu 객체 생성 ---
     OV.value = new OpenVidu()
 
-    // --- 2) Init a session ---
+    // --- 2) 세션 초기화 ---
     session.value = OV.value.initSession()
 
-    // --- 3) Specify the actions when events take place in the session ---
-    // On every new Stream received...
-    session.value.on("streamCreated", ( {stream} )=> {
+    // --- 3) 세션에서 이벤트 발생 시 동작 지정 ---
+    // 새로운 스트림이 생성될 때마다...
+    session.value.on("streamCreated", ({ stream }) => {
       // const subscriber = session.subscribe(stream)
       const subscriber = session.value.subscribe(stream)
       subscribers.value.push(subscriber)
     })
 
-    // On every Stream destroyed...
-    session.value.on("streamDestroyed", ( {stream} ) => {
+    // 스트림이 파괴될 때마다...
+    session.value.on("streamDestroyed", ({ stream }) => {
       const index = subscribers.value.indexOf(stream.streamManager, 0)
-      if(index >= 0){
+      if (index >= 0) {
         subscribers.value.splice(index, 1)
       }
     })
 
-    // On every asynchronous exception...
+    // 비동기 예외가 발생할 때마다...
     session.value.on("exception", ({ exception }) => {
       console.warn(exception);
     });
 
-    // 채팅 이벤트 수신 처리 함. session.on이 addEventListenr 역할인듯.
+    // 채팅 이벤트 수신 처리 함. session.on이 addEventListener 역할인 듯합니다.
     session.value.on('signal:chat', (event) => { // event.from.connectionId === session.value.connection.connectionId 이건 나와 보낸이가 같으면임
       const messageData = JSON.parse(event.data);
-      if(event.from.connectionId === session.value.connection.connectionId){
+      if (event.from.connectionId === session.value.connection.connectionId) {
         messageData['username'] = '나'
       }
       messages.value.push(messageData);
     });
 
-
-    // --- 4) Connect to the session with a valid user token ---
-    // Get a token from the OpenVidu deployment
+    // --- 4) 유효한 사용자 토큰으로 세션에 연결 ---
+    // OpenVidu 배포에서 토큰 가져오기
     // getToken(mySessionId).then((token) => {
     getToken(mySessionId.value).then((token) => {
-      // First param is the token. Second param can be retrieved by every user on event
-      // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
+      // 첫 번째 매개변수는 토큰입니다. 두 번째 매개변수는 모든 사용자가 'streamCreated' 이벤트에서 가져올 수 있는 것입니다.
+      // 'streamCreated' (속성 Stream.connection.data) 및 닉네임으로 DOM에 추가됩니다.
       // session.value.connect(token, {clientData: myUserName})
-      session.value.connect(token, {clientData: myUserName.value})
-      .then(() => {
-          // --- 5) Get your own camera stream with the desired properties ---
+      session.value.connect(token, { clientData: myUserName.value })
+        .then(() => {
+          // --- 5) 원하는 속성으로 자신의 카메라 스트림 가져오기 ---
 
           // const cameraSelect = document.querySelector('select[name="cameras"]');
           // const audioSelect = document.querySelector('select[name="audios"]');
 
-          // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
-          // element: we will manage it on our own) and with the desired properties
+          // 원하는 속성으로 초기화된 발행자를 만듭니다 (video-container'에 비디오가 삽입되지 않도록 OpenVidu에게 처리를 맡기지 않음).
           let publisher_tmp = OV.value.initPublisher(undefined, {
-            audioSource: undefined, // The source of audio. If undefined default microphone
-            videoSource: undefined, // The source of video. If undefined default webcam
-            // audioSource: audioSelect.value, // The source of audio. If undefined default microphone
-            // videoSource: cameraSelect.value, // The source of video. If undefined default webcam
-            // publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-            // publishVideo: true, // Whether you want to start publishing with your video enabled or not
-            publishAudio: !muted.value, // Whether you want to start publishing with your audio unmuted or not
-            publishVideo: !camerOff.value, // Whether you want to start publishing with your video enabled or not
-            resolution: "640x480", // The resolution of your video
-            frameRate: 30, // The frame rate of your video
-            insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
-            mirror: false, // Whether to mirror your local video or not
+            audioSource: undefined, // 오디오의 소스. 정의되지 않으면 기본 마이크
+            videoSource: undefined, // 비디오의 소스. 정의되지 않으면 기본 웹캠
+            // audioSource: audioSelect.value, // 오디오의 소스. 정의되지 않으면 기본 마이크
+            // videoSource: cameraSelect.value, // 비디오의 소스. 정의되지 않으면 기본 웹캠
+            // publishAudio: true, // 마이크 음소거 여부를 시작할지 여부
+            // publishVideo: true, // 비디오 활성화 여부를 시작할지 여부
+            publishAudio: !muted.value, // 마이크 음소거 여부를 시작할지 여부
+            publishVideo: !camerOff.value, // 비디오 활성화 여부를 시작할지 여부
+            resolution: "640x480", // 비디오의 해상도
+            frameRate: 30, // 비디오의 프레임 속도
+            insertMode: "APPEND", // 비디오가 대상 요소 'video-container'에 어떻게 삽입되는지
+            mirror: false, // 로컬 비디오를 반전할지 여부
           });
 
-          // Set the main video in the page to display our webcam and store our Publisher
+          // 페이지에서 주요 비디오를 설정하여 웹캠을 표시하고 발행자를 저장합니다.
           mainStreamManager.value = publisher_tmp
           publisher.value = publisher_tmp
 
-          // --- 6) Publish your stream ---
+          // --- 6) 스트림을 발행합니다 ---
           // session.publish(publisher)
           session.value.publish(publisher.value)
-          getMedia()  // 세션이 만들어졌을때 미디어 불러옴
+          getMedia()  // 세션이 만들어졌을 때 미디어를 불러옵니다.
         })
         .catch((error) => {
-          console.log("There was an error connecting to the session:", error.code, error.message);
+          console.log("세션에 연결하는 중 오류가 발생했습니다:", error.code, error.message);
         })
     })
 
     window.addEventListener("beforeunload", leaveSession)
   }
 
+
   function leaveSession(){
-    // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
+    // --- 7) 'disconnect' 메서드를 세션 객체에서 호출하여 세션을 나갑니다. ---
     if(session.value) session.value.disconnect()
 
-    // Empty all properties...
+    // 모든 속성 비우기...
     session.value = undefined;
     mainStreamManager.value = undefined;
     publisher.value = undefined;
     subscribers.value = [];
     OV.value = undefined;
 
-    // Remove beforeunload listener
+    // beforeunload 리스너 제거
     window.removeEventListener("beforeunload", leaveSession)
+}
 
-  }
-
-  function updateMainVideoStreamManager(stream) {
+function updateMainVideoStreamManager(stream) {
+    // 주요 비디오 스트림 매니저 업데이트
     if (mainStreamManager.value === stream) return
     mainStreamManager.value = stream
-  }
+}
 
-  /**
-  * --------------------------------------------
-  * GETTING A TOKEN FROM YOUR APPLICATION SERVER
-  * --------------------------------------------
-  */
-  async function getToken(mySessionId) {
+/**
+* --------------------------------------------
+* 애플리케이션 서버에서 토큰 가져오기
+* --------------------------------------------
+*/
+async function getToken(mySessionId) {
     const sessionId = await createSession(mySessionId);
     return await createToken(sessionId);
-  }
+}
 
-  async function createSession(sessionId) {
+async function createSession(sessionId) {
+    // 세션 생성
     const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId, userNo: 53, endHour: 1, endMinute: 30, quota: 16, isPrivacy: false}, {
-      headers: { 'Content-Type': 'application/json', },
+        headers: { 'Content-Type': 'application/json', },
     });
-    return response.data; // The sessionId
-  }
+    return response.data; // 세션 ID 반환
+}
 
-  async function createToken(sessionId) {
+async function createToken(sessionId) {
+    // 토큰 생성
     const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
-      headers: { 'Content-Type': 'application/json', },
+        headers: { 'Content-Type': 'application/json', },
     });
-    return response.data; // The token
-  }
+    return response.data; // 토큰 반환
+}
 
   // 채팅창 구현을 위한 함수 제작
   ///////////////////////////

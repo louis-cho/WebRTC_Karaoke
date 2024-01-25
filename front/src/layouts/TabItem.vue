@@ -2,7 +2,7 @@
   <!-- <div class="q-pa-md"> -->
     <div class="parent">
 
-      <div >
+      <div @click="goToPage('/')" style="cursor: pointer;">
         <img
           src="src/assets/로고1-removebg-preview.png"
           alt="Logo"
@@ -16,12 +16,9 @@
           v-model="tab"
         >
           <q-tab name="feed" icon="feed" label="피드" />
-          <q-tab name="karaoke" icon="music_note" label="노래방" />
-          <q-tab name="karaoke" icon="library_music" label="노래방" />
+          <q-tab name="karaoke" icon="music_note" label="노래방" @click="goToPage('/karaoke')" />
+          <q-tab name="karaoke" icon="library_music" label="노래방" @click="goToPage('/karaoke')" />
           <q-tab name="message" icon="send" label="메시지" />
-          <!-- <q-tab name="person" icon="person"  />
-          <q-tab name="notifications" icon="notifications" />
-          <q-tab name="menu" icon="menu" /> -->
         </q-tabs>
       </div>
 
@@ -35,35 +32,19 @@
         </q-tabs>
       </div>
 
-
-      <!-- <q-tabs
-        v-model="tab"
-        inline-label
-        class="bg-black text-white shadow-2"
-      >
-        <q-tab name="feed" icon="feed" label="피드" />
-        <q-tab name="karaoke" icon="music_note" label="노래방" />
-        <q-tab name="karaoke" icon="library_music" label="노래방" />
-        <q-tab name="karaoke" icon="interpreter_mode" label="노래방" />
-        <q-tab name="message" icon="send" label="메시지" />
-        <q-tab name="person" icon="person"  />
-        <q-tab name="notifications" icon="notifications" />
-        <q-tab name="menu" icon="menu" />
-      </q-tabs> -->
-
     </div>
-  <!-- </div> -->
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-export default {
-  setup () {
-    return {
-      tab: ref('mails')
-    }
-  }
+const tab = ref('mails')
+const router = useRouter()
+
+// 이벤트 핸들러 추가
+const goToPage = (path) => {
+  router.push(path);
 }
 </script>
 

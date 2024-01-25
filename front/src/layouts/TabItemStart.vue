@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import StartTest from './StartTest.vue';
+import StartTest from '@/components/StartTest.vue';
 export default {
   components: {
     StartTest
