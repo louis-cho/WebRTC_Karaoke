@@ -14,27 +14,30 @@
     "dev": "quasar dev"
   },
   "dependencies": {
+    "@quasar/extras": "^1.16.4",
     "axios": "^1.6.5",
     "core-js": "3.9.1",
     "openvidu-browser": "^2.20.0",
-    "@quasar/extras": "^1.16.4",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
     "quasar": "^2.3.0",
+    "routes": "^2.1.0",
     "vue": "^3.4.15",
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.19.1",
+    "@quasar/app-vite": "^1.4.3",
     "@vue/cli-plugin-babel": "5.0.8",
     "@vue/cli-plugin-eslint": "5.0.8",
     "@vue/cli-service": "^5.0.8",
-    "vue-template-compiler": "2.6.12",
-    "eslint": "^8.11.0",
-    "eslint-plugin-vue": "^9.0.0",
-    "eslint-config-prettier": "^8.1.0",
-    "prettier": "^2.5.1",
-    "@quasar/app-vite": "^1.4.3",
     "autoprefixer": "^10.4.2",
-    "postcss": "^8.4.14"
+    "eslint": "^8.11.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-vue": "^9.0.0",
+    "postcss": "^8.4.14",
+    "prettier": "^2.5.1",
+    "vue-template-compiler": "2.6.12"
   },
   "eslintConfig": {
     "root": true,

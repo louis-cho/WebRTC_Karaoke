@@ -66,9 +66,9 @@
 
 <script>
 import { ref } from "vue";
-import SignIn from "src/components/SignIn.vue";
-import StartTest from "src/components/StartTest.vue";
-import TabItem from "src/components/TabItem.vue";
+import SignIn from "../components/SignIn.vue";
+import StartTest from "../components/StartTest.vue";
+import TabItem from "../components/TabItem.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
