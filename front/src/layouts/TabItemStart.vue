@@ -3,13 +3,14 @@
   <div class="parent">
     <div>
       <img
-        src="src/assets/로고1-removebg-preview.png"
+        src="src/assets/icon/logo1-removebg-preview.png"
         alt="Logo"
         width="150"
         class="d-inline-block align-text-top"
       />
     </div>
     <div>
+      <!-- 시작하기 버튼 -->
       <StartTest/>
     </div>
   </div>

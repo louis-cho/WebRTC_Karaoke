@@ -1,6 +1,6 @@
 <template>
-  <div class="q-pa-md q-gutter-sm">
   <!-- <div class="q-pa-md q-gutter-sm"> -->
+  <div>
     <q-btn label="시작하기" color="black" @click="prompt = true" />
     <q-dialog v-model="prompt" persistent>
       <q-card style="min-width: 350px">
@@ -19,10 +19,10 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input rounded outlined v-model="text1" label="아이디" />
+          <q-input rounded outlined v-model="id" label="아이디" />
         </q-card-section>
         <q-card-section class="q-pt-none">
-          <q-input rounded outlined v-model="text2" label="비밀번호" />
+          <q-input rounded outlined v-model="password" label="비밀번호" />
         </q-card-section>
 
         <q-card-actions align="center" class="text-primary">
@@ -35,13 +35,13 @@
         <q-card-actions align="center" class="text-primary">
           <div>
             <img
-              src="src/assets/kakao_login_medium_narrow.png"
+              src="src/assets/icon/kakao_login_medium_narrow.png"
               alt="카카오로그인"
               style="width: 185px; height: 40px"
             />
             <br />
             <img
-              src="src/assets/web_light_sq_ctn@1x.png"
+              src="src/assets/icon/web_light_sq_ctn@1x.png"
               alt="구글로그인"
               style="width: 185px; height: 40px"
             />
@@ -64,15 +64,13 @@ import { ref } from "vue";
 export default {
   setup() {
     const prompt = ref(false);
-    const text1 = ref('');
-    const text2 = ref('');
+    const id = ref('');
     const password = ref('');
 
     return {
       prompt,
-      text1,
-      text2,
-      password,
+      id,
+      password
     };
   },
 };

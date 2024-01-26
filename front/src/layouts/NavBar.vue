@@ -3,7 +3,7 @@
     <TabItem/>
 
     <!-- 로그인 전에 시작하기 뜨는 navbar -->
-    <!-- <TabItemStart/> -->
+    <TabItemStart/>
   </div>
 
 </template>
@@ -14,11 +14,5 @@ import TabItem from "@/layouts/TabItem.vue";
 </script>
 
 <style scoped>
-.carousel_height {
-  height:100%;
-  /* position: fixed; */
-  /* bottom: 0; */
-  width: 100%;
-}
 </style>
 
