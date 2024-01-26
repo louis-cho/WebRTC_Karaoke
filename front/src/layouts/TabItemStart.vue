@@ -1,20 +1,16 @@
 <template>
   <!-- div class="q-pa-md" -->
-  <div>
-    <div class="parent">
-      <div>
-        <img
-          src="src/assets/로고1-removebg-preview.png"
-          alt="Logo"
-          width="150"
-          class="d-inline-block align-text-top"
-        />
-      </div>
-      <div>
-        <StartTest/>
-      </div>
-
-
+  <div class="parent">
+    <div>
+      <img
+        src="src/assets/로고1-removebg-preview.png"
+        alt="Logo"
+        width="150"
+        class="d-inline-block align-text-top"
+      />
+    </div>
+    <div>
+      <StartTest/>
     </div>
   </div>
 </template>
@@ -35,8 +31,10 @@ export default {
   /* height : 100px; */
   display: flex;
   flex-direction: row;
-  /* border : 3px solid red; */
+  justify-content: space-between;
 }
+
+
 
 /* .child {
   flex: 1;

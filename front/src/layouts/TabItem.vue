@@ -16,7 +16,6 @@
           v-model="tab"
         >
           <q-tab name="feed" icon="feed" label="피드" />
-          <q-tab name="karaoke" icon="music_note" label="노래방" @click="goToPage('/karaoke')" />
           <q-tab name="karaoke" icon="library_music" label="노래방" @click="goToPage('/karaoke')" />
           <q-tab name="message" icon="send" label="메시지" />
         </q-tabs>

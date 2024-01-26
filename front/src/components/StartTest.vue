@@ -59,20 +59,6 @@
 </template>
 
 <script>
-// import { ref } from "vue";
-
-// export default {
-//   setup() {
-//     return {
-//       alert: ref(false),
-//       confirm: ref(false),
-//       prompt: ref(false),
-
-//       address: ref(""),
-//     };
-//   },
-// };
-
 import { ref } from "vue";
 
 export default {
