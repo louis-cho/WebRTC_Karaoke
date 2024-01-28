@@ -225,6 +225,9 @@ function applyFilter() {
 			filter.options = { "command": 'chromahold target-r=0 target-g=0 target-b=255 tolerance=90' };
 			break;
 	}
+  console.log("selectedStreamManager: ", selectedStreamManager)
+  console.log("selectedStreamManager.stream: ", selectedStreamManager.stream)
+
 	selectedStreamManager.stream.applyFilter(filter.type, filter.options)
 		.then(f => {
 			if (f.type === 'FaceOverlayFilter') {
@@ -348,6 +351,7 @@ function addClickListener(videoElement, streamManager) {
 
 function initMainVideo(streamManager, userData) {
 	var videoEl = $('#main-video video').get(0);
+  console.log("videoEl: ", videoEl);
 	videoEl.onplaying = () => {
 		$('#main-video div .spinner').remove();
 	};
@@ -365,17 +369,17 @@ function initMainVideo(streamManager, userData) {
  * --------------------------------------------
  * The methods below request the creation of a Session and a Token to
  * your application server. This keeps your OpenVidu deployment secure.
- * 
+ *
  * In this sample code, there is no user control at all. Anybody could
  * access your application server endpoints! In a real production
  * environment, your application server must identify the user to allow
  * access to the endpoints.
- * 
+ *
  * Visit https://docs.openvidu.io/en/stable/application-server to learn
  * more about the integration of OpenVidu in your application server.
  */
 
-var APPLICATION_SERVER_URL = "http://localhost:5000/";
+var APPLICATION_SERVER_URL = "http://localhost:8081/";
 
 function getToken(mySessionId) {
 	return createSession(mySessionId).then(sessionId => createToken(sessionId));

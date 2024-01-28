@@ -17,13 +17,14 @@
     "@quasar/extras": "^1.16.4",
     "axios": "^1.6.5",
     "core-js": "3.9.1",
-    "openvidu-browser": "^2.20.0",
+    "openvidu-browser": "^2.29.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "quasar": "^2.3.0",
     "routes": "^2.1.0",
     "vue": "^3.4.15",
-    "vue-router": "^4.0.12"
+    "vue-router": "^4.0.12",
+    "jquery": "3.7.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.19.1",
@@ -60,7 +61,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:OpenVidu/openvidu-tutorials.git"
+    "url": "git@github.com:OpenVidu/openvidu.git"
   },
   "engines": {
     "node": "^20 || ^18 || ^16",

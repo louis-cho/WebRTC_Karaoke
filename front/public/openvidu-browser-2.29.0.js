@@ -800,7 +800,7 @@ if (typeof Object.create === 'function') {
 }
 
 },{}],7:[function(require,module,exports){
-/* 
+/*
  * JSNLog 2.30.0
  * Open source under the MIT License.
  * Copyright 2012-2017 Mattijs Perdeck All rights reserved.
@@ -824,7 +824,7 @@ function JL(loggerName) {
         return JL.__;
     }
     // Implements Array.reduce. JSNLog supports IE8+ and reduce is not supported in that browser.
-    // Same interface as the standard reduce, except that 
+    // Same interface as the standard reduce, except that
     if (!Array.prototype.reduce) {
         Array.prototype.reduce = function (callback, initialValue) {
             var previousValue = initialValue;
@@ -850,12 +850,12 @@ function JL(loggerName) {
         // This is because the parent inherits properties from its ancestors.
         // So if the root has a child logger 'c' (stored in a property 'c' of the root logger),
         // then logger 'a.b' has that same property 'c' through inheritance.
-        // The names of the logger properties start with __, so the root logger 
-        // (which has name ''), has a nice property name '__'.              
+        // The names of the logger properties start with __, so the root logger
+        // (which has name ''), has a nice property name '__'.
         // accumulatedLoggerName evaluates false ('' is falsy) in first iteration when prev is the root logger.
         // accumulatedLoggerName will be the logger name corresponding with the logger in currentLogger.
         // Keep in mind that the currentLogger may not be defined yet, so can't get the name from
-        // the currentLogger object itself. 
+        // the currentLogger object itself.
         if (accumulatedLoggerName) {
             accumulatedLoggerName += '.' + curr;
         }
@@ -863,12 +863,12 @@ function JL(loggerName) {
             accumulatedLoggerName = curr;
         }
         var currentLogger = prev['__' + accumulatedLoggerName];
-        // If the currentLogger (or the actual logger being sought) does not yet exist, 
+        // If the currentLogger (or the actual logger being sought) does not yet exist,
         // create it now.
         if (currentLogger === undefined) {
             // Set the prototype of the Logger constructor function to the parent of the logger
             // to be created. This way, __proto of the new logger object will point at the parent.
-            // When logger.level is evaluated and is not present, the JavaScript runtime will 
+            // When logger.level is evaluated and is not present, the JavaScript runtime will
             // walk down the prototype chain to find the first ancestor with a level property.
             //
             // Note that prev at this point refers to the parent logger.
@@ -994,7 +994,7 @@ function JL(loggerName) {
         return logObject;
     }
     var StringifiedLogObject = /** @class */ (function () {
-        // * msg - 
+        // * msg -
         //      if the logObject is a scalar (after possible function evaluation), this is set to
         //      string representing the scalar. Otherwise it is left undefined.
         // * meta -
@@ -1012,7 +1012,7 @@ function JL(loggerName) {
         }
         return StringifiedLogObject;
     }());
-    // Takes a logObject, which can be 
+    // Takes a logObject, which can be
     // * a scalar
     // * an object
     // * a parameterless function, which returns the scalar or object to log.
@@ -1023,7 +1023,7 @@ function JL(loggerName) {
         // JSON.stringify(null) returns "null".
         var actualLogObject = stringifyLogObjectFunction(logObject);
         var finalString;
-        // Note that typeof actualLogObject should not be "function", because that has 
+        // Note that typeof actualLogObject should not be "function", because that has
         // been resolved with stringifyLogObjectFunction.
         switch (typeof actualLogObject) {
             case "string":
@@ -1109,7 +1109,7 @@ function JL(loggerName) {
         // data replaces message. It takes not just strings, but also objects and functions, just like the log function.
         // internally, the string representation is stored in the message property (inherited from Error)
         //
-        // inner: inner exception. Can be null or undefined. 
+        // inner: inner exception. Can be null or undefined.
         function Exception(data, inner) {
             this.inner = inner;
             this.name = "JL.Exception";
@@ -1178,7 +1178,7 @@ function JL(loggerName) {
             this.appenderName = appenderName;
             this.sendLogItems = sendLogItems;
             this.level = JL.getTraceLevel();
-            // set to super high level, so if user increases level, level is unlikely to get 
+            // set to super high level, so if user increases level, level is unlikely to get
             // above sendWithBufferLevel
             this.sendWithBufferLevel = 2147483647;
             this.storeInBufferLevel = -2147483648;
@@ -1187,7 +1187,7 @@ function JL(loggerName) {
             this.maxBatchSize = 20;
             this.batchTimeout = 2147483647;
             this.sendTimeout = 5000;
-            // Holds all log items with levels higher than storeInBufferLevel 
+            // Holds all log items with levels higher than storeInBufferLevel
             // but lower than level. These items may never be sent.
             this.buffer = [];
             // Holds all items that we do want to send, until we have a full
@@ -1208,7 +1208,7 @@ function JL(loggerName) {
             this.nbrLogItemsBeingSent = 0;
             var emptyNameErrorMessage = "Trying to create an appender without a name or with an empty name";
             // This evaluates to true if appenderName is either null or undefined!
-            // Do not check here if the name is "", because that would stop you creating the 
+            // Do not check here if the name is "", because that would stop you creating the
             // default appender.
             if (appenderName == undefined) {
                 throw emptyNameErrorMessage;
@@ -1224,7 +1224,7 @@ function JL(loggerName) {
             JL._appenderNames.push(appenderName);
         }
         Appender.prototype.addLogItemsToBuffer = function (logItems) {
-            // If the batch buffer has reached its maximum limit, 
+            // If the batch buffer has reached its maximum limit,
             // skip the log item and increase the "skipped items" counter.
             if (this.batchBuffer.length >= this.maxBatchSize) {
                 this.nbrLogItemsSkipped += logItems.length;
@@ -1256,7 +1256,7 @@ function JL(loggerName) {
             this.batchBuffer = this.batchBuffer.concat(logItems);
             // If this is the first item in the buffer, set the timer
             // to ensure it will be sent within the timeout period.
-            // If it is not the first item, leave the timer alone so to not to 
+            // If it is not the first item, leave the timer alone so to not to
             // increase the timeout for the first item.
             //
             // To determine if this is the first item, look at the timer variable.
@@ -1281,7 +1281,7 @@ function JL(loggerName) {
         };
         // Returns true if no more message will ever be added to the batch buffer,
         // but the batch buffer has messages now - so if there are not enough to make up a batch,
-        // and there is no batch timeout, then they will never be sent. This is especially important if 
+        // and there is no batch timeout, then they will never be sent. This is especially important if
         // maxMessages was reached while jsnlog.js was retrying sending messages to the server.
         Appender.prototype.batchBufferHasStrandedMessage = function () {
             return (!(JL.maxMessages == null)) && (JL.maxMessages < 1) && (this.batchBuffer.length > 0);
@@ -1434,7 +1434,7 @@ function JL(loggerName) {
             // JSON.stringify is only supported on IE8+
             // Use try-catch in case we get an exception here.
             //
-            // The "r" field is now obsolete. When writing a server side component, 
+            // The "r" field is now obsolete. When writing a server side component,
             // read the HTTP header "JSNLog-RequestId"
             // to get the request id.
             //
@@ -1451,7 +1451,7 @@ function JL(loggerName) {
             // before the server side component tries to log the client side log message
             // through an NLog logger.
             // Unlike Log4Net, NLog doesn't allow you to register an object whose ToString()
-            // is only called when it tries to log something, so the requestId has to be 
+            // is only called when it tries to log something, so the requestId has to be
             // determined right at the start of request processing.
             try {
                 // Do not send logs, if JL.enabled is set to false.
@@ -1475,7 +1475,7 @@ function JL(loggerName) {
                 //
                 // This is because the server side component sets defaultAjaxUrl
                 // in a call to setOptions, AFTER the JL object and the default appender
-                // have been created. 
+                // have been created.
                 var ajaxUrl = "/jsnlog.logger";
                 // This evaluates to true if defaultAjaxUrl is null or undefined
                 if (!(JL.defaultAjaxUrl == null)) {
@@ -1553,7 +1553,7 @@ function JL(loggerName) {
                 this.clog(logEntry);
             }
         };
-        // IE11 has a console.debug function. But its console doesn't have 
+        // IE11 has a console.debug function. But its console doesn't have
         // the option to show/hide debug messages (the same way Chrome and FF do),
         // even though it does have such buttons for Error, Warn, Info.
         //
@@ -1735,7 +1735,7 @@ function JL(loggerName) {
     // -----------------------
     // In the browser, the default appender is the AjaxAppender.
     // Under nodejs (where there is no "window"), use the ConsoleAppender instead.
-    // 
+    //
     // Do NOT create an AjaxAppender object if you are not on a browser (that is, window is not defined).
     // That would try to create an XmlHttpRequest object, which will crash outside a browser.
     var defaultAppender;
@@ -1778,12 +1778,12 @@ if (typeof define == 'function' && define.amd) {
 if (typeof __jsnlog_configure == 'function') {
     __jsnlog_configure(JL);
 }
-// Create onerror handler to log uncaught exceptions to the server side log, but only if there 
+// Create onerror handler to log uncaught exceptions to the server side log, but only if there
 // is no such handler already.
 // Must use "typeof window" here, because in NodeJs, window is not defined at all, so cannot refer to window in any way.
 if (typeof window !== 'undefined' && !window.onerror) {
     window.onerror = function (errorMsg, url, lineNumber, column, errorObj) {
-        // Send object with all data to server side log, using severity fatal, 
+        // Send object with all data to server side log, using severity fatal,
         // from logger "onerrorLogger"
         //
         // Use errorMsg.message if available, so Angular 4 template errors will be logged.
@@ -1794,14 +1794,14 @@ if (typeof window !== 'undefined' && !window.onerror) {
             "url": url,
             "line number": lineNumber, "column": column
         }, errorObj);
-        // Tell browser to run its own error handler as well   
+        // Tell browser to run its own error handler as well
         return false;
     };
 }
 // Deal with unhandled exceptions thrown in promises
 if (typeof window !== 'undefined' && !window.onunhandledrejection) {
     window.onunhandledrejection = function (event) {
-        // Send object with all data to server side log, using severity fatal, 
+        // Send object with all data to server side log, using severity fatal,
         // from logger "onerrorLogger".
         // Need to check both event.reason.message and event.message,
         // because SystemJs wraps exceptions and throws a new object which doesn't have a reason property.
