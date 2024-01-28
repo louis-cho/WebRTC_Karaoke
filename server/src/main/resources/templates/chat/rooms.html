@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Rooms</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div>
+        <ul>
+            <li th:each="room : ${list}">
+                <a th:href="@{'/chat/room?roomId=' + ${room.roomId}}" th:text="${room.name}"></a>
+            </li>
+        </ul>
+    </div>
+    <form th:action="@{/chat/room}" method="post">
+        <div class="form-group">
+            <label for="roomName">Room Name:</label>
+            <input type="text" name="name" id="roomName" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-secondary btn-create">Create Room</button>
+    </form>
+</div>
+</body>
+
+</html>
