@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input, button {
+            margin-bottom: 10px;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        #chatOutput {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+        }
+
+        #chatOutput p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Chat</h1>
+    <div>
+        <label for="chatRoomIdInput">채팅방 ID:</label>
+        <input type="text" id="chatRoomIdInput" placeholder="채팅방 ID">
+    </div>
+    <div>
+        <label for="senderIdInput">유저 ID:</label>
+        <input type="text" id="senderIdInput" placeholder="유저 ID">
+    </div>
+    <button id="connectButton">연결하기</button>
+    <div>
+        <label for="messageInput">메시지:</label>
+        <input type="text" id="messageInput" placeholder="메시지 입력">
+        <button id="sendMessageButton">메시지 보내기</button>
+    </div>
+    <div id="chatOutput"></div>
+
+    <script src="webSocketClient.js"></script>
+</body>
+</html>
