@@ -35,19 +35,20 @@
         <q-toolbar-title style="font-size: 40px">{{
           mySessionId
         }}</q-toolbar-title>
+        <q-btn @click="leaveSession" color="primary" label="Leave session" />
         <q-btn
-          v-if="session"
-          @click="leaveSession"
-          color="primary"
-          label="Leave session"
-        />
-        <q-btn
-          v-if="session"
+          v-if="!filterApplied"
           @click="applyFilter"
           color="primary"
           label="Apply filter"
         />
-        <div v-if="session" class="q-mb-md">
+        <q-btn
+          v-if="filterApplied"
+          @click="removeFilter"
+          color="negative"
+          label="Remove filter"
+        />
+        <div class="q-mb-md">
           <q-radio
             v-for="(filterLabel, filterValue) in filterOptions"
             :key="filterValue"
@@ -57,10 +58,24 @@
           />
         </div>
 
-        <div v-if="session">
+        <div>
           <div style="max-width: 300px; overflow-y: auto; max-height: 200px">
-            <div class="q-mb-md">
+            <div
+              class="q-mb-md"
+              v-for="(slider, index) in sliders"
+              :key="index"
+            >
               <label>
+                {{ slider.label }}:
+                <q-slider
+                  v-model="slider.value"
+                  :min="slider.min"
+                  :max="slider.max"
+                  :step="slider.step"
+                />
+                {{ slider.value }}
+              </label>
+              <!-- <label>
                 Delay:
                 <q-slider v-model="delay" :min="100" :max="500" :step="10" />
                 {{ delay }}
@@ -78,17 +93,10 @@
                 Feedback:
                 <q-slider v-model="feedback" :min="0" :max="0.5" :step="0.01" />
                 {{ feedback }}
-              </label>
+              </label> -->
             </div>
           </div>
         </div>
-
-        <q-btn
-          v-if="session"
-          @click="removeFilter"
-          color="negative"
-          label="Remove filter"
-        />
       </div>
 
       <!-- 내 캠 -->
@@ -171,7 +179,7 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === "production" ? "" : "http://localhost:8081/";
 
-// OpenVidu objects
+// OpenVidu 객체
 const OV = ref(undefined);
 const session = ref(undefined);
 let mainStreamManager = ref(undefined);
@@ -182,34 +190,9 @@ const subscribers = ref([]);
 const mySessionId = ref("SessionCrome");
 const myUserName = ref("Participant" + Math.floor(Math.random() * 100));
 
-const roles = [
-  {
-    label: "Subscriber",
-    value: "SUBSCRIBER",
-    tooltip:
-      "Subscribers cannot publish video and therefore cannot apply filters",
-    tooltipPlacement: "top",
-    checked: false,
-  },
-  {
-    label: "Publisher",
-    value: "PUBLISHER",
-    tooltip: "Publishers can apply filters to their own streams",
-    tooltipPlacement: "top",
-    checked: true,
-  },
-  {
-    label: "Moderator",
-    value: "MODERATOR",
-    tooltip:
-      "Moderators can apply filters to their own streams and other users streams",
-    tooltipPlacement: "top",
-    checked: false,
-  },
-];
-
 // 필터를 위한 변수
 const selectedFilter = ref("Audioecho");
+const filterApplied = ref(false);
 const filterOptions = {
   Audioecho: "Audio echo",
   Amplify: "Audio amplify",
@@ -217,25 +200,28 @@ const filterOptions = {
 };
 
 // 에코 관련 변수
-const delay = ref(300);
-const intensity = ref(0.5);
-const feedback = ref(0.2);
+const sliders = ref([
+  { label: "Delay", value: 300, min: 100, max: 500, step: 10 },
+  { label: "Intensity", value: 0.5, min: 0.1, max: 1, step: 0.1 },
+  { label: "Feedback", value: 0.2, min: 0, max: 0.5, step: 0.01 },
+]);
 
-/////////////////////채팅창을 위한 부분임.
+// 채팅창을 위한 변수
 const inputMessage = ref("");
 const messages = ref([]);
 
-///////////////////카메라 및 오디오 설정을 위한 부분임
+// 카메라 및 오디오 설정을 위한 변수
 const muted = ref(false); // 기본은 음소거 비활성화
 const camerOff = ref(false); // 기본 카메라 활성화
 const selectedCamera = ref(""); // 카메라 변경시 사용할 변수
 const selectedAudio = ref(""); // 오디오 변경시 사용할 변수
 
-////다시그려내기 위해 computed 작성
+// 다시그려내기 위해 computed 작성
 const mainStreamManagerComputed = computed(() => mainStreamManager.value);
 const publisherComputed = computed(() => publisher.value);
 const subscribersComputed = computed(() => subscribers.value);
-///////////////////
+
+////////////////////////////////////////////////
 
 // 역할을 정하는 라디오버튼 이벤트
 const handleRadioBtnClick = (role) => {
@@ -549,13 +535,7 @@ function applyFilter() {
     case "Audioecho":
       filter.type = "GStreamerFilter";
       filter.options = {
-        command:
-          "audioecho delay=" +
-          delay.value +
-          " intensity=" +
-          intensity.value +
-          " feedback=" +
-          feedback.value,
+        command: `audioecho delay=${sliders.value[0].value} intensity=${sliders.value[1].value} feedback=${sliders.value[2].value}`,
       };
       break;
     case "Amplify":
@@ -570,10 +550,13 @@ function applyFilter() {
 
   // 필터를 적용해주는 부분
   publisher.value.stream.applyFilter(filter.type, filter.options);
+  filterApplied.value = true;
 }
 
+// 필터를 지우는 함수
 const removeFilter = () => {
   publisher.value.stream.removeFilter();
+  filterApplied.value = false;
 };
 // 필터 함수 종료
 </script>
