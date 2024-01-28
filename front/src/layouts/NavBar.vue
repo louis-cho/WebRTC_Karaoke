@@ -14,11 +14,5 @@ import TabItem from "@/layouts/TabItem.vue";
 </script>
 
 <style scoped>
-.carousel_height {
-  height:100%;
-  /* position: fixed; */
-  /* bottom: 0; */
-  width: 100%;
-}
 </style>
 

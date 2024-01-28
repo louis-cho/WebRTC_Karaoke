@@ -1,6 +1,7 @@
 <template>
   <!-- class="bg-purple" -->
   <div>
+    <!-- <SearchUser/> -->
     <NavBar/>
     <q-carousel
       v-model="slide"
@@ -42,6 +43,8 @@
 <script setup>
 import { ref } from "vue";
 import NavBar from "@/layouts/NavBar.vue";
+import SearchUser from "src/components/SearchUser.vue";
+
 
 const slide = ref("style");
 const lorem1 = "노래하고 싶어? 여기서 노래해방!";
@@ -49,6 +52,9 @@ const lorem2 = "어디서나 노래와 함께하는 새로운 자유, 노래해�
 const lorem3 = "너는 어때? 나는 어때?";
 const lorem4 = "너도 나도 올려방";
 const lorem5 = "스트레스 해소해방";
+
+
+
 </script>
 
 <style scoped>
