@@ -21,6 +21,10 @@ const routes = [
     component: () => import('@/pages/MyProfilePage.vue')
   },
   {
+    path: '/chat',
+    component: () => import('@/pages/ChatPage.vue')
+  },
+  {
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/ErrorNotFound.vue')
   },
