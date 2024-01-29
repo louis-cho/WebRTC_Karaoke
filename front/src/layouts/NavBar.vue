@@ -1,18 +1,15 @@
 <template>
   <div>
-    <TabItem/>
-
-    <!-- 로그인 전에 시작하기 뜨는 navbar -->
-    <TabItemStart/>
+    <TabItem />
+    <!-- <TabItemStart/> -->
+    <!-- <SignIn /> -->
   </div>
-
 </template>
 
 <script setup>
 import TabItemStart from "@/layouts/TabItemStart.vue";
 import TabItem from "@/layouts/TabItem.vue";
+import SignIn from "@/components/SignIn.vue";
 </script>
 
-<style scoped>
-</style>
-
+<style scoped></style>
