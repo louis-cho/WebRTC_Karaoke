@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(value = "/chat")
@@ -42,12 +40,13 @@ public class RoomController {
 
     //채팅방 조회
     @GetMapping("/room")
-    public ModelAndView getRoom(String roomId, Model model){
+    public ModelAndView getRoom(String roomId, String userName, Model model){
 
-        log.info("# get Chat Room, roomID : " + roomId);
+        log.info("# get Chat Room, roomID : " + roomId + " " + userName);
 
         ModelAndView mv = new ModelAndView("chat/room");
         model.addAttribute("room", repository.findRoomById(roomId));
+        log.info(model.getAttribute("room"));
         return mv;
     }
 }

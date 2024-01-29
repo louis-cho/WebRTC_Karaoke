@@ -1,62 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket Chat</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 20px;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        input, button {
-            margin-bottom: 10px;
-            padding: 8px;
-            font-size: 14px;
-        }
-
-        #chatOutput {
-            border: 1px solid #ccc;
-            padding: 10px;
-            height: 200px;
-            overflow-y: auto;
-        }
-
-        #chatOutput p {
-            margin: 5px 0;
-        }
-    </style>
+    <title>채팅방</title>
+    <!-- Add your CSS styles or use a framework like Bootstrap -->
 </head>
-<body>
-    <h1>WebSocket Chat</h1>
-    <div>
-        <label for="chatRoomIdInput">채팅방 ID:</label>
-        <input type="text" id="chatRoomIdInput" placeholder="채팅방 ID">
-    </div>
-    <div>
-        <label for="senderIdInput">유저 ID:</label>
-        <input type="text" id="senderIdInput" placeholder="유저 ID">
-    </div>
-    <button id="connectButton">연결하기</button>
-    <div>
-        <label for="messageInput">메시지:</label>
-        <input type="text" id="messageInput" placeholder="메시지 입력">
-        <button id="sendMessageButton">메시지 보내기</button>
-    </div>
-    <div id="chatOutput"></div>
 
-    <script src="webSocketClient.js"></script>
+<body>
+    <div class="container">
+        <div class="col-6">
+            <label><b>채팅방</b></label>
+        </div>
+        <div>
+            <div id="msgArea" class="col"></div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <input type="text" id="msg" class="form-control" aria-label="Recipient's username"
+                        aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-send">전송</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const username = 'gogo';
+
+            document.getElementById("button-send").addEventListener("click", function () {
+                send();
+            });
+
+            const websocket = new WebSocket("ws://localhost:8081/ws/chat");
+
+            websocket.onmessage = onMessage;
+            websocket.onopen = onOpen;
+            websocket.onclose = onClose;
+
+            function send() {
+                let msg = document.getElementById("msg");
+
+                console.log(username + ":" + msg.value);
+                websocket.send(username + ":" + msg.value);
+                msg.value = '';
+            }
+
+            function onClose(evt) {
+                var str = username + ": 님이 방을 나가셨습니다.";
+                websocket.send(str);
+            }
+
+            function onOpen(evt) {
+                var str = username + ": 님이 입장하셨습니다.";
+                websocket.send(str);
+            }
+
+            function onMessage(msg) {
+                var data = msg.data;
+                var sessionId = null;
+                var message = null;
+                var arr = data.split(":");
+
+                for (var i = 0; i < arr.length; i++) {
+                    console.log('arr[' + i + ']: ' + arr[i]);
+                }
+
+                var cur_session = username;
+
+                console.log("cur_session : " + cur_session);
+                sessionId = arr[0];
+                message = arr[1];
+
+                console.log("sessionID : " + sessionId);
+                console.log("cur_session : " + cur_session);
+
+                if (sessionId == cur_session) {
+                    var str = "<div class='col-6'>";
+                    str += "<div class='alert alert-secondary'>";
+                    str += "<b>" + sessionId + " : " + message + "</b>";
+                    str += "</div></div>";
+                    document.getElementById("msgArea").innerHTML += str;
+                } else {
+                    var str = "<div class='col-6'>";
+                    str += "<div class='alert alert-warning'>";
+                    str += "<b>" + sessionId + " : " + message + "</b>";
+                    str += "</div></div>";
+                    document.getElementById("msgArea").innerHTML += str;
+                }
+            }
+        });
+    </script>
 </body>
+
 </html>

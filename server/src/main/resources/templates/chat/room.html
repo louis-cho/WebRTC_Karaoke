@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-    <!-- 여기에 필요한 CSS 링크 또는 스타일을 추가하세요. -->
 </head>
-<body>
 
+<body>
 <div class="container">
     <div class="col-6">
         <h1 th:text="${room.name}"></h1>
@@ -29,24 +28,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
 <script th:inline="javascript">
-    $(document).ready(function(){
+    $(document).ready(function () {
         var roomName = /*[[${room.name}]]*/ '';
         var roomId = /*[[${room.roomId}]]*/ '';
-        var username = 'test';
+        var username = /*[[${#request.getParameter('username')}]]*/ '';
 
         console.log(roomName + ", " + roomId + ", " + username);
 
         var sockJs = new SockJS("/stomp/chat");
         var stomp = Stomp.over(sockJs);
 
-        stomp.connect({}, function (){
+        stomp.connect({}, function () {
             console.log("STOMP Connection");
+
+            // send를 subscribe 외부로 이동
+            stomp.send('/pub/chat/enter', {}, JSON.stringify({ roomId: roomId, writer: username }));
 
             stomp.subscribe("/sub/chat/room/" + roomId, function (chat) {
                 var content = JSON.parse(chat.body);
 
                 var writer = content.writer;
-                var message = content.message; // 메세지를 가져오도록 수정
+                var message = content.message;
 
                 var str = '';
 
@@ -65,15 +67,16 @@
                 }
             });
 
-            $("#button-send").on("click", function(e){
+            $("#button-send").on("click", function (e) {
                 var msg = document.getElementById("msg");
 
                 console.log(username + ":" + msg.value);
-                stomp.send('/pub/chat/message', {}, JSON.stringify({roomId: roomId, message: msg.value, writer: username}));
+                stomp.send('/pub/chat/message', {}, JSON.stringify({ roomId: roomId, message: msg.value, writer: username }));
                 msg.value = '';
             });
         });
     });
 </script>
 </body>
+
 </html>

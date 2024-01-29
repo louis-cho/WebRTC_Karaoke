@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Repository
 public class ChatRoomRepository {
