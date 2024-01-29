@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+</body>
+<script type="module">
+
+  import {getPublicKey, register, login, rsa, sendAESKey} from "./authRequest.js";
+  import {generateAESKey, encrypt, decrypt} from './aes.js';
+
+  let key = await generateAESKey();
+  console.log(key);
+  const aesKeyData = await window.crypto.subtle.exportKey('raw', key);
+  console.log(aesKeyData);
+  // await getPublicKey();
+  // await register("c1", "hello myfriend");
+  // await login("c1", "hello myfriend");
+  await getPublicKey();
+  rsa.encrypt(aesKeyData)
+  new Uint8Array(aesKeyData);
+
+  await sendAESKey(aesKeyData);
+
+</script>
+
+</html>

@@ -74,6 +74,12 @@ public class UserController {
                 }
             }
 
+            case "setAESKey": {
+                String key = request.get("key").asText();
+                System.out.println("AES Key >> " + key);
+                return ResponseEntity.ok("{}");
+            }
+
             default: {
                 throw new IllegalArgumentException("Invalid request type");
             }
