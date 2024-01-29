@@ -5,7 +5,7 @@
     <div id="join" v-if="!session" class="q-pa-md q-gutter-md">
       <div id="img-div">
         <q-img
-          src="src/assets/로고1-removebg-preview.png"
+          src="src/assets/icon/logo1-removebg-preview.png"
           alt="로고 이미지"
           class="q-ma-md"
           :style="{ width: '40%' }"
