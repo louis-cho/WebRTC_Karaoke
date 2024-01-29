@@ -6,26 +6,13 @@
   </div>
 </template>
 
-<script>
-  export default {
-    name: 'UserVideo',
-  }
-</script>
-
 <script setup>
-  // import { ref, onMounted, computed } from 'vue';
   import { computed } from 'vue';
   import OvVideo from '@/components/karaoke/OvVideo.vue';
-
 
   const props = defineProps({
     streamManager: Object,
   })
-
-  // const streamManager = ref(Object);
-  // onMounted(() => {
-  //   clientData.value = getConnectionData();
-  // });
 
   // clientData는 computed로 진행됨
   const clientData = computed(() => {
