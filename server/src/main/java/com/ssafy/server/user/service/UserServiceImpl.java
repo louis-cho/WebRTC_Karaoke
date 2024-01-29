@@ -61,21 +61,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean validatePassword(String id, String pw)  {
+    public UUID validatePassword(String id, String pw, String ip)  {
         // String id로부터 int 형태의 pk 가져오기
+        Optional<UserPkMapping> optionalData = userPkMappingRepository.findById(id);
 
-        int userId = 1;
+        if (optionalData.isPresent()) {
+            UserPkMapping data = optionalData.get();
+            int userPk = data.getUserPk();
+            // 사용자 ID로부터 데이터베이스에서 사용자 정보를 가져옵니다.
+            UserAuth userAuth = userAuthRepository.findById(userPk).orElse(null);
 
-        // 사용자 ID로부터 데이터베이스에서 사용자 정보를 가져옵니다.
-        UserAuth userAuth = userAuthRepository.findById(userId).orElse(null);
-
-        if(userAuth != null) {                                  // 사용자 정보가 존재하고
-            if(checkPassword(userAuth.getUserPassword(), pw)) { // 비밀번호가 일치하는 경우
-                return true;                                    // true를 반환
+            if(userAuth != null) {
+                // 사용자 정보가 존재하고
+                String privateKey = RSA_2048.keyToString(keyManager.getPrivateKey(ip));
+                String decryptedPw = RSA_2048.decrypt(pw, privateKey);
+                if(checkPassword(userAuth.getUserPassword(), decryptedPw)) { // 비밀번호가 일치하는 경우
+                    Optional<UserKeyMapping> result = userKeyMappingRepository.findByUserPk(userPk);
+                    if(result.isPresent()) {
+                        return result.get().getUuid();
+                    }
+                  }
             }
+        } else {
+            // Optional에 값이 없는 경우, 원하는 로직을 수행하거나 에러 처리를 수행할 수 있음
+            throw new RuntimeException("User not found for ID: " + id);
         }
 
-        return false;
+        return null;
     }
 
 
@@ -131,6 +143,12 @@ public class UserServiceImpl implements UserService {
         userKeyMappingRepository.save(uUUID);
 
         return user;
+    }
+
+    @Override
+    public UserAuth getUserAuth(String id, String pw, String ip) throws Exception {
+
+        return null;
     }
 
     @Override

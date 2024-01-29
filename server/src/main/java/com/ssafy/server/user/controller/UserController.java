@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
 import java.security.PublicKey;
 import java.util.Base64;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
@@ -55,12 +56,22 @@ public class UserController {
 
                 // 로그인 시 사용한 user id로 부터 int user id 반환하기
 
+                // JsonNode로 응답 생성
+                ObjectNode jsonResponse = JsonNodeFactory.instance.objectNode();
 
                 // DB 저장 데이터 비교하기
-                userService.validatePassword(id, pw);
-                // DB 저장 데이터와 일치하는 경우 토큰 발급
-
-                // DB 저장 데이터와 일치하지 않는 경우 로그인 실패
+                UUID uuid = userService.validatePassword(id, pw, ip);
+                if(uuid != null) {
+                    System.out.println("uuid 찾음 >> " + uuid);
+                    // DB 저장 데이터와 일치하는 경우 토큰 발급
+                    jsonResponse.put("uuid", uuid.toString());
+                    return ResponseEntity.ok(jsonResponse.toString());
+                    // DB 저장 데이터와 일치하지 않는 경우 로그인 실패
+                } else {
+                    System.out.println("uuid 없음");
+                    jsonResponse.put("msg", "fail to login");
+                    return ResponseEntity.status(400).body(jsonResponse.toString());
+                }
             }
 
             default: {

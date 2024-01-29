@@ -13,11 +13,11 @@
   /*
   회원 가입 비밀 번호 암호화 예제
   */
-  import {getPublicKey, register} from "./authRequest.js";
+  import {getPublicKey, register, login} from "./authRequest.js";
 
   await getPublicKey();
-
-  register("ssafy", "hello world");
+  await register("c1", "hello myfriend");
+  await login("c1", "hello myfriend");
 
   /*
   회원가입 버튼에 encrypt.js의 handleRegister() 함수를 연결하면 비밀번호 암호화 기능을 사용할 수 있음

@@ -16,11 +16,13 @@ public interface UserService {
     String getPrivateKey(String ip) throws Exception;
 
 
-    boolean validatePassword(String id, String pw);
+    UUID validatePassword(String id, String pw, String ip);
 
     UserAuth createUserAuth(String id, String pw, String ip) throws Exception;
 
     User createUser(UserAuth userAuth) throws Exception;
+
+    UserAuth getUserAuth(String id, String pw, String ip) throws Exception;
 
     boolean saveUser(User user);
 

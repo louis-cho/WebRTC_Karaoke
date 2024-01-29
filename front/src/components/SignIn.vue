@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import {getPublicKey, register} from "@/js/encrypt/authRequest.js";
+  import {getPublicKey, register, login} from "@/js/encrypt/authRequest.js";
 
 export default {
   data() {
@@ -73,13 +73,14 @@ export default {
     closeLoginModal() {
       this.loginModal = false;
     },
-    login() {
+    async login() {
       // 로그인 로직을 여기에 추가 (서버 연동 등)
       console.log("로그인:", this.loginForm);
 
       let username = this.loginForm.username;
       let password = this.loginForm.password;
 
+      await login(username, password);
 
       this.closeLoginModal();
     },
@@ -90,14 +91,14 @@ export default {
     closeSignupModal() {
       this.signupModal = false;
     },
-    signup() {
+    async signup() {
       // 회원가입 로직을 여기에 추가 (서버 연동 등)
       console.log("회원가입:", this.signupForm);
 
       let username = this.signupForm.username;
       let password = this.signupForm.password;
 
-      register(username, password);
+      await register(username, password);
 
       this.closeSignupModal();
     },
