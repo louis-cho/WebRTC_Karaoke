@@ -75,25 +75,6 @@
                 />
                 {{ slider.value }}
               </label>
-              <!-- <label>
-                Delay:
-                <q-slider v-model="delay" :min="100" :max="500" :step="10" />
-                {{ delay }}
-              </label>
-            </div>
-            <div class="q-mb-md">
-              <label>
-                Intensity:
-                <q-slider v-model="intensity" :min="0.1" :max="1" :step="0.1" />
-                {{ intensity }}
-              </label>
-            </div>
-            <div class="q-mb-md">
-              <label>
-                Feedback:
-                <q-slider v-model="feedback" :min="0" :max="0.5" :step="0.01" />
-                {{ feedback }}
-              </label> -->
             </div>
           </div>
         </div>
@@ -119,10 +100,17 @@
       <!-- 방에 들어갔을 때 같이 보이게 될 채팅창 -->
       <!-- 나중에 <chat-winow />로 넘길수 있도록 해보자. -->
       <div id="chat-container" class="q-pa-md">
-        <div id="chat-window">
-          <ul id="chat-history">
-            <li v-for="(message, index) in messages" :key="index">
-              <strong>{{ message.username }}:</strong> {{ message.message }}
+        <div id="chat-window" class="q-pa-md dark-bg">
+          <ul id="chat-history" class="q-mb-md">
+            <li
+              v-for="(message, index) in messages"
+              :key="index"
+              class="message-item q-py-md dark-item-bg"
+            >
+              <strong class="message-username dark-text"
+                >{{ message.username }}:</strong
+              >
+              {{ message.message }}
             </li>
           </ul>
         </div>
@@ -156,19 +144,35 @@
 
       <!-- 캠,오디오 선택 옵션 -->
       <div>
-        <select name="cameras" @change="handleCameraChange">
-          <option disabled>사용할 카메라를 선택하세요</option>
-        </select>
-        <select name="audios" @change="handleAudioChange">
-          <option disabled>사용할 마이크를 선택하세요</option>
-        </select>
+        <q-select
+          v-model="selectedCamera"
+          @update:model-value="handleCameraChange"
+          label="사용할 카메라를 선택하세요"
+          outlined
+          :options="cameras"
+          emit-value
+          map-options
+          option-value="deviceId"
+          option-label="label"
+        />
+        <q-select
+          v-model="selectedAudio"
+          @update:model-value="handleAudioChange"
+          label="사용할 마이크를 선택하세요"
+          outlined
+          :options="audios"
+          emit-value
+          map-options
+          option-value="deviceId"
+          option-label="label"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import UserVideo from "@/components/karaoke/UserVideo.vue";
@@ -215,6 +219,8 @@ const muted = ref(false); // 기본은 음소거 비활성화
 const camerOff = ref(false); // 기본 카메라 활성화
 const selectedCamera = ref(""); // 카메라 변경시 사용할 변수
 const selectedAudio = ref(""); // 오디오 변경시 사용할 변수
+const cameras = ref([]);
+const audios = ref([]);
 
 // 다시그려내기 위해 computed 작성
 const mainStreamManagerComputed = computed(() => mainStreamManager.value);
@@ -404,38 +410,12 @@ function sendMessage(event) {
 async function getMedia() {
   try {
     const devices = await navigator.mediaDevices.enumerateDevices();
-    const cameras = devices.filter((device) => device.kind === "videoinput");
-    const audios = devices.filter((device) => device.kind === "audioinput");
-    // const audios = undefined
+    cameras.value = devices.filter((device) => device.kind === "videoinput");
+    audios.value = devices.filter((device) => device.kind === "audioinput");
 
-    const cameraSelect = document.querySelector('select[name="cameras"]');
-    const audioSelect = document.querySelector('select[name="audios"]');
-
-    // 카메라 및 오디오 선택기 요소가 존재하는지 확인
-    if (cameras) {
-      cameras.forEach((camera) => {
-        const option = document.createElement("option");
-        option.value = camera.deviceId;
-        option.text = camera.label;
-        cameraSelect.appendChild(option);
-      });
-    } else {
-      const notCamera = cameraSelect.querySelector("option:disabled");
-      notCamera.innerText = "사용 가능한 카메라가 없습니다.";
-      // console.error('Camera selector not found');
-    }
-    if (audios) {
-      audios.forEach((audio) => {
-        const option = document.createElement("option");
-        option.value = audio.deviceId;
-        option.text = audio.label;
-        audioSelect.appendChild(option);
-      });
-    } else {
-      const notAudio = audioSelect.querySelector("option:disabled");
-      notAudio.innerText = "사용 가능한 마이크가 없습니다.";
-      // console.error('Audio selector not found');
-    }
+    // 첫번째 카메라와 오디오를 선택
+    selectedCamera.value = cameras.value[0];
+    selectedAudio.value = audios.value[0];
   } catch (error) {
     console.error("Error getting media devices:", error);
   }
@@ -478,12 +458,12 @@ function handleMuteBtn() {
 
 // select태그에서 사용할 기기를 선택했을때
 async function handleCameraChange(event) {
-  selectedCamera.value = event.target.value;
+  selectedCamera.value = event;
   await replaceCameraTrack(selectedCamera.value);
 }
 
 async function handleAudioChange(event) {
-  selectedAudio.value = event.target.value;
+  selectedAudio.value = event;
   await replaceAudioTrack(selectedAudio.value);
 }
 
@@ -528,10 +508,10 @@ async function replaceAudioTrack(deviceId) {
 // 필터를 적용해주는 함수
 function applyFilter() {
   const filter = { type: "GStreamerFilter", options: {} };
-  const type = ref("Audioecho");
   // const type = ref(document.querySelector("input[name=filter]:checked").value);
+  console.log(selectedFilter.value);
 
-  switch (type.value) {
+  switch (selectedFilter.value) {
     case "Audioecho":
       filter.type = "GStreamerFilter";
       filter.options = {
@@ -560,3 +540,41 @@ const removeFilter = () => {
 };
 // 필터 함수 종료
 </script>
+
+<style scoped>
+#chat-window {
+  background-color: #2c3e50; /* 어두운 배경색 */
+  border-radius: 8px;
+  color: #ecf0f1; /* 전체 텍스트 색상 */
+}
+
+.dark-bg {
+  background-color: #2c3e50 !important; /* !important로 우선순위 부여 */
+}
+
+#chat-history {
+  list-style-type: none;
+  padding: 0;
+}
+
+.message-item {
+  background-color: #34495e; /* 어두운 메시지 배경색 */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.dark-item-bg {
+  background-color: #34495e !important; /* !important로 우선순위 부여 */
+}
+
+.message-username {
+  font-weight: bold;
+  color: #3498db; /* 사용자 이름 색상 */
+}
+
+.dark-text {
+  color: #3498db !important; /* !important로 우선순위 부여 */
+}
+</style>
