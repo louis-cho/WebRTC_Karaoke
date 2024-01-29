@@ -48,31 +48,35 @@
           color="negative"
           label="Remove filter"
         />
+        <!-- 필터 버튼 목록 -->
         <div class="q-mb-md">
-          <q-radio
-            v-for="(filterLabel, filterValue) in filterOptions"
-            :key="filterValue"
+          <q-select
             v-model="selectedFilter"
-            :val="filterValue"
-            :label="filterLabel"
+            :options="filterOptions"
+            label="필터 적용"
+            filled
           />
         </div>
 
+        <!-- 슬라이더 목록을 보여주는 부분 -->
         <div>
           <div style="max-width: 300px; overflow-y: auto; max-height: 200px">
+            <!-- 선택된 필터에 따라 동적으로 보여지는 슬라이더 목록 -->
             <div
               class="q-mb-md"
-              v-for="(slider, index) in sliders"
+              v-for="(slider, index) in filteredSliders"
               :key="index"
             >
               <label>
                 {{ slider.label }}:
+                <!-- 슬라이더 컴포넌트 -->
                 <q-slider
                   v-model="slider.value"
                   :min="slider.min"
                   :max="slider.max"
                   :step="slider.step"
                 />
+                <!-- 슬라이더의 현재 값 표시 -->
                 {{ slider.value }}
               </label>
             </div>
@@ -98,22 +102,28 @@
         />
       </div>
       <!-- 방에 들어갔을 때 같이 보이게 될 채팅창 -->
-      <!-- 나중에 <chat-winow />로 넘길수 있도록 해보자. -->
-      <div id="chat-container" class="q-pa-md">
-        <div id="chat-window" class="q-pa-md dark-bg">
-          <ul id="chat-history" class="q-mb-md">
-            <li
-              v-for="(message, index) in messages"
-              :key="index"
-              class="message-item q-py-md dark-item-bg"
-            >
-              <strong class="message-username dark-text"
-                >{{ message.username }}:</strong
+      <div id="chat-container" class="outer-border q-pa-md">
+        <q-card class="q-mb-md chat-window">
+          <q-card-section class="q-pa-md dark-bg">
+            <div class="chat-title q-mb-md">
+              <h2 class="q-mb-none title-font-size">채팅</h2>
+              <div class="section-divider"></div>
+            </div>
+            <ul id="chat-history" class="q-mb-md">
+              <li
+                v-for="(message, index) in messages"
+                :key="index"
+                class="message-item q-py-md dark-item-bg"
               >
-              {{ message.message }}
-            </li>
-          </ul>
-        </div>
+                <strong class="message-username dark-text"
+                  >{{ message.username }}:</strong
+                >
+                {{ message.message }}
+              </li>
+            </ul>
+          </q-card-section>
+        </q-card>
+
         <form id="chat-write" class="q-mt-md">
           <q-input
             type="text"
@@ -121,6 +131,7 @@
             v-model="inputMessage"
             outlined
             dense
+            class="inline-input"
           />
           <q-btn @click="sendMessage" color="primary" label="전송" />
         </form>
@@ -195,19 +206,21 @@ const mySessionId = ref("SessionCrome");
 const myUserName = ref("Participant" + Math.floor(Math.random() * 100));
 
 // 필터를 위한 변수
-const selectedFilter = ref("Audioecho");
+const selectedFilter = ref("");
 const filterApplied = ref(false);
-const filterOptions = {
-  Audioecho: "Audio echo",
-  Amplify: "Audio amplify",
-  Pitch: "Pitch",
-};
+const filterOptions = [
+  { label: "Audio echo", value: "Audioecho" },
+  { label: "Audio amplify", value: "Amplify" },
+  { label: "Pitch", value: "Pitch" },
+];
 
 // 에코 관련 변수
 const sliders = ref([
-  { label: "Delay", value: 300, min: 100, max: 500, step: 10 },
-  { label: "Intensity", value: 0.5, min: 0.1, max: 1, step: 0.1 },
-  { label: "Feedback", value: 0.2, min: 0, max: 0.5, step: 0.01 },
+  { label: "delay", value: 300, min: 100, max: 500, step: 10 },
+  { label: "intensity", value: 0.5, min: 0.1, max: 1, step: 0.1 },
+  { label: "feedback", value: 0.2, min: 0, max: 0.5, step: 0.01 },
+  { label: "amplification", value: 1.0, min: 0.5, max: 1.5, step: 0.1 },
+  { label: "pitch", value: 1.0, min: 0.5, max: 1.5, step: 0.1 },
 ]);
 
 // 채팅창을 위한 변수
@@ -511,7 +524,7 @@ function applyFilter() {
   // const type = ref(document.querySelector("input[name=filter]:checked").value);
   console.log(selectedFilter.value);
 
-  switch (selectedFilter.value) {
+  switch (selectedFilter.value.value) {
     case "Audioecho":
       filter.type = "GStreamerFilter";
       filter.options = {
@@ -538,16 +551,52 @@ const removeFilter = () => {
   publisher.value.stream.removeFilter();
   filterApplied.value = false;
 };
+
+// 선택된 라디오 버튼에 따라 동적으로 보여지는 슬라이더 목록
+const filteredSliders = computed(() => {
+  if (selectedFilter.value.value === "Audioecho") {
+    return sliders.value.filter((slider) =>
+      ["delay", "intensity", "feedback"].includes(slider.label)
+    );
+  } else if (selectedFilter.value.value === "Amplify") {
+    return sliders.value.filter((slider) =>
+      ["amplification"].includes(slider.label)
+    );
+  } else if (selectedFilter.value.value === "Pitch") {
+    return sliders.value.filter((slider) => ["pitch"].includes(slider.label));
+  } else {
+    return null;
+  }
+});
 // 필터 함수 종료
 </script>
 
 <style scoped>
-#chat-window {
+.outer-border {
+  border: 2px solid #3498db; /* 테두리 색상을 변경하세요 */
+  border-radius: 10px; /* 라운드 코너를 적용하세요 */
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과를 추가하세요 */
+}
+.chat-window {
   background-color: #2c3e50; /* 어두운 배경색 */
   border-radius: 8px;
   color: #ecf0f1; /* 전체 텍스트 색상 */
 }
-
+/* 제목 스타일링을 위한 CSS */
+.chat-title {
+  text-align: left;
+  margin-bottom: 20px;
+}
+/* 제목 폰트 크기 조절을 위한 CSS */
+.title-font-size {
+  font-size: 2rem; /* 원하는 크기로 조절하세요 */
+}
+/* 제목 밑에 줄을 추가하는 CSS */
+.section-divider {
+  border-bottom: 1px solid #ccc; /* 줄의 스타일 및 색상을 원하는대로 조절하세요 */
+  margin-bottom: 10px; /* 원하는 간격으로 조절하세요 */
+}
 .dark-bg {
   background-color: #2c3e50 !important; /* !important로 우선순위 부여 */
 }
@@ -576,5 +625,10 @@ const removeFilter = () => {
 
 .dark-text {
   color: #3498db !important; /* !important로 우선순위 부여 */
+}
+.inline-input {
+  display: inline-block;
+  width: calc(100% - 80px); /* 적절한 너비를 조절하세요 */
+  margin-right: 10px; /* 필요한 간격을 조절하세요 */
 }
 </style>
