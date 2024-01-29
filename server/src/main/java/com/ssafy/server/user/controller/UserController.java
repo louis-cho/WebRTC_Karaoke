@@ -8,16 +8,12 @@ import com.ssafy.server.user.model.UserAuth;
 import com.ssafy.server.user.secure.RSA_2048;
 import com.ssafy.server.user.service.UserService;
 import com.ssafy.server.user.util.RSAKeyManager;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.StringWriter;
-import java.security.PublicKey;
-import java.util.Base64;
 import java.util.UUID;
 
 @RestController
@@ -72,12 +68,6 @@ public class UserController {
                     jsonResponse.put("msg", "fail to login");
                     return ResponseEntity.status(400).body(jsonResponse.toString());
                 }
-            }
-
-            case "setAESKey": {
-                String key = request.get("key").asText();
-                System.out.println("AES Key >> " + key);
-                return ResponseEntity.ok("{}");
             }
 
             default: {
