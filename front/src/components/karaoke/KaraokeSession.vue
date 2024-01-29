@@ -1,46 +1,119 @@
 <template>
   <nav-bar />
   <div id="main-container">
-    <!-- session이 false일때! 즉, 방에 들어가지 않았을때 -->
-    <div id="join" v-if="!session" class="q-pa-md q-gutter-md">
-      <div id="img-div">
-        <q-img
-          src="src/assets/icon/logo1-removebg-preview.png"
-          alt="로고 이미지"
-          class="q-ma-md"
-          :style="{ width: '40%' }"
+    <!-- session이 true일때! 즉, 방에 들어갔을 때 -->
+    <div id="session" v-if="session" class="q-pa-md">
+      <div id="session-header" class="q-mb-md">
+        <q-toolbar-title style="font-size: 40px">
+          {{ pref.app.kor.karaokePage.sessionId }} : {{ mySessionId }}
+        </q-toolbar-title>
+        <q-btn
+          @click="leaveSession"
+          color="negative"
+          :label="pref.app.kor.karaokePage.leaveSession"
+        />
+        <audio-filter :publisher="publisher" />
+      </div>
+
+      <!-- 내 캠 -->
+      <div id="main-video">
+        <UserVideo :stream-manager="mainStreamManagerComputed" />
+      </div>
+      <!-- 모든 캠 -->
+      <div id="video-container">
+        <UserVideo
+          :stream-manager="publisherComputed"
+          @click="updateMainVideoStreamManager(publisher)"
+        />
+        <UserVideo
+          v-for="sub in subscribersComputed"
+          :key="sub.stream.connection.connectionId"
+          :stream-manager="sub"
+          @click="updateMainVideoStreamManager(sub)"
         />
       </div>
-      <div id="join-dialog" class="q-pa-md">
-        <h1 class="q-mb-md text-h6">
-          {{ pref.app.kor.karaokePage.title }}
-        </h1>
-        <div>
-          <p>
-            <label class="q-mb-md">
-              {{ pref.app.kor.karaokePage.sessionId }}
-            </label>
-            <q-input v-model="store.mySessionId" outlined dense />
-          </p>
-          <p>
-            <label class="q-mb-md">
-              {{ pref.app.kor.karaokePage.userName }}
-            </label>
-            <q-input v-model="store.myUserName" outlined dense />
-          </p>
-          <p class="q-mb-md">
-            <q-btn
-              @click="joinSession"
-              color="primary"
-              :label="pref.app.kor.karaokePage.joinSession"
-            />
-          </p>
-        </div>
+      <!-- 방에 들어갔을 때 같이 보이게 될 채팅창 -->
+      <div id="chat-container" class="outer-border q-pa-md">
+        <q-card class="q-mb-md chat-window">
+          <q-card-section class="q-pa-md dark-bg">
+            <div class="chat-title q-mb-md">
+              <h2 class="q-mb-none title-font-size">채팅</h2>
+              <div class="section-divider"></div>
+            </div>
+            <ul class="chat-history q-mb-md">
+              <li
+                v-for="(message, index) in messages"
+                :key="index"
+                class="message-item q-py-md dark-item-bg"
+              >
+                <strong class="message-username dark-text"
+                  >{{ message.username }}:</strong
+                >
+                {{ message.message }}
+              </li>
+            </ul>
+          </q-card-section>
+        </q-card>
+
+        <form id="chat-write" class="q-mt-md">
+          <q-input
+            type="text"
+            placeholder="전달할 내용을 입력하세요."
+            v-model="inputMessage"
+            outlined
+            dense
+            class="inline-input"
+          />
+          <q-btn @click="sendMessage" color="primary" label="전송" />
+        </form>
+      </div>
+
+      <!-- 캠활성화, 음소거 버튼 -->
+      <div class="q-mt-md">
+        <q-btn
+          id="camera-activate"
+          @click="handleCameraBtn"
+          color="primary"
+          label="캠 비활성화"
+        />
+        <q-btn
+          id="mute-activate"
+          @click="handleMuteBtn"
+          color="primary"
+          label="음소거 활성화"
+        />
+      </div>
+
+      <!-- 캠,오디오 선택 옵션 -->
+      <div class="inline-selects">
+        <q-select
+          v-model="selectedCamera"
+          @update:model-value="handleCameraChange"
+          label="사용할 카메라를 선택하세요"
+          outlined
+          :options="cameras"
+          emit-value
+          map-options
+          option-value="deviceId"
+          option-label="label"
+          class="inline-select"
+        />
+        <q-select
+          v-model="selectedAudio"
+          @update:model-value="handleAudioChange"
+          label="사용할 마이크를 선택하세요"
+          outlined
+          :options="audios"
+          emit-value
+          map-options
+          option-value="deviceId"
+          option-label="label"
+          class="inline-select"
+        />
       </div>
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
@@ -71,93 +144,6 @@ console.log(store.publisher);
 const mainStreamManagerComputed = computed(() => store.mainStreamManager);
 const publisherComputed = computed(() => store.publisher);
 const subscribersComputed = computed(() => store.subscribers);
-
-// vue2에서의 methods 부분을 vue3화 시키기
-function joinSession() {
-  // --- 1) OpenVidu 객체 생성 ---
-  store.OV = new OpenVidu();
-
-  // --- 2) 세션 초기화 ---
-  store.session = store.OV.initSession();
-
-  // --- 3) 세션에서 이벤트 발생 시 동작 지정 ---
-  // 새로운 스트림이 생성될 때마다...
-  store.session.on("streamCreated", ({ stream }) => {
-    const subscriber = store.session.subscribe(stream, undefined, {
-      subscribeToAudio: true,
-      subscribeToVideo: true,
-    });
-    store.subscribers.push(subscriber);
-  });
-
-  // 스트림이 파괴될 때마다...
-  store.session.on("streamDestroyed", ({ stream }) => {
-    const index = store.subscribers.indexOf(stream.streamManager, 0);
-    if (index >= 0) {
-      store.subscribers.splice(index, 1);
-    }
-  });
-
-  // 비동기 예외가 발생할 때마다...
-  store.session.on("exception", ({ exception }) => {
-    console.warn(exception);
-  });
-
-  // 채팅 이벤트 수신 처리 함. session.on이 addEventListener 역할인 듯합니다.
-  store.session.on("signal:chat", (event) => {
-    // event.from.connectionId === session.value.connection.connectionId 이건 나와 보낸이가 같으면임
-    const messageData = JSON.parse(event.data);
-    if (event.from.connectionId === store.session.connection.connectionId) {
-      messageData["username"] = "나";
-    }
-    store.messages.push(messageData);
-  });
-
-  // --- 4) 유효한 사용자 토큰으로 세션에 연결 ---
-  // OpenVidu 배포에서 토큰 가져오기
-  getToken(store.mySessionId).then((token) => {
-    // 첫 번째 매개변수는 토큰입니다. 두 번째 매개변수는 모든 사용자가 'streamCreated' 이벤트에서 가져올 수 있는 것입니다.
-    // 'streamCreated' (속성 Stream.connection.data) 및 닉네임으로 DOM에 추가됩니다.
-    store.session
-      .connect(token, { clientData: store.myUserName })
-      .then(() => {
-        // --- 5) 원하는 속성으로 자신의 카메라 스트림 가져오기 ---
-
-        // 원하는 속성으로 초기화된 발행자를 만듭니다 (video-container'에 비디오가 삽입되지 않도록 OpenVidu에게 처리를 맡기지 않음).
-        let publisher_tmp = store.OV.initPublisher(undefined, {
-          audioSource: undefined, // 오디오의 소스. 정의되지 않으면 기본 마이크
-          videoSource: undefined, // 비디오의 소스. 정의되지 않으면 기본 웹캠
-          publishAudio: !store.muted, // 마이크 음소거 여부를 시작할지 여부
-          publishVideo: !store.camerOff, // 비디오 활성화 여부를 시작할지 여부
-          resolution: "1280x720", // 비디오의 해상도
-          frameRate: 30, // 비디오의 프레임 속도
-          insertMode: "APPEND", // 비디오가 대상 요소 'video-container'에 어떻게 삽입되는지
-          mirror: false, // 로컬 비디오를 반전할지 여부
-          isSubscribeToRemote: true,
-        });
-
-        // 페이지에서 주요 비디오를 설정하여 웹캠을 표시하고 발행자를 저장합니다.
-        store.mainStreamManager = publisher_tmp;
-        store.publisher = publisher_tmp;
-
-        // --- 6) 스트림을 발행하고, 원격 스트림을 수신하려면 subscribeToRemote() 호출하기 ---
-        store.publisher.subscribeToRemote();
-        store.session.publish(store.publisher);
-        getMedia(); // 세션이 만들어졌을 때 미디어를 불러옵니다.
-      })
-      .catch((error) => {
-        console.log(
-          "세션에 연결하는 중 오류가 발생했습니다:",
-          error.code,
-          error.message
-        );
-      });
-  });
-
-  const sessionId = store.mySessionId;
-  router.push({ name: "KaraokeSession", params: { sessionId } });
-  // window.addEventListener("beforeunload", leaveSession);
-}
 
 function leaveSession() {
   // --- 7) 'disconnect' 메서드를 세션 객체에서 호출하여 세션을 나갑니다. ---
