@@ -1,21 +1,21 @@
 package com.ssafy.server.user.service;
 
+import com.ssafy.server.user.document.UserDocument;
 import com.ssafy.server.user.model.User;
 import com.ssafy.server.user.model.UserAuth;
 import com.ssafy.server.user.model.UserKeyMapping;
 import com.ssafy.server.user.model.UserPkMapping;
-import com.ssafy.server.user.repository.UserAuthRepository;
-import com.ssafy.server.user.repository.UserKeyMappingRepository;
-import com.ssafy.server.user.repository.UserPkMappingRepository;
-import com.ssafy.server.user.repository.UserRepository;
+import com.ssafy.server.user.repository.*;
 import com.ssafy.server.user.secure.RSA_2048;
 import com.ssafy.server.user.util.RSAKeyManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.spec.RSAPublicKeySpec;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,6 +23,8 @@ import java.util.UUID;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+    @Autowired
+    private UserElasticsearchRepository userElasticsearchRepository;
     private RSAKeyManager keyManager = RSAKeyManager.getInstnace();
     @Autowired
     private UserRepository userRepository;
@@ -124,11 +126,14 @@ public class UserServiceImpl implements UserService {
 
         // userRepository 및 userPkMapping 테이블에도 저장하기
         User user = new User();
+        UserDocument userDocument = new UserDocument();
+
         user.setUserPk(userPk);
+        userDocument.setUserPk(userPk);
 
         user.setUserPk(userAuth.getUserPk());
         user.setUserKey(UUID.randomUUID());
-
+        userDocument.setNickname("ssafy");
         System.out.println(user);
         userRepository.save(user);
 
@@ -141,6 +146,8 @@ public class UserServiceImpl implements UserService {
         uUUID.setUserPk(user.getUserPk());
         uUUID.setUuid(user.getUserKey());
         userKeyMappingRepository.save(uUUID);
+
+        userElasticsearchRepository.save(userDocument);
 
         return user;
     }
@@ -196,5 +203,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("UUID not found for userPk: " + userPk));
 
         return userKeyMapping.getUuid();
+    }
+
+    @Override
+    public List<UserDocument> searchUsersByNickname(String nickname) {
+        return userElasticsearchRepository.findByNickname(nickname);
     }
 }

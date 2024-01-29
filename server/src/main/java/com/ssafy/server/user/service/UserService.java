@@ -1,10 +1,12 @@
 package com.ssafy.server.user.service;
 
 
+import com.ssafy.server.user.document.UserDocument;
 import com.ssafy.server.user.model.User;
 import com.ssafy.server.user.model.UserAuth;
 
 import java.security.PublicKey;
+import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
@@ -30,4 +32,6 @@ public interface UserService {
 
     UUID getUUID(String userId);
 
+
+    List<UserDocument> searchUsersByNickname(String nickname);
 }
