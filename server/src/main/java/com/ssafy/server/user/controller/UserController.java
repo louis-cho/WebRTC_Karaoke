@@ -112,9 +112,9 @@ public class UserController {
                 } catch(Exception e) {
                     e.printStackTrace();
                     System.out.println("유저 생성 중 에러 발생");
+
+                    return ResponseEntity.status(400).body(jsonResponse.toString());
                 }
-
-
             }
 
             default: {
