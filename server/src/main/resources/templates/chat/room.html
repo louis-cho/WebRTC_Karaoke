@@ -42,7 +42,7 @@
             console.log("STOMP Connection");
 
             // send를 subscribe 외부로 이동
-            stomp.send('/pub/chat/enter', {}, JSON.stringify({ roomId: roomId, writer: username }));
+            stomp.send('/pub/chat/enter', {}, JSON.stringify({type: "ENTER", roomId: roomId, writer: username }));
 
             stomp.subscribe("/sub/chat/room/" + roomId, function (chat) {
                 var content = JSON.parse(chat.body);
@@ -71,7 +71,7 @@
                 var msg = document.getElementById("msg");
 
                 console.log(username + ":" + msg.value);
-                stomp.send('/pub/chat/message', {}, JSON.stringify({ roomId: roomId, message: msg.value, writer: username }));
+                stomp.send('/pub/chat/message', {}, JSON.stringify({type:"TALK", roomId: roomId, message: msg.value, writer: username }));
                 msg.value = '';
             });
         });
