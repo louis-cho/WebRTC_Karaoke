@@ -2,7 +2,7 @@
   <div>
     <TabItem />
     <!-- <TabItemStart/> -->
-    <!-- <SignIn /> -->
+   <SignIn />
   </div>
 </template>
 
