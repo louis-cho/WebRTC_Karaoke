@@ -35,7 +35,6 @@ public class RSA_2048 {
 
     public static String decrypt(String ciphertext, String privatekey) {
         try {
-            System.out.println("deccccccccc");
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
             byte[] privatekeyBytes = Base64.getDecoder().decode(privatekey.getBytes());
@@ -47,7 +46,6 @@ public class RSA_2048 {
             cipher.init(Cipher.DECRYPT_MODE, key);
             byte[] plaintextBytes = cipher.doFinal(ciphertextBytes);
 
-            System.out.println("kkkkkkkkkkkkkkkkkkkkkk");
             return new String(plaintextBytes, "UTF8");
         } catch (Exception e) {
             e.printStackTrace();

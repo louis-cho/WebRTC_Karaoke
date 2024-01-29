@@ -3,6 +3,7 @@ package com.ssafy.server.user.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.ssafy.server.user.model.User;
 import com.ssafy.server.user.model.UserAuth;
 import com.ssafy.server.user.secure.RSA_2048;
 import com.ssafy.server.user.service.UserService;
@@ -52,11 +53,11 @@ public class UserController {
                 String ip = servletRequest.getRemoteAddr();
                 String privateKey = RSA_2048.keyToString(RSAKeyManager.getInstnace().getPrivateKey(ip));
 
-                // 암호 복호화
-                String decrypted = RSA_2048.decrypt(request.get("pw").asText(), privateKey);
+                // 로그인 시 사용한 user id로 부터 int user id 반환하기
+
 
                 // DB 저장 데이터 비교하기
-
+                userService.validatePassword(id, pw);
                 // DB 저장 데이터와 일치하는 경우 토큰 발급
 
                 // DB 저장 데이터와 일치하지 않는 경우 로그인 실패
@@ -83,16 +84,30 @@ public class UserController {
                 String id = request.get("id").asText();
                 String pw = request.get("pw").asText();
 
-               UserAuth userAuth = userService.createUser(id, pw, ip);
+                /*
+                String nickname = request.get("nickname").asText();
+                String profile_img_url = request.get("profile_img_url").asText();
+                String introduction = request.get("introduction").asText();
+                */
 
-                if(userAuth != null) {
-                    // JsonNode를 String으로 변환하여 반환
-                    // 추후 자체 발행 토큰을 넣어줄 것
-                    return ResponseEntity.ok(jsonResponse.toString());
-                } else {
-                    log.error("유저가 생성되지 않았습니다");
-                    return ResponseEntity.status(400).body(jsonResponse.toString());
+                try {
+                    UserAuth userAuth = userService.createUserAuth(id, pw, ip);
+                    User user = userService.createUser(userAuth);
+
+                    if(userAuth != null && user != null) {
+                        // JsonNode를 String으로 변환하여 반환
+                        // 추후 자체 발행 토큰을 넣어줄 것
+                        return ResponseEntity.ok(jsonResponse.toString());
+                    } else {
+                        log.error("유저가 생성되지 않았습니다");
+                        return ResponseEntity.status(400).body(jsonResponse.toString());
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                    System.out.println("유저 생성 중 에러 발생");
                 }
+
+
             }
 
             default: {

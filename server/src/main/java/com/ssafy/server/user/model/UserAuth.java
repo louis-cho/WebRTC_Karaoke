@@ -15,11 +15,11 @@ public class UserAuth {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userPk;
+    private int userPk;
 
     private String userId;
     private String userPassword;
-    private String status;
+    private char status;
 
     // Constructors, getters, setters, etc.
 
@@ -30,9 +30,10 @@ public class UserAuth {
     public UserAuth(String userId, String userPassword) {
         this.userId = userId;
         this.userPassword = userPassword;
+        this.status = 'O';
     }
 
-    public UserAuth(String userId, String userPassword, String status) {
+    public UserAuth(String userId, String userPassword, char status) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.status = status;

@@ -14,11 +14,14 @@ import java.util.UUID;
 @Setter
 public class User {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userPk;
 
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID userKey;
+
     private String nickname;
     private char role;
     private String profileImgUrl;
@@ -30,11 +33,12 @@ public class User {
         // Default constructor required by JPA
     }
 
-    public User(UUID userKey, String nickname, char role, String profileImgUrl, String introduction) {
-        this.userKey = userKey;
+    public User(String nickname) {
         this.nickname = nickname;
-        this.role = role;
-        this.profileImgUrl = profileImgUrl;
-        this.introduction = introduction;
+    }
+
+    @Override
+    public String toString() {
+        return "[User] >> " + this.userPk + "," + this.userKey + "," + this.nickname +"\n";
     }
 }
