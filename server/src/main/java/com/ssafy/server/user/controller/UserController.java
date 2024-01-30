@@ -3,6 +3,10 @@ package com.ssafy.server.user.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.ssafy.server.exception.request.InvalidParameterException;
+import com.ssafy.server.exception.user.InvalidCredentialException;
+import com.ssafy.server.exception.user.InvalidPasswordException;
+import com.ssafy.server.exception.user.InvalidUserIdException;
 import com.ssafy.server.user.model.User;
 import com.ssafy.server.user.model.UserAuth;
 import com.ssafy.server.user.secure.RSA_2048;
@@ -35,53 +39,47 @@ public class UserController {
 
         switch(type) {
             case "getPublicKey": {
+
                 String ip = servletRequest.getRemoteAddr();
                 String[] publicKey = userService.getPublicKey(ip);
 
                 ObjectNode jsonResponse = JsonNodeFactory.instance.objectNode();
-
                 jsonResponse.put("modulus", publicKey[0]);
                 jsonResponse.put("exponent", publicKey[1]);
+
                 return ResponseEntity.ok(jsonResponse.toString());
             }
 
             case "login": {
-                String id = request.get("id").asText();
-                String pw = request.get("pw").asText();
 
-                // 암호화된 pw를 해석하고 bencrypt와 결과가 맞나 확인하기
+                JsonNode idNode = request.get("id");
+                JsonNode pwNode = request.get("pw");
 
+                if(idNode == null || pwNode == null) {
+                    throw new InvalidParameterException("there is no id or pw");
+                }
+
+                String id = idNode.asText();
+                String pw = pwNode.asText();
                 String ip = servletRequest.getRemoteAddr();
-                String privateKey = RSA_2048.keyToString(RSAKeyManager.getInstnace().getPrivateKey(ip));
-
-                // 로그인 시 사용한 user id로 부터 int user id 반환하기
 
                 // JsonNode로 응답 생성
                 ObjectNode jsonResponse = JsonNodeFactory.instance.objectNode();
 
                 // DB 저장 데이터 비교하기
                 UUID uuid = userService.validatePassword(id, pw, ip);
+
                 if(uuid != null) {
-                    System.out.println("uuid 찾음 >> " + uuid);
                     // DB 저장 데이터와 일치하는 경우 토큰 발급
                     jsonResponse.put("uuid", uuid.toString());
                     return ResponseEntity.ok(jsonResponse.toString());
-                    // DB 저장 데이터와 일치하지 않는 경우 로그인 실패
                 } else {
-                    System.out.println("uuid 없음");
-                    jsonResponse.put("msg", "fail to login");
-                    return ResponseEntity.status(400).body(jsonResponse.toString());
+                    throw new InvalidCredentialException("fail to login");
                 }
             }
 
-            case "setAESKey": {
-                String key = request.get("key").asText();
-                System.out.println("AES Key >> " + key);
-                return ResponseEntity.ok("{}");
-            }
-
             default: {
-                throw new IllegalArgumentException("Invalid request type");
+                throw new InvalidPasswordException("Invalid request type");
             }
         }
     }
@@ -93,6 +91,7 @@ public class UserController {
 
         switch(type) {
                 case "register": {
+
                 String ip = servletRequest.getRemoteAddr();
 
                 // JsonNode로 응답 생성

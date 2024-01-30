@@ -30,4 +30,7 @@ public interface UserService {
 
     UUID getUUID(String userId);
 
+
+
+    //
 }
