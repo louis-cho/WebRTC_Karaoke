@@ -45,145 +45,147 @@
 </template>
 
 <script>
-// export default {
-//   data() {
-//     return {
-//       loginModal: false,
-//       signupModal: false,
-//       loginForm: {
-//         username: "",
-//         password: "",
-//       },
-//       signupForm: {
-//         username: "",
-//         email: "",
-//         password: "",
-//         confirmPassword:"",
-//         nickname: "",
-//       },
-//     };
-//   },
-//   methods: {
-//     openLoginModal() {
-//       this.loginModal = true;
-//     },
-//     closeLoginModal() {
-//       this.loginModal = false;
-//     },
-//     login() {
-//       console.log("로그인:", this.loginForm);
-//       this.closeLoginModal();
-
-//     },
-//     openSignupModal() {
-//       this.signupModal = true;
-//     },
-//     closeSignupModal() {
-//       this.signupModal = false;
-//     },
-//     signup() {
-//       // 비밀번호 유효성 검사
-//       if (!this.isPasswordValid(this.signupForm.password)) {
-//         alert("비밀번호가 유효하지 않습니다. 비밀번호는 최소 8자 이상이어야 하며, 숫자/영문/특수문자를 모두 포함해야 합니다.");
-//         return;
-//       }
-//       // 비밀번호 일치 여부
-//       if (this.signupForm.password !== this.signupForm.confirmPassword) {
-//         alert("비밀번호가 일치하지 않습니다.")
-//         return
-//       }
-//       // 회원가입
-//       console.log("회원가입:", this.signupForm);
-//       this.closeSignupModal();
-//     },
-
-//     isPasswordValid(password) {
-//       // 비밀번호 유효성 검사 정규표현식(8자 이상이며 영문,숫자,특수문자 모두 포함)
-//       const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_]).{8,}$/
-//       return passwordRegex.test(password);
-//     },
-
-//   },
-// };
-import { ref } from 'vue';
-
 export default {
-  setup() {
-    // data
-    const loginModal = ref(false);
-    const signupModal = ref(false);
-
-    const loginForm = ref({
-      username: "",
-      password: "",
-    });
-
-    const signupForm = ref({
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      nickname: "",
-    });
-
-    // methods
-    const openLoginModal = () => {
-      loginModal.value = true;
+  data() {
+    return {
+      loginModal: false,
+      signupModal: false,
+      loginForm: {
+        username: "",
+        password: "",
+      },
+      signupForm: {
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword:"",
+        nickname: "",
+      },
     };
+  },
+  methods: {
+    openLoginModal() {
+      this.loginModal = true;
+    },
+    closeLoginModal() {
+      this.loginModal = false;
+    },
+    login() {
+      console.log("로그인:", this.loginForm);
+      this.closeLoginModal();
 
-    const closeLoginModal = () => {
-      loginModal.value = false;
-    };
-
-    const login = () => {
-      console.log("로그인:", loginForm.value);
-      closeLoginModal();
-    };
-
-    const openSignupModal = () => {
-      signupModal.value = true;
-    };
-
-    const closeSignupModal = () => {
-      signupModal.value = false;
-    };
-
-    const signup = () => {
+    },
+    openSignupModal() {
+      this.signupModal = true;
+    },
+    closeSignupModal() {
+      this.signupModal = false;
+    },
+    signup() {
       // 비밀번호 유효성 검사
-      if (!isPasswordValid(signupForm.value.password)) {
+      if (!this.isPasswordValid(this.signupForm.password)) {
         alert("비밀번호가 유효하지 않습니다. 비밀번호는 최소 8자 이상이어야 하며, 숫자/영문/특수문자를 모두 포함해야 합니다.");
         return;
       }
       // 비밀번호 일치 여부
-      if (signupForm.value.password !== signupForm.value.confirmPassword) {
-        alert("비밀번호가 일치하지 않습니다.");
-        return;
+      if (this.signupForm.password !== this.signupForm.confirmPassword) {
+        alert("비밀번호가 일치하지 않습니다.")
+        return
       }
       // 회원가입
-      console.log("회원가입:", signupForm.value);
-      closeSignupModal();
-    };
+      console.log("회원가입:", this.signupForm);
+      this.closeSignupModal();
+    },
 
-    const isPasswordValid = (password) => {
+    isPasswordValid(password) {
       // 비밀번호 유효성 검사 정규표현식(8자 이상이며 영문,숫자,특수문자 모두 포함)
-      const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_]).{8,}$/;
+      const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_]).{8,}$/
       return passwordRegex.test(password);
-    };
+    },
 
-    return {
-      loginModal,
-      signupModal,
-      loginForm,
-      signupForm,
-      openLoginModal,
-      closeLoginModal,
-      login,
-      openSignupModal,
-      closeSignupModal,
-      signup,
-    };
   },
 };
+
+// <vu3 스타일>
+// import { ref } from 'vue';
+
+// export default {
+//   setup() {
+//     // data
+//     const loginModal = ref(false);
+//     const signupModal = ref(false);
+
+//     const loginForm = ref({
+//       username: "",
+//       password: "",
+//     });
+
+//     const signupForm = ref({
+//       username: "",
+//       email: "",
+//       password: "",
+//       confirmPassword: "",
+//       nickname: "",
+//     });
+
+//     // methods
+//     const openLoginModal = () => {
+//       loginModal.value = true;
+//     };
+
+//     const closeLoginModal = () => {
+//       loginModal.value = false;
+//     };
+
+//     const login = () => {
+//       console.log("로그인:", loginForm.value);
+//       closeLoginModal();
+//     };
+
+//     const openSignupModal = () => {
+//       signupModal.value = true;
+//     };
+
+//     const closeSignupModal = () => {
+//       signupModal.value = false;
+//     };
+
+//     const signup = () => {
+//       // 비밀번호 유효성 검사
+//       if (!isPasswordValid(signupForm.value.password)) {
+//         alert("비밀번호가 유효하지 않습니다. 비밀번호는 최소 8자 이상이어야 하며, 숫자/영문/특수문자를 모두 포함해야 합니다.");
+//         return;
+//       }
+//       // 비밀번호 일치 여부
+//       if (signupForm.value.password !== signupForm.value.confirmPassword) {
+//         alert("비밀번호가 일치하지 않습니다.");
+//         return;
+//       }
+//       // 회원가입
+//       console.log("회원가입:", signupForm.value);
+//       closeSignupModal();
+//     };
+
+//     const isPasswordValid = (password) => {
+//       // 비밀번호 유효성 검사 정규표현식(8자 이상이며 영문,숫자,특수문자 모두 포함)
+//       const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_]).{8,}$/;
+//       return passwordRegex.test(password);
+//     };
+
+//     return {
+//       loginModal,
+//       signupModal,
+//       loginForm,
+//       signupForm,
+//       openLoginModal,
+//       closeLoginModal,
+//       login,
+//       openSignupModal,
+//       closeSignupModal,
+//       signup,
+//     };
+//   },
+// };
 </script>
 
 <style scoped>
