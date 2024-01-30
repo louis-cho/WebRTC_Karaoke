@@ -33,7 +33,7 @@ export class SongEditor extends EventEmitter {
     });
 
     // 악보 입력 textarea 요소 생성
-    this.inScore = createElem("textarea", { class: "inScore" });
+    // this.inScore = createElem("textarea", { class: "inScore" });
 
     // SongEditor의 최상위 요소인 div 요소 생성
     this.element = createElem("div", { class: "song-editor" }, [
@@ -41,7 +41,7 @@ export class SongEditor extends EventEmitter {
       this.inVolume, // 볼륨 조절 input range 추가
       this.btnKeyDown, // Key Down 버튼 추가
       this.btnKeyUp, // Key Up 버튼 추가
-      this.inScore, // 악보 입력 textarea 추가
+      // this.inScore, // 악보 입력 textarea 추가
       this.btnPlay, // Play 버튼 추가
       this.btnStop // Stop 버튼 추가
     ]);
@@ -81,13 +81,13 @@ export class SongEditor extends EventEmitter {
   }
 
   // score 속성에 대한 getter와 setter 정의
-  get score() {
-    return this.inScore.value;
-  }
+  // get score() {
+    // return this.inScore.value;
+  // }
 
-  set score(v) {
-    this.inScore.value = v;
-  }
+  // set score(v) {
+  //   this.inScore.value = v;
+  // }
 }
 
 // 버튼을 생성하는 함수

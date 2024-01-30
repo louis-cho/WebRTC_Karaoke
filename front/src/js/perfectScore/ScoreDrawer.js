@@ -158,7 +158,7 @@ export class ScoreDrawer {
     ctx.scale(1, -1);
     ctx.translate(0, -300);
 
-    this._renderLines(ctx);
+    // this._renderLines(ctx);
 
     ctx.globalAlpha = 0.5;
     ctx.fillStyle = "blue";

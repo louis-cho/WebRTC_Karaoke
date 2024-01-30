@@ -32,6 +32,10 @@ const routes = [
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/ErrorNotFound.vue')
   },
+  {
+    path: '/perfect_score',
+    component: () => import('@/components/karaoke/PerfectScore.vue')
+  },
 ]
 
 export default routes

@@ -24,14 +24,13 @@ export class App {
     // 앱 UI 생성
     this.createElements();
     appContainer.appendChild(this.wrapper); // 앱 컨테이너에 UI 추가
+    this.init();
     // 애니메이션 시작
     requestAnimationFrame(this.loop.bind(this)); // loop 메서드에 this 바인딩
   }
 
   // 앱의 UI 엘리먼트 생성
   createElements() {
-    // 시작할 때 클릭을 기다리는 블라인드
-    this.blind = createElem("div", { class: "blind" }, "Click to start app");
     const wrapper = createElem("div", {}); // 앱 전체를 감싸는 래퍼 엘리먼트
     const canvasContainer = createElem("div", {}); // 악보를 담을 컨테이너
     const canvas = this.drawer.renderElement(); // 악보를 렌더링하는 캔버스
@@ -44,7 +43,22 @@ export class App {
     wrapper.appendChild(this.sharer.render()); // 음악 공유기 추가
     this.wrapper = wrapper; // 앱 래퍼 엘리먼트 설정
     this.bindEvents(); // 이벤트 핸들러 바인딩
-    document.body.appendChild(this.blind); // 블라인드 엘리먼트를 body에 추가
+  }
+
+  // 앱 초기화
+  async init() {
+    this.audio = new AudioContext(); // 오디오 컨텍스트 생성
+    this.detector = new ToneDetector(this.audio); // 톤 디텍터 생성
+    this.player = new ToneGenerator(this.audio); // 톤 발생기 생성
+
+    // 톤 디텍터 이벤트 핸들러 등록
+    this.detector.on("note", this.onNote.bind(this)); // 노트 이벤트 핸들러 등록
+    this.detector.on("inited", () => {
+      this.inited = true; // 초기화 완료
+      this.drawer.inited(); // 악보 그리기 초기화
+    });
+    await this.detector.start(); // 톤 디텍터 시작
+    this.drawer.start([]); // 악보 그리기 시작
   }
 
   // 이벤트 핸들러 바인딩
@@ -53,7 +67,10 @@ export class App {
     this.sharer.on("song-select", this.songSelected.bind(this));
     // 음악 편집기 이벤트 핸들러 등록
     this.songEditor.on("play", async () => {
-      if (!this.inited) return; // 초기화되지 않았으면 무시
+      if (!this.songEditor.score) {
+        window.alert("노래를 선택해주세요")
+        return;
+      } // 악보 렌더링이 안됐으면 무시
       console.log(this.songEditor.score)
       console.log(parseScore(this.songEditor.score))
       this.playSong(parseScore(this.songEditor.score)); // 음악 재생
@@ -72,33 +89,14 @@ export class App {
           break;
       }
     });
-    // 블라인드 클릭 이벤트 핸들러 등록
-    this.blind.addEventListener("click", async () => {
-      await this.init(); // 앱 초기화
-      this.blind.style.display = "none"; // 블라인드 숨김
-    });
   }
 
   // 음악 곡 선택 시
   songSelected(song) {
+    console.log(song)
     this.songEditor.score = song.score; // 선택된 곡의 스코어 설정
   }
 
-  // 앱 초기화
-  async init() {
-    this.audio = new AudioContext(); // 오디오 컨텍스트 생성
-    this.detector = new ToneDetector(this.audio); // 톤 디텍터 생성
-    this.player = new ToneGenerator(this.audio); // 톤 발생기 생성
-
-    // 톤 디텍터 이벤트 핸들러 등록
-    this.detector.on("note", this.onNote.bind(this)); // 노트 이벤트 핸들러 등록
-    this.detector.on("inited", () => {
-      this.inited = true; // 초기화 완료
-      this.drawer.inited(); // 악보 그리기 초기화
-    });
-    await this.detector.start(); // 톤 디텍터 시작
-    this.drawer.start([]); // 악보 그리기 시작
-  }
 
   // 악보 재생
   playSong(notes) {
