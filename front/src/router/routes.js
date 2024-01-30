@@ -11,7 +11,6 @@ const routes = [
     component: () => import("@/pages/KaraokeListPage.vue"),
   },
   {
-<<<<<<< HEAD
     path: '/feed',
     component: () => import('@/pages/FeedPage.vue')
   },
@@ -35,15 +34,13 @@ const routes = [
     path: '/perfect_score',
     component: () => import('@/components/karaoke/PerfectScore.vue')
   },
-]
-=======
+  {
     path: "/karaoke/:sessionId", // 동적 세션 ID
     name: "KaraokeSession",
     component: () => import("@/pages/KaraokeSessionPage.vue"),
     beforeEnter: async (to, from, next) => {
       // useKaraokeStore 인스턴스 생성
       const karaokeStore = useKaraokeStore();
->>>>>>> e9c9979a6ae91e42fc76e89b8dbc00f52ac2181a
 
       // URL 파라미터에서 sessionId 추출
       const sessionId = to.params.sessionId;
@@ -53,8 +50,9 @@ const routes = [
 
       // 특정 페이지로 이동
       next();
-    },
+    }
   },
+
   {
     path: "/feed",
     component: () => import("@/pages/FeedPage.vue"),
@@ -82,3 +80,4 @@ const routes = [
 ];
 
 export default routes;
+
