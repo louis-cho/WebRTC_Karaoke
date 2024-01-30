@@ -22,7 +22,7 @@ public interface UserService {
 
     UserAuth createUserAuth(String id, String pw, String ip) throws Exception;
 
-    User createUser(UserAuth userAuth) throws Exception;
+    User createUser(UserAuth userAuth,String nickname) throws Exception;
 
     UserAuth getUserAuth(String id, String pw, String ip) throws Exception;
 

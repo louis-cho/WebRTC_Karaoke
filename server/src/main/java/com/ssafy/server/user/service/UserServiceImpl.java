@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(UserAuth userAuth) throws Exception {
+    public User createUser(UserAuth userAuth, String nickname) throws Exception {
 
         int userPk = userAuth.getUserPk();
 
@@ -133,8 +133,7 @@ public class UserServiceImpl implements UserService {
 
         user.setUserPk(userAuth.getUserPk());
         user.setUserKey(UUID.randomUUID());
-        userDocument.setNickname("ssafy");
-        System.out.println(user);
+        userDocument.setNickname(nickname);
         userRepository.save(user);
 
         UserPkMapping uUserId = new UserPkMapping();
