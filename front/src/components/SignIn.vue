@@ -108,8 +108,10 @@ export default {
 
       let username = this.signupForm.username;
       let password = this.signupForm.password;
+      let email = this.signupForm.email;
+      let nickname = this.signupForm.nickname;
 
-      await register(username, password);
+      await register(username, password, email, nickname);
 
       this.closeSignupModal();
     },

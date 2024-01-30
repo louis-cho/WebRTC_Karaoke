@@ -97,16 +97,12 @@ public class UserController {
 
                 String id = request.get("id").asText();
                 String pw = request.get("pw").asText();
-
-                /*
                 String nickname = request.get("nickname").asText();
-                String profile_img_url = request.get("profile_img_url").asText();
-                String introduction = request.get("introduction").asText();
-                */
+
 
                 try {
                     UserAuth userAuth = userService.createUserAuth(id, pw, ip);
-                    User user = userService.createUser(userAuth);
+                    User user = userService.createUser(userAuth, nickname);
 
                     if(userAuth != null && user != null) {
                         // JsonNode를 String으로 변환하여 반환

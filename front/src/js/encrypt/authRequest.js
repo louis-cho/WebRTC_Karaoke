@@ -93,14 +93,16 @@ async function login(id, pw) {
       });
 }
 
-async function register(id, pw) {
+async function register(id, pw, email, nickname) {
   const serverUrl = "http://localhost:8081/user/register"; // Update the URL accordingly
 
   // Create a data object with the user credentials
   const data = {
     type: "register",
     id: id,
-    pw: rsa.encrypt(pw)
+    pw: rsa.encrypt(pw),
+    email: email,
+    nickname: nickname
   };
 
   // Send a POST request to the server
@@ -126,8 +128,10 @@ async function register(id, pw) {
 function handleRegister() {
   let id = document.getElementById("id").value;
   let pw = document.getElementById("pw").value;
+  let email = document.getElementById("email").value;
+  let nickname = document.getElementById("nickname").value;
 
-  register(id, pw);
+  register(id, pw, email, nickname);
 }
 
 
