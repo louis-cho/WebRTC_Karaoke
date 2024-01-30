@@ -1,58 +1,65 @@
 package com.ssafy.server.feed.service;
 
-
 import com.ssafy.server.feed.model.Feed;
+import com.ssafy.server.feed.repository.FeedRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class FeedServiceImpl implements FeedService {
-    private final List<Feed> feedList = new ArrayList<>();
+
+    @Autowired
+    private final FeedRepository feedRepository;
+
+    @Autowired
+    public FeedServiceImpl(FeedRepository feedRepository) {
+        this.feedRepository = feedRepository;
+    }
 
     @Override
     public Feed getFeedById(int feedId) {
-        Optional<Feed> optionalFeed = feedList.stream()
-                .filter(feed -> feed.getFeedId() == feedId)
-                .findFirst();
-
+        Optional<Feed> optionalFeed = feedRepository.findById(feedId);
         return optionalFeed.orElse(null);
     }
 
     @Override
     public Feed createFeed(Feed newFeed) {
-        // Generate a unique feedId (for demonstration purposes)
-        newFeed.setFeedId(feedList.size() + 1);
-
-        feedList.add(newFeed);
-        return newFeed;
+        // 데이터베이스에 새로운 피드 생성
+        return feedRepository.save(newFeed);
     }
 
     @Override
     public Feed updateFeed(int feedId, Feed updatedFeed) {
-        for (int i = 0; i < feedList.size(); i++) {
-            Feed existingFeed = feedList.get(i);
-            if (existingFeed.getFeedId() == feedId) {
-                // Update fields with the new values
-                existingFeed.setUserPk(updatedFeed.getUserPk());
-                existingFeed.setSongId(updatedFeed.getSongId());
-                existingFeed.setContent(updatedFeed.getContent());
-                existingFeed.setThumbnailUrl(updatedFeed.getThumbnailUrl());
-                existingFeed.setVideoUrl(updatedFeed.getVideoUrl());
-                existingFeed.setVideoLength(updatedFeed.getVideoLength());
-                existingFeed.setStatus(updatedFeed.getStatus());
-                existingFeed.setTotalPoint(updatedFeed.getTotalPoint());
+        // 데이터베이스에서 기존 피드 조회 후 업데이트
+        Optional<Feed> optionalExistingFeed = feedRepository.findById(feedId);
 
-                return existingFeed;
-            }
+        if (optionalExistingFeed.isPresent()) {
+            Feed existingFeed = optionalExistingFeed.get();
+            existingFeed.setUserPk(updatedFeed.getUserPk());
+            existingFeed.setSongId(updatedFeed.getSongId());
+            existingFeed.setContent(updatedFeed.getContent());
+            existingFeed.setThumbnailUrl(updatedFeed.getThumbnailUrl());
+            existingFeed.setVideoUrl(updatedFeed.getVideoUrl());
+            existingFeed.setVideoLength(updatedFeed.getVideoLength());
+            existingFeed.setStatus(updatedFeed.getStatus());
+            existingFeed.setTotalPoint(updatedFeed.getTotalPoint());
+
+            return feedRepository.save(existingFeed);
         }
+
         return null;
     }
 
     @Override
     public boolean deleteFeed(int feedId) {
-        return feedList.removeIf(feed -> feed.getFeedId() == feedId);
+        // 데이터베이스에서 피드 삭제
+        if (feedRepository.existsById(feedId)) {
+            feedRepository.deleteById(feedId);
+            return true;
+        }
+        return false;
     }
 }
