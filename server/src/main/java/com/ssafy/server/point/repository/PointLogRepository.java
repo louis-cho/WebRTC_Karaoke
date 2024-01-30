@@ -15,7 +15,8 @@ public interface PointLogRepository extends JpaRepository<PointLog, Integer> {
             "                         WHEN p.toUser = :userPK THEN p.amount " +
             "                         ELSE 0 END), 0) AS result " +
             "FROM PointLog p " +
-            "WHERE (p.fromUser = :userPK OR p.toUser = :userPK) AND p.createdAt >= :createdAt")
-    Integer calculatePoint(@Param("userPK") Integer userPK, @Param("createdAt") LocalDateTime createdAt);
+            "WHERE (p.fromUser = :userPK OR p.toUser = :userPK) AND p.createdAt >= :startAt AND p.createdAt <= :endAt")
+    Integer calculatePoint(@Param("userPK") Integer userPK, @Param("startAt") LocalDateTime startAt, @Param("endAt") LocalDateTime endAt);
+
 
 }
