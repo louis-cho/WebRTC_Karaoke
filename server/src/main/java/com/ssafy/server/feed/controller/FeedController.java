@@ -1,6 +1,6 @@
 package com.ssafy.server.feed.controller;
 
-import com.ssafy.server.feed.entity.Feed;
+import com.ssafy.server.feed.model.Feed;
 import com.ssafy.server.feed.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

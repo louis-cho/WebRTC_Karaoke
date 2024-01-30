@@ -1,7 +1,7 @@
 package com.ssafy.server.feed.service;
 
 
-import com.ssafy.server.feed.entity.Feed;
+import com.ssafy.server.feed.model.Feed;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
