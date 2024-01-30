@@ -4,47 +4,44 @@
       <!-- 네브바 같은거? -->
     </div>
     <div>
-      <div>
         <!-- 프로필이미지 -->
         <!-- 친구 수 -->
         <!-- 프로필 보기 -->
-      </div>
     </div>
     <div>
       <!-- 채팅창 -->
       <div>
-        <template v-for="(chatMessage, index) in messages" :key="index">          
-          <template v-if="chatMessage.type === 'text'">
-            <p>{{ chatMessage.content }}</p>
-            
-          </template>
-          <template v-else-if="chatMessage.type === 'image'">
+        <template v-for="(chatMessage, index) in messages" :key="index">
+          <div class="message_container" v-if="chatMessage.type === 'text'">
+            {{ chatMessage.content }}
+          </div>
+          <div class="message_container" v-else-if="chatMessage.type === 'image'">
             <img :src="chatMessage.content" alt="Image">
-          </template>
-          <template v-else>
+          </div>
+          <div class="message_container" v-else>
             Unknown message type: {{ chatMessage.type }}
-          </template>
+          </div>
         </template>
       </div>
     </div>
-    <div>
-      <!-- 입력창 -->
-      <!-- <input type="text" v-model="inputText">
-      <button @click="sendMessage">입력</button>  -->
+    <div class="input_container">
+
       <div>
-        <label>
-          <input type="text" v-model="inputText">
-          <button @click="sendMessage">입력</button>
-        </label>
+        <div>
+          <label>
+            <input type="text" v-model="inputText">
+            <button @click="sendMessage">입력</button>
+          </label>
+        </div>
+        <div>
+          <label>
+            <!-- Image Upload:  -->
+            <input type="file" @change="handleFileUpload">
+          </label>
+        </div>
       </div>
-      <div>
-        <label>
-          <!-- Image Upload:  -->
-          <input type="file" @change="handleFileUpload">
-        </label>
-      </div>
-      
-    </div>    
+
+    </div>
   </div>
 
     <!-- <div>
@@ -151,4 +148,16 @@ function handleFileUpload(event) {
 </script>
 
 <style scoped>
+.message_container {
+  text-align: right;
+}
+
+.input_container {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+}
+
 </style>
