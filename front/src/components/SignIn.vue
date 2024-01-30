@@ -28,13 +28,11 @@
     <q-dialog v-model="signupModal" persistent>
       <q-card>
         <q-card-section>
+          <q-input v-model="signupForm.nickname" label="닉네임"/>
           <q-input v-model="signupForm.username" label="아이디" />
-          <q-input v-model="signupForm.email" label="이메일" type="email" />
-          <q-input
-            v-model="signupForm.password"
-            label="비밀번호"
-            type="password"
-          />
+          <q-input v-model="signupForm.email" label="이메일" />
+          <q-input v-model="signupForm.password" label="비밀번호" type="password"/>
+          <q-input v-model="signupForm.confirmPassword" label="비밀번호 확인" type="password"/>
         </q-card-section>
 
         <q-card-actions align="right">
@@ -62,6 +60,8 @@ export default {
         username: "",
         email: "",
         password: "",
+        confirmPassword:"",
+        nickname: "",
       },
     };
   },
@@ -83,6 +83,7 @@ export default {
       await login(username, password);
 
       this.closeLoginModal();
+
     },
     async openSignupModal() {
       await getPublicKey();
@@ -92,7 +93,17 @@ export default {
       this.signupModal = false;
     },
     async signup() {
-      // 회원가입 로직을 여기에 추가 (서버 연동 등)
+      // 비밀번호 유효성 검사
+      if (!this.isPasswordValid(this.signupForm.password)) {
+        alert("비밀번호가 유효하지 않습니다. 비밀번호는 최소 8자 이상이어야 하며, 숫자/영문/특수문자를 모두 포함해야 합니다.");
+        return;
+      }
+      // 비밀번호 일치 여부
+      if (this.signupForm.password !== this.signupForm.confirmPassword) {
+        alert("비밀번호가 일치하지 않습니다.")
+        return
+      }
+      // 회원가입
       console.log("회원가입:", this.signupForm);
 
       let username = this.signupForm.username;
@@ -102,8 +113,16 @@ export default {
 
       this.closeSignupModal();
     },
+
+    isPasswordValid(password) {
+      // 비밀번호 유효성 검사 정규표현식(8자 이상이며 영문,숫자,특수문자 모두 포함)
+      const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_]).{8,}$/
+      return passwordRegex.test(password);
+    },
+
   },
 };
+
 </script>
 
 <style scoped>

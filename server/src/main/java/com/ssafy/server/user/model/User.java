@@ -2,6 +2,7 @@ package com.ssafy.server.user.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

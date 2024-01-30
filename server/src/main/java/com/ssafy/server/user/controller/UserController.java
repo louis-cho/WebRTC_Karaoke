@@ -3,25 +3,23 @@ package com.ssafy.server.user.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import com.ssafy.server.exception.request.InvalidParameterException;
 import com.ssafy.server.exception.user.InvalidCredentialException;
 import com.ssafy.server.exception.user.InvalidPasswordException;
-import com.ssafy.server.exception.user.InvalidUserIdException;
+
+import com.ssafy.server.user.document.UserDocument;
 import com.ssafy.server.user.model.User;
 import com.ssafy.server.user.model.UserAuth;
-import com.ssafy.server.user.secure.RSA_2048;
 import com.ssafy.server.user.service.UserService;
-import com.ssafy.server.user.util.RSAKeyManager;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.StringWriter;
-import java.security.PublicKey;
-import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -121,14 +119,21 @@ public class UserController {
                 } catch(Exception e) {
                     e.printStackTrace();
                     System.out.println("유저 생성 중 에러 발생");
+
+                    return ResponseEntity.status(400).body(jsonResponse.toString());
                 }
-
-
             }
 
             default: {
                 throw new IllegalArgumentException("Invalid request type");
             }
         }
+    }
+
+
+    @GetMapping("/search/{nickname}")
+    public ResponseEntity<List<UserDocument>> searchUsersByNickname(@PathVariable String nickname) {
+        List<UserDocument> users = userService.searchUsersByNickname(nickname);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

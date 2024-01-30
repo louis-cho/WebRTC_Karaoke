@@ -13,17 +13,26 @@ import java.util.regex.Pattern;
 
 public class RSAKeyManager {
     private static HashMap<String, KeyPair> keyMap;
-
+    private static HashMap<String, Long> lastRequest;
     private static RSAKeyManager instance = null;
 
     private RSAKeyManager() {
 
     }
 
+    public HashMap<String, KeyPair> getKeyMap() {
+        return keyMap;
+    }
+
+    public HashMap<String, Long> getLastRequest() {
+        return lastRequest;
+    }
+
     public static RSAKeyManager getInstnace() {
         if(instance == null) {
             instance = new RSAKeyManager();
             keyMap = new HashMap<>();
+            lastRequest = new HashMap<>();
         }
 
         return instance;
@@ -41,6 +50,8 @@ public class RSAKeyManager {
         if(keyMap.get(ip) == null) {
             KeyPair keyPair = RSA_2048.createKey();
             keyMap.put(ip, keyPair);
+            lastRequest.put(ip, System.currentTimeMillis());
+
             return keyPair.getPublic();
         } else {
             return keyMap.get(ip).getPublic();
@@ -54,6 +65,8 @@ public class RSAKeyManager {
         if(keyMap.get(ip) == null) {
             return null;
         }
+
+        lastRequest.put(ip, System.currentTimeMillis());
         return keyMap.get(ip).getPrivate();
     }
 
@@ -76,6 +89,8 @@ public class RSAKeyManager {
         if(keyMap.get(ip) == null) {
             return null;
         }
+
+        lastRequest.put(ip, System.currentTimeMillis());
         return keyMap.get(ip).getPublic();
     }
 
@@ -128,4 +143,6 @@ public class RSAKeyManager {
 		// return matcher.matches();
         return true;
     }
+
+
 }
