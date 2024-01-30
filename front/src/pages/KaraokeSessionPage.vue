@@ -2,10 +2,10 @@
   <nav-bar />
   <div id="main-container">
     <!-- session이 true일때! 즉, 방에 들어갔을 때 -->
-    <div id="session" v-if="session" class="q-pa-md">
+    <div id="session" v-if="store.session" class="q-pa-md">
       <div id="session-header" class="q-mb-md">
         <q-toolbar-title style="font-size: 40px">
-          {{ pref.app.kor.karaokePage.sessionId }} : {{ mySessionId }}
+          {{ pref.app.kor.karaokePage.sessionId }} : {{ store.mySessionId }}
         </q-toolbar-title>
         <q-btn
           @click="leaveSession"
@@ -87,11 +87,11 @@
       <!-- 캠,오디오 선택 옵션 -->
       <div class="inline-selects">
         <q-select
-          v-model="selectedCamera"
+          v-model="store.selectedCamera"
           @update:model-value="handleCameraChange"
           label="사용할 카메라를 선택하세요"
           outlined
-          :options="cameras"
+          :options="store.cameras"
           emit-value
           map-options
           option-value="deviceId"
@@ -99,11 +99,11 @@
           class="inline-select"
         />
         <q-select
-          v-model="selectedAudio"
+          v-model="store.selectedAudio"
           @update:model-value="handleAudioChange"
           label="사용할 마이크를 선택하세요"
           outlined
-          :options="audios"
+          :options="store.audios"
           emit-value
           map-options
           option-value="deviceId"
@@ -123,42 +123,18 @@ import pref from "@/js/config/preference.js";
 import UserVideo from "@/components/karaoke/UserVideo.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import AudioFilter from "src/components/karaoke/AudioFilter.vue";
-import { useKaraokeStore } from "@/stores/store.js";
+import { useKaraokeStore } from "@/stores/karaokeStore.js";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
-
-const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:8081/";
 
 // store 사용
 const store = useKaraokeStore();
 const router = useRouter();
 
-// store의 상태에 접근
-console.log(store.OV);
-console.log(store.session);
-console.log(store.mainStreamManager);
-console.log(store.publisher);
-
 // 다시그려내기 위해 computed 작성
 const mainStreamManagerComputed = computed(() => store.mainStreamManager);
 const publisherComputed = computed(() => store.publisher);
 const subscribersComputed = computed(() => store.subscribers);
-
-function leaveSession() {
-  // --- 7) 'disconnect' 메서드를 세션 객체에서 호출하여 세션을 나갑니다. ---
-  if (store.session) store.session.disconnect();
-
-  // 모든 속성 비우기...
-  store.session = undefined;
-  store.mainStreamManager = undefined;
-  store.publisher = undefined;
-  store.subscribers = [];
-  store.OV = undefined;
-
-  // beforeunload 리스너 제거
-  window.removeEventListener("beforeunload", leaveSession);
-}
 
 function updateMainVideoStreamManager(stream) {
   // 주요 비디오 스트림 매니저 업데이트
@@ -166,56 +142,7 @@ function updateMainVideoStreamManager(stream) {
   store.mainStreamManager = stream;
 }
 
-/**
- * --------------------------------------------
- * 애플리케이션 서버에서 토큰 가져오기
- * --------------------------------------------
- */
-async function getToken(mySessionId) {
-  const sessionId = await createSession(mySessionId);
-  return await createToken(sessionId);
-}
-
-async function createSession(sessionId) {
-  // 세션 생성
-  const response = await axios.post(
-    APPLICATION_SERVER_URL + "api/sessions",
-    {
-      customSessionId: sessionId,
-      userNo: 53,
-      endHour: 1,
-      endMinute: 30,
-      quota: 16,
-      isPrivacy: false,
-    },
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data; // 세션 ID 반환
-}
-
-async function createToken(sessionId) {
-  // 토큰 생성
-  const response = await axios.post(
-    APPLICATION_SERVER_URL + "api/sessions/" + sessionId + "/connections",
-    {
-      // filter 사용을 위해 create connection 시 body를 추가
-      type: "WEBRTC",
-      role: "PUBLISHER",
-      kurentoOptions: {
-        allowedFilters: ["GStreamerFilter", "FaceOverlayFilter"],
-      },
-    },
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data; // 토큰 반환
-}
-
 // 채팅창 구현을 위한 함수 제작
-///////////////////////////
 function sendMessage(event) {
   event.preventDefault();
   if (store.inputMessage.trim()) {
@@ -228,22 +155,6 @@ function sendMessage(event) {
       type: "chat", // 신호 타입을 'chat'으로 설정
     });
     store.inputMessage = "";
-  }
-}
-
-// 캠, 오디오 등 기기와 관련된 함수
-// 카메라와 오디오를 가져옴.
-async function getMedia() {
-  try {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    store.cameras = devices.filter((device) => device.kind === "videoinput");
-    store.audios = devices.filter((device) => device.kind === "audioinput");
-
-    // 첫번째 카메라와 오디오를 선택
-    store.selectedCamera = store.cameras[0];
-    store.selectedAudio = store.audios[0];
-  } catch (error) {
-    console.error("Error getting media devices:", error);
   }
 }
 
