@@ -1,73 +1,62 @@
 <template>
-  <div>
-    <div>
-      <!-- 네브바 같은거? -->
-    </div>
-    <div>
-        <!-- 프로필이미지 -->
-        <!-- 친구 수 -->
-        <!-- 프로필 보기 -->
-    </div>
-    <div>
-      <!-- 채팅창 -->
-      <div>
-        <template v-for="(chatMessage, index) in messages" :key="index">
-          <div class="message_container" v-if="chatMessage.type === 'text'">
-            {{ chatMessage.content }}
-          </div>
-          <div class="message_container" v-else-if="chatMessage.type === 'image'">
-            <img :src="chatMessage.content" alt="Image">
-          </div>
-          <div class="message_container" v-else>
-            Unknown message type: {{ chatMessage.type }}
-          </div>
-        </template>
-      </div>
-    </div>
-    <div class="input_container">
 
-      <div>
-        <div>
-          <label>
-            <input type="text" v-model="inputText">
-            <button @click="sendMessage">입력</button>
-          </label>
+    <div class="dm-container">
+    <!-- 채팅창 내역 -->
+    <div class="dm-messages" ref="messagesContainer">
+      <div v-for="(message, index) in messages" :key="index">
+
+        <div v-if="message.type === 'text'">
+          {{ message.content }}
         </div>
-        <div>
-          <label>
-            <!-- Image Upload:  -->
-            <input type="file" @change="handleFileUpload">
-          </label>
+        <div v-else-if="message.type === 'image'">
+          <img :src="message.content" alt="Image">
+        </div>
+        <div v-else>
+          Unknown message type: {{ message.type }}
         </div>
       </div>
-
     </div>
-  </div>
 
-    <!-- <div>
-      <template v-if="messageType === 'text'">
-        {{ messageContent }}
-      </template>
-      <template v-else-if="messageType === 'image'">
-        <img :src="messageContent" alt="Image">
-      </template>
-      <template v-else>
-        Unknown message type: {{ messageType }}
-      </template>
+    <!-- 메시지 입력창 -->
+    <!-- <div class="input_class">
+      <textarea v-model="newMessage" @keydown.enter.prevent="sendMessage" placeholder="메시지를 입력하세요..."></textarea>
+      <input type="file" ref="fileInput" @change="handleFileUpload">
     </div> -->
+
+    <div class="img_class1">
+      <textarea v-model="newMessage" @keydown.enter.prevent="sendMessage" placeholder="메시지를 입력하세요..."></textarea>
+      <label for="fileInput" class="img_label">
+        <img src="@/assets/icon/imagesmode_FILL0_wght400_GRAD0_opsz24.png" alt="File Icon" class="img_class2">
+      </label>
+      <input type="file" ref="fileInput" id="fileInput" @change="handleFileUpload" style="display: none;">
+    </div>
+
+  </div>
 </template>
 
-
 <script setup>
-import { ref } from "vue"
+import { ref, nextTick} from "vue";
 import logoImage from "@/assets/icon/logo1-removebg-preview.png"
 
-const messages = ref([]) // messages 배열 추가
+const messages = ref([])
+const newMessage = ref('')
+const selectedFile = ref(null)
+const messagesContainer = ref(null)
 
-// const messageType = ref(null)
-// const messageContent = ref(null)
-const inputText = ref("")
-const imageURL = ref("")
+
+function sendMessage() {
+  const textMessageString = `{"type": "text", "content": "${newMessage.value}"}`;
+  // const textMessageString = newMessage.value
+  handleMessage(textMessageString);
+
+  // 입력창 초기화
+  newMessage.value = "";
+
+  // 스크롤을 항상 아래로 내림
+  nextTick(() => {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+  });
+}
 
 function handleMessage(msg) {
   try {
@@ -102,24 +91,10 @@ function handleMessage(msg) {
   }
 }
 
-// function setMessage(type, content) {
-//   messageType.value = type;
-//   messageContent.value = content;
-// }
-
 function setMessage(type, content) {
   messages.value.push({ type, content }); // messages 배열에 새로운 채팅 메시지 추가
 }
 
-function sendMessage() {
-  const textMessageString = `{"type": "text", "content": "${inputText.value}"}`;
-  handleMessage(textMessageString);
-
-  // 입력창 초기화
-  inputText.value = "";
-}
-
-// 파일 업로드 처리 함수
 function handleFileUpload(event) {
   const file = event.target.files[0];
   if (file) {
@@ -128,6 +103,11 @@ function handleFileUpload(event) {
     reader.onload = () => {
       const imageMessageString = `{"type": "image", "content": "${reader.result}"}`;
       handleMessage(imageMessageString);
+
+      // 이미지 업로드 시 스크롤을 항상 아래로 내림
+      nextTick(() => {
+        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+      });
     };
     reader.readAsDataURL(file);
 
@@ -145,19 +125,51 @@ function handleFileUpload(event) {
 // handleMessage(textMessageString);
 // handleMessage(imageMessageString);
 // handleMessage(invalidMessageString);
+
 </script>
 
 <style scoped>
-.message_container {
+.dm-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   text-align: right;
 }
 
-.input_container {
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
+.dm-messages {
+  flex: 1;
+  overflow-y: auto;
+  /* padding: 10px; */
+  transition: scrollTop 0.3s ease;
 }
 
+.my-message {
+  color: black;
+}
+
+textarea {
+  width: 100%;
+  resize: none;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.input_class{
+  display:flex;
+}
+
+.img_class1 {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.img_class2 {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
 </style>
