@@ -1,6 +1,7 @@
 <template>
   <!-- class="bg-purple" -->
   <div>
+    <SignIn/>
     <!-- <SearchUser/> -->
     <NavBar/>
     <q-carousel
@@ -44,6 +45,7 @@
 import { ref } from "vue";
 import NavBar from "@/layouts/NavBar.vue";
 import SearchUser from "src/components/SearchUser.vue";
+import SignIn from "src/components/SignIn.vue";
 
 
 const slide = ref("style");
