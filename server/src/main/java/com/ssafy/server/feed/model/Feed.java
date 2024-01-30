@@ -1,4 +1,4 @@
-package com.ssafy.server.feed.entity;
+package com.ssafy.server.feed.model;
 
 import lombok.Getter;
 import lombok.Setter;

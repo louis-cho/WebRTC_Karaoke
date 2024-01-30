@@ -22,6 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.UUID;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("/user")
 @Slf4j

@@ -1,5 +1,4 @@
 package com.ssafy.server.feed.service;
-
 import com.ssafy.server.feed.entity.Feed;
 
 import java.util.List;
