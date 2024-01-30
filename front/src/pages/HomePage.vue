@@ -44,8 +44,8 @@
 <script setup>
 import { ref } from "vue";
 import NavBar from "@/layouts/NavBar.vue";
-import SearchUser from "src/components/SearchUser.vue";
-import SignIn from "src/components/SignIn.vue";
+import SearchUser from "@/components/SearchUser.vue";
+import SignIn from "@/components/SignIn.vue";
 
 
 const slide = ref("style");
