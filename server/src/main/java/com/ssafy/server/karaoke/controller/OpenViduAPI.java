@@ -1,4 +1,4 @@
-package com.ssafy.server;
+package com.ssafy.server.karaoke.controller;
 
 import io.openvidu.java.client.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import java.util.Map;
 
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @RestController
 public class OpenViduAPI {
 
