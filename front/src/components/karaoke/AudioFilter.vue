@@ -3,20 +3,20 @@
     v-if="!filterApplied"
     @click="applyFilter"
     color="primary"
-    label="Apply filter"
+    :label="pref.app.kor.karaokePage.applyFilter"
   />
   <q-btn
     v-if="filterApplied"
     @click="removeFilter"
     color="negative"
-    label="Remove filter"
+    :label="pref.app.kor.karaokePage.removeFilter"
   />
   <!-- 필터 버튼 목록 -->
   <div class="q-mb-md">
     <q-select
       v-model="selectedFilter"
       :options="filterOptions"
-      label="필터 적용"
+      :label="pref.app.kor.karaokePage.filterList"
       filled
     />
     <!-- 슬라이더 목록을 보여주는 부분 -->
@@ -47,27 +47,27 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import pref from "@/js/config/preference.js";
+import { useKaraokeStore } from "@/stores/karaokeStore.js";
 
-const props = defineProps({
-  publisher: Object,
-});
+const store = useKaraokeStore();
 
 // 필터를 위한 변수
 const selectedFilter = ref("");
 const filterApplied = ref(false);
 const filterOptions = [
-  { label: "Audio echo", value: "Audioecho" },
-  { label: "Audio amplify", value: "Amplify" },
-  { label: "Pitch", value: "Pitch" },
+  { label: "에코", value: "Audioecho" },
+  { label: "증폭", value: "Amplify" },
+  { label: "피치", value: "Pitch" },
 ];
 
 // 에코 관련 변수
 const sliders = ref([
-  { label: "delay", value: 300, min: 100, max: 500, step: 10 },
-  { label: "intensity", value: 0.5, min: 0.1, max: 1, step: 0.1 },
-  { label: "feedback", value: 0.2, min: 0, max: 0.5, step: 0.01 },
-  { label: "amplification", value: 1.0, min: 0.5, max: 1.5, step: 0.1 },
-  { label: "pitch", value: 1.0, min: 0.5, max: 1.5, step: 0.1 },
+  { label: "딜레이", value: 300, min: 100, max: 500, step: 10 },
+  { label: "강도", value: 0.5, min: 0.1, max: 1, step: 0.1 },
+  { label: "피드백", value: 0.2, min: 0, max: 0.5, step: 0.01 },
+  { label: "증폭", value: 1.0, min: 0.5, max: 1.5, step: 0.1 },
+  { label: "피치", value: 1.0, min: 0.5, max: 1.5, step: 0.1 },
 ]);
 
 // 필터를 적용해주는 함수
@@ -94,14 +94,13 @@ function applyFilter() {
   }
 
   // 필터를 적용해주는 부분
-  console.log(props.publisher);
-  props.publisher.stream.applyFilter(filter.type, filter.options);
+  store.publisher.stream.applyFilter(filter.type, filter.options);
   filterApplied.value = true;
 }
 
 // 필터를 지우는 함수
 const removeFilter = () => {
-  props.publisher.stream.removeFilter();
+  store.publisher.stream.removeFilter();
   filterApplied.value = false;
 };
 
@@ -109,14 +108,12 @@ const removeFilter = () => {
 const filteredSliders = computed(() => {
   if (selectedFilter.value.value === "Audioecho") {
     return sliders.value.filter((slider) =>
-      ["delay", "intensity", "feedback"].includes(slider.label)
+      ["딜레이", "강도", "피드백"].includes(slider.label)
     );
   } else if (selectedFilter.value.value === "Amplify") {
-    return sliders.value.filter((slider) =>
-      ["amplification"].includes(slider.label)
-    );
+    return sliders.value.filter((slider) => ["증폭"].includes(slider.label));
   } else if (selectedFilter.value.value === "Pitch") {
-    return sliders.value.filter((slider) => ["pitch"].includes(slider.label));
+    return sliders.value.filter((slider) => ["피치"].includes(slider.label));
   } else {
     return null;
   }

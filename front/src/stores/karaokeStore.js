@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const APPLICATION_SERVER_URL =

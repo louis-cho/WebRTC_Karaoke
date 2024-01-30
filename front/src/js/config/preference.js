@@ -19,6 +19,9 @@ app.kor.karaokePage.sessionId = "방 번호";
 app.kor.karaokePage.userName = "참가자 이름";
 app.kor.karaokePage.joinSession = "참가하기";
 app.kor.karaokePage.leaveSession = "방 나가기";
+app.kor.karaokePage.applyFilter = "필터 적용하기";
+app.kor.karaokePage.removeFilter = "필터 해제하기";
+app.kor.karaokePage.filterList = "적용할 필터를 고르세요";
 
 app.eng = {};
 
