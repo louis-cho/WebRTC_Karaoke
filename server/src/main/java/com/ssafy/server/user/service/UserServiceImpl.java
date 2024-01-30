@@ -133,6 +133,7 @@ public class UserServiceImpl implements UserService {
 
         user.setUserPk(userAuth.getUserPk());
         user.setUserKey(UUID.randomUUID());
+        user.setNickname(nickname);
         userDocument.setNickname(nickname);
         userRepository.save(user);
 
