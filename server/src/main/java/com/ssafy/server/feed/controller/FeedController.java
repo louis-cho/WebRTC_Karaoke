@@ -23,8 +23,8 @@ public class FeedController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Feed> createPost(@RequestBody Feed post) {
-        Feed createdPost = feedService.createFeed(post);
+    public ResponseEntity<Feed> createPost(@RequestBody Feed feed) {
+        Feed createdPost = feedService.createFeed(feed);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 
