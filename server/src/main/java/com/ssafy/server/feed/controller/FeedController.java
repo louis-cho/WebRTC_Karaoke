@@ -1,6 +1,6 @@
 package com.ssafy.server.feed.controller;
 
-import com.ssafy.server.feed.entity.Feed;
+import com.ssafy.server.feed.model.Feed;
 import com.ssafy.server.feed.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +23,8 @@ public class FeedController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Feed> createPost(@RequestBody Feed post) {
-        Feed createdPost = feedService.createFeed(post);
+    public ResponseEntity<Feed> createPost(@RequestBody Feed feed) {
+        Feed createdPost = feedService.createFeed(feed);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 
