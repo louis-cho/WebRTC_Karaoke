@@ -2,7 +2,7 @@ package com.ssafy.server.chat.controller;
 
 import java.util.*;
 
-import com.ssafy.server.chat.model.ChatRoomDTO;
+import com.ssafy.server.chat.model.ChatRoom;
 import com.ssafy.server.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,17 +21,15 @@ public class ChatRoomController {
     @GetMapping("/")
 //    public ResponseEntity<ResultResponse> goChatRoom(){
     public String goChatRoom(){
-        List<ChatRoomDTO> chatRooms = chatRoomService.findAllRoom();
-//        return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS,chatRooms));
+        List<ChatRoom> chatRooms = chatRoomService.findAllRoom();
         return "ok " + chatRooms.toString();
     }
 
     // 채팅방 생성
     @PostMapping("/room")
-    public String createRoom(@RequestParam String name) {
-//    public ResponseEntity<ResultResponse> createRoom(@RequestParam String name) {
-        ChatRoomDTO room = chatRoomService.createChatRoom(name);
-        return "ok roomId " + room.getRoomId();
+    public String createRoom(@RequestParam String name, @RequestParam long host, @RequestParam long guest) {
+        ChatRoom room = chatRoomService.createChatRoom(name, host, guest);
+        return "ok roomId " + room.getRoomPk();
 //        return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS,room.getRoomId()));
     }
 

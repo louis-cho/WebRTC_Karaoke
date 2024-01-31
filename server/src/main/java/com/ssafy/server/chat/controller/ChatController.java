@@ -1,6 +1,6 @@
 package com.ssafy.server.chat.controller;
 
-import com.ssafy.server.chat.model.ChatDTO;
+import com.ssafy.server.chat.model.Chat;
 import com.ssafy.server.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +18,6 @@ import java.time.LocalDateTime;
 @RestController
 public class ChatController {
 
-//    private final SimpMessageSendingOperations template;
-//    private final ChatRepository repository;
     private final ChatService chatService;
 
     private final RabbitTemplate rabbitTemplate;
@@ -28,7 +26,7 @@ public class ChatController {
     // /pub/chat.message.{roomId} 로 요청하면 브로커를 통해 처리
     // /exchange/chat.exchange/room.{roomId} 를 구독한 클라이언트에 메시지가 전송된다.
     @MessageMapping("chat.enter.{chatRoomId}")
-    public void enterUser(@Payload ChatDTO chat, @DestinationVariable String chatRoomId) {
+    public void enterUser(@Payload Chat chat, @DestinationVariable String chatRoomId) {
         chat.setTime(String.valueOf(LocalDateTime.now()));
         chat.setMessage(chat.getSender() + " 님 " + chat.getRoomId()  +" 입장!!");
         chatService.saveToJPA(chat);
@@ -36,7 +34,7 @@ public class ChatController {
     }
 
     @MessageMapping("chat.message.{chatRoomId}")
-    public void sendMessage(@Payload ChatDTO chat, @DestinationVariable String chatRoomId) {
+    public void sendMessage(@Payload Chat chat, @DestinationVariable String chatRoomId) {
         chat.setTime(String.valueOf(LocalDateTime.now()));
         chat.setMessage(chat.getMessage());
         chatService.saveToJPA(chat);
@@ -46,26 +44,7 @@ public class ChatController {
 
     //기본적으로 chat.queue가 exchange에 바인딩 되어있기 때문에 모든 메시지 처리
     @RabbitListener(queues = CHAT_QUEUE_NAME)
-    public void receive(ChatDTO chatDTO){
-        System.out.println("received : " + chatDTO.getMessage());
+    public void receive(Chat chat){
+        System.out.println("received : " + chat.getMessage());
     }
-
-//    @MessageMapping("/enterUser")
-//    public void enterUser(@Payload ChatDTO chat, SimpMessageHeaderAccessor headerAccessor) {
-//        repository.plusUserCnt(chat.getRoomId());
-//        String userUUID = repository.addUser(chat.getRoomId(), chat.getSender());
-//
-//        headerAccessor.getSessionAttributes().put("userUUID", userUUID);
-//        headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
-//
-//        chat.setMessage(chat.getSender() + " 님 입장!!");
-//        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-//    }
-//
-//    @MessageMapping("/sendMessage")
-//    public void sendMessage(@Payload ChatDTO chat) {
-//        log.info("CHAT {}", chat);
-//        chat.setMessage(chat.getMessage());
-//        template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-//    }
 }
