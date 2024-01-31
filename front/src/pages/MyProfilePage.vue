@@ -30,7 +30,7 @@
         <div class="row-container">
           <div>
             <!-- 수정 필요 -->
-            <img src="src/assets/img/capture.png" style='border-radius: 20%; width: 200px; height: 200px;' alt="프로필 이미지">
+            <img src="@/assets/img/capture.png" style='border-radius: 20%; width: 200px; height: 200px;' alt="프로필 이미지">
           </div>
 
           <div>
@@ -99,10 +99,10 @@ const goBack = function() {
 
 // 가상의 피드 데이터 예시
 const feeds = ref([
-  { id: 1, imageUrl: "src/assets/icon/logo.png" },
-  { id: 2, imageUrl: "src/assets/icon/web_light_sq_ctn@1x.png" },
-  { id: 3, imageUrl: "src/assets/img/capture3.png" },
-  { id: 4, imageUrl: "src/assets/img/capture3.png" },
+  { id: 1, imageUrl: "@/assets/icon/logo.png" },
+  { id: 2, imageUrl: "@/assets/icon/web_light_sq_ctn@1x.png" },
+  { id: 3, imageUrl: "@/assets/img/capture3.png" },
+  { id: 4, imageUrl: "@/assets/img/capture3.png" },
   // ... 다른 피드 데이터들 ...
 ]);
 

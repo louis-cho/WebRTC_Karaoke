@@ -64,7 +64,7 @@
       <div class="row-container">
         <div>
           <!-- 수정 필요 -->
-          <img src="src/assets/img/capture3.png" class="profile-image" alt="댓글 작성자 프로필 이미지">
+          <img src="@/assets/img/capture3.png" class="profile-image" alt="댓글 작성자 프로필 이미지">
         </div>
         <div>
           <input v-model="newComment" style="height: 100px; width: 100%; box-sizing: border-box;" @keydown.enter.prevent="addComment" placeholder="댓글을 입력하세요...">
