@@ -28,6 +28,7 @@ public class LikeEventSubscriber {
             // 엘라스틱서치 업데이트
             elasticSearchService.updateLikeStatistics(like);
 
+            redisService.saveLike(like);
             // Redis 업데이트
             redisService.updateLikeStatistics(like);
         } catch (Exception e) {

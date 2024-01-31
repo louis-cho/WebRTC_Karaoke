@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 public class RedisServiceImpl implements RedisService{
 
@@ -17,12 +20,20 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public void saveLike(Likes like) {
         String key = LIKE_KEY_PREFIX + like.getFeedId();
-        redisTemplate.opsForSet().add(key, like.getUserPk());
+
+        if(like.getStatus() == 'X') {
+            redisTemplate.opsForSet().remove(key, like.getLikeId());
+        } else {
+            if(redisTemplate.opsForSet().isMember(key, like.getLikeId()) == false) {
+                redisTemplate.opsForSet().add(key, like.getLikeId());
+            }
+        }
     }
 
     @Override
     public void updateLikeStatistics(Likes like) {
         String key = LIKE_KEY_PREFIX + like.getFeedId();
+
         Long likeCount = redisTemplate.opsForSet().size(key); // 좋아요 갯수 조회
 
 
