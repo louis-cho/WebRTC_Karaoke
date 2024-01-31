@@ -39,8 +39,8 @@ export class App {
 
     // UI 요소를 래퍼에 추가
     wrapper.appendChild(canvasContainer); // 악보 컨테이너 추가
-    wrapper.appendChild(this.songEditor.render()); // 음악 편집기 추가
-    wrapper.appendChild(this.sharer.render()); // 음악 공유기 추가
+    // wrapper.appendChild(this.songEditor.render()); // 음악 편집기 추가
+    // wrapper.appendChild(this.sharer.render()); // 음악 공유기 추가
     this.wrapper = wrapper; // 앱 래퍼 엘리먼트 설정
     this.bindEvents(); // 이벤트 핸들러 바인딩
   }
@@ -99,8 +99,9 @@ export class App {
 
 
   // 악보 재생
-  playSong(notes) {
-    this.drawer.start(notes); // 악보 그리기 시작
+  playSong() {
+    console.log("??")
+    this.drawer.start(parseScore(this.songEditor.score)); // 악보 그리기 시작
   }
 
   // 악보 정지

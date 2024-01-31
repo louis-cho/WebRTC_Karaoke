@@ -68,7 +68,8 @@ export class ScoreDrawer {
   // 재생 시작
   start(notes) {
     this._playScore = notes.slice();
-    this._elapsed = -1000;
+    // this._elapsed = -1000;
+    this._elapsed = 0;
   }
 
   // 재생 중지
