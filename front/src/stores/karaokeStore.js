@@ -60,6 +60,10 @@ export const useKaraokeStore = defineStore("karaoke", {
         }
       });
 
+      // 녹화 이벤트 시작 정지.
+      this.session.on("recordingStarted");
+      this.session.on("recordingStopped");
+
       // 비동기 예외가 발생할 때마다...
       this.session.on("exception", ({ exception }) => {
         console.warn(exception);
@@ -95,7 +99,6 @@ export const useKaraokeStore = defineStore("karaoke", {
               frameRate: 30, // 비디오의 프레임 속도
               insertMode: "APPEND", // 비디오가 대상 요소 'video-container'에 어떻게 삽입되는지
               mirror: false, // 로컬 비디오를 반전할지 여부
-              isSubscribeToRemote: true,
             });
 
             // 페이지에서 주요 비디오를 설정하여 웹캠을 표시하고 발행자를 저장합니다.
