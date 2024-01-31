@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick} from "vue";
+import { ref, nextTick } from "vue";
 import logoImage from "@/assets/icon/logo1-removebg-preview.png"
 
 const messages = ref([])
