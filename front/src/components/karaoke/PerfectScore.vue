@@ -13,6 +13,7 @@
   const audio = ref(null);
 
   onMounted(() => {
+    console.log("응애")
     // 이곳에서 index.js를 가져옵니다.
     import("@/js/perfectScore/index.js").then((module) => {
       appInstance.value = module.app;
