@@ -1,17 +1,14 @@
 package com.ssafy.server.chat.controller;
 
 import com.ssafy.server.chat.model.ChatDTO;
-import com.ssafy.server.chat.repository.ChatRepository;
+import com.ssafy.server.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -21,11 +18,11 @@ import java.time.LocalDateTime;
 @RestController
 public class ChatController {
 
-    private final SimpMessageSendingOperations template;
-    private final ChatRepository repository;
+//    private final SimpMessageSendingOperations template;
+//    private final ChatRepository repository;
+    private final ChatService chatService;
 
-    @Autowired
-    RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
     private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
     private final static String CHAT_QUEUE_NAME = "chat.queue";
     // /pub/chat.message.{roomId} 로 요청하면 브로커를 통해 처리
@@ -34,6 +31,7 @@ public class ChatController {
     public void enterUser(@Payload ChatDTO chat, @DestinationVariable String chatRoomId) {
         chat.setTime(String.valueOf(LocalDateTime.now()));
         chat.setMessage(chat.getSender() + " 님 " + chat.getRoomId()  +" 입장!!");
+        chatService.saveToJPA(chat);
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
     }
 
@@ -41,6 +39,7 @@ public class ChatController {
     public void sendMessage(@Payload ChatDTO chat, @DestinationVariable String chatRoomId) {
         chat.setTime(String.valueOf(LocalDateTime.now()));
         chat.setMessage(chat.getMessage());
+        chatService.saveToJPA(chat);
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
 
     }

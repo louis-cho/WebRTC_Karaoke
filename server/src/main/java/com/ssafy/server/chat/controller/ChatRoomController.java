@@ -2,12 +2,10 @@ package com.ssafy.server.chat.controller;
 
 import java.util.*;
 
-import com.google.gson.JsonObject;
-import com.ssafy.server.chat.model.ChatRoom;
-import com.ssafy.server.chat.repository.ChatRepository;
+import com.ssafy.server.chat.model.ChatRoomDTO;
+import com.ssafy.server.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,13 +15,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/chatroom")
 public class ChatRoomController {
-    private final ChatRepository chatRepository;
+    private final ChatRoomService chatRoomService;
 
     // 채팅 리스트 화면
     @GetMapping("/")
 //    public ResponseEntity<ResultResponse> goChatRoom(){
     public String goChatRoom(){
-        List<ChatRoom> chatRooms = chatRepository.findAllRoom();
+        List<ChatRoomDTO> chatRooms = chatRoomService.findAllRoom();
 //        return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS,chatRooms));
         return "ok " + chatRooms.toString();
     }
@@ -32,7 +30,7 @@ public class ChatRoomController {
     @PostMapping("/room")
     public String createRoom(@RequestParam String name) {
 //    public ResponseEntity<ResultResponse> createRoom(@RequestParam String name) {
-        ChatRoom room = chatRepository.createChatRoom(name);
+        ChatRoomDTO room = chatRoomService.createChatRoom(name);
         return "ok roomId " + room.getRoomId();
 //        return ResponseEntity.ok(ResultResponse.of(CREATE_POST_SUCCESS,room.getRoomId()));
     }
@@ -41,6 +39,6 @@ public class ChatRoomController {
     @GetMapping("/userlist")
     public ArrayList<String> userList(String roomId) {
 
-        return chatRepository.getUserList(roomId);
+        return chatRoomService.getUserList(roomId);
     }
 }

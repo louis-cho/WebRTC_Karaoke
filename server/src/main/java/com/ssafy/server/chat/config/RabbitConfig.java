@@ -57,13 +57,13 @@ public class RabbitConfig {
     }
 
     /* messageConverter를 커스터마이징 하기 위해 Bean 새로 등록 */
-    @Bean
-    public RabbitTemplate rabbitTemplate(){
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
-        rabbitTemplate.setMessageConverter(jsonMessageConverter());
-        rabbitTemplate.setRoutingKey(ROUTING_KEY);
-        return rabbitTemplate;
-    }
+//    @Bean
+//    public RabbitTemplate rabbitTemplate(){
+//        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+//        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+//        rabbitTemplate.setRoutingKey(ROUTING_KEY);
+//        return rabbitTemplate;
+//    }
 
     @Bean
     public ConnectionFactory connectionFactory(){
