@@ -35,13 +35,13 @@
         <q-card-actions align="center" class="text-primary">
           <div>
             <img
-              src="src/assets/icon/kakao_login_medium_narrow.png"
+              src="@/assets/icon/kakao_login_medium_narrow.png"
               alt="카카오로그인"
               style="width: 185px; height: 40px"
             />
             <br />
             <img
-              src="src/assets/icon/web_light_sq_ctn@1x.png"
+              src="@/assets/icon/web_light_sq_ctn@1x.png"
               alt="구글로그인"
               style="width: 185px; height: 40px"
             />
