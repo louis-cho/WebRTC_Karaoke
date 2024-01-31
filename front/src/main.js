@@ -1,10 +1,13 @@
-import { createApp } from "vue";
-import { createPinia } from "pinia";
+
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+
+
+import App from '@/App.vue'
+import router from '@/router'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 // import { useKaraokeStore } from "./stores/karaokeStore";
 
-import App from "./App.vue";
-import router from "./router";
-import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 // app.config.productionTip = false
 
@@ -13,6 +16,6 @@ const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
 // app.use(createPinia())
+app.use(pinia)
 app.use(router);
-app.use(pinia);
 app.mount("#app");

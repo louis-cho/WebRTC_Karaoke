@@ -11,6 +11,30 @@ const routes = [
     component: () => import("@/pages/KaraokeListPage.vue"),
   },
   {
+    path: '/feed',
+    component: () => import('@/pages/FeedPage.vue')
+  },
+  {
+    path: '/message',
+    component: () => import('@/pages/MessagePage.vue')
+  },
+  {
+    path: '/my_profile',
+    component: () => import('@/pages/MyProfilePage.vue')
+  },
+  {
+    path: '/chat',
+    component: () => import('@/pages/ChatPage.vue')
+  },
+  {
+    path: '/:catchAll(.*)*',
+    component: () => import('@/pages/ErrorNotFound.vue')
+  },
+  {
+    path: '/perfect_score',
+    component: () => import('@/components/karaoke/PerfectScore.vue')
+  },
+  {
     path: "/karaoke/:sessionId", // 동적 세션 ID
     name: "KaraokeSession",
     component: () => import("@/pages/KaraokeSessionPage.vue"),
@@ -26,8 +50,9 @@ const routes = [
 
       // 특정 페이지로 이동
       next();
-    },
+    }
   },
+
   {
     path: "/feed",
     component: () => import("@/pages/FeedPage.vue"),
@@ -45,13 +70,10 @@ const routes = [
     component: () => import("@/pages/ChatPage.vue"),
   },
   {
-    path: "/chat2",
-    component: () => import("@/pages/ChatPage2.vue"),
-  },
-  {
     path: "/:catchAll(.*)*",
     component: () => import("@/pages/ErrorNotFound.vue"),
   },
 ];
 
 export default routes;
+
