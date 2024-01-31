@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Hit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    int hitId;
     int feedId;
-    int hit;
-    UUID userKey;
+    int userPk;
 }
