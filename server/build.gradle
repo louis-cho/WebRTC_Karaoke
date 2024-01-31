@@ -35,7 +35,7 @@ dependencies {
 	implementation 'org.hibernate:hibernate-core:5.6.3.Final'
 	implementation 'org.hibernate:hibernate-entitymanager:5.6.3.Final'
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
 }
 

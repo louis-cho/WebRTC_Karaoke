@@ -1,5 +1,6 @@
 package com.ssafy.server.config;
 
+import com.ssafy.server.feed.rank.model.FeedStats;
 import com.ssafy.server.point.service.RedisPointMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
@@ -21,6 +22,13 @@ public class RedisConfig extends CachingConfigurerSupport {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
+        return template;
+    }
+
+    @Bean
+    public RedisTemplate<String, FeedStats> feedStatsRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, FeedStats> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
         return template;
     }
 

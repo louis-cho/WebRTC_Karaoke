@@ -1,13 +1,11 @@
 package com.ssafy.server.like.controller;
 
-import com.ssafy.server.like.model.Like;
+import com.ssafy.server.like.model.Likes;
 import com.ssafy.server.like.service.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/likes")
@@ -22,14 +20,14 @@ public class LikeController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Like> createLike(@RequestBody Like newLike) {
-        Like createdLike = likeService.createLike(newLike);
-        return new ResponseEntity<>(createdLike, HttpStatus.CREATED);
+    public ResponseEntity<Likes> createLike(@RequestBody Likes newLike) {
+        likeService.createLike(newLike);
+        return new ResponseEntity<>(newLike, HttpStatus.CREATED);
     }
 
     @GetMapping("/{likeId}")
-    public ResponseEntity<Like> getLikeById(@PathVariable int likeId) {
-        Like like = likeService.getLikeById(likeId);
+    public ResponseEntity<Likes> getLikeById(@PathVariable int likeId) {
+        Likes like = likeService.getLikeById(likeId);
 
         if (like != null) {
             return new ResponseEntity<>(like, HttpStatus.OK);
@@ -39,8 +37,8 @@ public class LikeController {
     }
 
     @PutMapping("/{likeId}")
-    public ResponseEntity<Like> updateLike(@PathVariable int likeId, @RequestBody Like updatedLike) {
-        Like updated = likeService.updateLike(likeId, updatedLike);
+    public ResponseEntity<Likes> updateLike(@RequestBody Likes updatedLike) {
+        Likes updated = likeService.updateLike(updatedLike);
 
         if (updated != null) {
             return new ResponseEntity<>(updated, HttpStatus.OK);
