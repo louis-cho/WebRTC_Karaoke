@@ -3,7 +3,7 @@
   <div class="parent">
     <div>
       <img
-        src="src/assets/icon/logo1-removebg-preview.png"
+        src="@/assets/icon/logo1-removebg-preview.png"
         alt="Logo"
         width="150"
         class="d-inline-block align-text-top"

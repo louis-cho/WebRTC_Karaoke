@@ -26,6 +26,13 @@ const routes = [
     path: '/chat',
     component: () => import('@/pages/ChatPage.vue')
   },
+  // path 추후 수정 필요
+  {
+    path: '/feed_detail',
+    component: () => import('@/pages/FeedDetailPage.vue')
+  },
+
+
   {
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/ErrorNotFound.vue')

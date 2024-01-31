@@ -1,7 +1,7 @@
 <template>
   <div>
     <NavBar/>
-    <h3>메시지 페이지</h3>
+    <h3>메시지 리스트 페이지</h3>
 
   </div>
 </template>
