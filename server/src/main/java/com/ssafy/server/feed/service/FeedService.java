@@ -5,11 +5,11 @@ import java.util.List;
 
 public interface FeedService {
 
-    Feed getFeedById(int postId);
+    Feed getFeedById(int feedId);
 
-    Feed createFeed(Feed post);
+    Feed createFeed(Feed feed);
 
-    Feed updateFeed(int postId, Feed updatedPost);
+    Feed updateFeed(int feedId, Feed updatedFeed);
 
-    boolean deleteFeed(int postId);
+    boolean deleteFeed(int feedId);
 }
