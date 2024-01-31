@@ -26,7 +26,7 @@
     <div class="img_class1">
       <textarea v-model="newMessage" @keydown.enter.prevent="sendMessage" placeholder="메시지를 입력하세요..."></textarea>
       <label for="fileInput" class="img_label">
-        <img src="@/assets/icon/imagesmode_FILL0_wght400_GRAD0_opsz24.png" alt="File Icon" class="img_class2">
+        <img src="@/assets/icon/image.png" alt="File Icon" class="img_class2">
       </label>
       <input type="file" ref="fileInput" id="fileInput" @change="handleFileUpload" style="display: none;">
     </div>
