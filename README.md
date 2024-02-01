@@ -80,8 +80,8 @@ $ cd [프로젝트 폴더]
 $ gedit docker-compose.yml
 ```
 
-```
 // docker-compose.yml
+```
 version: '3.6'
 services:
   Elasticsearch:
@@ -133,39 +133,77 @@ volumes:
 networks:
   elk:
 
+```
 // end of docker-compose.yml
-```
 
 ```
-$ mkdir logstash-config
-$ cd logstash-config
-$ gedit logstash-config
+$ mkdir logstash
+$ cd logstash
+$ gedit logstash.conf
 ```
 
+// logstash.conf
 ```
-// logstash-config
-# Beats 입력을 설정합니다.
+# synchronization with elasticseasrch & mysql
 input {
-  beats {
-    port => 5044   # Beats 클라이언트로부터 데이터를 수신할 포트
+  jdbc {
+    jdbc_connection_string => "jdbc:mysql://localhost:3306/testuser"                      # test uesr db 사용
+    jdbc_user => "root"                                                                   # mysql user id
+    jdbc_password => "1234"                                                               # mysql user password
+    jdbc_driver_library => "/user/share/logstash/config/mysql-connector-java-8.0.30.jar"  # ubuntu에서 mysql jar 다운로드 받아 이 디렉터리로 복사해놓기
+    jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
+    
+    statement => "SELECT * FROM likes"                                                    # likes 테이블 데이터 모두 옮기기
+    
+    schedule => "* * * * *"
+    clean_run => true
+    use_column_value => true
+    tracking_column => "timestamp"
+    tracking_column_type => "timestamp"
+    last_run_metadata_path => "/user/share/logstash/config/like_last_run_metadata"        # 메타 정보를 기록하는 경로
+    type => "like"
+  }
+
+  jdbc {
+    jdbc_connection_string => "jdbc:mysql://localhost:3306/testuser"
+    jdbc_user => "root"
+    jdbc_password => "1234"
+    jdbc_driver_library => "/user/share/logstash/config/mysql-connector-java-8.0.30.jar"
+    jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
+    
+    statement => "SELECT * FROM hit"
+    
+    schedule => "* * * * *"
+    clean_run => true
+    use_column_value => true
+    tracking_column => "timestamp" 
+    tracking_column_type => "timestamp"
+    last_run_metadata_path => "/user/share/logstash/config/view_last_run_metadata"
+    type => "view"
   }
 }
 
-# 데이터를 처리하고 가공하기 위한 필터를 설정합니다.
 filter {
-  # 여기에 필터 플러그인을 추가하여 데이터를 가공할 수 있습니다.
-  # 예: grok, date, mutate 등을 사용하여 로그 메시지에서 필요한 정보 추출
 }
 
-# Elasticsearch에 데이터를 출력하기 위한 설정을 추가합니다.
 output {
-  elasticsearch {
-    hosts => "localhost:9200"   # Elasticsearch 호스트와 포트 설정
-    index => "logs-%{+YYYY.MM.dd}"   # 인덱스 이름을 날짜 기반으로 지정
+  if [type] == "like" {
+    elasticsearch {
+      hosts => ["localhost:9200"]
+      index => "like"                             # index를 like로 데이터 동기화
+    }
+  }
+
+  if [type] == "view" {
+    elasticsearch {
+      hosts => ["localhost:9200"]
+      index => "hit"                              # index를 hit로 데이터 동기화
+    }
   }
 }
-// end of logstash-config
+
 ```
+// end of logstash-config
 
 ```
 $ docker-compose up
