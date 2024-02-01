@@ -3,6 +3,7 @@ import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import { useRouter } from "vue-router";
 
+
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === "production" ? "https://i10a705.p.ssafy.io/" : "http://localhost:8081/";
