@@ -4,8 +4,9 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+</script>
 
-<style scoped>
-/* 스타일링 추가 */
+<style>
+
 </style>

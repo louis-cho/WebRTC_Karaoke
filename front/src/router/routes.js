@@ -31,8 +31,6 @@ const routes = [
     path: '/feed_detail',
     component: () => import('@/pages/FeedDetailPage.vue')
   },
-
-
   {
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/ErrorNotFound.vue')
@@ -41,6 +39,15 @@ const routes = [
     path: '/perfect_score',
     component: () => import('@/components/karaoke/PerfectScore.vue')
   },
+  {
+    path: '/normal_mode',
+    component: () => import('@/components/karaoke/NormalMode.vue')
+  },
+  {
+    path: '/canvas_test',
+    component: () => import('@/components/karaoke/CanvasTest.vue')
+  },
+
   {
     path: "/karaoke/:sessionId", // 동적 세션 ID
     name: "KaraokeSession",
