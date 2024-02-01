@@ -42,6 +42,15 @@ const routes = [
     component: () => import('@/components/karaoke/PerfectScore.vue')
   },
   {
+    path: '/normal_mode',
+    component: () => import('@/components/karaoke/NormalMode.vue')
+  },
+  {
+    path: '/canvas_test',
+    component: () => import('@/components/karaoke/CanvasTest.vue')
+  },
+
+  {
     path: "/karaoke/:sessionId", // 동적 세션 ID
     name: "KaraokeSession",
     component: () => import("@/pages/KaraokeSessionPage.vue"),
