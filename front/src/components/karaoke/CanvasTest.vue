@@ -8,7 +8,6 @@ import { ref, onMounted } from 'vue';
 const canvas = ref(null);
 
 const lyrics = [
-  { length: 3000, start: 0, lyric: '' },  //  전주 구간
   { length: 882, start: 0, lyric: '동' },
   { length: 1323, start: 882, lyric: '해' },
   { length: 441, start: 2205, lyric: '물' },
@@ -70,6 +69,7 @@ const lyrics = [
   { length: 2647, start: 52941, lyric: '세' }
 ]
 
+const startTimeRef = ref(null)
 const drawText = () => {
   const text = "동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세"
   const ctx = canvas.value.getContext('2d');
@@ -81,10 +81,10 @@ const drawText = () => {
   ctx.fillStyle = 'white';
   ctx.font = '24px Arial';
   ctx.fillText(text, 20, 30);
+  startTimeRef.value = Date.now()
 };
 
 let posX = 20;
-
 const drawAnimation = () => {
   if (!canvas.value) return;
 
@@ -92,26 +92,25 @@ const drawAnimation = () => {
 
   let currentIndex = 0;
   let lastRenderTime = 0;
-
+  let prelude = ref(0);  // 전주 시간
   const renderFrame = (timestamp) => {
-    if (!lastRenderTime || timestamp - lastRenderTime >= lyrics[currentIndex-1].length) {
-      // 첫 가사 || timestamp - lastRenderTime == 직전 가사의 duration인 경우.
+    if((Date.now() - startTimeRef.value - prelude.value) >= lyrics[currentIndex].start) {
+      // (현재 시간 - 노래 시작 시간)으로 가사별 index의 duration값 찾기. 전주가 있는 경우 그 시간만큼 빼주면 됨.
+      console.log(Date.now() - startTimeRef.value)
       const lyricData = lyrics[currentIndex];
       const { lyric } = lyricData;
       if(lyric === ' ') { // 띄어쓰기
         console.log("띄어쓰기")
         currentIndex++;
         posX += 6.7;  // font style과 크기에 따라 다름. 모험을 통해 알아가야 함.
-      } else if (lyric === ''){ // 전주구간
-        currentIndex++;
       } else {
-        // 채워진 부분 텍스트를 다른 색상으로 그립니다.
+        // 렌더링
         ctx.fillStyle = 'yellow';
         ctx.fillText(lyric, posX, 30);
 
-        // 다음 글자로 인덱스 이동
+        // 다음 글자로 인덱스 이동, 렌더링될 위치 이동.
         currentIndex++;
-        posX += 24;
+        posX += 24; // 글자 pt 따라감, 아마도.
       }
 
       // 모든 글자를 그렸다면 초기화
@@ -125,7 +124,8 @@ const drawAnimation = () => {
 
     // 다음 프레임 요청
     requestAnimationFrame(renderFrame);
-  };
+  }
+
 
   // 애니메이션 시작
   requestAnimationFrame(renderFrame);
@@ -138,5 +138,5 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 추가적인 스타일링을 할 수 있습니다. */
+
 </style>
