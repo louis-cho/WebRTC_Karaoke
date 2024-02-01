@@ -1,12 +1,15 @@
 package com.ssafy.server.chat.service;
 
 import java.util.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.server.chat.model.ChatRoom;
 import com.ssafy.server.chat.model.UsersChats;
 import com.ssafy.server.chat.repository.ChatRoomRepository;
 import com.ssafy.server.chat.repository.UsersChatsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service

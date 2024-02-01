@@ -1,16 +1,21 @@
 package com.ssafy.server.chat.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.server.chat.model.Chat;
 import com.ssafy.server.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -26,18 +31,22 @@ public class ChatController {
     // /pub/chat.message.{roomId} 로 요청하면 브로커를 통해 처리
     // /exchange/chat.exchange/room.{roomId} 를 구독한 클라이언트에 메시지가 전송된다.
     @MessageMapping("chat.enter.{chatRoomId}")
-    public void enterUser(@Payload Chat chat, @DestinationVariable String chatRoomId) {
+    public void enterUser(@Payload Chat chat, @DestinationVariable String chatRoomId) throws IOException {
         chat.setTime(String.valueOf(LocalDateTime.now()));
         chat.setMessage(chat.getSender() + " 님 " + chat.getRoomId()  +" 입장!!");
-        chatService.saveToJPA(chat);
+        chatService.loadFromJPA("4");
+//        chatService.loadFromRedis(chat.getRoomId());
+//        chatService.saveToRedis(chat);
+//        chatService.saveToJPA(chat);
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
     }
 
     @MessageMapping("chat.message.{chatRoomId}")
-    public void sendMessage(@Payload Chat chat, @DestinationVariable String chatRoomId) {
+    public void sendMessage(@Payload Chat chat, @DestinationVariable String chatRoomId) throws JsonProcessingException {
         chat.setTime(String.valueOf(LocalDateTime.now()));
         chat.setMessage(chat.getMessage());
-        chatService.saveToJPA(chat);
+        chatService.saveToRedis(chat);
+//        chatService.saveToJPA(chat);
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
 
     }

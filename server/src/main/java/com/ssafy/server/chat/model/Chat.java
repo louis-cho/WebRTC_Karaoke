@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@ToString
 public class Chat {
 
     @Id
@@ -14,7 +15,7 @@ public class Chat {
     private long messageID;
 
     private String sender; // 송신 유저 PK
-    private String roomId; // 채팅방 번호 PK (지금은 임시로 UUID)
+    private String roomId; // 채팅방 번호 PK
 
     public enum MessageType{
         ENTER, TALK, LEAVE, MEDIA;
