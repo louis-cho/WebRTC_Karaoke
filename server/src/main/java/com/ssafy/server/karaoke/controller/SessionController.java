@@ -9,8 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,15 +36,13 @@ public class SessionController {
         System.out.println("Getting sessionId and token | {sessionName}=" + params);
 
         // 연결할 비디오 콜("TUTORIAL")의 세션 이름
-        String sessionName = (String) params.get("sessionName");
+        String sessionName = (String) params.remove("sessionName");
 
         // 이 사용자에 대한 역할
         OpenViduRole role = OpenViduRole.PUBLISHER;
 
-        // 서버 데이터와 역할을 사용하여 connectionProperties 객체를 빌드함
-        ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).role(role).data("user_data").build();
-
-        JsonObject responseJson = new JsonObject();
+        // 전달받은 파라미터를 사용하여 연결 속성을 생성합니다.
+        ConnectionProperties connectionProperties = ConnectionProperties.fromJson(params).build();
 
         if (openViduModel.getMapSessions().get(sessionName) != null) {
             // 이미 세션이 존재하는 경우

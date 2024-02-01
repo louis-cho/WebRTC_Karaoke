@@ -4,17 +4,19 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
-const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:8081/";
 
 export const useKaraokeStore = defineStore("karaoke", {
   state: () => ({
+    APPLICATION_SERVER_URL:
+      process.env.NODE_ENV === "production" ? "" : "http://localhost:8081/",
+
     // OpenVidu 객체
     OV: undefined,
     session: undefined,
     mainStreamManager: undefined,
     publisher: undefined,
     subscribers: [],
+    token: undefined,
 
     // Join form
     mySessionId: "1234",
@@ -60,10 +62,6 @@ export const useKaraokeStore = defineStore("karaoke", {
         }
       });
 
-      // 녹화 이벤트 시작 정지.
-      this.session.on("recordingStarted");
-      this.session.on("recordingStopped");
-
       // 비동기 예외가 발생할 때마다...
       this.session.on("exception", ({ exception }) => {
         console.warn(exception);
@@ -87,6 +85,8 @@ export const useKaraokeStore = defineStore("karaoke", {
         this.session
           .connect(token, { clientData: this.myUserName })
           .then(() => {
+            // 토근을 저장한다.
+            this.token = token;
             // --- 5) 원하는 속성으로 자신의 카메라 스트림 가져오기 ---
 
             // 원하는 속성으로 초기화된 발행자를 만듭니다 (video-container'에 비디오가 삽입되지 않도록 OpenVidu에게 처리를 맡기지 않음).
@@ -122,9 +122,18 @@ export const useKaraokeStore = defineStore("karaoke", {
       window.addEventListener("beforeunload", this.leaveSession);
     },
 
-    leaveSession() {
-      // --- 7) 'disconnect' 메서드를 세션 객체에서 호출하여 세션을 나갑니다. ---
-      if (this.session) this.session.disconnect();
+    async leaveSession() {
+      // --- 7) 'removeToken' 메서드를 호출하여 세션을 나갑니다. ---
+      await axios.post(
+        this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/removeToken",
+        {
+          sessionName: this.mySessionId,
+          token: this.token,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       // 모든 속성 비우기...
       this.session = undefined;
@@ -138,15 +147,11 @@ export const useKaraokeStore = defineStore("karaoke", {
     },
 
     async getToken(mySessionId) {
-      const sessionId = await this.createSession(mySessionId);
-      return await this.createToken(sessionId);
-    },
-
-    async createToken(sessionId) {
       // 토큰 생성
       const response = await axios.post(
-        APPLICATION_SERVER_URL + "api/sessions/" + sessionId + "/connections",
+        this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/getToken",
         {
+          sessionName: mySessionId,
           // filter 사용을 위해 create connection 시 body를 추가
           type: "WEBRTC",
           role: "PUBLISHER",
@@ -159,25 +164,6 @@ export const useKaraokeStore = defineStore("karaoke", {
         }
       );
       return response.data; // 토큰 반환
-    },
-
-    async createSession(sessionId) {
-      // 세션 생성
-      const response = await axios.post(
-        APPLICATION_SERVER_URL + "api/sessions",
-        {
-          customSessionId: sessionId,
-          userNo: 53,
-          endHour: 1,
-          endMinute: 30,
-          quota: 16,
-          isPrivacy: false,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      return response.data; // 세션 ID 반환
     },
 
     // 캠, 오디오 등 기기와 관련된 함수
