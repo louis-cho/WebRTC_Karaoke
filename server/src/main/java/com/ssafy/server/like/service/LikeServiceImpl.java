@@ -1,10 +1,6 @@
 package com.ssafy.server.like.service;
 
-import com.ssafy.server.cache.event.LikeEventPublisher;
-import com.ssafy.server.feed.rank.model.FeedStats;
-import com.ssafy.server.like.document.LikesDocument;
 import com.ssafy.server.like.model.Likes;
-import com.ssafy.server.like.repository.LikeDocumentRepository;
 import com.ssafy.server.like.repository.LikeRepository;
 import com.ssafy.server.syncdata.LikeSyncData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +21,7 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public void createLike(Likes newLike) {
-       likeEventPublisher.publishLikeEvent(newLike);
+
     }
 
     @Override

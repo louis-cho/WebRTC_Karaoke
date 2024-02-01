@@ -15,10 +15,10 @@ public class HitRedisRepository {
 
     private final String HASH_KEY = "hits"; // Redis의 Hash 키
 
-    private final RedisTemplate<String, Set<HitSyncData>> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final HashOperations<String, Integer, Set<HitSyncData>> hashOperations;
 
-    public HitRedisRepository(RedisTemplate<String, Set<HitSyncData>> redisTemplate) {
+    public HitRedisRepository(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.hashOperations = redisTemplate.opsForHash();
     }

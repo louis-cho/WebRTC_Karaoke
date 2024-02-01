@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Redis에서 MySQL DB로 데이터를 옮기는 작업
+ */
 @Component
 public class SyncDataTask {
     @Autowired
@@ -31,7 +34,7 @@ public class SyncDataTask {
 
 
 
-    @Scheduled(fixedDelay = 3600000)
+    @Scheduled(fixedDelay = 10000)
     public void syncDataToDB() {
         syncLikesDataToDB();
         syncHitsDataToDB();
