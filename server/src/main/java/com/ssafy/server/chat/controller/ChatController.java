@@ -38,11 +38,8 @@ public class ChatController {
     @MessageMapping("chat.enter.{chatRoomId}")
     public void enterUser(@Payload Chat chat, @DestinationVariable String chatRoomId) throws IOException {
         chat.setTime(String.valueOf(LocalDateTime.now()));
-        chat.setMessage(chat.getSender() + " 님 " + chat.getRoomId()  +" 입장!!");
-//        chatService.loadFromJPA(chat.getRoomId());
-//        chatService.loadFromRedis(chat.getRoomId());
+        chat.setMessage(chat.getSender() + " 님 " + chat.getRoomId()  +"방 입장!!");
         chatService.saveToRedis(chat, false);
-//        chatService.saveToJPA(chatService.loadFromRedis(chatRoomId, false));
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
     }
 
@@ -71,7 +68,7 @@ public class ChatController {
         chat.setTime(String.valueOf(LocalDateTime.now()));
         chat.setMessage(chat.getMessage());
         chatService.saveToRedis(chat, false);
-        chatService.saveToJPA(chatService.loadFromRedis(chatRoomId, false, true));
+//        chatService.saveToJPA(chatService.loadFromRedis(chatRoomId, false, true));
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
     }
 
