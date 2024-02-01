@@ -29,7 +29,7 @@ public class RecordingController {
     // 녹화를 시작하는 엔드포인트
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     public ResponseEntity<?> startRecording(@RequestBody Map<String, Object> params) {
-        String sessionId = (String) params.get("session");
+        String sessionId = (String) params.get("sessionId");
         Recording.OutputMode outputMode = Recording.OutputMode.valueOf((String) params.get("outputMode"));
         boolean hasAudio = (boolean) params.get("hasAudio");
         boolean hasVideo = (boolean) params.get("hasVideo");
@@ -52,7 +52,7 @@ public class RecordingController {
     // 녹화를 중지하는 엔드포인트
     @RequestMapping(value = "/stop", method = RequestMethod.POST)
     public ResponseEntity<?> stopRecording(@RequestBody Map<String, Object> params) {
-        String recordingId = (String) params.get("recording");
+        String recordingId = (String) params.get("recordingId");
 
         System.out.println("Stoping recording | {recordingId}=" + recordingId);
 
@@ -69,7 +69,7 @@ public class RecordingController {
     // 녹화를 삭제하는 엔드포인트
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public ResponseEntity<?> deleteRecording(@RequestBody Map<String, Object> params) {
-        String recordingId = (String) params.get("recording");
+        String recordingId = (String) params.get("recordingId");
 
         System.out.println("Deleting recording | {recordingId}=" + recordingId);
 
