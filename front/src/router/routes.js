@@ -31,8 +31,6 @@ const routes = [
     path: '/feed_detail',
     component: () => import('@/pages/FeedDetailPage.vue')
   },
-
-
   {
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/ErrorNotFound.vue')
