@@ -45,7 +45,7 @@
 </template>
 
 <script>
-  import {getPublicKey, register, login} from "@/js/encrypt/authRequest.js";
+import { getPublicKey, register, login } from "@/js/encrypt/authRequest.js";
 
 export default {
   data() {
@@ -74,7 +74,6 @@ export default {
       this.loginModal = false;
     },
     async login() {
-      // 로그인 로직을 여기에 추가 (서버 연동 등)
       console.log("로그인:", this.loginForm);
 
       let username = this.loginForm.username;
@@ -84,7 +83,31 @@ export default {
 
       this.closeLoginModal();
 
+      // ------------------------------
+      // try {
+      //   await login(username, password);
+      //   this.isLoggedIn = true;
+      //   this.closeLoginModal();
+      // } catch (error) {
+      //   console.error("Login failed:", error);
+      //   this.isLoggedIn = false;
+      // }
+      // ---------------------------------
+
     },
+    // ----------------------
+    // logout() {
+    //   // 로그아웃 동작 수행
+    //   this.isLoggedIn = false;
+
+    //   // 로그인 폼을 초기화합니다
+    //   this.loginForm = {
+    //     username: "",
+    //     password: "",
+    //   };
+    // },
+    // ----------------------
+
     async openSignupModal() {
       await getPublicKey();
       this.signupModal = true;
