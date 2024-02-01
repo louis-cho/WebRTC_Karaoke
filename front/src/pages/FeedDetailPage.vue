@@ -1,23 +1,25 @@
 <template>
   <div>
-    <TabItem/>
+    <TabItem />
     <!-- <h4>상세 피드 페이지</h4> -->
-    <div>
+    <div class="my-feed">
+
       <!-- 첫번째 div -->
-      <div>
+      <div class="header ">
         <div @click="goBack">
           <img src="@/assets/icon/back.png" alt="뒤로가기">
         </div>
       </div>
+      <hr>
+
       <!-- 두번째 div -->
-      <div class="row-container">
-        <div>
-          <!-- 수정 필요 -->
-          <img src="@/assets/img/capture.png" alt="게시글 작성자 프로필 이미지" class="profile-image">
+      <div class="profile">
+        <div class="profile-img-container">
+          <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img">
         </div>
-        <div>
-          <div class="row-container">
-            <!-- 수정 필요 -->
+
+        <div class="width-100">
+          <div class="space-between" >
             <div>
               <p>{{ 닉네임 }}JennierubyJane</p>
             </div>
@@ -25,62 +27,52 @@
               <img src="@/assets/icon/setting.png" alt="설정">
             </div>
           </div>
-          <div class="row-container">
-            <!-- 수정 필요 -->
+          <div class="space-start">
             <div>{{ 노래제목 }}거짓말/</div>
             <div>{{ 가수 }}빅뱅/</div>
-            <div>{{ 공개여부 }}공개</div>
+            <q-btn color="secondary" label=" 공개 " size="sm" />
           </div>
         </div>
       </div>
 
-      <!-- 세번째 div -->
-      <div>
-        <!-- 수정 필요 -->
-        <h6>오랜만에 빅뱅 노래 :)</h6>
+      <p>{{ 게시글제목 }} 오랜만에 빅뱅 노래</p>
+      <video controls width="100%">
+        <source src="your_video_url.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="flex-row">
+      <div class="margin-right-20">
+        <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
+        <span>0</span>
       </div>
-      <!-- 네번째 div -->
-      <div>
-        <!-- 수정 필요 -->
-        <video controls width="100%">
-          <source src="your_video_url.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
+      <div class="margin-right-20">
+        <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
+        <span>0</span>
+      </div>
+      <div class="margin-right-20">
+        <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
+        <span>0</span>
+      </div>
+      </div>
+      <hr>
 
-      </div>
-      <!-- 다섯번째 div -->
-      <div class="row-container">
-        <div>
-          <img src="@/assets/icon/chat.png" alt="댓글">
+      <!-- 세번째 div(내 댓글 입력창) -->
+      <div class="profile">
+        <div class="profile-img-container">
+          <img src="@/assets/img/capture3.png" class="profile-img2" alt="내 프로필 이미지">
         </div>
-        <div>
-          <img src="@/assets/icon/love.png" alt="좋아요">
-        </div>
-        <div>
-          <img src="@/assets/icon/show.png" alt="조회수">
-        </div>
-      </div>
-      <!-- 여섯번째 div -->
-      <div class="row-container">
-        <div>
-          <!-- 수정 필요 -->
-          <img src="@/assets/img/capture3.png" class="profile-image" alt="댓글 작성자 프로필 이미지">
-        </div>
-        <div>
-          <input v-model="newComment" style="height: 100px; width: 100%; box-sizing: border-box;" @keydown.enter.prevent="addComment" placeholder="댓글을 입력하세요...">
+        <div style="height: 100px; width: 100%; box-sizing: border-box;">
+          <input v-model="newComment"  @keydown.enter.prevent="addComment" placeholder="댓글을 입력하세요...">
         </div>
       </div>
       <hr>
 
-      <!-- 일곱번째 div -->
+      <!-- 네번째 div(댓글 목록) -->
       <div ref="commentContainer">
-        <!-- 댓글 목록 -->
         <div v-for="comment in comments" :key="comment.id">
           <div class="row-container">
             <div>
-              <!-- 수정 필요 -->
-              <!-- <img :src="comment.profileImage" alt=""> -->
-              <img src="@/assets/img/capture4.png" class="profile-image" alt="">
+              <img :src="comment.profileImage" class="profile-image" alt="댓글 작성자 프로필 이미지">
             </div>
             <div>
               <div>{{ comment.username }}</div>
@@ -88,13 +80,11 @@
             </div>
           </div>
           <hr>
-
-
         </div>
       </div>
+
     </div>
 
-    <!-- 수정 및 삭제 모달 -->
     <q-dialog v-model="modal" persistent>
       <q-card>
         <q-card-section>
@@ -106,8 +96,6 @@
               <q-btn icon="close" flat round @click="toggleModal" />
             </q-item-section>
           </q-item>
-
-          <!-- 수정 및 삭제 버튼 -->
           <q-card-actions align="right">
             <q-btn label="게시글 수정" color="primary"/>
             <q-btn label="게시글 삭제" color="negative" @click="deletePost" />
@@ -171,39 +159,108 @@ const comments = ref([
 
 
 </script>
-
 <style scoped>
-.first {
-  display:flex;
-  flex-direction: row;
+
+.profile-img-container {
+    width: 20%;
+    height: auto;
+    display: block;
+  }
+
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 30%;
+  display: block; /* 인라인 요소 간격 제거 */
+  object-fit: cover;
+  /* max-width: 100%;
+  max-height: 200px; */
+}
+
+.profile-img2 {
+  width: 100%;
+  height: 100%;
+  border-radius: 30%;
+  display: block; /* 인라인 요소 간격 제거 */
+  object-fit: cover;
+}
+
+.my-feed {
+    /* padding: 20px; */
+  padding-left: 200px;
+  padding-right: 200px;
+  }
+.profile {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin: 20px 0;
+
+}
+
+.width-100 {
+  width:100%;
+  padding-left: 5%;
+}
+/* .justify-content-start {
+  display: flex;
+  justify-content: start;
+} */
+
+
+.space-between {
+  display: flex;
   justify-content: space-between;
+}
+
+.space-start {
+  display: flex;
+  justify-content: start;
+}
+
+.flex-row {
+  display: flex;
+}
+
+.margin-right-10 {
+  margin-right: 10px;
+}
+
+.margin-right-20 {
+  margin-right: 20px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.align-between {
+  flex-wrap: wrap;
+  align-content: space-between;
+}
+
+/* .just-row-container {
+  display: flex;
+  justify-content: row;
 }
 
 .row-container {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 }
 
 .column-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+} */
 
-.comment-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.profile-image {
-  border-radius: 20%;
+/* .profile-img {
+  border-radius: 30%;
   object-fit: cover;
-  width: 100px;
-  height: 100px;
-}
+  width: 50%;
+  height: 50%;
+} */
 </style>
-
-
-
