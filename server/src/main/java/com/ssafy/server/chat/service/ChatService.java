@@ -29,10 +29,12 @@ public class ChatService {
     public void saveToJPA(List<Object> chatJsonList) throws JsonProcessingException {
         assert chatJsonList != null;
         Collections.reverse(chatJsonList);
+        List<Chat> list = new ArrayList<>();
         for (Object chatJson : chatJsonList) {
             Chat chat = objectMapper.readValue(chatJson.toString(), Chat.class);
-            chatRepository.save(chat);
+            list.add(chat);
         }
+        chatRepository.saveAll(list);
     }
 
     public List<Chat> loadFromJPA(String roomId){
@@ -45,9 +47,11 @@ public class ChatService {
         redisTemplate.opsForList().leftPush(key, chatJson);
     }
 
-    public List<Object> loadFromRedis(String roomId, Boolean flag) {
+    public List<Object> loadFromRedis(String roomId, Boolean flag, Boolean delete) {
         String key = String.format(CHAT_KEY, roomId);
         if(flag) key = String.format(OLD_CHAT_KEY, roomId);
-        return redisTemplate.opsForList().range(key, 0, -1);
+        List<Object> list = redisTemplate.opsForList().range(key, 0, -1);
+        if(delete) redisTemplate.delete(key);
+        return list;
     }
 }

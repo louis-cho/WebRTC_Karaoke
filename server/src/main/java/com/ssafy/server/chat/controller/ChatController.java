@@ -42,20 +42,20 @@ public class ChatController {
 //        chatService.loadFromJPA(chat.getRoomId());
 //        chatService.loadFromRedis(chat.getRoomId());
         chatService.saveToRedis(chat, false);
-        chatService.saveToJPA(chatService.loadFromRedis(chatRoomId, false));
+//        chatService.saveToJPA(chatService.loadFromRedis(chatRoomId, false));
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
     }
 
     // redis에 있는 채팅 내역 조회 후, 반환 (아직 db에 저장이 안된 데이터)
     @GetMapping("/room/{chatRoomId}/newMsg")
     public ResponseEntity<List<Object>> loadNewMsg(@PathVariable String chatRoomId) {
-        return ResponseEntity.ok(chatService.loadFromRedis(chatRoomId,false));
+        return ResponseEntity.ok(chatService.loadFromRedis(chatRoomId,false, false));
     }
 
     //redis에 있는 해당 채팅방의 "모든" 채팅 내역 조회 후, 반환
     @GetMapping("/room/{chatRoomId}/oldMsg")
     public ResponseEntity<List<Object>> loadOldMsg(@PathVariable String chatRoomId) throws JsonProcessingException {
-        List<Object> res = chatService.loadFromRedis(chatRoomId,true);
+        List<Object> res = chatService.loadFromRedis(chatRoomId,true, false);
         int lenCheck = res.size();
         if(lenCheck == 0){
             List<Chat> chatList = chatService.loadFromJPA(chatRoomId);
@@ -71,9 +71,8 @@ public class ChatController {
         chat.setTime(String.valueOf(LocalDateTime.now()));
         chat.setMessage(chat.getMessage());
         chatService.saveToRedis(chat, false);
-//        chatService.saveToJPA(chat);
+        chatService.saveToJPA(chatService.loadFromRedis(chatRoomId, false, true));
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
-
     }
 
     //기본적으로 chat.queue가 exchange에 바인딩 되어 있기 때문에 모든 메시지 처리
