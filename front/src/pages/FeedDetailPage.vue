@@ -161,11 +161,20 @@ const comments = ref([
 </script>
 <style scoped>
 
-.profile-img-container {
+/* .profile-img-container {
     width: 20%;
     height: auto;
     display: block;
-  }
+  } */
+
+.profile-img-container {
+  width: 30px;
+  height: 30px;
+  background-image: url("@/assets/img/capture.png");
+  object-fit: cover;
+  border-radius: 25px;
+  /* display: block; */
+}
 
 
 .profile-img {
