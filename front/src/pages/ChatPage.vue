@@ -35,28 +35,29 @@
 </template>
 
 <script setup>
+import { useCounterStore } from '@/stores/counter'
 import { ref, nextTick } from "vue";
 import logoImage from "@/assets/icon/logo1-removebg-preview.png"
 
+// const store = useCounterStore()
 const messages = ref([])
 const newMessage = ref('')
 const selectedFile = ref(null)
 const messagesContainer = ref(null)
 
-
-function sendMessage() {
+const sendMessage = function() {
   const textMessageString = `{"type": "text", "content": "${newMessage.value}"}`;
   // const textMessageString = newMessage.value
   handleMessage(textMessageString);
 
-  // 입력창 초기화
   newMessage.value = "";
 
-  // 스크롤을 항상 아래로 내림
+  // 스크롤 항상 아래로 내리기
   nextTick(() => {
     messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
   });
 }
+
 
 function handleMessage(msg) {
   try {
