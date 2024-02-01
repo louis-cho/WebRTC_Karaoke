@@ -3,16 +3,23 @@ package com.ssafy.server.feed.rank.service;
 import com.ssafy.server.feed.rank.document.FeedStatsDocument;
 import com.ssafy.server.hit.document.HitDocument;
 import com.ssafy.server.like.document.LikesDocument;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +77,6 @@ public class RankServiceImpl implements RankService {
 
             elasticsearchTemplate.save(statsEntity);
         }
-
         // 상위 100개 문서를 가져오는 쿼리 생성
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(matchAllQuery())
@@ -87,10 +93,22 @@ public class RankServiceImpl implements RankService {
         System.out.println(top100Ranking);
     }
 
+//    private <T> SearchHits<T> fetchDataFromElasticsearch(String index, Class<T> documentClass) {
+//        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+//                .withQuery(matchAllQuery())
+//                .build();
+//
+//
+//        return elasticsearchTemplate.search(searchQuery, documentClass);
+//    }
+
     private <T> SearchHits<T> fetchDataFromElasticsearch(String index, Class<T> documentClass) {
-        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(matchAllQuery())
-                .build();
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+
+        // 인덱스 필터링 추가
+        // queryBuilder.withFilter(QueryBuilders.termQuery("_index", index)).withQuery(matchAllQuery());
+        queryBuilder.withQuery(matchAllQuery());
+        NativeSearchQuery searchQuery = queryBuilder.build();
 
         return elasticsearchTemplate.search(searchQuery, documentClass);
     }

@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 
-@Document(indexName = "feed_stats")
+@Document(indexName = "feed_stats", createIndex = true)
 @Getter
 @Setter
 @ToString
