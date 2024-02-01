@@ -13,7 +13,7 @@ import java.util.Set;
 @Repository
 public class HitRedisRepository {
 
-    private final String HASH_KEY = "hits"; // Redis의 Hash 키
+    private final String HASH_KEY = "hit"; // Redis의 Hash 키
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final HashOperations<String, Integer, Set<HitSyncData>> hashOperations;
