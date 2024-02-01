@@ -3,7 +3,7 @@
   <div id="main-container" class="q-pa-md q-gutter-md">
     <div id="img-div" class="q-mb-md">
       <q-img
-        src="src/assets/icon/logo1-removebg-preview.png"
+        src="@/assets/icon/logo1-removebg-preview.png"
         alt="로고 이미지"
         class="q-ma-md"
         :style="{ width: '40%' }"

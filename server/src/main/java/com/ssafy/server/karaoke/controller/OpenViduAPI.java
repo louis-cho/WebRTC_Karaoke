@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-//@CrossOrigin(origins = "*")
 @RestController
 public class OpenViduAPI {
 

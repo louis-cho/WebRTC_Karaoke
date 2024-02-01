@@ -21,6 +21,7 @@ public class PointController {
     @GetMapping("/")
     ResponseEntity<?> checkPoint() throws Exception{
 
+
         //유저아이디 받아오기. 추후 인증토큰에서 찾기
         Integer userPK = 1;
         Integer point = null;
