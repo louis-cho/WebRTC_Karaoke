@@ -460,4 +460,109 @@ $ docker-compose up
 
 localhost:5601로 접속하면 확인 가능
 
+# 디렉토리 구조
+```
+├─front
+│  ├─docker
+│  ├─public
+│  │  └─resources
+│  │      └─images
+│  └─src
+│      ├─assets
+│      │  ├─icon
+│      │  └─img
+│      ├─boot
+│      ├─components
+│      │  └─karaoke
+│      ├─css
+│      ├─js
+│      │  ├─chat
+│      │  ├─config
+│      │  ├─encrypt
+│      │  ├─karaoke
+│      │  ├─perfectScore
+│      │  └─websocket
+│      ├─layouts
+│      ├─pages
+│      ├─router
+│      └─stores
+└─server
+    └─src
+        ├─main
+        │  ├─java
+        │  │  └─com
+        │  │      └─ssafy
+        │  │          └─server
+        │  │              ├─audit
+        │  │              ├─chat
+        │  │              │  ├─controller
+        │  │              │  ├─model
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─comment
+        │  │              │  ├─controller
+        │  │              │  ├─model
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─common
+        │  │              │  └─util
+        │  │              ├─config
+        │  │              ├─exception
+        │  │              │  ├─feed
+        │  │              │  ├─like
+        │  │              │  ├─request
+        │  │              │  └─user
+        │  │              ├─feed
+        │  │              │  ├─controller
+        │  │              │  ├─model
+        │  │              │  ├─rank
+        │  │              │  │  ├─document
+        │  │              │  │  ├─model
+        │  │              │  │  └─service
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─hit
+        │  │              │  ├─controller
+        │  │              │  ├─document
+        │  │              │  ├─model
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─karaoke
+        │  │              │  ├─controller
+        │  │              │  ├─model
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─like
+        │  │              │  ├─controller
+        │  │              │  ├─document
+        │  │              │  ├─model
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─notification
+        │  │              ├─point
+        │  │              │  ├─controller
+        │  │              │  ├─model
+        │  │              │  │  ├─dto
+        │  │              │  │  └─entity
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─syncdata
+        │  │              └─user
+        │  │                  ├─auth
+        │  │                  ├─controller
+        │  │                  ├─document
+        │  │                  ├─model
+        │  │                  ├─repository
+        │  │                  ├─secure
+        │  │                  ├─service
+        │  │                  └─util
+        │  └─resources
+        │      └─templates
+        └─test
+            └─java
+                └─com
+                    └─ssafy
+                        └─server
+```
+
 <img src="https://capsule-render.vercel.app/api?section=footer&type=waving&color=#a374db&height=150" />
