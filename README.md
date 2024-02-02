@@ -1,12 +1,14 @@
 # 프로젝트 한 일(0129 ~ 0202)
 
-
 # 프로젝트 개요
+
 
 # 배포 주소
 
 # 기술 스택
 
+# 아키넥처 구성도
+![a705.drawio](/uploads/2f07ef3d0808a1239f11647ffaeb4f9a/a705.drawio.png)
 
 # 요구사항
 주소
@@ -24,11 +26,13 @@
 
 
 ### 이준범
+BE
 - 포인트(마일리지)
   - 포인트(마일리지) 제도에 필요한 api, repository작성
   - redis를 이용한 현재 포인트값 캐싱
   - redis 만료시 중간 포인트 값 갱신 작업 (service)
 
+INFRA
 - 인프라
   - ec2에 mariadb, elk, openvidu 배포
   - ec2에 프론트 npm run build를 통한 statc한 파일로 배포
