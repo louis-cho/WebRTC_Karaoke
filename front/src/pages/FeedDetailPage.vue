@@ -14,22 +14,22 @@
 
       <!-- 두번째 div -->
       <div class="profile">
-        <div class="profile-img-container">
+        <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }">
           <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
         </div>
 
         <div class="width-100">
           <div class="space-between" >
             <div>
-              <p>{{ 닉네임 }}JennierubyJane</p>
+              <p>{{ getUserName(feed.USER_PK) }}JennierubyJane</p>
             </div>
             <div @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정">
             </div>
           </div>
           <div class="space-start">
-            <div>{{ 노래제목 }}거짓말/</div>
-            <div>{{ 가수 }}빅뱅/</div>
+            <div>{{ getSongTitle(feed.FEED_ID) }} 거짓말/</div>
+            <div>{{ getSongSinger(feed.FEED_ID) }}빅뱅/</div>
             <q-btn color="secondary" label=" 공개 " size="sm" />
           </div>
         </div>
@@ -68,14 +68,14 @@
 
       <!-- 네번째 div(댓글 목록) -->
       <div ref="commentContainer">
-        <div v-for="comment in comments" :key="comment.id">
+        <div v-for="comment in comments" :key="comment.COMMENT_ID">
           <div class="display-flex">
             <div class="comment-img-container2">
               <!-- <img :src="comment.profileImage" class="profile-image" alt="댓글 작성자 프로필 이미지"> -->
             </div>
             <div class="comments">
-              <div><strong>{{ comment.username }}</strong>st</div>
-              <div>{{ comment.text }}</div>
+              <div><strong>{{ comment.username }} {{ 닉네임 }}</strong></div>
+              <div>{{ comment.CONTENT }}</div>
             </div>
           </div>
           <hr>
@@ -115,22 +115,57 @@ const commentContainer = ref(null);
 const modal = ref(false);
 
 
+const getUserProfile = (user_pk) => {
+  // 사용자 프로필 이미지 가져오기 로직..
+  return '@/assets/img/capture.png';
+}
+
+const getUserName = (user_pk) => {
+  // 닉네임 가져오기 로직...
+  return '닉네임1';
+}
+
+const getSongId = (feed_id) => {
+  // FEED_ID를 사용하여 SONG_ID를 가져오기...
+  // 예를 들어 빅뱅 거짓말 SONG_ID 10번이라 할 때
+  return 10;
+}
+
+const getSongTitle = (feed_id) => {
+  // FEED_ID를 사용하여 SONG_ID를 가져오기...
+  const song_id = getSongId(feed_id);
+  // SONG_ID를 사용하여 TITLE을 가져오기...
+  return '거짓말';
+}
+
+const getSongSinger = (feed_id) => {
+  // FEED_ID를 사용하여 SONG_ID를 가져오기...
+  const song_id = getSongId(feed_id);
+  // SONG_ID를 사용하여 SINGER를 가져오기...
+  return '빅뱅';
+}
+
 
 const addComment = function() {
-  // 댓글 추가 로직
-  comments.value.push({
-    id: comments.value.length + 1,
-    username: '새로운 유저',
-    profileImage: 'path/to/new/user/image.jpg',
-    text: newComment.value,
-  });
+  // 댓글 추가
+  const newCommentData = {
+    COMMENT_ID: comments.value.length + 1,
+    USER_PK: user_pk,
+    FEED_ID: 8, // 수정 필요
+    CONTENT: newComment.value,
+    CREATED_AT: new Date().toLocaleString(),
+    MODIFIED_AT: new Date().toLocaleString(),
+    userProfile,
+    username,
+  };
 
+  comments.value.push(newCommentData);
   // 댓글 입력 창 초기화
-  newComment.value = ""
-
+  newComment.value = '';
   // 스크롤을 항상 아래로 내림
   scrollToBottom();
 }
+
 
 const toggleModal = () => {
   modal.value = !modal.value;
@@ -152,8 +187,19 @@ const scrollToBottom = () => {
 
 // 가상의 댓글 예시
 const comments = ref([
-  { id: 1, username: '1번유저', profileImage: 'path/to/user1/image.jpg', text: '노래 잘 들었슴다' },
-  { id: 2, username: '2번유저', profileImage: 'path/to/user1/image.jpg', text: '음정이 조큼 아쉽네여' },
+  { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
+    CONTENT: '노래 잘 들었슴다',
+    // ROOT_COMMENT_ID : 3,
+    // PARENT_COMMENT_ID : 4,
+    CREATED_AT: "2021-10-08-10:27",
+    MODIFIED_AT: "2021-10-08-11:20"
+  },
+  { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
+    CONTENT: '음정이 조큼 아쉽네여',
+    // ROOT_COMMENT_ID : 3,
+    // PARENT_COMMENT_ID : 4,
+    CREATED_AT: "2023-03-08-10:27",
+    MODIFIED_AT: "2023-03-11-11:20" },
 ]);
 
 

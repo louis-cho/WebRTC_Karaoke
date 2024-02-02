@@ -18,13 +18,11 @@
               <div>
                 <p>{{ getUserName(feed.USER_PK) }}닉네임</p>
               </div>
-              <div @click="toggleModal">
-                <img src="@/assets/icon/setting.png" alt="설정">
-              </div>
+
             </div>
             <div class="space-start">
-              <div>{{ 노래제목 }}거짓말-</div>
-              <div>{{ 가수 }}빅뱅</div>
+              <div>{{ getSongTitle(feed.FEED_ID) }}거짓말-</div>
+              <div>{{ getSongSinger(feed.FEED_ID) }}빅뱅</div>
               <q-btn color="secondary" :label="feed.STATUS === '전체 공개' ? '전체 공개' : (feed.STATUS === '나만 공개' ? '나만 공개' : '비공개')" size="sm" />
             </div>
           </div>
@@ -70,6 +68,7 @@
 import { ref } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 
+//가상 피드 데이터
 const feeds = ref([
   {
     FEED_ID: 1,
@@ -95,18 +94,40 @@ const feeds = ref([
   }
 ])
 const getUserProfile = (userPK) => {
-
+  // 사용자 프로필 이미지 가져오기 로직..
+  return '@/assets/img/capture.png';
 }
 
 const getUserName = (userPK) => {
-
+  // 닉네임 가져오기 로직...
+  return '닉네임1';
 }
 
-const playVideo = (videoUrl) => {
-  const videoPlayer = document.getElementById('video-player');
-  videoPlayer.src = videoUrl;
-  videoPlayer.play();
+const getSongId = (feed_id) => {
+  // FEED_ID를 사용하여 SONG_ID를 가져오기...
+  // 예를 들어 빅뱅 거짓말 SONG_ID 10번이라 할 때
+  return 10;
 }
+
+const getSongTitle = (feed_id) => {
+  // FEED_ID를 사용하여 SONG_ID를 가져오기...
+  const song_id = getSongId(feed_id);
+  // SONG_ID를 사용하여 TITLE을 가져오기...
+  return '거짓말';
+}
+
+const getSongSinger = (feed_id) => {
+  // FEED_ID를 사용하여 SONG_ID를 가져오기...
+  const song_id = getSongId(feed_id);
+  // SONG_ID를 사용하여 SINGER를 가져오기...
+  return '빅뱅';
+}
+
+// const playVideo = (videoUrl) => {
+//   const videoPlayer = document.getElementById('video-player');
+//   videoPlayer.src = videoUrl;
+//   videoPlayer.play();
+// }
 </script>
 
 <style scoped>
