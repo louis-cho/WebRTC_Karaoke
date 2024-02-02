@@ -58,4 +58,8 @@ public class ChatService {
     public Set<String> getRedisKeys(){
         return redisTemplate.keys("*");
     }
+
+    public void deleteKeyInRedis(String key){
+        redisTemplate.delete(key);
+    }
 }

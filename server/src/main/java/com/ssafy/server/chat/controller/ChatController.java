@@ -68,7 +68,6 @@ public class ChatController {
         chat.setTime(String.valueOf(LocalDateTime.now()));
         chat.setMessage(chat.getMessage());
         chatService.saveToRedis(chat, false);
-//        chatService.saveToJPA(chatService.loadFromRedis(chatRoomId, false, true));
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
     }
 
