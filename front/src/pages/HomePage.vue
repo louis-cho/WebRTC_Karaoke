@@ -42,7 +42,7 @@
 <script setup>
 import { ref } from "vue";
 import StartTest from "@/components/StartTest.vue";
-import NavBar from "@/layouts/NavBar.vue";
+import Navbar from "@/layouts/NavBar.vue";
 import SearchUser from "@/components/SearchUser.vue";
 import SignIn from "@/components/SignIn.vue";
 
