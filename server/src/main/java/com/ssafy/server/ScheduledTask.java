@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class ScheduledTask {
@@ -16,20 +17,16 @@ public class ScheduledTask {
     @Autowired
     private ChatService chatService;
 
-    @Scheduled(fixedRate = 5000) // 1 sec 마다 실행 (단위: 밀리초)
+    @Scheduled(fixedRate = 10000) // 1 sec 마다 실행 (단위: 밀리초)
     public void updateData() throws JsonProcessingException {
-        System.out.println("스케쥴 호출");
 
-//        userService.updateData();   // Redis to MySQL
-        List<Chat> list = chatService.loadFromJPA("4");
-        for(Chat chat : list) {
-            chatService.saveToRedis(chat, true);
+        //일정 주기마다 redis에 있는 신규 채팅 데이터를 MySQL에 저장 / 그 후 redis Cache 삭제
+        Set<String> keySets = chatService.getRedisKeys();
+        for(String keyName : keySets){
+            if(keyName.startsWith("chat")) {
+                String keyNumStr = keyName.replaceAll("[^0-9]", "");
+                chatService.saveToJPA(chatService.loadFromRedis(keyNumStr, false, true));
+            }
         }
-//        chatService.loadFromRedis("4", true, false);
-        
-//        chatService.saveToJPA(chatService.loadFromRedis("4", true, true));
-//        userService.clearCache(); // Redis 캐시 초기화
-//        userService.getAllUsers(); // MySQL 데이터 갱신 및 Redis에 저장
-        System.out.println("Data updated at: " + System.currentTimeMillis());
     }
 }

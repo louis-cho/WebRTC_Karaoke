@@ -33,6 +33,8 @@ public class ChatService {
             list.add(chat);
         }
         chatRepository.saveAll(list);
+//        String key = String.format(CHAT_KEY, list.get(0).getRoomId());
+//        redisTemplate.delete(key);
     }
 
     public List<Chat> loadFromJPA(String roomId){
@@ -51,5 +53,9 @@ public class ChatService {
         List<Object> list = redisTemplate.opsForList().range(key, 0, -1);
         if(delete) redisTemplate.delete(key);
         return list;
+    }
+
+    public Set<String> getRedisKeys(){
+        return redisTemplate.keys("*");
     }
 }
