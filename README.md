@@ -4,6 +4,7 @@
 
 
 # 배포 주소
+[https://i10a705.p.ssafy.io/]
 
 # 기술 스택
 
@@ -11,16 +12,16 @@
 ![a705.drawio](/uploads/2f07ef3d0808a1239f11647ffaeb4f9a/a705.drawio.png)
 
 # 요구사항
-주소
+[https://www.notion.so/f7c62f5c6d1a441bbb191911ca3a1e7b?v=13e99663afb74afcb843af0fbe7daef9]
 
 # 화면정의서 
-주소
+[https://www.notion.so/32635f45919f4e62bea19d9727fc7b5f]
 
 # erd
-주소
+[https://www.erdcloud.com/d/3SsAyJ6rGXSMzyPcw]
 
 # Figma
-주소
+[https://www.figma.com/file/cnHpMUN4kpZ55qLu2FKBD6/%5BNEW%5D-Quick-UXUI-Wireframe-templates!-(%EA%B8%B0%ED%9A%8D%EC%9E%90%EC%99%80-%EB%94%94%EC%9E%90%EC%9D%B4%EB%84%88%EB%A5%BC-%EC%9C%84%ED%95%9C-UXUI-%ED%99%94%EB%A9%B4%EA%B8%B0%ED%9A%8D%EC%84%9C%2F%ED%99%94%EB%A9%B4%EC%84%A4%EA%B3%84%EC%84%9C-%ED%85%9C%ED%94%8C%EB%A6%BF)-(Community)?type=design&node-id=103-2&mode=design&t=VZrVBeL6BKOWOGX8-0]
 
 # 설정 가이드
 
@@ -52,8 +53,9 @@ INFRA
 ---
 ### 송준석
 - BE
-  - [karaoke] Song controller/model/repo/service 구축
-  - [AWS S3] 버킷 생성 및 커넥션 설정
+  - [노래방] 백엔드 노래 스켈레톤 코드 작성 
+  - [AWS S3] 버킷 생성 및 인증키 발급
+  - [AWS S3] 커넥션 설정
   - [AWS S3] S3fileUploader 구현
 
 - FE
@@ -67,40 +69,31 @@ INFRA
 
 - BE
   - [유저인증] 서버 측 RSA 복호화
-  - [유저인증] 서버 측 클라이언트 암호화 정보 해시 비교 (bcrypt)
+  - [유저인증] 서버 측 클라이언트 암호화 정보 해시 비교 (bcrypt 해시 비교 및 복호화)
   - [유저인증] AOP를 활용해 백엔드 서버 함수 호출 시 함수 정보 출력
-  - []
+  - [유저인증] RSA Key Manager 개발 key-value : ip- 비대칭 KeyPair
+  - [유저인증] RSA Key Manager Clean up 스케줄러 개발 - 마지막 요청으로부터 10분 이후 삭제
+  - [유저] 시스템 내부에서는 Autoincrement INT Type user primary key, 시스템 외부에서는 UUID를 사용하도록 구성 (성능, 보안)
+  - [웹소켓] 백엔드 웹소켓 스켈레톤 코드 개발
   - [알림] 알림 기능 구현 (SSE)
-  - [검색] 
-  - [검색]
-  - [발표]
-  - [댓글]
-  - [피드]
-  - [좋아요]
-  - [DM]
+  - [검색] ELK docker-compose 설정
+  - [검색] Logstash를 통해 MySQL - Elasticsearch 데이터 동기화
+  - [검색] Elasticsearch Spring boot 연동
+  - [검색] Elasticsearch를 통해 유저 닉네임 검색 시 INT Type user primary key 반환
+  - [검색] Elasticsearch + Logstash + MySQL을 통한 게시글 피드 랭킹 서비스 개발
+  - [발표] 프로젝트 기획 발표 담당
+  - [댓글] 백엔드 댓글 스켈레톤 코드 작성
+  - [피드] 백엔드 피드 스켈레톤 코드 작성
+  - [좋아요] 백엔드 좋아요 스켈레톤 코드 작성
+  - [DM] 백엔드 Websocket 스켈레톤 코드 작성
+  - [DB] Redis <-> MySQL 동기화 스켈레톤 코드 작성
+
+- FE
+  - [환경설정] 프론트엔드 vue & quasar 프레임워크 환경 설정
+  - [유저인증] 클라이언트 RSA 암호화
+  - [DM] 클라이언트 Websocket 스켈레톤 코드 작성
 
 
-  
-- elk를 통해 유저 닉네임 검색 시 user pk 반환
-- elk stack spring boot 프로젝트에 적용
-- aop를 통해 백엔드 서버 내 함수 호출 시 각각의 정보 출력
-- SSE를 통한 알림 기능 구현
-- 서버 RSA 복호화
-- 클라이언트 RSA 암호화
-- 프론트엔드 Vue & Quasar 환경설정
-- 기획 발표
-- docker compose with elk stack
-- Logstash 설정을 통해 MySQL, elastic search 데이터 동기화
-- 댓글 백엔드 스켈레톤 코드 작성
-- 피드 백엔드 스켈레톤 코드 작성
-- 좋아요 백엔드 스켈레톤 코드 작성
-- 조회 백엔드 스켈레톤 코드 작성
-- 웹소켓 프론트엔드, 백엔드 스켈레톤 코드 작성
-- RSA 키매니저 개발 (IP를 키로 각 클라이언트 별 비대칭키 페어를 관리)
-- RSA 배치 파일 개발 (일정 주기마다 RSA 변수를 확인하며 최근 =- - 요청이 10분 이상 지난 경우 데이터 삭제)
-- bcrypt를 통해 hash 값 비교
-- 내부적으로는 AutoIncrement INT type UserPK를 사용하도록 외부 노출 시에 UUID type UserKey를 사용하도록 설정
-- elastic search 랭킹 서비스 개발 중
 ---
 ### 연정흠
 [BE] DM
@@ -114,45 +107,59 @@ INFRA
 - [DM] 채팅방 입장 시, 이전 채팅 내역 중 가장 최근 날짜 데이터 로딩
 ---
 ### 고정원
-[BE] 노래방
-- /api/v1/karaoke/sessions/getToken
-  - SessionName으로 OpenVidu Session 객체 생성, 이미 존재하면 생성하지 않고 가져옴
-  - 세션에 연결된 Connection 객체 생성(입장하기) 
-  - BE 서버에 Session과 Token을 저장하여 관리
-  - Connection 객체의 토큰 반환
+- __BE__
+  - __[노래방_세션] 노래방 생성 및 입장__
+    - SessionName으로 OpenVidu Session 객체 생성, 이미 존재하면 생성하지 않고 가져옴
+    - 세션에 연결된 Connection 객체 생성(입장하기)
+    - BE 서버에 Session과 Token을 저장하여 관리
+    - Connection 객체의 토큰 반환
 
-- /api/v1/karaoke/sessions/removeToken
-  - SessionName과 Token을 받아서 해당하는 Session에 Token 제거
-  - 해당 Session에 더이상 Token이 존재하지 않으면 Session도 제거
+  - __[노래방_세션]  노래방 퇴장 및 제거__
+    - SessionName과 Token으로 해당하는 Session에서 Token 제거
+    - 해당 Session에 더이상 Token이 존재하지 않으면 Session도 제거
 
-- /api/v1/karaoke/sessions/closeSession
-  - SessionName에 해당하는 Session 강제 제거
-  - Session에 들어와있던 Token도 모두 제거
+  - __[노래방_세션] 노래방 제거__
+    - SessionName에 해당하는 Session 강제 제거
+    - Session에 들어와있던 Token도 모두 제거
 
-- /api/v1/karaoke/sessions/sessionList
-  - BE 서버에서 관리하고 있는 모든 Session 반환
+  - __[노래방_세션] 노래방 리스트__
+    - OpenVidu 서버에 생성된 모든 Session 정보 반환
 
-- /api/v1/karaoke/sessions/sessionInfo
-  - SessionName에 해당하는 Session 객체 반환
+  - __[노래방_세션] 노래방 정보__
+    - SessionName에 해당하는 Session의 정보 보기
 
-- /api/v1/karaoke/recording/start
-  - SessionName에 해당하는 세션 녹화 시작
-  - OutputMode를 설정할 수 있음(Computed, Individual)
+  - __[노래방_녹화] 녹화 시작__
+    - SessionName에 해당하는 세션 녹화 시작
+    - OutputMode를 설정할 수 있음(Computed, Individual)
 
-- /api/v1/karaoke/recording/stop
-  - 녹화 종료, 녹화된 영상은 OpenVidu 서버에 저장
+  - __[노래방_녹화] 녹화 종료__
+    - 녹화 종료, 녹화된 영상은 OpenVidu 서버에 저장
+    - url을 통해 저장된 영상 확인 가능
 
-- /api/v1/karaoke/recording/delete
-  - RecordingId에 해당하는 녹화 영상을 OpenVidu 서버에서 제거
+  - __[노래방_녹화] 녹화 영상 제거__
+    - RecordingId에 해당하는 녹화 영상을 OpenVidu 서버에서 제거
 
-- /api/v1/karaoke/recording/get/{recordingId}
-  - RecordingId에 해당하는 녹화 영상의 정보 반환
+  - __[노래방_녹화] 녹화 영상 정보__
+    - RecordingId에 해당하는 녹화 영상의 정보 반환
 
-- /api/v1/karaoke/recording/list
-  - OpenVidu 서버에 저장되어있는 모든 영상 정보 반환
+  - __[노래방_녹화] 녹화 영상 리스트__
+    - OpenVidu 서버에 저장되어있는 모든 영상 정보 반환
 
-- /api/v1/karaoke/file/upload
-  - OpenVidu에 저장되어 있는 영상을 AWS S3에 업로드
+  - __[노래방_녹화] 녹화 영상 업로드__
+    - OpenVidu에 저장되어 있는 영상을 AWS S3에 업로드
+    - OpenVidu 서버 -> BackEnd 서버에 저장 -> AWS S3에 저장
+
+- __FE__
+  - [노래방] 생성된 노래방을 리스트로 출력
+  - [노래방] 제목과 일치하는 노래방 생성 및 입장
+  - [노래방] 노래방 나가기
+  - [노래방] 노래방 내 화상채팅 구현
+  - [노래방] 음성필터 적용하기(에코, 증폭, 피치), 적용할 필터를 고르고 강도 설정
+  - [노래방] 노래방 내 채팅 구현
+  - [노래방] 카메라, 마이크 on/off 기능 구현
+  - [노래방] 카메라, 마이크 변경 기능 구현
+  - [노래방] 녹화 시작, 종료, 확인, 삭제 구현 -> 저장모드, 카메라, 마이크 사용여부 선택 가능
+
 ___
 # firstPjtTest
 
