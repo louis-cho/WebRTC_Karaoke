@@ -4,22 +4,23 @@
 # 프로젝트 개요
 
 # 배포 주소
-[https://i10a705.p.ssafy.io/]
+[![EC2](https://img.shields.io/badge/EC2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)](https://i10a705.p.ssafy.io/)
+
 
 # 기술 스택
 
 
 # 요구사항
-[https://www.notion.so/f7c62f5c6d1a441bbb191911ca3a1e7b?v=13e99663afb74afcb843af0fbe7daef9]
+[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/f7c62f5c6d1a441bbb191911ca3a1e7b?v=13e99663afb74afcb843af0fbe7daef9)
 
 # 화면정의서 
-[https://www.notion.so/32635f45919f4e62bea19d9727fc7b5f]
+[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/32635f45919f4e62bea19d9727fc7b5f)
 
 # erd
-[https://www.erdcloud.com/d/3SsAyJ6rGXSMzyPcw]
+[![ERD Cloud](https://img.shields.io/badge/ERDCloud-000000?style=for-the-badge&logo=ERDCloud&logoColor=white)](https://www.erdcloud.com/d/3SsAyJ6rGXSMzyPcw)
 
 # Figma
-[https://www.figma.com/file/cnHpMUN4kpZ55qLu2FKBD6/%5BNEW%5D-Quick-UXUI-Wireframe-templates!-(%EA%B8%B0%ED%9A%8D%EC%9E%90%EC%99%80-%EB%94%94%EC%9E%90%EC%9D%B4%EB%84%88%EB%A5%BC-%EC%9C%84%ED%95%9C-UXUI-%ED%99%94%EB%A9%B4%EA%B8%B0%ED%9A%8D%EC%84%9C%2F%ED%99%94%EB%A9%B4%EC%84%A4%EA%B3%84%EC%84%9C-%ED%85%9C%ED%94%8C%EB%A6%BF)-(Community)?type=design&node-id=103-2&mode=design&t=VZrVBeL6BKOWOGX8-0]
+[![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/file/cnHpMUN4kpZ55qLu2FKBD6/%5BNEW%5D-Quick-UXUI-Wireframe-templates!-(%EA%B8%B0%ED%9A%8D%EC%9E%90%EC%99%80-%EB%94%94%EC%9E%90%EC%9D%B4%EB%84%88%EB%A5%BC-%EC%9C%84%ED%95%9C-UXUI-%ED%99%94%EB%A9%B4%EA%B8%B0%ED%9A%8D%EC%84%9C%2F%ED%99%94%EB%A9%B4%EC%84%A4%EA%B3%84%EC%84%9C-%ED%85%9C%ED%94%8C%EB%A6%BF)-(Community)?type=design&node-id=103-2&mode=design&t=VZrVBeL6BKOWOGX8-0)
 
 # 설정 가이드
 
