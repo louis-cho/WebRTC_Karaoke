@@ -1,3 +1,4 @@
+<img src="https://capsule-render.vercel.app/api?type=waving&color=#a374db&height=150&section=header" />
 
 # 프로젝트 개요
 - 내가 부른 노래를 sns형태로 공유 할 수 있는 웹 노래방 서비스
@@ -459,3 +460,4 @@ $ docker-compose up
 
 localhost:5601로 접속하면 확인 가능
 
+<img src="https://capsule-render.vercel.app/api?section=footer&type=waving&color=#a374db&height=150" />
