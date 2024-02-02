@@ -108,7 +108,6 @@
 - [DM] redis에 이전 채팅 내역이 존재하지 않을 경우 db 조회 후 redis 저장
 - [DM] 스케줄링(Batch)을 위한 로직 구현 및 redis 캐시 삭제
 - [DM] 채팅방 입장 시, 이전 채팅 내역 중 가장 최근 날짜 데이터 로딩
-- 데이터 Batch apic Testing Tool로 테스트
 ---
 ### 고정원
 [BE] 노래방
