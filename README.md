@@ -1,7 +1,7 @@
 # 프로젝트 한 일(0129 ~ 0202)
 
-
 # 프로젝트 개요
+
 
 # 배포 주소
 [https://i10a705.p.ssafy.io/]
@@ -15,6 +15,9 @@
 <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
 <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
 </div>
+
+# 아키넥처 구성도
+![a705.drawio](/uploads/2f07ef3d0808a1239f11647ffaeb4f9a/a705.drawio.png)
 
 # 요구사항
 [https://www.notion.so/f7c62f5c6d1a441bbb191911ca3a1e7b?v=13e99663afb74afcb843af0fbe7daef9]
@@ -32,11 +35,13 @@
 
 
 ### 이준범
+BE
 - 포인트(마일리지)
   - 포인트(마일리지) 제도에 필요한 api, repository작성
   - redis를 이용한 현재 포인트값 캐싱
   - redis 만료시 중간 포인트 값 갱신 작업 (service)
 
+INFRA
 - 인프라
   - ec2에 mariadb, elk, openvidu 배포
   - ec2에 프론트 npm run build를 통한 statc한 파일로 배포
@@ -56,8 +61,9 @@
 ---
 ### 송준석
 - BE
-  - [karaoke] Song controller/model/repo/service 구축
-  - [AWS S3] 버킷 생성 및 커넥션 설정
+  - [노래방] 백엔드 노래 스켈레톤 코드 작성 
+  - [AWS S3] 버킷 생성 및 인증키 발급
+  - [AWS S3] 커넥션 설정
   - [AWS S3] S3fileUploader 구현
 
 - FE
@@ -109,45 +115,59 @@
 - [DM] 채팅방 입장 시, 이전 채팅 내역 중 가장 최근 날짜 데이터 로딩
 ---
 ### 고정원
-[BE] 노래방
-- /api/v1/karaoke/sessions/getToken
-  - SessionName으로 OpenVidu Session 객체 생성, 이미 존재하면 생성하지 않고 가져옴
-  - 세션에 연결된 Connection 객체 생성(입장하기) 
-  - BE 서버에 Session과 Token을 저장하여 관리
-  - Connection 객체의 토큰 반환
+- __BE__
+  - __[노래방_세션] 노래방 생성 및 입장__
+    - SessionName으로 OpenVidu Session 객체 생성, 이미 존재하면 생성하지 않고 가져옴
+    - 세션에 연결된 Connection 객체 생성(입장하기)
+    - BE 서버에 Session과 Token을 저장하여 관리
+    - Connection 객체의 토큰 반환
 
-- /api/v1/karaoke/sessions/removeToken
-  - SessionName과 Token을 받아서 해당하는 Session에 Token 제거
-  - 해당 Session에 더이상 Token이 존재하지 않으면 Session도 제거
+  - __[노래방_세션]  노래방 퇴장 및 제거__
+    - SessionName과 Token으로 해당하는 Session에서 Token 제거
+    - 해당 Session에 더이상 Token이 존재하지 않으면 Session도 제거
 
-- /api/v1/karaoke/sessions/closeSession
-  - SessionName에 해당하는 Session 강제 제거
-  - Session에 들어와있던 Token도 모두 제거
+  - __[노래방_세션] 노래방 제거__
+    - SessionName에 해당하는 Session 강제 제거
+    - Session에 들어와있던 Token도 모두 제거
 
-- /api/v1/karaoke/sessions/sessionList
-  - BE 서버에서 관리하고 있는 모든 Session 반환
+  - __[노래방_세션] 노래방 리스트__
+    - OpenVidu 서버에 생성된 모든 Session 정보 반환
 
-- /api/v1/karaoke/sessions/sessionInfo
-  - SessionName에 해당하는 Session 객체 반환
+  - __[노래방_세션] 노래방 정보__
+    - SessionName에 해당하는 Session의 정보 보기
 
-- /api/v1/karaoke/recording/start
-  - SessionName에 해당하는 세션 녹화 시작
-  - OutputMode를 설정할 수 있음(Computed, Individual)
+  - __[노래방_녹화] 녹화 시작__
+    - SessionName에 해당하는 세션 녹화 시작
+    - OutputMode를 설정할 수 있음(Computed, Individual)
 
-- /api/v1/karaoke/recording/stop
-  - 녹화 종료, 녹화된 영상은 OpenVidu 서버에 저장
+  - __[노래방_녹화] 녹화 종료__
+    - 녹화 종료, 녹화된 영상은 OpenVidu 서버에 저장
+    - url을 통해 저장된 영상 확인 가능
 
-- /api/v1/karaoke/recording/delete
-  - RecordingId에 해당하는 녹화 영상을 OpenVidu 서버에서 제거
+  - __[노래방_녹화] 녹화 영상 제거__
+    - RecordingId에 해당하는 녹화 영상을 OpenVidu 서버에서 제거
 
-- /api/v1/karaoke/recording/get/{recordingId}
-  - RecordingId에 해당하는 녹화 영상의 정보 반환
+  - __[노래방_녹화] 녹화 영상 정보__
+    - RecordingId에 해당하는 녹화 영상의 정보 반환
 
-- /api/v1/karaoke/recording/list
-  - OpenVidu 서버에 저장되어있는 모든 영상 정보 반환
+  - __[노래방_녹화] 녹화 영상 리스트__
+    - OpenVidu 서버에 저장되어있는 모든 영상 정보 반환
 
-- /api/v1/karaoke/file/upload
-  - OpenVidu에 저장되어 있는 영상을 AWS S3에 업로드
+  - __[노래방_녹화] 녹화 영상 업로드__
+    - OpenVidu에 저장되어 있는 영상을 AWS S3에 업로드
+    - OpenVidu 서버 -> BackEnd 서버에 저장 -> AWS S3에 저장
+
+- __FE__
+  - [노래방] 생성된 노래방을 리스트로 출력
+  - [노래방] 제목과 일치하는 노래방 생성 및 입장
+  - [노래방] 노래방 나가기
+  - [노래방] 노래방 내 화상채팅 구현
+  - [노래방] 음성필터 적용하기(에코, 증폭, 피치), 적용할 필터를 고르고 강도 설정
+  - [노래방] 노래방 내 채팅 구현
+  - [노래방] 카메라, 마이크 on/off 기능 구현
+  - [노래방] 카메라, 마이크 변경 기능 구현
+  - [노래방] 녹화 시작, 종료, 확인, 삭제 구현 -> 저장모드, 카메라, 마이크 사용여부 선택 가능
+
 ___
 # firstPjtTest
 
