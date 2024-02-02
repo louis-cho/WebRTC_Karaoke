@@ -11,41 +11,41 @@ const routes = [
     component: () => import("@/pages/KaraokeListPage.vue"),
   },
   {
-    path: '/feed',
-    component: () => import('@/pages/FeedPage.vue')
+    path: "/feed",
+    component: () => import("@/pages/FeedPage.vue"),
   },
   {
-    path: '/message',
-    component: () => import('@/pages/MessagePage.vue')
+    path: "/message",
+    component: () => import("@/pages/MessagePage.vue"),
   },
   {
-    path: '/my_profile',
-    component: () => import('@/pages/MyProfilePage.vue')
+    path: "/my_profile",
+    component: () => import("@/pages/MyProfilePage.vue"),
   },
   {
-    path: '/chat',
-    component: () => import('@/pages/ChatPage.vue')
+    path: "/chat",
+    component: () => import("@/pages/ChatPage.vue"),
   },
   // path 추후 수정 필요
   {
-    path: '/feed_detail',
-    component: () => import('@/pages/FeedDetailPage.vue')
+    path: "/feed_detail",
+    component: () => import("@/pages/FeedDetailPage.vue"),
   },
   {
-    path: '/:catchAll(.*)*',
-    component: () => import('@/pages/ErrorNotFound.vue')
+    path: "/:catchAll(.*)*",
+    component: () => import("@/pages/ErrorNotFound.vue"),
   },
   {
-    path: '/perfect_score',
-    component: () => import('@/components/karaoke/PerfectScore.vue')
+    path: "/perfect_score",
+    component: () => import("@/components/karaoke/PerfectScore.vue"),
   },
   {
-    path: '/normal_mode',
-    component: () => import('@/components/karaoke/NormalMode.vue')
+    path: "/normal_mode",
+    component: () => import("@/components/karaoke/NormalMode.vue"),
   },
   {
-    path: '/canvas_test',
-    component: () => import('@/components/karaoke/CanvasTest.vue')
+    path: "/canvas_test",
+    component: () => import("@/components/karaoke/CanvasTest.vue"),
   },
 
   {
@@ -64,7 +64,7 @@ const routes = [
 
       // 특정 페이지로 이동
       next();
-    }
+    },
   },
 
   {
@@ -90,4 +90,3 @@ const routes = [
 ];
 
 export default routes;
-

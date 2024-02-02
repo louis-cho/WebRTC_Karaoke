@@ -41,6 +41,9 @@ public class SessionController {
         // 이 사용자에 대한 역할
         OpenViduRole role = OpenViduRole.PUBLISHER;
 
+        // CustomSessionId를 설정해줍니다.
+        SessionProperties sessionProperties = new SessionProperties.Builder().customSessionId(sessionName).build();
+
         // 전달받은 파라미터를 사용하여 연결 속성을 생성합니다.
         ConnectionProperties connectionProperties = ConnectionProperties.fromJson(params).build();
 
@@ -75,7 +78,7 @@ public class SessionController {
         System.out.println("새로운 세션 : " + sessionName);
         try {
             // 새로운 OpenVidu 세션을 생성함
-            Session session = openViduModel.getOpenvidu().createSession();
+            Session session = openViduModel.getOpenvidu().createSession(sessionProperties);
             // 최근에 생성된 connectionProperties를 사용하여 새로운 토큰을 생성함
             String token = session.createConnection(connectionProperties).getToken();
 

@@ -15,7 +15,7 @@ app.kor.loginPage.pwHint = "pw를 입력해주세요";
 
 app.kor.karaokePage = {};
 app.kor.karaokePage.title = "바로 지금 노래해방!";
-app.kor.karaokePage.sessionId = "방 번호";
+app.kor.karaokePage.sessionId = "방 제목";
 app.kor.karaokePage.userName = "참가자 이름";
 app.kor.karaokePage.joinSession = "참가하기";
 app.kor.karaokePage.leaveSession = "방 나가기";
