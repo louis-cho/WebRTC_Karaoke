@@ -25,9 +25,12 @@
   // Create an instance of the StompClient
   const stompClient = new StompClient();
 
+
+  const url = "ws://localhost:8081/api/ws";
+
   // Set the topic
-  stompClient.setSub('/topic/someTopic');
-  stompClient.setPub('/topic/someTopic');
+  stompClient.setSub('/exchange/chat.exchange/room.1'); // 맨 끝의 1은 방번호
+  stompClient.setPub('/pub/chat.message.1');  // 맨 끝의 1은 방번호
 
   document.getElementById("connect_btn").addEventListener("click", function() {
     connect();
