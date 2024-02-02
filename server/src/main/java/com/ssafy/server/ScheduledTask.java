@@ -1,14 +1,11 @@
 package com.ssafy.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ssafy.server.chat.model.Chat;
 import com.ssafy.server.chat.service.ChatService;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Set;
 
 @Component

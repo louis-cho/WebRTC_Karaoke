@@ -33,12 +33,11 @@ public class ChatService {
             list.add(chat);
         }
         chatRepository.saveAll(list);
-//        String key = String.format(CHAT_KEY, list.get(0).getRoomId());
-//        redisTemplate.delete(key);
     }
 
+    //해당 방에 있는 가장 최근 날짜의 모든 데이터 로딩
     public List<Chat> loadFromJPA(String roomId){
-        return chatRepository.findByRoomIdOrderByTime(roomId);
+        return chatRepository.findLatestChatsByRoomId(roomId);
     }
     public void saveToRedis(Chat chat, Boolean flag) throws JsonProcessingException {
         String chatJson = objectMapper.writeValueAsString(chat);
