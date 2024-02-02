@@ -64,12 +64,15 @@ INFRA
 ---
 
 ### 노성은
-- DM
-  - 메시지 파싱 처리 (메시지 입력 타입 따라 다르게 처리하는)
-  - 1:1 dm 페이지 생성
-- feed
-  - SNS 상세 피드 페이지 (feed detail) 생성
-  - 본인 계정 피드 페이지 (MyProfile)생성
+- FE
+  - [DM] 메시지 파싱 처리 (메시지 입력 타입 따라 다르게 처리하는)
+  - [DM] 1:1 dm 페이지 생성 
+  - [DM] 텍스트/이미지 전송 기능
+  - [DM] 스크롤 기능
+  - [DM] ChatPage dm 작성자에 따른 기능 분리 미구현
+  - [FEED] SNS 상세 피드 페이지 (FeedDetail) 생성
+  - [FEED] 본인 계정 피드 페이지 (MyProfile)생성
+  - [FEED] 피드 리스트 페이지 (FeedPage) 생성
 ---
 ### 송준석
 - BE
