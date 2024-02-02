@@ -1,7 +1,8 @@
-# 프로젝트 한 일(0129 ~ 0202)
+
 
 # 프로젝트 개요
-
+- 내가 부른 노래를 sns형태로 공유 할 수 있는 웹 노래방 서비스
+- 실시간으로 사람들 앞에서 노래를 부르고, 피드에 공유할수 있습니다.
 
 # 배포 주소
 [https://i10a705.p.ssafy.io/]
@@ -23,8 +24,10 @@
 # Figma
 [https://www.figma.com/file/cnHpMUN4kpZ55qLu2FKBD6/%5BNEW%5D-Quick-UXUI-Wireframe-templates!-(%EA%B8%B0%ED%9A%8D%EC%9E%90%EC%99%80-%EB%94%94%EC%9E%90%EC%9D%B4%EB%84%88%EB%A5%BC-%EC%9C%84%ED%95%9C-UXUI-%ED%99%94%EB%A9%B4%EA%B8%B0%ED%9A%8D%EC%84%9C%2F%ED%99%94%EB%A9%B4%EC%84%A4%EA%B3%84%EC%84%9C-%ED%85%9C%ED%94%8C%EB%A6%BF)-(Community)?type=design&node-id=103-2&mode=design&t=VZrVBeL6BKOWOGX8-0]
 
-# 설정 가이드
+# 접속 주소
+ [노래해방](http://i10705.p.ssafy.io)
 
+# 프로젝트 한 일(0129 ~ 0202)
 
 ### 이준범
 BE
