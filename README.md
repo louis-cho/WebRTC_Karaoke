@@ -49,8 +49,9 @@
 ---
 ### 송준석
 - BE
-  - [karaoke] Song controller/model/repo/service 구축
-  - [AWS S3] 버킷 생성 및 커넥션 설정
+  - [노래방] 백엔드 노래 스켈레톤 코드 작성 
+  - [AWS S3] 버킷 생성 및 인증키 발급
+  - [AWS S3] 커넥션 설정
   - [AWS S3] S3fileUploader 구현
 
 - FE
