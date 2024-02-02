@@ -87,6 +87,7 @@ export const useKaraokeStore = defineStore("karaoke", {
           .then(() => {
             // 토근을 저장한다.
             this.token = token;
+            console.log("토큰 저장 완료.",token);
             // --- 5) 원하는 속성으로 자신의 카메라 스트림 가져오기 ---
 
             // 원하는 속성으로 초기화된 발행자를 만듭니다 (video-container'에 비디오가 삽입되지 않도록 OpenVidu에게 처리를 맡기지 않음).
@@ -100,6 +101,7 @@ export const useKaraokeStore = defineStore("karaoke", {
               insertMode: "APPEND", // 비디오가 대상 요소 'video-container'에 어떻게 삽입되는지
               mirror: false, // 로컬 비디오를 반전할지 여부
             });
+            console.log("발행자만들기 성공",publisher_tmp);
 
             // 페이지에서 주요 비디오를 설정하여 웹캠을 표시하고 발행자를 저장합니다.
             this.mainStreamManager = publisher_tmp;
@@ -107,8 +109,11 @@ export const useKaraokeStore = defineStore("karaoke", {
 
             // --- 6) 스트림을 발행하고, 원격 스트림을 수신하려면 subscribeToRemote() 호출하기 ---
             this.publisher.subscribeToRemote();
+            console.log("this.publisher.subscribeToRemote(); 성공");
             this.session.publish(this.publisher);
+            console.log("session.publish 성공");
             this.getMedia(); // 세션이 만들어졌을 때 미디어를 불러옵니다.
+            console.log("this.getMedia(); // 세션이 만들어졌을 때 미디어를 불러옵니다. 성공");
           })
           .catch((error) => {
             console.log(
