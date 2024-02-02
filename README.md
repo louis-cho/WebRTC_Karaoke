@@ -1,4 +1,28 @@
 # 프로젝트 한 일(0129 ~ 0202)
+
+
+# 프로젝트 개요
+
+# 배포 주소
+
+# 기술 스택
+
+
+# 요구사항
+주소
+
+# 화면정의서 
+주소
+
+# erd
+주소
+
+# Figma
+주소
+
+# 설정 가이드
+
+
 ### 이준범
 - 포인트(마일리지)
   - 포인트(마일리지) 제도에 필요한 api, repository작성
@@ -36,6 +60,23 @@
   - [노래방] 일반모드, 진행중인 노래 싱크에 맞게 가사 렌더링 구현
 ---
 ### 조현우
+
+- BE
+  - [유저인증] 서버 측 RSA 복호화
+  - [유저인증] 서버 측 클라이언트 암호화 정보 해시 비교 (bcrypt)
+  - [유저인증] AOP를 활용해 백엔드 서버 함수 호출 시 함수 정보 출력
+  - []
+  - [알림] 알림 기능 구현 (SSE)
+  - [검색] 
+  - [검색]
+  - [발표]
+  - [댓글]
+  - [피드]
+  - [좋아요]
+  - [DM]
+
+
+  
 - elk를 통해 유저 닉네임 검색 시 user pk 반환
 - elk stack spring boot 프로젝트에 적용
 - aop를 통해 백엔드 서버 내 함수 호출 시 각각의 정보 출력
@@ -258,46 +299,85 @@ $ cd logstash
 $ gedit logstash.conf
 ```
 
+// mysql 설정
+```
+# mysql connector java jar 다운로드
+wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.30/mysql-connector-java-8.0.30.jar
+
+# 압축 해제
+tar -xzf mysql-connector-java-8.0.30.tar.gz
+
+# Logstash 설치 디렉토리로 이동
+cd [logstash_dir]
+
+# 다운로드 받은 JAR 파일을 해당 디렉토리로 이동
+mv /path/to/mysql-connector-java-8.0.30.jar /path/to/logstash/
+```
+
 // logstash.conf
 ```
 # synchronization with elasticseasrch & mysql
 input {
+  
   jdbc {
-    jdbc_connection_string => "jdbc:mysql://localhost:3306/testuser"                      # test uesr db 사용
-    jdbc_user => "root"                                                                   # mysql user id
-    jdbc_password => "1234"                                                               # mysql user password
-    jdbc_driver_library => "/user/share/logstash/config/mysql-connector-java-8.0.30.jar"  # ubuntu에서 mysql jar 다운로드 받아 이 디렉터리로 복사해놓기
+    jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/testuser"
+    jdbc_user => "root"
+    jdbc_password => "1234"
+    jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
     jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
     
-    statement => "SELECT * FROM likes"                                                    # likes 테이블 데이터 모두 옮기기
+    statement => "SELECT * FROM likes WHERE timestamp > :sql_last_value"
     
-    schedule => "* * * * *"
-    clean_run => true
+    schedule => "*/10 * * * * *"
     use_column_value => true
     tracking_column => "timestamp"
     tracking_column_type => "timestamp"
-    last_run_metadata_path => "/user/share/logstash/config/like_last_run_metadata"        # 메타 정보를 기록하는 경로
+    clean_run => false
     type => "like"
   }
-
+  
   jdbc {
-    jdbc_connection_string => "jdbc:mysql://localhost:3306/testuser"
+    jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/testuser"
     jdbc_user => "root"
     jdbc_password => "1234"
-    jdbc_driver_library => "/user/share/logstash/config/mysql-connector-java-8.0.30.jar"
+    jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
     jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
     
-    statement => "SELECT * FROM hit"
+    statement => "SELECT * FROM hit WHERE timestamp > :sql_last_value"
     
-    schedule => "* * * * *"
-    clean_run => true
+    schedule => "*/10 * * * * *"
     use_column_value => true
-    tracking_column => "timestamp" 
+    tracking_column => "timestamp"
     tracking_column_type => "timestamp"
-    last_run_metadata_path => "/user/share/logstash/config/view_last_run_metadata"
-    type => "view"
+    clean_run => false
+    type => "hit"
   }
 }
+
+filter {
+  # mutate {
+  #  remove_field => ["introduction", "profile_img_url", "role", "user_key"]
+  # }
+}
+
+output {
+  if [type] == "like" {
+    elasticsearch {
+      hosts => ["elasticsearch:9200"]
+      index => "likes"
+    }
+  }
+  
+  if [type] == "hit" {
+  	elasticsearch {
+  	  hosts => ["elasticsearch:9200"]
+  	  index => "hit"
+  	}
+  }
+  
+  stdout { codec => rubydebug }
+}
+
 
 filter {
 }
