@@ -35,10 +35,9 @@
         </div>
       </div>
 
-      <p>{{ 게시글제목 }} 오랜만에 빅뱅 노래</p>
+      <p>{{ 게시글내용 }} 오랜만에 빅뱅 노래</p>
       <video controls width="100%">
         <source src="your_video_url.mp4" type="video/mp4">
-        Your browser does not support the video tag.
       </video>
       <div class="flex-row">
       <div class="margin-right-20">
