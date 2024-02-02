@@ -82,6 +82,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       await this.getToken(this.mySessionId).then((token) => {
         // 첫 번째 매개변수는 토큰입니다. 두 번째 매개변수는 모든 사용자가 'streamCreated' 이벤트에서 가져올 수 있는 것입니다.
         // 'streamCreated' (속성 Stream.connection.data) 및 닉네임으로 DOM에 추가됩니다.
+        console.log("토큰 가져오기 성공. session ",this.session,",  token : ",token);
         this.session
           .connect(token, { clientData: this.myUserName })
           .then(() => {
