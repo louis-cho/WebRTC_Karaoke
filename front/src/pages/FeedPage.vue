@@ -1,15 +1,267 @@
 <template>
   <div>
     <TabItem/>
-    <h3>전체 피드 페이지</h3>
+    <!-- <h3>전체 피드 페이지</h3> -->
+    <div class="my-feed">
+      <!-- 첫번째 div -->
+      <!-- 검색창 -->
+
+      <!-- 두번째 div -->
+      <div v-for="feed in feeds" :key="feed.id">
+        <div class="profile">
+          <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }">
+            <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
+          </div>
+
+          <div class="width-100">
+            <div class="space-between" >
+              <div>
+                <p>{{ getUserName(feed.USER_PK) }}닉네임</p>
+              </div>
+
+            </div>
+            <div class="space-start">
+              <div>{{ getSongTitle(feed.FEED_ID) }}거짓말-</div>
+              <div>{{ getSongSinger(feed.FEED_ID) }}빅뱅</div>
+              <q-btn color="secondary" :label="feed.STATUS === '전체 공개' ? '전체 공개' : (feed.STATUS === '나만 공개' ? '나만 공개' : '비공개')" size="sm" />
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="thumbnail-container" @click="playVideo(feed.VIDEO_URL)">
+          <img :src="feed.THUMBNAIL_URL" alt="썸네일" class="thumbnail" />
+          <div class="play-button"></div>
+        </div> -->
+
+        <p>{{ feed.CONTENT }}</p>
+        <video controls width="100%" ref="videoPlayer">
+          <source :src="feed.VIDEO_URL" type="video/mp4">
+        </video>
+
+        <div class="flex-row">
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
+          <span>0</span>
+        </div>
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
+          <span>0</span>
+        </div>
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
+          <span>0</span>
+        </div>
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/dollar.png" alt="후원">
+          <span>{{ feed.TOTAL_POINT }}</span>
+        </div>
+        </div>
+        <hr>
+
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
+
+//가상 피드 데이터
+const feeds = ref([
+  {
+    FEED_ID: 1,
+    USER_PK: 1,
+    SONG_ID: 3,
+    CONTENT: "오랜만에 빅뱅 노래 불러봄",
+    THUMBNAIL_URL: "썸네일 주소1",
+    VIDEO_URL: "your_video_url.mp4",
+    VIDEO_LENGTH: "190",
+    STATUS: "비공개",
+    TOTAL_POINT: "20000"
+  },
+  {
+    FEED_ID: 2,
+    USER_PK: 4,
+    SONG_ID: 7,
+    CONTENT: "평가 좀 해주세요",
+    THUMBNAIL_URL: "썸네일 주소2",
+    VIDEO_URL: "your_video_url2.mp4",
+    VIDEO_LENGTH: "170",
+    STATUS: "전체 공개",
+    TOTAL_POINT: "5000"
+  }
+])
+const getUserProfile = (userPK) => {
+  // 사용자 프로필 이미지 가져오기 로직..
+  return '@/assets/img/capture.png';
+}
+
+const getUserName = (userPK) => {
+  // 닉네임 가져오기 로직...
+  return '닉네임1';
+}
+
+const getSongId = (feed_id) => {
+  // FEED_ID를 사용하여 SONG_ID를 가져오기...
+  // 예를 들어 빅뱅 거짓말 SONG_ID 10번이라 할 때
+  return 10;
+}
+
+const getSongTitle = (feed_id) => {
+  // FEED_ID를 사용하여 SONG_ID를 가져오기...
+  const song_id = getSongId(feed_id);
+  // SONG_ID를 사용하여 TITLE을 가져오기...
+  return '거짓말';
+}
+
+const getSongSinger = (feed_id) => {
+  // FEED_ID를 사용하여 SONG_ID를 가져오기...
+  const song_id = getSongId(feed_id);
+  // SONG_ID를 사용하여 SINGER를 가져오기...
+  return '빅뱅';
+}
+
+// const playVideo = (videoUrl) => {
+//   const videoPlayer = document.getElementById('video-player');
+//   videoPlayer.src = videoUrl;
+//   videoPlayer.play();
+// }
 </script>
 
 <style scoped>
+.my-feed {
+  padding-left: 200px;
+  padding-right: 200px;
+  }
 
+.display-flex{
+  display: flex;
+}
+.profile-img-container {
+  width: 70px;
+  height: 70px;
+  background-image: url("@/assets/img/capture.png");
+  /* object-fit : contain; */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+}
+
+.comment-img-container {
+  width: 70px;
+  height: 70px;
+  background-image: url("@/assets/img/capture3.png");
+  /* object-fit : contain; */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+}
+
+.comment-img-container2 {
+  width: 50px;
+  height: 50px;
+  background-image: url("@/assets/img/capture3.png");
+  /* object-fit : contain; */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+}
+
+
+.comment-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 30%;
+  display: block; /* 인라인 요소 간격 제거 */
+  object-fit: cover;
+}
+
+.my-feed {
+    /* padding: 20px; */
+  padding-left: 200px;
+  padding-right: 200px;
+  }
+.profile {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin: 20px 0;
+
+}
+
+.width-100 {
+  width:100%;
+  padding-left: 5%;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.space-start {
+  display: flex;
+  justify-content: start;
+}
+
+.flex-row {
+  display: flex;
+}
+
+.margin-right-10 {
+  margin-right: 10px;
+}
+
+.margin-right-20 {
+  margin-right: 20px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.align-between {
+  flex-wrap: wrap;
+  align-content: space-between;
+}
+
+.thumbnail {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* .thumbnail-container {
+  position: relative;
+  cursor: pointer;
+} */
+
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: url("@/assets/icon/play-button.png") no-repeat center center;
+  background-size: cover;
+}
 </style>

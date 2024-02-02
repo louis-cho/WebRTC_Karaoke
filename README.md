@@ -1,4 +1,29 @@
 # 프로젝트 한 일(0129 ~ 0202)
+
+
+# 프로젝트 개요
+
+# 배포 주소
+[https://i10a705.p.ssafy.io/]
+
+# 기술 스택
+
+
+# 요구사항
+[https://www.notion.so/f7c62f5c6d1a441bbb191911ca3a1e7b?v=13e99663afb74afcb843af0fbe7daef9]
+
+# 화면정의서 
+[https://www.notion.so/32635f45919f4e62bea19d9727fc7b5f]
+
+# erd
+[https://www.erdcloud.com/d/3SsAyJ6rGXSMzyPcw]
+
+# Figma
+[https://www.figma.com/file/cnHpMUN4kpZ55qLu2FKBD6/%5BNEW%5D-Quick-UXUI-Wireframe-templates!-(%EA%B8%B0%ED%9A%8D%EC%9E%90%EC%99%80-%EB%94%94%EC%9E%90%EC%9D%B4%EB%84%88%EB%A5%BC-%EC%9C%84%ED%95%9C-UXUI-%ED%99%94%EB%A9%B4%EA%B8%B0%ED%9A%8D%EC%84%9C%2F%ED%99%94%EB%A9%B4%EC%84%A4%EA%B3%84%EC%84%9C-%ED%85%9C%ED%94%8C%EB%A6%BF)-(Community)?type=design&node-id=103-2&mode=design&t=VZrVBeL6BKOWOGX8-0]
+
+# 설정 가이드
+
+
 ### 이준범
 - 포인트(마일리지)
   - 포인트(마일리지) 제도에 필요한 api, repository작성
@@ -36,26 +61,34 @@
   - [노래방] 일반모드, 진행중인 노래 싱크에 맞게 가사 렌더링 구현
 ---
 ### 조현우
-- elk를 통해 유저 닉네임 검색 시 user pk 반환
-- elk stack spring boot 프로젝트에 적용
-- aop를 통해 백엔드 서버 내 함수 호출 시 각각의 정보 출력
-- SSE를 통한 알림 기능 구현
-- 서버 RSA 복호화
-- 클라이언트 RSA 암호화
-- 프론트엔드 Vue & Quasar 환경설정
-- 기획 발표
-- docker compose with elk stack
-- Logstash 설정을 통해 MySQL, elastic search 데이터 동기화
-- 댓글 백엔드 스켈레톤 코드 작성
-- 피드 백엔드 스켈레톤 코드 작성
-- 좋아요 백엔드 스켈레톤 코드 작성
-- 조회 백엔드 스켈레톤 코드 작성
-- 웹소켓 프론트엔드, 백엔드 스켈레톤 코드 작성
-- RSA 키매니저 개발 (IP를 키로 각 클라이언트 별 비대칭키 페어를 관리)
-- RSA 배치 파일 개발 (일정 주기마다 RSA 변수를 확인하며 최근 =- - 요청이 10분 이상 지난 경우 데이터 삭제)
-- bcrypt를 통해 hash 값 비교
-- 내부적으로는 AutoIncrement INT type UserPK를 사용하도록 외부 노출 시에 UUID type UserKey를 사용하도록 설정
-- elastic search 랭킹 서비스 개발 중
+
+- BE
+  - [유저인증] 서버 측 RSA 복호화
+  - [유저인증] 서버 측 클라이언트 암호화 정보 해시 비교 (bcrypt 해시 비교 및 복호화)
+  - [유저인증] AOP를 활용해 백엔드 서버 함수 호출 시 함수 정보 출력
+  - [유저인증] RSA Key Manager 개발 key-value : ip- 비대칭 KeyPair
+  - [유저인증] RSA Key Manager Clean up 스케줄러 개발 - 마지막 요청으로부터 10분 이후 삭제
+  - [유저] 시스템 내부에서는 Autoincrement INT Type user primary key, 시스템 외부에서는 UUID를 사용하도록 구성 (성능, 보안)
+  - [웹소켓] 백엔드 웹소켓 스켈레톤 코드 개발
+  - [알림] 알림 기능 구현 (SSE)
+  - [검색] ELK docker-compose 설정
+  - [검색] Logstash를 통해 MySQL - Elasticsearch 데이터 동기화
+  - [검색] Elasticsearch Spring boot 연동
+  - [검색] Elasticsearch를 통해 유저 닉네임 검색 시 INT Type user primary key 반환
+  - [검색] Elasticsearch + Logstash + MySQL을 통한 게시글 피드 랭킹 서비스 개발
+  - [발표] 프로젝트 기획 발표 담당
+  - [댓글] 백엔드 댓글 스켈레톤 코드 작성
+  - [피드] 백엔드 피드 스켈레톤 코드 작성
+  - [좋아요] 백엔드 좋아요 스켈레톤 코드 작성
+  - [DM] 백엔드 Websocket 스켈레톤 코드 작성
+  - [DB] Redis <-> MySQL 동기화 스켈레톤 코드 작성
+
+- FE
+  - [환경설정] 프론트엔드 vue & quasar 프레임워크 환경 설정
+  - [유저인증] 클라이언트 RSA 암호화
+  - [DM] 클라이언트 Websocket 스켈레톤 코드 작성
+
+
 ---
 ### 연정흠
 작업물 branch : [websocket](https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/websocket?ref_type=heads)
@@ -258,46 +291,85 @@ $ cd logstash
 $ gedit logstash.conf
 ```
 
+// mysql 설정
+```
+# mysql connector java jar 다운로드
+wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.30/mysql-connector-java-8.0.30.jar
+
+# 압축 해제
+tar -xzf mysql-connector-java-8.0.30.tar.gz
+
+# Logstash 설치 디렉토리로 이동
+cd [logstash_dir]
+
+# 다운로드 받은 JAR 파일을 해당 디렉토리로 이동
+mv /path/to/mysql-connector-java-8.0.30.jar /path/to/logstash/
+```
+
 // logstash.conf
 ```
 # synchronization with elasticseasrch & mysql
 input {
+  
   jdbc {
-    jdbc_connection_string => "jdbc:mysql://localhost:3306/testuser"                      # test uesr db 사용
-    jdbc_user => "root"                                                                   # mysql user id
-    jdbc_password => "1234"                                                               # mysql user password
-    jdbc_driver_library => "/user/share/logstash/config/mysql-connector-java-8.0.30.jar"  # ubuntu에서 mysql jar 다운로드 받아 이 디렉터리로 복사해놓기
+    jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/testuser"
+    jdbc_user => "root"
+    jdbc_password => "1234"
+    jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
     jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
     
-    statement => "SELECT * FROM likes"                                                    # likes 테이블 데이터 모두 옮기기
+    statement => "SELECT * FROM likes WHERE timestamp > :sql_last_value"
     
-    schedule => "* * * * *"
-    clean_run => true
+    schedule => "*/10 * * * * *"
     use_column_value => true
     tracking_column => "timestamp"
     tracking_column_type => "timestamp"
-    last_run_metadata_path => "/user/share/logstash/config/like_last_run_metadata"        # 메타 정보를 기록하는 경로
+    clean_run => false
     type => "like"
   }
-
+  
   jdbc {
-    jdbc_connection_string => "jdbc:mysql://localhost:3306/testuser"
+    jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/testuser"
     jdbc_user => "root"
     jdbc_password => "1234"
-    jdbc_driver_library => "/user/share/logstash/config/mysql-connector-java-8.0.30.jar"
+    jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
     jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
     
-    statement => "SELECT * FROM hit"
+    statement => "SELECT * FROM hit WHERE timestamp > :sql_last_value"
     
-    schedule => "* * * * *"
-    clean_run => true
+    schedule => "*/10 * * * * *"
     use_column_value => true
-    tracking_column => "timestamp" 
+    tracking_column => "timestamp"
     tracking_column_type => "timestamp"
-    last_run_metadata_path => "/user/share/logstash/config/view_last_run_metadata"
-    type => "view"
+    clean_run => false
+    type => "hit"
   }
 }
+
+filter {
+  # mutate {
+  #  remove_field => ["introduction", "profile_img_url", "role", "user_key"]
+  # }
+}
+
+output {
+  if [type] == "like" {
+    elasticsearch {
+      hosts => ["elasticsearch:9200"]
+      index => "likes"
+    }
+  }
+  
+  if [type] == "hit" {
+  	elasticsearch {
+  	  hosts => ["elasticsearch:9200"]
+  	  index => "hit"
+  	}
+  }
+  
+  stdout { codec => rubydebug }
+}
+
 
 filter {
 }
