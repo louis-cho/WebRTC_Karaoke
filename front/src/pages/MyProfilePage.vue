@@ -11,7 +11,7 @@
           <img src="@/assets/icon/back.png" alt="뒤로가기">
         </div>
         <div>
-          <h3>JennierubyJane</h3>
+          <h3>{{ getUserName(feed.USER_PK) }}닉네임</h3>
         </div>
         <div class="icons">
           <div><img src="@/assets/icon/send.png" alt="dm"></div>
@@ -24,7 +24,7 @@
       <!-- 두번째 div -->
       <div class="profile">
         <div class="profile-img-container">
-          <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img">
+          <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
         </div>
         <div class="info">
           <div class="stats">
@@ -49,7 +49,7 @@
         <!-- 각 피드 항목을 감싸는 그리드 레이아웃 부모 요소 -->
         <div v-for="feed in feeds" :key="feed.id" class="feed-item">
           <!-- 피드 내용 및 요소들을 표시 -->
-          <img :src="feed.imageUrl" alt="피드 이미지" class="feed-image">
+          <img :src="feed.THUMBNAIL_URL" alt="피드 이미지(썸네일)" class="feed-image">
         </div>
       </div>
     </div>
@@ -69,24 +69,52 @@ const goBack = function () {
 
 // 가상의 피드 데이터 예시
 const feeds = ref([
-  { id: 1, imageUrl: "src/assets/icon/logo.png" },
-  { id: 2, imageUrl: "src/assets/icon/web_light_sq_ctn@1x.png" },
-  { id: 3, imageUrl: "src/assets/img/capture3.png" },
-  { id: 4, imageUrl: "src/assets/img/capture3.png" },
-  { id: 5, imageUrl: "src/assets/img/capture3.png" },
-  { id: 6, imageUrl: "src/assets/img/capture3.png" },
-  // ... 다른 피드 데이터들 ...
-]);
+  {
+    FEED_ID: 1,
+    USER_PK: 1,
+    SONG_ID: 3,
+    CONTENT: "오랜만에 빅뱅 노래 불러봄",
+    THUMBNAIL_URL: "src/assets/icon/logo.png",
+    VIDEO_URL: "your_video_url.mp4",
+    VIDEO_LENGTH: "190",
+    STATUS: "비공개",
+    TOTAL_POINT: "20000"
+  },
+  {
+    FEED_ID: 2,
+    USER_PK: 1,
+    SONG_ID: 7,
+    CONTENT: "평가 좀 해주세요",
+    THUMBNAIL_URL: "src/assets/icon/web_light_sq_ctn@1x.png",
+    VIDEO_URL: "your_video_url2.mp4",
+    VIDEO_LENGTH: "170",
+    STATUS: "전체 공개",
+    TOTAL_POINT: "5000"
+  }
+])
+
+
 
 </script>
 
 <style scoped>
-
 .profile-img-container {
+  width: 150px;
+  height: 150px;
+  background-image: url("@/assets/img/capture.png");
+  /* object-fit : contain; */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+}
+/* .profile-img-container {
     width: 20%;
     height: auto;
     display: block;
-  }
+  } */
 
 .my-feed {
   /* padding: 20px; */

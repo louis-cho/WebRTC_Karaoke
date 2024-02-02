@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Test</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+
+<button id="connect_btn">Connect</button>
+<div>
+  <textarea id="chat_input" rows="4" cols="50"></textarea>
+  <button id="send_btn">Send Message</button>
+</div>
+<button id="disconnect_btn">Disconnect</button>
+
+<div id="chat_messages"></div>
+
+<script type="module">
+  // Your StompClient class definition here...
+  import StompClient from "./stompClient.js";
+
+  // Create an instance of the StompClient
+  const stompClient = new StompClient();
+
+
+  const url = "ws://localhost:8081/api/ws";
+
+  // Set the topic
+  stompClient.setSub('/exchange/chat.exchange/room.1'); // 맨 끝의 1은 방번호
+  stompClient.setPub('/pub/chat.message.1');  // 맨 끝의 1은 방번호
+
+  document.getElementById("connect_btn").addEventListener("click", function() {
+    connect();
+  });
+
+  document.getElementById("send_btn").addEventListener("click", function() {
+    sendMessage();
+  });
+
+  document.getElementById("disconnect_btn").addEventListener("click", function() {
+    disconnect();
+  });
+
+  // Connect to the WebSocket
+  async function connect() {
+    try {
+      await stompClient.connect();
+    } catch (error) {
+      console.error('Error connecting:', error);
+    }
+  }
+
+  // Disconnect from the WebSocket
+  async function disconnect() {
+    try {
+      await stompClient.disconnect();
+    } catch (error) {
+      console.error('Error disconnecting:', error);
+    }
+  }
+
+  // Send a sample message
+  function sendMessage(msg) {
+    const message = { content: 'Hello, Server!' };
+    stompClient.send(message);
+  }
+
+  function handleMessage(message) {
+    const body = JSON.parse(message.body);
+    const chatMessages = document.getElementById("chat_messages");
+    chatMessages.innerHTML += `<p>${body.content}</p>`;
+  }
+</script>
+
+</body>
+</html>

@@ -44,6 +44,9 @@
 
       <!-- 캠,오디오 선택 옵션 -->
       <input-selector />
+
+      <!-- 녹화 기능 -->
+      <recording-video />
     </div>
   </div>
 </template>
@@ -62,6 +65,7 @@ import AudioFilter from "@/components/karaoke/AudioFilter.vue";
 import KaraokeChat from "@/components/karaoke/KaraokeChat.vue";
 import InputController from "@/components/karaoke/InputController.vue";
 import InputSelector from "@/components/karaoke/InputSelector.vue";
+import RecordingVideo from "src/components/karaoke/RecordingVideo.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 

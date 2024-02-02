@@ -25,6 +25,17 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'io.openvidu:openvidu-java-client:2.29.0'
+	testImplementation 'io.openvidu:openvidu-test-browsers:1.0.0'
+
+	//RabbitMQ
+	//외부 브로커를 사용하기 위해
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-reactor-netty', version: '2.4.6'
+
+	//jackson2json에서 LocalDateTime을 handling 하기 위해
+	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.4'
+
+	testImplementation 'org.springframework.amqp:spring-rabbit-test'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -36,8 +47,13 @@ dependencies {
 	implementation 'org.hibernate:hibernate-entitymanager:5.6.3.Final'
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+	compile group: 'commons-io', name: 'commons-io', version: '2.4'
+
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE' // AWS S3
 	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:latest_version'
+
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 	// Spring Batch Core
 	implementation 'org.springframework.boot:spring-boot-starter-batch'

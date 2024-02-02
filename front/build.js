@@ -4,7 +4,7 @@ const esbuild = require('esbuild');
 const plugins = [sassPlugin.sassPlugin()];
 
 const options = {
-    entryPoints: ['src/index.js'],
+    entryPoints: ['@/index.js'],
     bundle: true,
     outdir: 'dist',
     minify: true,
