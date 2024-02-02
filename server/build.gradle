@@ -25,13 +25,34 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'io.openvidu:openvidu-java-client:2.29.0'
+	testImplementation 'io.openvidu:openvidu-test-browsers:1.0.0'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	}
+	implementation 'org.springframework.security:spring-security-crypto'	// bcrypt (BCryptPasswordEncoder)
+	implementation 'org.hibernate:hibernate-core:5.6.3.Final'
+	implementation 'org.hibernate:hibernate-entitymanager:5.6.3.Final'
+	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+	compile group: 'commons-io', name: 'commons-io', version: '2.4'
+
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE' // AWS S3
+	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:latest_version'
+
+	// Spring Batch Core
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.17.0' // Elasticsearch 버전에 맞게 변경
+
+
+
+	// H2 Database (예제에서 사용할 수 있는 내장 데이터베이스)
+	runtimeOnly 'com.h2database:h2'
+
+}
 
 tasks.named('test') {
 	useJUnitPlatform()

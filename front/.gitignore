@@ -1,12 +1,14 @@
-.DS_Store
-<<<<<<< HEAD
+
+dist
+lib
+yarn-error.log
 node_modules
+.DS_Store
 /dist
 
 # local env files
 .env.local
 .env.*.local
-=======
 .thumbs.db
 node_modules
 
@@ -24,31 +26,23 @@ node_modules
 # Capacitor related directories and files
 /src-capacitor/www
 /src-capacitor/node_modules
->>>>>>> remotes/origin/new_sungeun
 
 # Log files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-<<<<<<< HEAD
 pnpm-debug.log*
 
 # Editor directories and files
 .idea
 .vscode
-=======
 
-# Editor directories and files
 .idea
->>>>>>> remotes/origin/new_sungeun
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-<<<<<<< HEAD
 *.sw?
-=======
 
 # local .env files
 .env.local*
->>>>>>> remotes/origin/new_sungeun
