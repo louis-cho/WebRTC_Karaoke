@@ -24,7 +24,7 @@
       <!-- 두번째 div -->
       <div class="profile">
         <div class="profile-img-container">
-          <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img">
+          <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
         </div>
         <div class="info">
           <div class="stats">
@@ -81,12 +81,23 @@ const feeds = ref([
 </script>
 
 <style scoped>
-
 .profile-img-container {
+  width: 150px;
+  height: 150px;
+  background-image: url("@/assets/img/capture.png");
+  /* object-fit : contain; */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+}
+/* .profile-img-container {
     width: 20%;
     height: auto;
     display: block;
-  }
+  } */
 
 .my-feed {
   /* padding: 20px; */

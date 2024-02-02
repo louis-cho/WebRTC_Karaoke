@@ -15,7 +15,7 @@
       <!-- 두번째 div -->
       <div class="profile">
         <div class="profile-img-container">
-          <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img">
+          <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
         </div>
 
         <div class="width-100">
@@ -58,11 +58,11 @@
 
       <!-- 세번째 div(내 댓글 입력창) -->
       <div class="profile">
-        <div class="profile-img-container">
-          <img src="@/assets/img/capture3.png" class="profile-img2" alt="내 프로필 이미지">
+        <div class="comment-img-container">
+          <!-- <img src="@/assets/img/capture3.png" class="comment-img" alt="내 프로필 이미지"> -->
         </div>
-        <div style="height: 100px; width: 100%; box-sizing: border-box;">
-          <input v-model="newComment"  @keydown.enter.prevent="addComment" placeholder="댓글을 입력하세요...">
+        <div class="comment-input-container">
+          <textarea v-model="newComment"  @keydown.enter.prevent="addComment" placeholder="댓글을 입력하세요..."></textarea>
         </div>
       </div>
       <hr>
@@ -70,12 +70,12 @@
       <!-- 네번째 div(댓글 목록) -->
       <div ref="commentContainer">
         <div v-for="comment in comments" :key="comment.id">
-          <div class="row-container">
-            <div>
-              <img :src="comment.profileImage" class="profile-image" alt="댓글 작성자 프로필 이미지">
+          <div class="display-flex">
+            <div class="comment-img-container2">
+              <!-- <img :src="comment.profileImage" class="profile-image" alt="댓글 작성자 프로필 이미지"> -->
             </div>
-            <div>
-              <div>{{ comment.username }}</div>
+            <div class="comments">
+              <div><strong>{{ comment.username }}</strong>st</div>
               <div>{{ comment.text }}</div>
             </div>
           </div>
@@ -96,7 +96,7 @@
               <q-btn icon="close" flat round @click="toggleModal" />
             </q-item-section>
           </q-item>
-          <q-card-actions align="right">
+          <q-card-actions align="center">
             <q-btn label="게시글 수정" color="primary"/>
             <q-btn label="게시글 삭제" color="negative" @click="deletePost" />
           </q-card-actions>
@@ -160,34 +160,60 @@ const comments = ref([
 
 </script>
 <style scoped>
-
-/* .profile-img-container {
-    width: 20%;
-    height: auto;
-    display: block;
-  } */
-
+.display-flex{
+  display: flex;
+}
 .profile-img-container {
-  width: 30px;
-  height: 30px;
+  width: 70px;
+  height: 70px;
   background-image: url("@/assets/img/capture.png");
-  object-fit: cover;
+  /* object-fit : contain; */
   border-radius: 25px;
-  /* display: block; */
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+}
+
+.comment-img-container {
+  width: 70px;
+  height: 70px;
+  background-image: url("@/assets/img/capture3.png");
+  /* object-fit : contain; */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+}
+
+.comment-img-container2 {
+  width: 50px;
+  height: 50px;
+  background-image: url("@/assets/img/capture3.png");
+  /* object-fit : contain; */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
 }
 
 
-.profile-img {
+/* .profile-img {
   width: 100%;
   height: 100%;
   border-radius: 30%;
-  display: block; /* 인라인 요소 간격 제거 */
-  object-fit: cover;
-  /* max-width: 100%;
-  max-height: 200px; */
-}
+  display: block;
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 200px;
+} */
 
-.profile-img2 {
+.comment-img {
   width: 100%;
   height: 100%;
   border-radius: 30%;
@@ -217,6 +243,11 @@ const comments = ref([
   justify-content: start;
 } */
 
+.comments {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
 .space-between {
   display: flex;
