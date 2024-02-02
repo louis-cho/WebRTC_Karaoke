@@ -53,6 +53,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE' // AWS S3
 	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:latest_version'
 
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 	// Spring Batch Core
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.17.0' // Elasticsearch 버전에 맞게 변경
