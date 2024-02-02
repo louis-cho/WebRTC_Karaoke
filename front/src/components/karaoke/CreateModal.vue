@@ -41,7 +41,6 @@
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
 import pref from "@/js/config/preference.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 

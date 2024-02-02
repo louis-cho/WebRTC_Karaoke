@@ -6,7 +6,7 @@
         {{ pref.app.kor.karaokePage.title }}
       </h1>
 
-      <session-list :pages="pages" />
+      <session-list :pages="pages" :changeRoute="router" />
 
       <create-modal :changeRoute="router" />
     </div>

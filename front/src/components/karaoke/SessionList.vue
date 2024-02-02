@@ -8,7 +8,7 @@
         <q-header>
           <q-toolbar>
             <q-toolbar-title>노래방 목록</q-toolbar-title>
-            <q-btn @click="openModal" label="방 만들기" color="primary" />
+            <q-btn @click="openModal" label="방 만들기" color="secondary" />
           </q-toolbar>
         </q-header>
 
@@ -18,15 +18,20 @@
               <q-item-section>
                 <q-item-label>방 제목 : {{ session.sessionId }}</q-item-label>
                 <q-item-label caption>
-                  참가자 수 :
-                  {{ session.connections.numberOfElements }}</q-item-label
-                >
+                  참가자 수 : {{ session.connections.numberOfElements }}
+                </q-item-label>
               </q-item-section>
 
+              <q-btn
+                @click="joinSession(session.sessionId)"
+                label="입장하기"
+                color="primary"
+              />
+
               <q-item-section side>
-                <q-item-label caption>{{
-                  session.recording ? "녹화 중" : "대기 중"
-                }}</q-item-label>
+                <q-item-label caption>
+                  {{ session.recording ? "녹화 중" : "대기 중" }}
+                </q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -44,11 +49,16 @@ import { useKaraokeStore } from "@/stores/karaokeStore.js";
 // store 사용
 const store = useKaraokeStore();
 
-const { pages } = defineProps(["pages"]);
+const { pages, changeRoute } = defineProps(["pages", "changeRoute"]);
+const router = changeRoute;
 
 const openModal = () => {
   store.isModalOpen = true;
 };
+
+function joinSession(url) {
+  router.push("karaoke/" + url);
+}
 </script>
 
 <style scoped></style>
