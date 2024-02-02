@@ -91,14 +91,15 @@
 
 ---
 ### 연정흠
-작업물 branch : [websocket](https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/websocket?ref_type=heads)
-
+[BE] DM
 - STOMP pub sub & RabbitMQ & Redis & MySQL 활용 DM(채팅) 구현
-- 방생성
-- 실시간 채팅
-- 이전 채팅 내역 및 새로운 채팅 내역 GET
--  redis <-> JPA 데이터 로딩 & 저장
-- 데이터 Batch apic Testing Tool로 테스트
+- [DM] STOMP 실시간 채팅 구현
+- [DM] STOMP와 RabbitMQ 연동
+- [DM] 채팅방 & 채팅내역 JPA 활용 DB 저장
+- [DM] 이전 채팅 내역 및 새로운 채팅 내역 mySQL <-> Redis 로딩 및 저장
+- [DM] redis에 이전 채팅 내역이 존재하지 않을 경우 db 조회 후 redis 저장
+- [DM] 스케줄링(Batch)을 위한 로직 구현 및 redis 캐시 삭제
+- [DM] 채팅방 입장 시, 이전 채팅 내역 중 가장 최근 날짜 데이터 로딩
 ---
 ### 고정원
 [BE] 노래방
