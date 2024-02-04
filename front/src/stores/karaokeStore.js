@@ -86,7 +86,7 @@ export const useKaraokeStore = defineStore("karaoke", {
         console.log("토큰 가져오기 성공. session ",this.session,",  token : ",token);
         console.log(this.myUserName);
         this.session
-          .connect(token, { clientData: this.myUserName })
+          .connect(token+1, { clientData: this.myUserName })
           .then(() => {
             // 토근을 저장한다.
             this.token = token;
@@ -119,6 +119,7 @@ export const useKaraokeStore = defineStore("karaoke", {
             console.log("this.getMedia(); // 세션이 만들어졌을 때 미디어를 불러옵니다. 성공");
           })
           .catch((error) => {
+            console.log("여기서 에러가나는게 아닌지 맞는지 알려줘.",error);
             console.log(
               "세션에 연결하는 중 오류가 발생했습니다!!:\n error : ",
               error,",error.code : ",
