@@ -8,7 +8,8 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 export const useKaraokeStore = defineStore("karaoke", {
   state: () => ({
     APPLICATION_SERVER_URL:
-      process.env.NODE_ENV === "production" ? "https://i10a705.p.ssafy.io/" : "http://localhost:8081/",
+      // process.env.NODE_ENV === "production" ? "https://i10a705.p.ssafy.io/" : "http://localhost:8081/",
+      process.env.NODE_ENV === "production" ? "https://i10a705.p.ssafy.io/" : "https://i10a705.p.ssafy.io/",
 
     // OpenVidu 객체
     OV: undefined,
@@ -83,6 +84,7 @@ export const useKaraokeStore = defineStore("karaoke", {
         // 첫 번째 매개변수는 토큰입니다. 두 번째 매개변수는 모든 사용자가 'streamCreated' 이벤트에서 가져올 수 있는 것입니다.
         // 'streamCreated' (속성 Stream.connection.data) 및 닉네임으로 DOM에 추가됩니다.
         console.log("토큰 가져오기 성공. session ",this.session,",  token : ",token);
+        console.log(this.myUserName);
         this.session
           .connect(token, { clientData: this.myUserName })
           .then(() => {
@@ -118,8 +120,10 @@ export const useKaraokeStore = defineStore("karaoke", {
           })
           .catch((error) => {
             console.log(
-              "세션에 연결하는 중 오류가 발생했습니다:",
+              "세션에 연결하는 중 오류가 발생했습니다:\n error : ",
+              error,",error.code : ",
               error.code,
+              ",error.message : ",
               error.message
             );
           });
