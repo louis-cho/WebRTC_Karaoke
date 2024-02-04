@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,7 +16,7 @@ public class FriendsService {
 
     // 친구 목록 조회
     public Page<Friends> getFriendsList(long userId, Pageable pageable) {
-        return friendsRepository.findFriendsByFromUserPkOrToUserPkAndStatus(userId, userId, '2', pageable);
+        return friendsRepository.findFriendsByUserAndStatus(userId,'2', pageable);
     }
 
     // 친구 신청
@@ -58,12 +57,12 @@ public class FriendsService {
 
     // 자신에게 온 친구 요청 목록 조회
     public Page<Friends> getIncomingRequests(long toUser, Pageable pageable) {
-        return friendsRepository.findFriendsByToUserPkAndStatus(toUser, '1', pageable);
+        return friendsRepository.findFriendsToUserAndStatus(toUser, '1', pageable);
     }
 
     // 내가 보낸 친구 요청 목록 조회
     public Page<Friends> getOutgoingRequests(long fromUser, Pageable pageable) {
-        return friendsRepository.findFriendsByFromUserPkAndStatus(fromUser, '1', pageable);
+        return friendsRepository.findFriendsFromUserAndStatus(fromUser, '1', pageable);
     }
 
     // 이미 친구인지 확인

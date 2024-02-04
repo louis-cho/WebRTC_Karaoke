@@ -59,7 +59,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.17.0' // Elasticsearch 버전에 맞게 변경
 
-
+	//swagger
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
 	// H2 Database (예제에서 사용할 수 있는 내장 데이터베이스)
 	runtimeOnly 'com.h2database:h2'
