@@ -1,79 +1,82 @@
 package com.ssafy.server.like.service;
 
-import com.ssafy.server.like.model.Likes;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.server.like.repository.LikeRepository;
 import com.ssafy.server.syncdata.LikeSyncData;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import javax.annotation.PostConstruct;
+import java.util.*;
 
+@Slf4j
 @Service
 public class LikeServiceImpl implements LikeService {
-
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private static final String LIKE_HASH_KEY = "likes";
 
     @Autowired
     private LikeRepository likeRepository;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
+    private HashOperations<String, String, LikeSyncData> hashOperations;
+
+    @PostConstruct
+    private void init() {
+        hashOperations = redisTemplate.opsForHash();
+    }
     @Override
-    public void createLike(Likes newLike) {
+    public void likeFeed(int userId, int feedId) {
+        LikeSyncData like = new LikeSyncData();
+        like.setUserPk(userId);
+        like.setFeedId(feedId);
+        like.setIsDeleted(false);
+        like.setSyncedToDB(false); // 새로운 좋아요를 추가할 때는 기본적으로 DB에 sync되지 않도록 설정
 
+        // likeRepository.save(like);
+        hashOperations.put(LIKE_HASH_KEY, generateKey(userId, feedId), like);
     }
 
     @Override
-    public Likes getLikeById(int likeId) {
-        // likeId에 해당하는 좋아요 조회
-        Optional<Likes> optionalLike = likeRepository.findById(likeId);
-        return optionalLike.orElse(null);
+    public void unlikeFeed(int userId, int feedId) {
+        // likeRepository.deleteById(generateKey(userId, feedId));
+        hashOperations.delete(LIKE_HASH_KEY, generateKey(userId, feedId));
     }
 
     @Override
-    public Likes updateLike(Likes updatedLike) {
-        // likeId에 해당하는 좋아요 업데이트
-        Optional<Likes> optionalExistingLike = likeRepository.findById(updatedLike.getLikeId());
+    public Map<String, LikeSyncData> getLikesForFeed(int feedId) {
+        Map<String, LikeSyncData> likes = new HashMap<>();
 
-        if (optionalExistingLike.isPresent()) {
-            Likes existingLike = optionalExistingLike.get();
-            existingLike.setStatus(updatedLike.getStatus());
+        Cursor<Map.Entry<String, LikeSyncData>> cursor = hashOperations.scan(LIKE_HASH_KEY , ScanOptions.scanOptions().match("*").build());
 
-            return likeRepository.save(existingLike);
+        while (cursor.hasNext()) {
+            ClassLoader classLoader = LikeSyncData.class.getClassLoader();
+            System.out.println("Class is loaded by: " + classLoader);
+
+            Map.Entry<String, LikeSyncData> entry = cursor.next();
+            likes.put(entry.getKey(), entry.getValue());
         }
 
-        return null;
+        cursor.close();
+
+        return likes;
     }
 
     @Override
-    public boolean deleteLike(int likeId) {
-        // likeId에 해당하는 좋아요 삭제
-        if (likeRepository.existsById(likeId)) {
-            likeRepository.deleteById(likeId);
-
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void syncToDB(Integer likeId, LikeSyncData likeSyncData) {
-
-        Likes likes = new Likes();
-        likes.setLikeId(likeSyncData.getLikeId());
-        likes.setFeedId(likeSyncData.getFeedId());
-        likes.setUserPk(likeSyncData.getUserPk());
-        likes.setStatus(likeSyncData.getStatus());
-
-        Likes fetched = likeRepository.findById(likeId).orElse(null);
-        if(fetched == null)
-            likeRepository.save(likes);
-        else {
-            fetched.setStatus(likes.getStatus());
-            likeRepository.save(fetched);
+    public void syncLikesToDB(int userId, int feedId) {
+        LikeSyncData like = hashOperations.get(LIKE_HASH_KEY, generateKey(userId, feedId));
+        if (like != null && !like.isSyncedToDB()) {
+            like.setSyncedToDB(true);
+            // likeRepository.save(like);
         }
     }
 
+    private String generateKey(int userId, int feedId) {
+        return userId + ":" + feedId;
+    }
 }
-

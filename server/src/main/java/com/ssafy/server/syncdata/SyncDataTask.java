@@ -8,6 +8,7 @@ import com.ssafy.server.like.service.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -32,33 +33,32 @@ public class SyncDataTask {
     private HitService hitService;
 
 
+    private static final String LIKE_HASH_KEY = "LIKE_FEED_ID";
 
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 999999999)
     public void syncDataToDB() {
         syncLikesDataToDB();
         syncHitsDataToDB();
     }
 
     private void syncLikesDataToDB() {
-        HashOperations<String, Integer, LikeSyncData> hashOperations = redisTemplate.opsForHash();
+        SetOperations<String, Object> setOperations = redisTemplate.opsForSet();
 
-        // Assuming your hash contains user_id as the key and like_count as the value
-        Map<Integer, LikeSyncData> likesData = hashOperations.entries(LITERAL.LIKES_HASH_KEY);
+        // Assuming your set contains feed_id as part of the key
+        Set<Object> likesData = setOperations.members(LIKE_HASH_KEY);
 
-        for (Map.Entry<Integer, LikeSyncData> entry : likesData.entrySet()) {
+        LikeSyncData data = null;
+        for (Object likeSyncData : likesData) {
+            data = (LikeSyncData) likesData;
+            Integer feedId = data.getFeedId();
 
-            Integer likeId = entry.getKey();
-            LikeSyncData likeSyncData = entry.getValue();
-
-            if(likeSyncData.isSyncedToDB()) {
+            if (data.isSyncedToDB()) {
                 continue;
             }
 
             // Call your service method to sync data to the database
-            likeService.syncToDB(likeId, likeSyncData);
-
-            likeSyncData.setSyncedToDB(true);
+            // likeService.syncToDB(feedId, data);
         }
     }
 

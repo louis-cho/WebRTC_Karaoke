@@ -1,7 +1,12 @@
 package com.ssafy.server.like.repository;
 
-import com.ssafy.server.like.model.Likes;
+import com.ssafy.server.syncdata.LikeSyncData;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface LikeRepository extends JpaRepository<Likes, Integer> {
+import java.util.List;
+
+public interface LikeRepository extends JpaRepository<LikeSyncData, Integer> {
+
+    List<LikeSyncData> findByUserPkAndFeedId(int userPk, int feedId);
+    List<LikeSyncData> findByFeedId(int feedId);
 }

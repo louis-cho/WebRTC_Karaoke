@@ -2,15 +2,13 @@ package com.ssafy.server.user.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "user")
 @Getter
 @Setter
 public class User {
@@ -18,14 +16,23 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_pk")
     private int userPk;
 
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_key", length = 36)
     private UUID userKey;
 
+    @Column(name = "nickname")
     private String nickname;
+
+    @Column(name = "role")
     private char role;
+
+    @Column(name = "profile_img_url")
     private String profileImgUrl;
+
+    @Column(name = "introduction")
     private String introduction;
 
     // Constructors, getters, setters, etc.

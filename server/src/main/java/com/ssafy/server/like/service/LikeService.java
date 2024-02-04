@@ -1,13 +1,22 @@
 package com.ssafy.server.like.service;
 
-import com.ssafy.server.like.model.Likes;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ssafy.server.syncdata.LikeSyncData;
 
-public interface LikeService {
-    void createLike(Likes newLike);
-    Likes getLikeById(int likeId);
-    Likes updateLike(Likes updatedLike);
-    boolean deleteLike(int likeId);
+import java.util.Map;
 
-    void syncToDB(Integer likeId, LikeSyncData likeSyncData);
+public interface LikeService {
+
+
+
+
+
+
+
+    void likeFeed(int userId, int feedId);
+    void unlikeFeed(int userId, int feedId);
+    Map<String, LikeSyncData> getLikesForFeed(int feedId);
+    void syncLikesToDB(int userId, int feedId);
+
+
 }

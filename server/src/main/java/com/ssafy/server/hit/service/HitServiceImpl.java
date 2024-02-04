@@ -1,13 +1,10 @@
 package com.ssafy.server.hit.service;
 
-import com.ssafy.server.common.util.LITERAL;
 import com.ssafy.server.hit.model.Hit;
 import com.ssafy.server.hit.repository.HitRedisRepository;
 import com.ssafy.server.hit.repository.HitRepository;
-import com.ssafy.server.like.model.Likes;
 import com.ssafy.server.syncdata.HitSyncData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
