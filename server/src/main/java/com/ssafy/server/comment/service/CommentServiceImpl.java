@@ -6,10 +6,21 @@ import com.ssafy.server.comment.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
+import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class CommentServiceImpl implements CommentService {
+
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private final CommentRepository commentRepository;
@@ -58,4 +69,15 @@ public class CommentServiceImpl implements CommentService {
         }
         return false;
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Comment> getCommentsByFeedIdWithPagination(int feedId, int startIndex, int pageSize) {
+        return (List<Comment>) entityManager.createNamedStoredProcedureQuery("GetCommentsByFeedIdWithPagination")
+                .setParameter("feedIdParam", feedId)
+                .setParameter("startIndexParam", startIndex)
+                .setParameter("pageSizeParam", pageSize)
+                .getResultList();
+    }
+
 }

@@ -18,6 +18,9 @@ import java.util.List;
 @RequestMapping("/comment")
 public class CommentController {
 
+    private final String START_INDEX = "0";
+    private final String PAGE_SIZE = "10";
+
     @Autowired
     private final CommentService commentService;
 
@@ -72,4 +75,20 @@ public class CommentController {
 
         return new ResponseEntity<>(ApiResponse.success(result), HttpStatus.ACCEPTED);
     }
+
+    @PostMapping("/feed/{feedId}")
+    public ResponseEntity<ApiResponse<List<Comment>>> getCommentsByFeedIdWithPagination(
+            @PathVariable int feedId,
+            @RequestParam(defaultValue = START_INDEX) int startIndex,
+            @RequestParam(defaultValue = PAGE_SIZE) int pageSize) {
+        List<Comment> comments = null;
+        comments = commentService.getCommentsByFeedIdWithPagination(feedId, startIndex, pageSize);
+
+        if(comments == null) {
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(CommentExceptionEnum.COMMENT_FETCH_ERROR));
+        }
+
+        return new ResponseEntity<>(ApiResponse.success(comments), HttpStatus.ACCEPTED);
+    }
+
 }
