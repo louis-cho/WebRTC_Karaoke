@@ -1,11 +1,6 @@
 <template>
   <div>
     <canvas ref="canvas" width="1000" height="200"></canvas>
-    <div>
-      <div>{{ currentTimeFormatted }}</div>
-      <input type="range" :value="currentPercentage" @input="seekTo" />
-      <div>{{ totalTimeFormatted }}</div>
-    </div>
     <button @click="play">Play</button>
     <button @click="stop">Stop</button>
     <button @click="playNextSong" :disabled="!isPlaying">다음 곡 재생</button>
@@ -14,12 +9,12 @@
 
 <script setup>
 import { ref, reactive, watch, computed, onMounted } from 'vue';
-import { paserLyric, parseBundle } from '@/js/karaoke/karaokeParser.js'
+import { parseLyric, parseBundle, parseScore } from '@/js/karaoke/karaokeParser.js'
 
 const canvas = ref(null);
-const currentTime = ref(0);
-const totalTime = ref(0);
-const isPlaying = ref(false);
+const songLength = ref(0);  //  노래 재생 시간, 추후에 사용
+const bundles = ref([]);
+const lyrics = ref([]);
 const startTimeRef = ref(0) // 노래 시작시간
 const lyricUpper = ref("")  // 위에 띄울 가사
 const lyricLower = ref("")  // 아래 띄울 가사
@@ -40,7 +35,7 @@ const blankSize = 6.7 // 띄어쓰기 가사가 채워질 때 이동하는 x좌�
 const prelude = ref(0)  // 전주 시간
 
 const play = () => {
-  lyrics.value = paserLyric(parsedMML);
+  lyrics.value = parseLyric(parseScore(sampleMML));
   bundles.value = parseBundle(lyrics.value)
   // 노래 재생 로직 추가
   drawLyrics()
@@ -58,7 +53,6 @@ fillText(text, x, y)는 xy 좌표 기준으로 1사분면에 렌더링
 fillRect(x, y, width, height)는 xy좌표 기준 4사분면에 렌더링
 */
 const drawLyrics = () => {
-  const text = "test";
   const ctx = canvas.value.getContext('2d');
 
   ctx.fillStyle = 'black';
@@ -133,94 +127,16 @@ const drawLyrics = () => {
 
   requestAnimationFrame(renderFrame);
 }
-// 가사 갱신을 감시하고 Canvas에 가사 다시 렌더링
-// watch(lyrics, renderLyrics);
 
-// 다음 곡 재생 버튼 클릭 핸들러
 const playNextSong = () => {
   // 다음 곡 재생 로직 구현
 };
 
-// 시간 이동을 처리하는 함수
-const seekTo = (event) => {
-  const seekPosition = event.target.value;
-  // 해당 시간으로 이동하는 로직 구현
-};
-
-// 렌더링 된 가사 및 시간 업데이트
-const updateLyricsAndTime = () => {
-  // 가사 및 시간 업데이트 로직 구현
-};
-
-const songLength = 61;
-
-const bundles = ref([]);
-
-const lyrics = ref([]);
-
-const parsedMML = [ // MML에서 ScoreParser.js로 최초로 parse된 data
-{note: 2, octav: 3, length: 882.3529411764706, start: 0, lyric: '동'},
-{note: 7, octav: 3, length: 1323.5294117647059, start: 882.3529411764706, lyric: '해'},
-{note: 6, octav: 3, length: 441.1764705882353, start: 2205.8823529411766, lyric: '물'},
-{note: 4, octav: 3, length: 882.3529411764706, start: 2647.0588235294117, lyric: '과\t'},
-{note: 7, octav: 3, length: 882.3529411764706, start: 3529.4117647058824, lyric: '백'},
-{note: 2, octav: 3, length: 882.3529411764706, start: 4411.764705882353, lyric: '두'},
-{note: 11, octav: 2, length: 882.3529411764706, start: 5294.117647058823, lyric: '산'},
-{note: 2, octav: 3, length: 882.3529411764706, start: 6176.470588235294, lyric: '이\n'},
-{note: 7, octav: 3, length: 882.3529411764706, start: 7058.823529411764, lyric: '마'},
-{note: 9, octav: 3, length: 441.1764705882353, start: 7941.176470588234, lyric: '르'},
-{note: 11, octav: 3, length: 441.1764705882353, start: 8382.35294117647, lyric: '고\t'},
-{note: 0, octav: 4, length: 1323.5294117647059, start: 8823.529411764706, lyric: '닳'},
-{note: 11, octav: 3, length: 441.1764705882353, start: 10147.058823529413, lyric: '도'},
-{note: 9, octav: 3, length: 2647.0588235294117, start: 10588.235294117649, lyric: '록\n'},
-{note: -1, octav: 3, length: 882.3529411764706, start: 13235.29411764706},
-{note: 2, octav: 4, length: 1323.5294117647059, start: 14117.64705882353, lyric: '하'},
-{note: 0, octav: 4, length: 441.1764705882353, start: 15441.176470588236, lyric: '느'},
-{note: 11, octav: 3, length: 882.3529411764706, start: 15882.352941176472, lyric: '님'},
-{note: 9, octav: 3, length: 882.3529411764706, start: 16764.705882352944, lyric: '이\t'},
-{note: 7, octav: 3, length: 882.3529411764706, start: 17647.058823529416, lyric: '보'},
-{note: 6, octav: 3, length: 441.1764705882353, start: 18529.41176470589, lyric: '우'},
-{note: 4, octav: 3, length: 441.1764705882353, start: 18970.588235294123},
-{note: 2, octav: 3, length: 882.3529411764706, start: 19411.764705882357, lyric: '하'},
-{note: 11, octav: 2, length: 882.3529411764706, start: 20294.11764705883, lyric: '사\n'},
-{note: 2, octav: 3, length: 882.3529411764706, start: 21176.4705882353, lyric: '우'},
-{note: 7, octav: 3, length: 882.3529411764706, start: 22058.823529411773, lyric: '리'},
-{note: 9, octav: 3, length: 441.1764705882353, start: 22941.176470588245, lyric: '나'},
-{note: 9, octav: 3, length: 441.1764705882353, start: 23382.35294117648, lyric: '라\t'},
-{note: 11, octav: 3, length: 882.3529411764706, start: 23823.529411764714, lyric: '만'},
-{note: 7, octav: 3, length: 2647.0588235294117, start: 24705.882352941186, lyric: '세\n'},
-{note: -1, octav: 3, length: 882.3529411764706, start: 27352.9411764706},
-{note: 6, octav: 3, length: 1323.5294117647059, start: 28235.29411764707, lyric: '무'},
-{note: 7, octav: 3, length: 441.1764705882353, start: 29558.823529411777},
-{note: 9, octav: 3, length: 882.3529411764706, start: 30000.00000000001, lyric: '궁'},
-{note: 6, octav: 3, length: 882.3529411764706, start: 30882.352941176483, lyric: '화\t'},
-{note: 11, octav: 3, length: 1323.5294117647059, start: 31764.705882352955, lyric: '삼'},
-{note: 0, octav: 4, length: 441.1764705882353, start: 33088.23529411766},
-{note: 2, octav: 4, length: 882.3529411764706, start: 33529.411764705896, lyric: '천'},
-{note: 11, octav: 3, length: 882.3529411764706, start: 34411.764705882364, lyric: '리\n'},
-{note: 9, octav: 3, length: 882.3529411764706, start: 35294.11764705883, lyric: '화'},
-{note: 7, octav: 3, length: 882.3529411764706, start: 36176.4705882353, lyric: '려'},
-{note: 6, octav: 3, length: 882.3529411764706, start: 37058.82352941177, lyric: '강'},
-{note: 7, octav: 3, length: 882.3529411764706, start: 37941.17647058824},
-{note: 9, octav: 3, length: 2647.0588235294117, start: 38823.529411764706, lyric: '산\n'},
-{note: -1, octav: 3, length: 882.3529411764706, start: 41470.58823529412},
-{note: 2, octav: 4, length: 1323.5294117647059, start: 42352.94117647059, lyric: '대'},
-{note: 0, octav: 4, length: 441.1764705882353, start: 43676.470588235294, lyric: '한'},
-{note: 11, octav: 3, length: 882.3529411764706, start: 44117.64705882353, lyric: '사'},
-{note: 9, octav: 3, length: 882.3529411764706, start: 45000, lyric: '람\t'},
-{note: 7, octav: 3, length: 882.3529411764706, start: 45882.35294117647, lyric: '대'},
-{note: 6, octav: 3, length: 441.1764705882353, start: 46764.70588235294, lyric: '한'},
-{note: 4, octav: 3, length: 441.1764705882353, start: 47205.882352941175},
-{note: 2, octav: 3, length: 882.3529411764706, start: 47647.05882352941, lyric: '으'},
-{note: 11, octav: 2, length: 882.3529411764706, start: 48529.41176470588, lyric: '로\n'},
-{note: 2, octav: 3, length: 882.3529411764706, start: 49411.76470588235, lyric: '길'},
-{note: 7, octav: 3, length: 882.3529411764706, start: 50294.11764705882, lyric: '이\t'},
-{note: 9, octav: 3, length: 441.1764705882353, start: 51176.47058823529, lyric: '보'},
-{note: 9, octav: 3, length: 441.1764705882353, start: 51617.647058823524, lyric: '전'},
-{note: 11, octav: 3, length: 882.3529411764706, start: 52058.82352941176, lyric: '하'},
-{note: 7, octav: 3, length: 2647.0588235294117, start: 52941.17647058823, lyric: '세'},
-{note: -1, octav: 3, length: 882.3529411764706, start: 55588.23529411764},
-]
+const sampleMML = `t68 o3 l4
+  d'동'g.'해'f+8'물'e'과\t'g'백'd'두'c-'산'd'이\n' g'마'a8'르'b8'고\t'b+.'닳'b8'도' a2'록\n'.r
+  >d.'하'c8'느'<b'님'a'이\t' g'보'f+8'우'e8d'하'c-'사\n' d'우'g'리'a8'나'a8'라\t'b'만' g2.'세\n'r
+  f+.'무'g8a'궁'f+'화\t' b.'삼'>c8d'천'<b'리\n' a'화'g'려'f+'강'g a2.'산\n'r
+  >d.'대'c8'한'<b'사'a'람\t' g'대'f+8'한'e8d'으'c-'로\n' d'길'g'이\t'a8'보'a8'전'b'하'g2.'세'r`;
 
 onMounted(() => {
 
@@ -229,5 +145,5 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 필요한 CSS 스타일링 작성 */
+
 </style>
