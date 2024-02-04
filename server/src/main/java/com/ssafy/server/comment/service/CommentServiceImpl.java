@@ -39,12 +39,8 @@ public class CommentServiceImpl implements CommentService {
 
         if (optionalExistingComment.isPresent()) {
             Comment existingComment = optionalExistingComment.get();
-            existingComment.setUserPk(updatedComment.getUserPk());
-            existingComment.setFeedId(updatedComment.getFeedId());
             existingComment.setContent(updatedComment.getContent());
-            existingComment.setRootCommentId(updatedComment.getRootCommentId());
-            existingComment.setParentCommentId(updatedComment.getParentCommentId());
-
+            existingComment.setDeleted(updatedComment.isDeleted());
             return commentRepository.save(existingComment);
         }
 
@@ -54,8 +50,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public boolean deleteComment(int commentId) {
         // commentId에 해당하는 댓글 삭제
-        if (commentRepository.existsById(commentId)) {
-            commentRepository.deleteById(commentId);
+
+        Optional<Comment> optionalExistingComment = commentRepository.findById(commentId);
+        if(optionalExistingComment.isPresent()) {
+            optionalExistingComment.get().setDeleted(true);
             return true;
         }
         return false;

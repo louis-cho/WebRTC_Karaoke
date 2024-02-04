@@ -5,14 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
-@Getter
 @Setter
+@Getter
 @ToString
 public class Comment extends Auditable {
 
@@ -26,4 +23,6 @@ public class Comment extends Auditable {
     private int rootCommentId;
     private int parentCommentId;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean isDeleted;
 }
