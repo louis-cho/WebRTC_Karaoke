@@ -25,6 +25,8 @@ public class FriendsController {
     // 친구 신청
     @PostMapping("/request")
     public void requestFriend(@RequestParam long fromUser, @RequestParam long toUser) {
+        if (fromUser == toUser)
+            throw new RuntimeException("나는 나 자신의 영원한 친구 입니다.");
         friendsService.requestFriend(fromUser, toUser);
     }
 
