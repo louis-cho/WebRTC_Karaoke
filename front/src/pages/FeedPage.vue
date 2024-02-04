@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @scroll="handleScroll">
     <TabItem/>
     <!-- <h3>전체 피드 페이지</h3> -->
     <div class="my-feed">
@@ -16,14 +16,17 @@
           <div class="width-100">
             <div class="space-between" >
               <div>
-                <p>{{ getUserName(feed.USER_PK) }}닉네임</p>
+                <!-- 닉네임 -->
+                <p>{{ getUserName(feed.USER_PK) }}</p>
               </div>
 
             </div>
             <div class="space-start">
-              <div>{{ getSongTitle(feed.FEED_ID) }}거짓말-</div>
-              <div>{{ getSongSinger(feed.FEED_ID) }}빅뱅</div>
-              <q-btn color="secondary" :label="feed.STATUS === '전체 공개' ? '전체 공개' : (feed.STATUS === '나만 공개' ? '나만 공개' : '비공개')" size="sm" />
+              <!-- 노래제목 -->
+              <div>{{ getSongTitle(feed.FEED_ID) }}-</div>
+              <!-- 가수 -->
+              <div>{{ getSongSinger(feed.FEED_ID) }}</div>
+              <q-btn color="secondary" :label="feed.STATUS === '전체 공개' ? '전체 공개' : (feed.STATUS === '친구 공개' ? '친구 공개' : '비공개')" size="sm" />
             </div>
           </div>
         </div>
@@ -61,13 +64,15 @@
       </div>
     </div>
 
+    <div v-if="loading">Loading...</div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import TabItem from "@/layouts/TabItem.vue";
+import { ref, onMounted, onUnmounted  } from 'vue'
+import TabItem from "@/layouts/TabItem.vue"
 
+const loading = ref(false)
 //가상 피드 데이터
 const feeds = ref([
   {
@@ -122,6 +127,56 @@ const getSongSinger = (feed_id) => {
   // SONG_ID를 사용하여 SINGER를 가져오기...
   return '빅뱅';
 }
+
+// 스크롤 이벤트 핸들러
+const handleScroll = () => {
+  const element = document.documentElement;
+  const { scrollTop, scrollHeight, clientHeight } = element;
+
+  // 스크롤이 아래로 내려갔는지 확인
+  if (scrollTop + clientHeight >= scrollHeight - 10) {
+    // 무한 스크롤 로딩 시작
+    loading.value = true;
+    
+    // 새로운 피드를 불러오는 로직 (예시로 비동기 setTimeout 사용)
+    setTimeout(() => {
+      // 새로운 피드 데이터를 여기서 추가
+      const newFeeds = [
+        {
+          FEED_ID: 3,
+          USER_PK: 5,
+          SONG_ID: 5,
+          CONTENT: "새로운 피드 내용!!",  
+          THUMBNAIL_URL: "새 썸네일 주소",
+          VIDEO_URL: "your_video_url.mp4",
+          VIDEO_LENGTH: "220",
+          STATUS: "친구 공개",
+          TOTAL_POINT: "0"
+        },
+  
+      ];
+
+      // 새로운 피드를 기존 피드 배열에 추가
+      feeds.value = feeds.value.concat(newFeeds);
+
+      // 무한 스크롤 로딩 종료
+      loading.value = false;
+    }, 1000); // 적절한 비동기 로딩 시간으로 조절
+  }
+};
+
+
+// 컴포넌트가 마운트된 후에 스크롤 이벤트를 추가
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll);
+});
+
+// 컴포넌트가 언마운트될 때 스크롤 이벤트 리스너 제거
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
+});
+
+
 
 // const playVideo = (videoUrl) => {
 //   const videoPlayer = document.getElementById('video-player');
