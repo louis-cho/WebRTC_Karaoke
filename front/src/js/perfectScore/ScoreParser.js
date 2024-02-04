@@ -86,7 +86,8 @@ export function parseScore(txt) {
                   tmp += ch;
                   next();
               }
-              note.lylic = tmp; // 가사 설정
+              console.log(tmp.length)
+              note.lyric = tmp; // 가사 설정
               tmp = "";
               next();
           } else if (ch === "&") {
@@ -122,7 +123,7 @@ export function parseScore(txt) {
   }
 
   // 문자열 가사 파싱 함수
-  function parseStringLylic() {
+  function parseStringLyric() {
       tmp = "";
       next();
       while ("]" !== ch) {
@@ -144,7 +145,7 @@ export function parseScore(txt) {
       }
       for (let i = start, cur = 0; cur < len && i < results.length; i++) {
           if (results[i].note === -1) continue;
-          results[i].lylic = tmp[cur];
+          results[i].lyric = tmp[cur];
           cur++;
       }
       tmp = "";
@@ -210,7 +211,7 @@ export function parseScore(txt) {
               parseDefaultLength(); // 기본 길이 설정
               break;
           case "[":
-              parseStringLylic(); // 문자열 가사 파싱
+              parseStringLyric(); // 문자열 가사 파싱
               break;
           default:
               i++;

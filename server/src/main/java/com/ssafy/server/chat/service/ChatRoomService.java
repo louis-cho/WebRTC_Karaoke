@@ -42,48 +42,4 @@ public class ChatRoomService {
         usersChatsRepository.save(guestChats);
         return chatRoom;
     }
-
-    // 채팅방 인원+1
-    public void plusUserCnt(String roomId){
-//        ChatRoomDTO room = chatRoomMap.get(roomId);
-//        room.setUserCount(room.getUserCount()+1);
-    }
-
-    // 채팅방 인원-1
-    public void minusUserCnt(String roomId){
-//        ChatRoomDTO room = chatRoomMap.get(roomId);
-//        room.setUserCount(room.getUserCount()-1);
-    }
-
-    // 채팅방 유저 리스트에 유저 추가
-    public String addUser(String roomId, String userName){
-//        ChatRoomDTO room = chatRoomMap.get(roomId);
-        String userUUID = UUID.randomUUID().toString();
-
-//        room.getUserList().put(userUUID, userName);
-
-        return userUUID;
-    }
-
-    // 채팅방 유저 리스트 삭제
-    public void delUser(String roomId, String userUUID){
-//        ChatRoomDTO room = chatRoomMap.get(roomId);
-//        room.getUserList().remove(userUUID);
-    }
-
-    // 채팅방 userName 조회
-    public String getUserName(String roomId, String userUUID){
-//        ChatRoomDTO room = chatRoomMap.get(roomId);
-//        return room.getUserList().get(userUUID);
-        return "dummy";
-    }
-
-    // 채팅방 전체 userlist 조회
-    public ArrayList<String> getUserList(String roomId){
-        ArrayList<String> list = new ArrayList<>();
-//        ChatRoomDTO room = chatRoomMap.get(roomId);
-
-//        room.getUserList().forEach((key, value) -> list.add(value));
-        return list;
-    }
 }
