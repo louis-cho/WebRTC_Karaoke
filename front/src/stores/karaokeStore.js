@@ -120,7 +120,7 @@ export const useKaraokeStore = defineStore("karaoke", {
           })
           .catch((error) => {
             console.log(
-              "세션에 연결하는 중 오류가 발생했습니다:\n error : ",
+              "세션에 연결하는 중 오류가 발생했습니다!!:\n error : ",
               error,",error.code : ",
               error.code,
               ",error.message : ",
