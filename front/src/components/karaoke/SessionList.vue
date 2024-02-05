@@ -1,9 +1,6 @@
 <template>
   <q-layout>
-    <!-- QHeader, QDrawer, 등등 다양한 QLayout 컴포넌트들이 올 수 있습니다. -->
-
     <q-page-container>
-      <!-- 여기에 QPage 컴포넌트를 배치합니다. -->
       <q-page>
         <q-header>
           <q-toolbar>
@@ -38,8 +35,6 @@
         </q-page-container>
       </q-page>
     </q-page-container>
-
-    <!-- QFooter 등등 다양한 QLayout 컴포넌트들이 올 수 있습니다. -->
   </q-layout>
 </template>
 

@@ -19,19 +19,27 @@
       <audio-filter />
 
       <!-- 내 캠 -->
-      <div id="main-video">
+      <div
+        id="main-video"
+        style="display: flex; flex-direction: row; overflow-x: auto"
+      >
         <UserVideo :stream-manager="mainStreamManagerComputed" />
+        <normal-mode v-if="!songMode" />
+        <perfect-score v-if="songMode" />
       </div>
+
       <!-- 모든 캠 -->
-      <div id="video-container">
+      <div id="video-container" class="responsive-container">
         <UserVideo
           :stream-manager="publisherComputed"
+          class="user-video"
           @click="updateMainVideoStreamManager(store.publisher)"
         />
         <UserVideo
           v-for="sub in subscribersComputed"
           :key="sub.stream.connection.connectionId"
           :stream-manager="sub"
+          class="user-video"
           @click="updateMainVideoStreamManager(sub)"
         />
       </div>
@@ -52,7 +60,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
@@ -66,12 +74,15 @@ import KaraokeChat from "@/components/karaoke/KaraokeChat.vue";
 import InputController from "@/components/karaoke/InputController.vue";
 import InputSelector from "@/components/karaoke/InputSelector.vue";
 import RecordingVideo from "src/components/karaoke/RecordingVideo.vue";
+import NormalMode from "src/components/karaoke/NormalMode.vue";
+import PerfectScore from "src/components/karaoke/PerfectScore.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 // store 사용
 const store = useKaraokeStore();
 const router = useRouter();
+const songMode = ref(true);
 
 // 다시그려내기 위해 computed 작성
 const mainStreamManagerComputed = computed(() => store.mainStreamManager);
@@ -90,4 +101,26 @@ function updateMainVideoStreamManager(stream) {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.user-video {
+  cursor: pointer;
+}
+
+#video-container {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+}
+
+/* 추가한 클래스로 반응형 스타일을 지정합니다. */
+.responsive-container {
+  flex-wrap: nowrap; /* 자식 요소들이 한 줄에 나오도록 설정 */
+}
+
+/* 미디어 쿼리를 사용하여 페이지 크기에 따라 스타일을 동적으로 조절합니다. */
+@media (max-width: 768px) {
+  .responsive-container {
+    flex-wrap: wrap; /* 페이지 크기가 작을 때는 요소들이 여러 줄에 나오도록 설정 */
+  }
+}
+</style>

@@ -29,9 +29,6 @@ public class RecordingFileController {
     @Autowired
     private S3FileUploader fileUploader;
 
-    private static final String USERNAME = "OPENVIDUAPP";
-    private static final String PASSWORD = "haebang";
-
     @PostMapping("/upload")
     public ResponseEntity<String> downloadAndUploadFile(@RequestBody Map<String, Object> params) throws IOException {
         System.out.println("파일 업로드 시작!");
@@ -75,7 +72,7 @@ public class RecordingFileController {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         // Basic Authentication 설정
-        String auth = USERNAME + ":" + PASSWORD;
+        String auth = "OPENVIDUAPP:${OPENVIDU_SECRET}";
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
         String authHeader = "Basic " + encodedAuth;
         connection.setRequestProperty("Authorization", authHeader);
