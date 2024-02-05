@@ -1,5 +1,6 @@
 package com.ssafy.server.user.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -9,7 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.UUID;
-
+@Builder
 @Entity
 @Getter
 @Setter

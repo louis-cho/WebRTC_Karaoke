@@ -1,11 +1,7 @@
 <template>
   <!-- class="bg-purple" -->
   <div>
-<<<<<<< HEAD
-    <nav-bar/>
-=======
     <nav-bar />
->>>>>>> 209490cff6bf619b716cbc74896897bd0822a559
     <q-carousel
       v-model="slide"
       vertical

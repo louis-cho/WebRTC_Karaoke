@@ -1,4 +1,4 @@
-package com.ssafy.server.karaoke.model;
+package com.ssafy.server.song.model.entity;
 
 import javax.persistence.*;
 
@@ -10,7 +10,7 @@ public class SongInfo {
     private int songId;
     private int length;
     private String genre;
-    private String lyrics;
+    private String mmlData;
     private String songUrl;
     private String albumCover;
 
