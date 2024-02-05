@@ -43,20 +43,7 @@ public class SyncDataTask {
     }
 
     private void syncLikesDataToDB() {
-        SetOperations<String, Object> setOperations = redisTemplate.opsForSet();
-
-        // Assuming your set contains feed_id as part of the key
-        Set<Object> likesData = setOperations.members(LIKE_HASH_KEY);
-
-        LikeSyncData data = null;
-        for (Object likeSyncData : likesData) {
-            data = (LikeSyncData) likesData;
-            Integer feedId = data.getFeedId();
-
-
-            // Call your service method to sync data to the database
-            // likeService.syncToDB(feedId, data);
-        }
+        likeService.saveToMySQL();
     }
 
     private void syncHitsDataToDB() {

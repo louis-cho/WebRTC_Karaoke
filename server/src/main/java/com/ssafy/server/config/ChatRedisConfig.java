@@ -1,9 +1,7 @@
 package com.ssafy.server.config;
 
 import com.ssafy.server.feed.rank.model.FeedStats;
-import com.ssafy.server.point.service.RedisPointMessageListener;
-import com.ssafy.server.syncdata.LikeSyncData;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ssafy.server.like.model.Like;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -12,9 +10,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
-import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -39,8 +35,8 @@ public class ChatRedisConfig extends CachingConfigurerSupport {
     }
 
     @Bean
-    public RedisTemplate<String, LikeSyncData> likeRedisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, LikeSyncData> template = new RedisTemplate<>();
+    public RedisTemplate<String, Like> likeRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Like> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         template.setDefaultSerializer(new JdkSerializationRedisSerializer());
         // 다른 설정 추가
