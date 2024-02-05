@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -39,7 +40,7 @@ public class LikeServiceImpl implements LikeService {
         HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
         Map<Object, Object> result = new HashMap<>();
 
-        hashOperations.scan(LIKE_HASH_KEY, ScanOptions.scanOptions().match(feedId + "_*").build())
+        hashOperations.scan(LIKE_HASH_KEY, ScanOptions.scanOptions().match("*" + feedId + "_*").build())
                 .forEachRemaining(entry -> result.put(entry.getKey(), entry.getValue()));
 
         return result;
@@ -54,8 +55,26 @@ public class LikeServiceImpl implements LikeService {
         redisTemplate.opsForHash().put(LIKE_HASH_KEY, getHashKey(updatedLikeSyncData), updatedLikeSyncData);
     }
 
-    private void saveToMySQL(LikeSyncData likeSyncData) {
-        CompletableFuture.runAsync(() -> likeRepository.save(likeSyncData));
+    private void saveToMySQL() {
+
+        HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
+
+        hashOperations.scan(LIKE_HASH_KEY, ScanOptions.scanOptions().match("*").build())
+                .forEachRemaining(entry -> {
+                    LikeSyncData likeSyncData = (LikeSyncData) entry.getValue();
+                    if (!likeSyncData.isSyncedToDB()) {
+                        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                            try {
+                                likeRepository.save(likeSyncData);
+                                likeSyncData.setSyncedToDB(true);
+                            } catch (Exception e) {
+                                likeSyncData.setSyncedToDB(false);
+                            }
+                        });
+
+                        future.join();
+                    }
+                });
     }
 
     private String getHashKey(LikeSyncData likeSyncData) {

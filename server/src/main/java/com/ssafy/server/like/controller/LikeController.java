@@ -34,12 +34,12 @@ public class LikeController {
         this.userService = userService;
     }
 
-    @PostMapping("/testcreate")
+    @PostMapping("/create")
     public void create(@RequestBody LikeSyncData likeSyncData) {
         likeService.save(likeSyncData);
     }
 
-    @GetMapping("/testdelete/{userPk}/{feedId}")
+    @GetMapping("/delete/{userPk}/{feedId}")
     public void delete(@PathVariable int userPk, @PathVariable int feedId) {
         likeService.delete(userPk, feedId);
     }
@@ -49,38 +49,6 @@ public class LikeController {
         System.out.println(likeService.findAllByFeedId(feedId));
     }
 
-//    @GetMapping("/testsync/{userPk}/{feedId}")
-//    public void sync(@PathVariable int userPk, @PathVariable int feedId) {
-//        likeService.syncLikesToDB(userPk, feedId);
-//    }
-
-//    @PostMapping("/create")
-//    public ResponseEntity<?> createLike(@RequestBody JsonNode request) {
-//
-//        String _userUUID = request.get("userUUID") != null ? request.get("userUUID").asText() : null;
-//        String _feedId = request.get("feedId") != null ? request.get("feedId").asText() : null;
-//
-//        Like newLike = null;
-//        if (_userUUID != null && _feedId != null) {
-//            newLike = new Like();
-//            int userPk = userService.getUserPk(UUID.fromString(_userUUID));
-//            newLike.setUserPk(userPk);
-//            try {
-//                newLike.setFeedId(Integer.parseInt(_feedId));
-//            } catch(NumberFormatException e) {
-//                return null;
-//            }
-//        }
-//
-//        try {
-//            LikeSyncData likeSyncData = LikeSyncDataFactory.fromLike(newLike);
-//            likeService.createLike(likeSyncData);
-//        } catch(Exception e) {
-//            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(LikeExceptionEnum.LIKE_CREATION_FAILED));
-//        }
-//        return new ResponseEntity<>(true, HttpStatus.CREATED);
-//        return null;
-//    }
 
     @PostMapping("/get")
     public ResponseEntity<Like> getLikeById(@RequestParam UUID userUUID, @RequestParam int feedId) {
@@ -99,16 +67,6 @@ public class LikeController {
         }
     }
 
-//    @PutMapping("/update")
-//    public ResponseEntity<Boolean> updateLike(@RequestBody Like updatedLike) {
-//        try {
-//            LikeSyncData likeSyncData = LikeSyncDataFactory.fromLike(updatedLike);
-//            likeService.updateLike(likeSyncData);
-//        } catch (Exception e) {
-//            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(LikeExceptionEnum.LIKE_CREATION_FAILED));
-//        }
-//        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
-//    }
 
     @PostMapping("/delete")
     public ResponseEntity<Boolean> deleteLike(@RequestBody JsonNode request) {
