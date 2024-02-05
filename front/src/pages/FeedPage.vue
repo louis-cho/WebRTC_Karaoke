@@ -4,10 +4,14 @@
     <!-- <h3>전체 피드 페이지</h3> -->
     <div class="my-feed">
       <!-- 첫번째 div -->
-      <!-- 검색창 -->
+      <!-- 검색창 --> <!-- 닉네임/노래제목 검색 가능 -->
+      <div>
+        <input v-model="searchQuery" placeholder="검색어를 입력하세요" />
+        <button @click="search">검색</button>
+      </div>
 
       <!-- 두번째 div -->
-      <div v-for="feed in feeds" :key="feed.id">
+      <div v-for="feed in filteredFeeds" :key="feed.FEED_ID" >
         <div class="profile">
           <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }">
             <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
@@ -26,7 +30,7 @@
               <div>{{ getSongTitle(feed.FEED_ID) }}-</div>
               <!-- 가수 -->
               <div>{{ getSongSinger(feed.FEED_ID) }}</div>
-              <q-btn color="secondary" :label="feed.STATUS === '전체 공개' ? '전체 공개' : (feed.STATUS === '친구 공개' ? '친구 공개' : '비공개')" size="sm" />
+              <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.STATUS === '1' ? 'secondary' : 'black')" :label="feed.STATUS === '0' ? '전체 공개' : (feed.STATUS === '1' ? '친구 공개' : '비공개')" size="sm" />
             </div>
           </div>
         </div>
@@ -69,9 +73,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted  } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import TabItem from "@/layouts/TabItem.vue"
 
+const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false)
 //가상 피드 데이터
 const feeds = ref([
@@ -79,11 +84,11 @@ const feeds = ref([
     FEED_ID: 1,
     USER_PK: 1,
     SONG_ID: 3,
-    CONTENT: "오랜만에 빅뱅 노래 불러봄",
+    CONTENT: "오랜만에 노래 불러봄",
     THUMBNAIL_URL: "썸네일 주소1",
     VIDEO_URL: "your_video_url.mp4",
     VIDEO_LENGTH: "190",
-    STATUS: "비공개",
+    STATUS: "2",
     TOTAL_POINT: "20000"
   },
   {
@@ -94,7 +99,7 @@ const feeds = ref([
     THUMBNAIL_URL: "썸네일 주소2",
     VIDEO_URL: "your_video_url2.mp4",
     VIDEO_LENGTH: "170",
-    STATUS: "전체 공개",
+    STATUS: "0",
     TOTAL_POINT: "5000"
   }
 ])
@@ -137,7 +142,7 @@ const handleScroll = () => {
   if (scrollTop + clientHeight >= scrollHeight - 10) {
     // 무한 스크롤 로딩 시작
     loading.value = true;
-    
+
     // 새로운 피드를 불러오는 로직 (예시로 비동기 setTimeout 사용)
     setTimeout(() => {
       // 새로운 피드 데이터를 여기서 추가
@@ -146,18 +151,18 @@ const handleScroll = () => {
           FEED_ID: 3,
           USER_PK: 5,
           SONG_ID: 5,
-          CONTENT: "새로운 피드 내용!!",  
+          CONTENT: "새로운 피드 내용!!",
           THUMBNAIL_URL: "새 썸네일 주소",
           VIDEO_URL: "your_video_url.mp4",
           VIDEO_LENGTH: "220",
-          STATUS: "친구 공개",
+          STATUS: "1",
           TOTAL_POINT: "0"
         },
-  
+
       ];
 
       // 새로운 피드를 기존 피드 배열에 추가
-      feeds.value = feeds.value.concat(newFeeds);
+      feeds.value = feeds.value.concat(newFeeds.slice(0, itemsPerLoad));
 
       // 무한 스크롤 로딩 종료
       loading.value = false;
@@ -175,6 +180,35 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
 });
+
+// 검색 기능을 위한 변수와 메소드 추가
+const searchQuery = ref('');
+
+const filteredFeeds = computed(() => {
+  return feeds.value.filter(feed => {
+    const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
+    const songTitleLowerCase = getSongTitle(feed.FEED_ID).toLowerCase();
+    return (
+      userNameLowerCase.includes(searchQuery.value.toLowerCase()) ||
+      songTitleLowerCase.includes(searchQuery.value.toLowerCase())
+    )
+  })
+})
+
+const search = () => {
+  const searchQueryLowerCase = searchQuery.value.toLowerCase();
+
+  feeds.value = feeds.value.filter(feed => {
+    const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
+    const songTitleLowerCase = getSongTitle(feed.FEED_ID).toLowerCase();
+
+    // 닉네임이나 노래제목에 검색어가 포함되어 있는지 확인
+    return (
+      userNameLowerCase.includes(searchQueryLowerCase) ||
+      songTitleLowerCase.includes(searchQueryLowerCase)
+    );
+  });
+}
 
 
 

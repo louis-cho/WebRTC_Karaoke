@@ -30,7 +30,7 @@
           <div class="space-start">
             <div>{{ getSongTitle(feed.FEED_ID) }} 거짓말/</div>
             <div>{{ getSongSinger(feed.FEED_ID) }}빅뱅/</div>
-            <q-btn color="secondary" label=" 공개 " size="sm" />
+            <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.STATUS === '1' ? 'secondary' : 'black')" :label="feed.STATUS === '0' ? '전체 공개' : (feed.STATUS === '1' ? '친구 공개' : '비공개')" size="sm" />
           </div>
         </div>
       </div>
