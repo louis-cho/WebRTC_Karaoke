@@ -1,4 +1,4 @@
-package com.ssafy.server.karaoke.model;
+package com.ssafy.server.song.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +16,7 @@ public class Song {
     private int songId;
     private String singer;
     private String title;
-    @OneToOne(mappedBy = "song")
-    private PerfectScore perfectScore;
+
     @OneToOne(mappedBy = "song")
     private SongInfo songInfo;
 }

@@ -1,5 +1,7 @@
 package com.ssafy.server.user.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
@@ -7,6 +9,9 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import java.util.UUID;
+
+@Builder
+@AllArgsConstructor
 
 @Entity(name = "user")
 @Getter
