@@ -8,6 +8,7 @@ import com.ssafy.server.like.model.Like;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -95,40 +96,44 @@ public class LikeServiceImpl implements LikeService {
             redisTemplate.opsForHash().put(LIKE_HASH_KEY, getHashKey(updatedLike), updatedLike);
         }
 
-        public void saveToMySQL () {
+    @Async
+    public CompletableFuture<Void> saveToMySQLAsync() {
+        HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
+        long count = hashOperations.scan(LIKE_HASH_KEY, ScanOptions.scanOptions().match("*").build()).stream().count();
+        System.out.println(count);
 
-            HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
+        hashOperations.scan(LIKE_HASH_KEY, ScanOptions.scanOptions().match("*").build())
+                .forEachRemaining(entry -> {
+                    Like like = (Like) entry.getValue();
+                    System.out.println(like);
 
-            hashOperations.scan(LIKE_HASH_KEY, ScanOptions.scanOptions().match("*").build())    // 현재 MySQL로 저장하지 않는 캐시값
-                    .forEachRemaining(entry -> {
-                        Like like = (Like) entry.getValue();
-                            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                    List<Like> list = likeRepository.findByUserPkAndFeedId(like.getUserPk(), like.getFeedId());
+                    if (list.size() < 1) {
+                        likeRepository.save(like);
+                        hashOperations.delete(LIKE_HASH_KEY, entry.getKey());
+                        return;
+                    }
 
-                                    List<Like> list = likeRepository.findByUserPkAndFeedId(like.getUserPk(), like.getFeedId());
-                                    if(list.size() < 1) {
-                                        hashOperations.delete(LIKE_HASH_KEY, entry.getKey());
-                                        return;
-                                    }
+                    Like elem = list.get(0);
+                    if (like.isStatus() == elem.isStatus()) {
+                        // 상태가 같다면 아무 동작을 수행하지 않는다
+                        return;
+                    } else {
+                        likeRepository.save(like);  // 상태가 다르면 저장하고
+                        if (like.isStatus()) {   // 집계 테이블 업데이트
+                            likeStatRepository.findById(like.getFeedId()).ifPresent(LikeStat::increment);
+                        } else {
+                            likeStatRepository.findById(like.getFeedId()).ifPresent(LikeStat::decrement);
+                        }
+                    }
 
-                                    Like elem = list.get(0);
-                                    if(like.isStatus() == elem.isStatus()) {    // 상태가 같다면 아무 동작을 수행하지 않는다
-                                        ;
-                                    } else {
-                                        likeRepository.save(like);  // 상태가 다르면 저장하고
-                                        if(like.isStatus()) {   // 집계 테이블 업데이트
-                                            likeStatRepository.findById(like.getFeedId()).ifPresent(LikeStat::increment);
-                                        } else {
-                                            likeStatRepository.findById(like.getFeedId()).ifPresent(LikeStat::decrement);
-                                        }
-                                    }
-                                    // 저장 후 해당 데이터를 해시에서 삭제
-                                    hashOperations.delete(LIKE_HASH_KEY, entry.getKey());
-                            });
+                    // 저장 후 해당 데이터를 해시에서 삭제
+                    hashOperations.delete(LIKE_HASH_KEY, entry.getKey());
+                    System.out.println("Exiting asynchronous task");
+                });
 
-                            future.join();
-                    });
-        }
-
+        return CompletableFuture.completedFuture(null);
+    }
         private String getHashKey (Like like){
             return getHashKey(like.getFeedId(), like.getUserPk());
         }

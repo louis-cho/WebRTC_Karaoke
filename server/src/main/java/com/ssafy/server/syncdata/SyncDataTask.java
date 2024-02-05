@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Redis에서 MySQL DB로 데이터를 옮기는 작업
@@ -36,14 +37,17 @@ public class SyncDataTask {
     private static final String LIKE_HASH_KEY = "LIKE_FEED_ID";
 
 
-    @Scheduled(fixedDelay = 999999999)
+    @Scheduled(fixedDelay = 10000)
     public void syncDataToDB() {
         syncLikesDataToDB();
-        syncHitsDataToDB();
+        // syncHitsDataToDB();
     }
 
-    private void syncLikesDataToDB() {
-        likeService.saveToMySQL();
+    public void syncLikesDataToDB() {
+        CompletableFuture<Void> future = likeService.saveToMySQLAsync();
+
+        // 비동기 작업이 완료될 때까지 대기
+        future.join();
     }
 
     private void syncHitsDataToDB() {
