@@ -53,9 +53,6 @@ public class SyncDataTask {
             data = (LikeSyncData) likesData;
             Integer feedId = data.getFeedId();
 
-            if (data.isSyncedToDB()) {
-                continue;
-            }
 
             // Call your service method to sync data to the database
             // likeService.syncToDB(feedId, data);

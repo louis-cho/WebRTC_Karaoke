@@ -8,8 +8,7 @@ public class LikeSyncDataFactory {
                 like.getLikeId(),
                 like.getFeedId(),
                 like.getUserPk(),
-                like.isStatus(),
-                like.isDeleted()
+                like.isStatus()
         );
     }
 }

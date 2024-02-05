@@ -9,7 +9,7 @@ public class LikeFactory {
                 likeSyncData.getLikeId(),
                 likeSyncData.getUserPk(),
                 likeSyncData.isStatus(),
-                likeSyncData.getIsDeleted()
+                likeSyncData.getFeedId()
         );
     }
 

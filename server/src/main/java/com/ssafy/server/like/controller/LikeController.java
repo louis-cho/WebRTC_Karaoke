@@ -1,6 +1,7 @@
 package com.ssafy.server.like.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.ssafy.server.api.ApiResponse;
 import com.ssafy.server.comment.error.CommentExceptionEnum;
 import com.ssafy.server.common.error.ApiException;
 import com.ssafy.server.common.error.ApiExceptionFactory;
@@ -35,8 +36,25 @@ public class LikeController {
     }
 
     @PostMapping("/create")
-    public void create(@RequestBody LikeSyncData likeSyncData) {
-        likeService.save(likeSyncData);
+    public ResponseEntity<ApiResponse<Boolean>> create(@RequestBody JsonNode jsonNode) {
+        try {
+            int feedId = Integer.parseInt(jsonNode.get("feedId").asText());
+            UUID userUUID;
+            int userPk;
+            if(jsonNode.get("uuid") != null) {
+                userUUID = UUID.fromString(jsonNode.get("uuid").asText());
+                userPk = userService.getUserPk(userUUID);
+            }
+            else {
+                userPk = Integer.parseInt(jsonNode.get("userPk").asText());
+            }
+
+            likeService.save(feedId, userPk);
+        } catch(Exception e) {
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(LikeExceptionEnum.LIKE_CREATION_FAILED));
+        }
+
+        return new ResponseEntity<>(ApiResponse.success(true), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/delete/{userPk}/{feedId}")

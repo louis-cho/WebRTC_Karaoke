@@ -13,11 +13,10 @@ public class Like {
     private int likeId;
     private int userPk;
     private boolean status;
-    private boolean isDeleted;
     private int feedId;
 
 
-    public Like(Integer likeId, Integer userPk, Boolean status, Boolean isDeleted) {
+    public Like(Integer likeId, Integer userPk, Boolean status, Integer feedId) {
     }
 
     @Override

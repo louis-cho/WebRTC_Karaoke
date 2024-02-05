@@ -1,5 +1,7 @@
 package com.ssafy.server.syncdata;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.server.feed.model.Feed;
 import com.ssafy.server.like.model.Like;
 import lombok.Getter;
@@ -18,7 +20,7 @@ import java.util.Objects;
 @ToString
 @NoArgsConstructor
 @Table(name = "like_sync_data")
-public class LikeSyncData implements Syncable, Serializable {
+public class LikeSyncData implements Serializable {
 
     private static final long serialVersionUID = 2L;
 
@@ -33,37 +35,21 @@ public class LikeSyncData implements Syncable, Serializable {
     private Integer feedId;
     @Column(name = "status")
     private boolean status;
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
-    @Column(name = "synced_to_db")
-    private boolean syncedToDB;
 
     @ManyToOne
     @JoinColumn(name = "feed_id")
     private Feed feed;
 
-    public LikeSyncData(int likeId, int feedId, int userPk, boolean status, boolean deleted) {
+    // transient 키워드를 사용하여 직렬화에서 제외시킬 필드
+    @Transient
+    private transient Feed transientFeed;
+
+    public LikeSyncData(int likeId, int feedId, int userPk, boolean status) {
         this.likeId = likeId;
         this.feedId = feedId;
         this.userPk = userPk;
         this.status = status;
-        this.isDeleted = deleted;
-        this.syncedToDB = false;
     }
-
-    // Constructors, getters, and setters
-
-    @Override
-    public boolean isSyncedToDB() {
-        return syncedToDB;
-    }
-
-    @Override
-    public void setSyncedToDB(boolean syncedToDB) {
-        this.syncedToDB = syncedToDB;
-    }
-
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -72,29 +58,22 @@ public class LikeSyncData implements Syncable, Serializable {
         return Objects.equals(userPk, that.userPk) && Objects.equals(feedId, that.feedId);
     }
 
+    // 객체를 JSON 문자열로 직렬화하여 반환하는 메서드
+    public String serializeObject() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(this);
+    }
+
+    // JSON 문자열을 이용하여 객체를 역직렬화하여 반환하는 메서드
+    public static LikeSyncData deserializeObject(String json) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        LikeSyncData likeSyncData = objectMapper.readValue(json, LikeSyncData.class);
+        // transient 필드를 복구
+        likeSyncData.feed = likeSyncData.transientFeed;
+        return likeSyncData;
+    }
     @Override
     public int hashCode() {
         return Objects.hash(userPk, feedId);
-    }
-
-    // 추가: 직렬화 및 역직렬화 메서드
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-        out.writeInt(this.userPk);
-        out.writeInt(this.feedId);
-        out.writeBoolean(this.syncedToDB);
-
-        ClassLoader classLoader = LikeSyncData.class.getClassLoader();
-        System.out.println("Class is loaded by: " + classLoader);
-        // 다른 필드에 대한 직렬화 작업 추가
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-        this.userPk = in.readInt();
-        this.feedId = in.readInt();
-        this.syncedToDB = in.readBoolean();
-
-        ClassLoader classLoader = LikeSyncData.class.getClassLoader();
-        System.out.println("Class is loaded by: " + classLoader);
-        // 다른 필드에 대한 역직렬화 작업 추가
     }
 }
