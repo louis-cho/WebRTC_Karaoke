@@ -38,7 +38,7 @@ public class UserController {
 
                 String ip = servletRequest.getRemoteAddr();
                 String[] publicKey = userService.getPublicKey(ip);
-
+                System.out.println(publicKey[0] + " " + publicKey[1]);
                 ObjectNode jsonResponse = JsonNodeFactory.instance.objectNode();
                 jsonResponse.put("modulus", publicKey[0]);
                 jsonResponse.put("exponent", publicKey[1]);

@@ -1,5 +1,6 @@
 package com.ssafy.server.user.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.UUID;
 @Builder
+@AllArgsConstructor
 @Entity
 @Getter
 @Setter
