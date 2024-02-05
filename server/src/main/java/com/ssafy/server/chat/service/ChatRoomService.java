@@ -21,25 +21,49 @@ public class ChatRoomService {
     @Autowired
     private UsersChatsRepository usersChatsRepository;
 
-    // 전체 채팅방 조회
-    public List<ChatRoom> findAllRoom(){
-        List<ChatRoom> chatRooms = chatRoomRepository.findAll();
-        return chatRooms;
+    //참여중인 채팅방 목록
+    public List<UsersChats> findAllRoomByUserId(long userId){
+        return usersChatsRepository.findByUserPkAndStatus(userId, '1');
     }
 
-    // roomID 기준으로 채팅방 찾기
-//    public ChatRoomDTO findRoomById(String roomId){
-//        return chatRoomMap.get(roomId);
-//    }
-
-    // roomName 로 채팅방 만들기
-    public ChatRoom createChatRoom(String roomName, long host, long guest){
-        ChatRoom chatRoom = new ChatRoom().create(roomName);
+    // roomName으로 채팅방 만들기
+    public ChatRoom createChatRoom(String roomName, long host, List<Long> guests){
+        ChatRoom chatRoom = new ChatRoom().create(roomName, guests.size());
         chatRoom.setRoomPk(chatRoomRepository.save(chatRoom).getRoomPk());
         UsersChats hostChats = new UsersChats(host, chatRoom.getRoomPk());
-        UsersChats guestChats = new UsersChats(guest, chatRoom.getRoomPk());
         usersChatsRepository.save(hostChats);
-        usersChatsRepository.save(guestChats);
+        inviteUser(guests, chatRoom.getRoomPk());
         return chatRoom;
+    }
+
+    //roomId에 userId로 유저 초대하기
+    public void inviteUser(List<Long> guests, long roomId){
+        for(Long guest : guests){
+            Optional<UsersChats> existingChat = usersChatsRepository.findByUserPkAndRoomPk(guest, roomId);
+            if (existingChat.isPresent()) {
+                UsersChats guestChats = existingChat.get();
+                guestChats.setStatus('1');
+                usersChatsRepository.save(guestChats);
+            }
+            else {
+                UsersChats guestChats = new UsersChats(guest, roomId);
+                usersChatsRepository.save(guestChats);
+            }
+        }
+    }
+
+    //채팅방에서 나가기
+    public void exitRoom(long userId, long roomId){
+        Optional<UsersChats> existingChat = usersChatsRepository.findByUserPkAndRoomPk(userId, roomId);
+        if(existingChat.isPresent()){
+            UsersChats guestChats = existingChat.get();
+            guestChats.setStatus('0');
+            usersChatsRepository.save(guestChats);
+        }
+    }
+
+    //roomId로 참여자 목록 구하기
+    public List<UsersChats> getUserList(long roomId){
+        return usersChatsRepository.findByRoomPkAndStatus(roomId, '1');
     }
 }

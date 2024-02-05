@@ -20,7 +20,7 @@ public class UsersChats {
     public UsersChats(long up, long rp){
         this.userPk = up;
         this.roomPk = rp;
+        this.status = '1';
     }
-
-
+    private char status; // 1 : enter 0 : exit
 }
