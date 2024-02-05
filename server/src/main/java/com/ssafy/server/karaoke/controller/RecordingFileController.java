@@ -30,7 +30,7 @@ public class RecordingFileController {
     private S3FileUploader fileUploader;
 
     private static final String USERNAME = "OPENVIDUAPP";
-    private static final String PASSWORD = "MY_SECRET";
+    private static final String PASSWORD = "haebang";
 
     @PostMapping("/upload")
     public ResponseEntity<String> downloadAndUploadFile(@RequestBody Map<String, Object> params) throws IOException {
@@ -50,8 +50,7 @@ public class RecordingFileController {
             InputStream input = new FileInputStream(file);
             OutputStream os = fileItem.getOutputStream();
             IOUtils.copy(input, os);
-            // Or faster..
-            // IOUtils.copy(new FileInputStream(file), fileItem.getOutputStream());
+            input.close();
         } catch (IOException ex) {
             // do something.
         }

@@ -60,7 +60,7 @@
 
       <q-btn
         class="btn-md"
-        @click="UploadRecording(fileUrl.value)"
+        @click="UploadRecording(fileUrl)"
         label="Upload Recording"
         color="secondary"
       />
@@ -172,6 +172,7 @@ function listRecordings() {
 }
 
 function UploadRecording(fileUrl) {
+  console.log(fileUrl);
   axios
     .post(store.APPLICATION_SERVER_URL + "api/v1/karaoke/file/upload", {
       fileUrl: fileUrl,
