@@ -34,25 +34,25 @@ public class LikeController {
         this.userService = userService;
     }
 
-    @GetMapping("/testcreate/{userPk}/{feedId}")
-    public void create(@PathVariable int userPk, @PathVariable int feedId) {
-        likeService.likeFeed(userPk, feedId);
+    @PostMapping("/testcreate")
+    public void create(@RequestBody LikeSyncData likeSyncData) {
+        likeService.save(likeSyncData);
     }
 
     @GetMapping("/testdelete/{userPk}/{feedId}")
     public void delete(@PathVariable int userPk, @PathVariable int feedId) {
-        likeService.unlikeFeed(userPk, feedId);
+        likeService.delete(userPk, feedId);
     }
 
     @GetMapping("/testget/{feedId}")
     public void get(@PathVariable int feedId) {
-        System.out.println(likeService.getLikesForFeed(feedId));
+        System.out.println(likeService.findAllByFeedId(feedId));
     }
 
-    @GetMapping("/testsync/{userPk}/{feedId}")
-    public void sync(@PathVariable int userPk, @PathVariable int feedId) {
-        likeService.syncLikesToDB(userPk, feedId);
-    }
+//    @GetMapping("/testsync/{userPk}/{feedId}")
+//    public void sync(@PathVariable int userPk, @PathVariable int feedId) {
+//        likeService.syncLikesToDB(userPk, feedId);
+//    }
 
 //    @PostMapping("/create")
 //    public ResponseEntity<?> createLike(@RequestBody JsonNode request) {
@@ -132,7 +132,7 @@ public class LikeController {
 
         try {
             boolean result = false;
-            likeService.unlikeFeed(userPk, feedId);
+            // likeService.unlikeFeed(userPk, feedId);
 
             if (result) {
                 return new ResponseEntity<>(true, HttpStatus.OK);

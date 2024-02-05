@@ -12,71 +12,57 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
 public class LikeServiceImpl implements LikeService {
     private static final String LIKE_HASH_KEY = "likes";
-
     @Autowired
-    private LikeRepository likeRepository;
-
+    private final LikeRepository likeRepository;
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
-
-    private HashOperations<String, String, LikeSyncData> hashOperations;
-
-    @PostConstruct
-    private void init() {
-        hashOperations = redisTemplate.opsForHash();
+    private final RedisTemplate<String, LikeSyncData> redisTemplate;
+    @Autowired
+    public LikeServiceImpl(LikeRepository likeRepository, RedisTemplate<String, LikeSyncData> redisTemplate) {
+        this.likeRepository = likeRepository;
+        this.redisTemplate = redisTemplate;
     }
-    @Override
-    public void likeFeed(int userId, int feedId) {
-        LikeSyncData like = new LikeSyncData();
-        like.setUserPk(userId);
-        like.setFeedId(feedId);
-        like.setIsDeleted(false);
-        like.setSyncedToDB(false); // 새로운 좋아요를 추가할 때는 기본적으로 DB에 sync되지 않도록 설정
-
-        // likeRepository.save(like);
-        hashOperations.put(LIKE_HASH_KEY, generateKey(userId, feedId), like);
+    public void save(LikeSyncData likeSyncData) {
+        redisTemplate.opsForHash().put(LIKE_HASH_KEY, getHashKey(likeSyncData), likeSyncData);
     }
 
-    @Override
-    public void unlikeFeed(int userId, int feedId) {
-        // likeRepository.deleteById(generateKey(userId, feedId));
-        hashOperations.delete(LIKE_HASH_KEY, generateKey(userId, feedId));
+    public LikeSyncData findById(int feedId, int userPk) {
+        return (LikeSyncData) redisTemplate.opsForHash().get(LIKE_HASH_KEY, getHashKey(feedId, userPk));
     }
 
-    @Override
-    public Map<String, LikeSyncData> getLikesForFeed(int feedId) {
-        Map<String, LikeSyncData> likes = new HashMap<>();
+    public Map<Object, Object> findAllByFeedId(int feedId) {
+        HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
+        Map<Object, Object> result = new HashMap<>();
 
-        Cursor<Map.Entry<String, LikeSyncData>> cursor = hashOperations.scan(LIKE_HASH_KEY , ScanOptions.scanOptions().match("*").build());
+        hashOperations.scan(LIKE_HASH_KEY, ScanOptions.scanOptions().match(feedId + "_*").build())
+                .forEachRemaining(entry -> result.put(entry.getKey(), entry.getValue()));
 
-        while (cursor.hasNext()) {
-            ClassLoader classLoader = LikeSyncData.class.getClassLoader();
-            System.out.println("Class is loaded by: " + classLoader);
+        return result;
+    }
+    public void delete(int feedId, int userPk) {
+        // Redis에서 삭제
+        redisTemplate.opsForHash().delete(LIKE_HASH_KEY, getHashKey(feedId, userPk));
+     }
 
-            Map.Entry<String, LikeSyncData> entry = cursor.next();
-            likes.put(entry.getKey(), entry.getValue());
-        }
-
-        cursor.close();
-
-        return likes;
+    public void update(LikeSyncData updatedLikeSyncData) {
+        // Redis에서 업데이트
+        redisTemplate.opsForHash().put(LIKE_HASH_KEY, getHashKey(updatedLikeSyncData), updatedLikeSyncData);
     }
 
-    @Override
-    public void syncLikesToDB(int userId, int feedId) {
-        LikeSyncData like = hashOperations.get(LIKE_HASH_KEY, generateKey(userId, feedId));
-        if (like != null && !like.isSyncedToDB()) {
-            like.setSyncedToDB(true);
-            // likeRepository.save(like);
-        }
+    private void saveToMySQL(LikeSyncData likeSyncData) {
+        CompletableFuture.runAsync(() -> likeRepository.save(likeSyncData));
     }
 
-    private String generateKey(int userId, int feedId) {
-        return userId + ":" + feedId;
+    private String getHashKey(LikeSyncData likeSyncData) {
+        return getHashKey(likeSyncData.getFeedId(), likeSyncData.getUserPk());
+    }
+
+    private String getHashKey(int feedId, int userPk) {
+        return feedId + "_" + userPk;
     }
 }

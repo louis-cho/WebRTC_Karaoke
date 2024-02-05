@@ -17,17 +17,25 @@ import java.util.Objects;
 @Setter
 @ToString
 @NoArgsConstructor
+@Table(name = "like_sync_data")
 public class LikeSyncData implements Syncable, Serializable {
 
     private static final long serialVersionUID = 2L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "like_id")
     private Integer likeId;
+
+    @Column(name = "user_pk")
     private Integer userPk;
+    @Column(name = "feed_id", insertable = false, updatable = false)
     private Integer feedId;
+    @Column(name = "status")
     private boolean status;
+    @Column(name = "is_deleted")
     private Boolean isDeleted;
+    @Column(name = "synced_to_db")
     private boolean syncedToDB;
 
     @ManyToOne

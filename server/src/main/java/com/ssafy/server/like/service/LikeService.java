@@ -6,17 +6,9 @@ import com.ssafy.server.syncdata.LikeSyncData;
 import java.util.Map;
 
 public interface LikeService {
-
-
-
-
-
-
-
-    void likeFeed(int userId, int feedId);
-    void unlikeFeed(int userId, int feedId);
-    Map<String, LikeSyncData> getLikesForFeed(int feedId);
-    void syncLikesToDB(int userId, int feedId);
-
-
+    void save(LikeSyncData likeSyncData);
+    LikeSyncData findById(int feedId, int userPk);
+    Map<Object, Object> findAllByFeedId(int feedId);
+    void delete(int feedId, int userPk);
+    void update(LikeSyncData updatedLikeSyncData);
 }

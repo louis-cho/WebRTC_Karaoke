@@ -39,6 +39,15 @@ public class ChatRedisConfig extends CachingConfigurerSupport {
     }
 
     @Bean
+    public RedisTemplate<String, LikeSyncData> likeRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, LikeSyncData> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setDefaultSerializer(new JdkSerializationRedisSerializer());
+        // 다른 설정 추가
+        return template;
+    }
+
+    @Bean
     public RedisTemplate<String, FeedStats> feedStatsRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, FeedStats> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
