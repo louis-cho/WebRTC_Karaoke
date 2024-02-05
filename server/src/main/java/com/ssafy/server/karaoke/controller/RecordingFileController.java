@@ -34,6 +34,8 @@ public class RecordingFileController {
 
     @PostMapping("/upload")
     public ResponseEntity<String> downloadAndUploadFile(@RequestBody Map<String, Object> params) throws IOException {
+        System.out.println("파일 업로드 시작!");
+
         // 파일 다운로드
         String fileUrl = (String) params.get("fileUrl");
         String destinationPath = String.valueOf(UUID.randomUUID()) + ".mp4";
