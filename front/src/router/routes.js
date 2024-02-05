@@ -53,17 +53,14 @@ const routes = [
     name: "KaraokeSession",
     component: () => import("@/pages/KaraokeSessionPage.vue"),
     beforeEnter: async (to, from, next) => {
-      // useKaraokeStore 인스턴스 생성
       const karaokeStore = useKaraokeStore();
 
-      // URL 파라미터에서 sessionId 추출
       const sessionId = to.params.sessionId;
+      const result = await karaokeStore.getToken(sessionId);
 
-      // joinSession에 sessionId를 전달하여 호출
-      await karaokeStore.joinSession(sessionId);
-
-      // 특정 페이지로 이동
-      next();
+      if (result) {
+        next();
+      }
     },
   },
 

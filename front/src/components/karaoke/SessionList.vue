@@ -15,7 +15,11 @@
               <q-item-section>
                 <q-item-label>방 제목 : {{ session.sessionId }}</q-item-label>
                 <q-item-label caption>
-                  참가자 수 : {{ session.connections.numberOfElements }}
+                  인원 : {{ session.connections.numberOfElements }} /
+                  {{ session.numberOfParticipants }}
+                </q-item-label>
+                <q-item-label caption>
+                  상태: {{ session.isPrivate ? "비공개" : "공개" }}
                 </q-item-label>
               </q-item-section>
 
@@ -51,7 +55,7 @@ const openModal = () => {
   store.isModalOpen = true;
 };
 
-function joinSession(url) {
+async function joinSession(url) {
   router.push("karaoke/" + url);
 }
 </script>

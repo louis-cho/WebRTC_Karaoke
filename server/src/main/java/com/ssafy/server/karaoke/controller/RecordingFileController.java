@@ -5,6 +5,7 @@ import com.ssafy.server.common.util.S3FileUploader;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,9 @@ public class RecordingFileController {
 
     @Autowired
     private S3FileUploader fileUploader;
+
+    private static final String USERNAME = "OPENVIDUAPP";
+    private static final String PASSWORD = "haebang";
 
     @PostMapping("/upload")
     public ResponseEntity<String> downloadAndUploadFile(@RequestBody Map<String, Object> params) throws IOException {
@@ -72,7 +76,7 @@ public class RecordingFileController {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         // Basic Authentication 설정
-        String auth = "OPENVIDUAPP:${OPENVIDU_SECRET}";
+        String auth = USERNAME + ":" + PASSWORD;
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
         String authHeader = "Basic " + encodedAuth;
         connection.setRequestProperty("Authorization", authHeader);

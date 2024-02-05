@@ -15,7 +15,7 @@
 
           <!-- 사용자 이름 입력 -->
           <q-input
-            v-model="userName"
+            v-model="store.userName"
             :label="pref.app.kor.karaokePage.userName"
             outlined
             dense
@@ -32,6 +32,7 @@
             class="q-mb-md"
             min="1"
             max="6"
+            @input="handleInput"
           />
 
           <!-- 공개 여부 설정 -->
@@ -51,7 +52,6 @@
             dense
             type="password"
             class="q-mb-md"
-            @input="handleInput"
           />
         </q-form>
 
@@ -89,7 +89,6 @@ const { changeRoute } = defineProps(["changeRoute"]);
 const router = changeRoute;
 
 const sessionName = ref(undefined);
-const userName = ref(undefined);
 const numberOfParticipants = ref(1);
 const isPublic = ref(false);
 const password = ref(undefined);
@@ -98,23 +97,21 @@ function closeModal() {
   store.isModalOpen = false;
 }
 
-function createSession() {
-  closeModal();
-  store.createSession(
+async function createSession() {
+  await store.createSession(
     sessionName.value,
     numberOfParticipants.value,
     isPublic.value,
     password.value
   );
+
+  await joinSession();
 }
 
 function joinSession() {
   closeModal();
 
-  // 이동할 URL 구성
-  const url = `/karaoke/${store.mySessionId}`;
-
-  // Vue Router를 사용하여 페이지 이동
+  const url = `/karaoke/${sessionName.value}`;
   router.push(url);
 }
 
