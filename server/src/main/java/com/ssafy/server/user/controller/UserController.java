@@ -21,7 +21,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v1/user")
 @Slf4j
 public class UserController {
 
