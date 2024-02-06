@@ -10,17 +10,43 @@
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <!-- card-section 부분 수정해야함 -->
         <q-card-section class="q-pt-none">
-          <q-input rounded outlined v-model="search" label="비밀번호" >
+          <q-input rounded outlined v-model="search" label="Search User" >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
           </q-input>
         </q-card-section>
-      <div>
-        <!-- 친구들 목록 뜨게 -->
-      </div>
+
+        <q-scroll-area style="height: 300px; max-width: 300px;">
+        <div>
+          <!-- 친구들 목록 뜨게 -->
+          <q-list v-if="users && users.length && filteredUsers.length">
+            <q-item v-for="user in filteredUsers" :key="user.userPk">
+              <q-item-section>
+                <q-img class="img-container" :src="user.profileImgUrl" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ user.nickname }}</q-item-label>
+                <q-item-label caption>{{ user.introduction }}</q-item-label>
+                <!-- 친구 아니라면 -->
+                <div v-if="ex">
+                  <q-btn color="primary" label="친구요청"></q-btn>
+                </div>
+                <div v-else>
+                  <q-btn color="red" label="친구삭제"></q-btn>
+                </div>
+              </q-item-section>
+            </q-item>
+          </q-list>
+          <!-- Display a message if no users match the search -->
+          <q-item v-else>
+            <q-item-section>
+              <q-item-label align="center">일치하는 유저가 없습니다</q-item-label>
+            </q-item-section>
+          </q-item>
+        </div>
+      </q-scroll-area>
       </q-card>
     </q-dialog>
 
@@ -28,66 +54,40 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,computed } from 'vue'
 
 const icon = ref(false)
+const search = ref('')
 
+const ex = ref(false)
+// 예시 데이터
+const users = ref([
+  { userPk: 1, nickname:'노송', profileImgUrl:'프로필이미지1', role: 0, introduction:'저 노송임ㅇㅇ'  },
+  { userPk: 2, nickname:'티모시', profileImgUrl:'https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg', role: 0, introduction:'나 웡카'  },
+  { userPk: 3, nickname:'오타니', profileImgUrl:'프로필이미지3', role: 0, introduction:'인사드립니다ㅏ'  },
+  { userPk: 4, nickname:'황희찬', profileImgUrl:'프로필이미지4', role: 0, introduction:'하이'  },
+]);
+
+const filteredUsers = computed(() => {
+  const query = search.value.toLowerCase();
+  return users.value.filter(user =>
+    user.nickname.toLowerCase().includes(query) ||
+    user.introduction.toLowerCase().includes(query)
+  )
+})
 </script>
 
 <style scoped>
-.width-5 {
-  width: 5%;
+.img-container {
+  width: 60px;
+  height: 60px;
+  /* background-image: url("@/assets/img/capture.png"); */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
 }
-.width-10 {
-  width: 10%;
-}
-.width-15 {
-  width: 15%;
-}
-.width-20 {
-  width: 20%;
-}
-.width-25 {
-  width: 25%;
-}
-.width-30 {
-  width: 30%;
-}
-.width-35 {
-  width: 35%;
-}
-.width-40 {
-  width: 40%;
-}
-.width-45 {
-  width: 45%;
-}
-.width-50 {
-  width: 50%;
-}
-.width-55 {
-  width: 55%;
-}
-.width-60 {
-  width: 60%;
-}.width-65 {
-  width: 65%;
-}.width-70 {
-  width: 70%;
-}.width-75 {
-  width: 75%;
-}.width-80 {
-  width: 80%;
-}.width-85 {
-  width: 85%;
-}.width-90 {
-  width: 90%;
-}.width-95 {
-  width: 95%;
-}.width-100 {
-  width: 100%;
-}
-
-
 
 </style>
