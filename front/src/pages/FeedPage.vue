@@ -365,7 +365,7 @@ const search = () => {
   transform: translate(-50%, -50%);
   width: 50px;
   height: 50px;
-  background: url("@/assets/icon/play-button.png") no-repeat center center;
+  /* background: url("@/assets/icon/play-button.png") no-repeat center center;/ */
   background-size: cover;
 }
 
