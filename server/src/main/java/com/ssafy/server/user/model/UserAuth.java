@@ -5,9 +5,11 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity(name = "user_auth")
+
 @Getter
 @Setter
+@Entity(name = "user_auth")
+@Table(name = "user_auth")
 public class UserAuth {
 
     @Id

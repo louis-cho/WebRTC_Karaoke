@@ -4,8 +4,6 @@ import com.ssafy.server.hit.model.Hit;
 import com.ssafy.server.hit.model.HitStat;
 import com.ssafy.server.hit.repository.HitRepository;
 import com.ssafy.server.hit.repository.HitStatRepository;
-import com.ssafy.server.like.model.Like;
-import com.ssafy.server.like.model.LikeStat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;

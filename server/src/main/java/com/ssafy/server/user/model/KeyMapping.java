@@ -9,17 +9,17 @@ import java.util.UUID;
 
 @Data
 @Embeddable
-public class UserKeyMappingPK implements Serializable {
+public class KeyMapping implements Serializable {
     private UUID uuid;
     private int userPk;
 
     // 생성자, 게터, 세터 등 필요한 메소드를 추가하세요.
 
-    public UserKeyMappingPK() {
+    public KeyMapping() {
         // 기본 생성자
     }
 
-    public UserKeyMappingPK(UUID uuid, int userPk) {
+    public KeyMapping(UUID uuid, int userPk) {
         this.uuid = uuid;
         this.userPk = userPk;
     }
