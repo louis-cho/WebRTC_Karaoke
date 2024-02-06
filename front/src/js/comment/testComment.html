@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>댓글 계층 구조 테스트</title>
+</head>
+<body>
+
+<div id="comments-container"></div>
+
+<script>
+const commentsData = [
+    { commentId: 1, content: "댓글 1", parentCommentId: null },
+    { commentId: 2, content: "댓글 2", parentCommentId: null },
+    { commentId: 3, content: "대댓글 1-1", parentCommentId: 1 },
+    { commentId: 4, content: "대댓글 1-2", parentCommentId: 1 },
+    { commentId: 5, content: "대대댓글 1-1-1", parentCommentId: 3 },
+    // ... (더 많은 댓글 데이터)
+];
+
+function buildCommentTree(comments) {
+    const commentMap = new Map();
+
+    comments.forEach(comment => {
+        comment.children = [];
+        commentMap.set(comment.commentId, comment);
+    });
+
+    const tree = [];
+
+    comments.forEach(comment => {
+        if (comment.parentCommentId !== null) {
+            commentMap.get(comment.parentCommentId).children.push(comment);
+        } else {
+            tree.push(comment);
+        }
+    });
+
+    return tree;
+}
+
+function renderComments(comments, level = 0) {
+    const container = document.getElementById('comments-container');
+    comments.forEach(comment => {
+        const commentElement = document.createElement('div');
+        commentElement.innerHTML = "&nbsp;".repeat(level) + comment.content;
+        container.appendChild(commentElement);
+        renderComments(comment.children, level + 1);
+    });
+}
+
+const commentTree = buildCommentTree(commentsData);
+renderComments(commentTree);
+</script>
+
+</body>
+</html>
