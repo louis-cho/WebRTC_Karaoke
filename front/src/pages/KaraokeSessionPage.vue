@@ -5,7 +5,7 @@
     <div id="session" v-if="store.session" class="q-pa-md">
       <div id="session-header" class="q-mb-md">
         <q-toolbar-title style="font-size: 40px">
-          {{ pref.app.kor.karaokePage.sessionId }} : {{ store.mySessionId }}
+          {{ pref.app.kor.karaokePage.sessionId }} : {{ store.sessionName }}
         </q-toolbar-title>
 
         <q-btn

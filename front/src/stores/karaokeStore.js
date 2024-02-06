@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -12,6 +13,8 @@ export const useKaraokeStore = defineStore("karaoke", {
     isModalOpen: false,
     isPrivate: false,
     userName: "사용자" + Math.round(Math.random() * 100),
+    isModerator: false,
+    kicked: true,
 
     // OpenVidu 객체
     OV: undefined,
@@ -50,6 +53,8 @@ export const useKaraokeStore = defineStore("karaoke", {
           headers: { "Content-Type": "application/json" },
         }
       );
+
+      this.isModerator = true;
     },
 
     joinSession() {
@@ -62,6 +67,7 @@ export const useKaraokeStore = defineStore("karaoke", {
           subscribeToAudio: true,
           subscribeToVideo: true,
         });
+
         this.subscribers.push(subscriber);
       });
 
@@ -69,6 +75,13 @@ export const useKaraokeStore = defineStore("karaoke", {
         const index = this.subscribers.indexOf(stream.streamManager, 0);
         if (index >= 0) {
           this.subscribers.splice(index, 1);
+        }
+      });
+
+      this.session.on("sessionDisconnected", (event) => {
+        if (this.kicked == true) {
+          alert("추방당했습니다.");
+          window.location.href = "/#/karaoke/";
         }
       });
 
@@ -156,7 +169,7 @@ export const useKaraokeStore = defineStore("karaoke", {
             publishAudio: !this.muted, // 마이크 음소거 여부를 시작할지 여부
             publishVideo: !this.camerOff, // 비디오 활성화 여부를 시작할지 여부
             // resolution: "1280x720", // 비디오의 해상도
-            resolution: "640x480",
+            resolution: "320x240",
             frameRate: 30, // 비디오의 프레임 속도
             insertMode: "APPEND", // 비디오가 대상 요소 'video-container'에 어떻게 삽입되는지
             mirror: false, // 로컬 비디오를 반전할지 여부
@@ -186,6 +199,8 @@ export const useKaraokeStore = defineStore("karaoke", {
     },
 
     async leaveSession() {
+      this.kicked = false;
+
       // --- 7) 'removeToken' 메서드를 호출하여 세션을 나갑니다. ---
       await axios.post(
         this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/removeToken",

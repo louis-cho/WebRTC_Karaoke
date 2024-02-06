@@ -82,14 +82,13 @@ import { ref } from "vue";
 import pref from "@/js/config/preference.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 
-// store 사용
 const store = useKaraokeStore();
 
 const { changeRoute } = defineProps(["changeRoute"]);
 const router = changeRoute;
 
 const sessionName = ref(undefined);
-const numberOfParticipants = ref(1);
+const numberOfParticipants = ref("1");
 const isPublic = ref(false);
 const password = ref(undefined);
 

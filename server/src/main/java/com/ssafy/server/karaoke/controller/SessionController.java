@@ -35,9 +35,9 @@ public class SessionController {
 
         String sessionName = (String) params.get("sessionName");
 
-        // 이미 존재하는 세션 예외처리 필요함
         if (openViduModel.getMapSessions().containsKey(sessionName)) {
-            return ResponseEntity.ok("이미 존재하는 세션입니다.");
+            System.out.println("이미 존재하는 세션 예외처리 필요");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // SessionProperties를 설정해준다
@@ -47,7 +47,8 @@ public class SessionController {
             Session session = openViduModel.getOpenvidu().createSession(sessionProperties);
             SessionSetting setting;
 
-            int numberOfParticipants = (int) params.get("numberOfParticipants");
+            int numberOfParticipants = Integer.parseInt((String) params.get("numberOfParticipants"));
+            System.out.println(numberOfParticipants);
             boolean isPublic = (boolean) params.get("isPublic");
             if (isPublic) {
                 String password = (String) params.get("password");
@@ -60,10 +61,12 @@ public class SessionController {
             openViduModel.getMapSessions().put(sessionName, session);
             openViduModel.getMapSessionSettings().put(sessionName, setting);
             openViduModel.getMapSessionNamesTokens().put(sessionName, new ConcurrentHashMap<>());
+            openViduModel.getMapSessionTokenConnectionId().put(sessionName, new ConcurrentHashMap<>());
 
             return ResponseEntity.ok(sessionName);
         } catch (Exception e) {
             // 오류가 발생하면 오류 메시지를 생성하고 클라이언트에 반환함
+            System.out.println(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -74,33 +77,35 @@ public class SessionController {
         System.out.println("Get Token : " + params);
 
         String sessionName = (String) params.remove("sessionName");
-        String isModerator = "{\"isModerator\": false}";
+        boolean isModerator = false;
 
         if (!openViduModel.getMapSessions().containsKey(sessionName)) {
-            System.out.println("세션 존재 x");
-            return ResponseEntity.ok("세션이 존재하지 않습니다.");
+            System.out.println("존재하지 않는 세션 예외처리 필요");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // 세션에 아무도 없으면 방장 설정
         if (openViduModel.getMapSessionNamesTokens().get(sessionName).isEmpty()) {
-            isModerator = "{\"isModerator\": true}";
+            isModerator = true;
         }
-        params.put("isModerator", isModerator);
 
         // ConnectionProperties를 설정해준다
         ConnectionProperties connectionProperties = ConnectionProperties.fromJson(params).build();
-        OpenViduRole role = OpenViduRole.PUBLISHER;
 
         try {
-            String token = openViduModel.getMapSessions().get(sessionName).createConnection(connectionProperties).getToken();
-            System.out.println(token);
+            Connection connection = openViduModel.getMapSessions().get(sessionName).createConnection(connectionProperties);
+            String token = connection.getToken();
+            String connectionId = connection.getConnectionId();
+            System.out.println("토큰 생성 완료 : "+ token);
 
             // 새로운 토큰을 저장하는 컬렉션을 업데이트함
-            openViduModel.getMapSessionNamesTokens().get(sessionName).put(token, role);
+            openViduModel.getMapSessionNamesTokens().get(sessionName).put(token, isModerator);
+            openViduModel.getMapSessionTokenConnectionId().get(sessionName).put(token, connectionId);
 
             return ResponseEntity.ok(token);
         } catch (OpenViduJavaClientException e1) {
             // 내부 오류가 발생하면 오류 메시지를 생성하고 클라이언트에 반환함
+            System.out.println("토큰 발행 중 오류 발생");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (OpenViduHttpException e2) {
             if (404 == e2.getStatus()) {
@@ -108,7 +113,9 @@ public class SessionController {
                 // 컬렉션을 정리하고 새 세션으로 계속 진행함
                 openViduModel.getMapSessions().remove(sessionName);
                 openViduModel.getMapSessionNamesTokens().remove(sessionName);
-                return ResponseEntity.ok("세션이 만료되었습니다.");
+                openViduModel.getMapSessionTokenConnectionId().remove(sessionName);
+                System.out.println("세션이 만료됨 예외처리 필요");
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -126,17 +133,18 @@ public class SessionController {
 
         // 세션이 존재하는 경우
         if (openViduModel.getMapSessions().get(sessionName) != null && openViduModel.getMapSessionNamesTokens().get(sessionName) != null) {
-
             // 토큰이 존재하는 경우
             if (openViduModel.getMapSessionNamesTokens().get(sessionName).remove(token) != null) {
+                Session s = openViduModel.getMapSessions().get(sessionName);
+                String connectionId = openViduModel.getMapSessionTokenConnectionId().get(sessionName).remove(token);
+                s.forceDisconnect(connectionId);
+
                 // 사용자가 세션을 나감
                 if (openViduModel.getMapSessionNamesTokens().get(sessionName).isEmpty()) {
-                    // 마지막 사용자가 나감: 세션을 제거해야 함
-                    Session s = openViduModel.getMapSessions().get(sessionName);
-                    s.close();
                     openViduModel.getMapSessions().remove(sessionName);
                     openViduModel.getMapSessionSettings().remove(sessionName);
                     openViduModel.getSessionRecordings().remove(s.getSessionId());
+                    openViduModel.getMapSessionTokenConnectionId().remove(sessionName);
                     System.out.println("세션을 제거했습니다.");
                 }
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -153,7 +161,7 @@ public class SessionController {
         }
     }
 
-    // 세션을 닫는 엔드포인트(방장)
+    // 세션을 강제로 닫는 메소드(방장)
     @RequestMapping(value = "/closeSession", method = RequestMethod.POST)
     public ResponseEntity<JsonObject> closeSession(@RequestBody Map<String, Object> params) throws Exception {
 
@@ -170,11 +178,85 @@ public class SessionController {
             openViduModel.getMapSessionSettings().remove(sessionName);
             openViduModel.getMapSessionNamesTokens().remove(sessionName);
             openViduModel.getSessionRecordings().remove(s.getSessionId());
+            openViduModel.getMapSessionTokenConnectionId().remove(sessionName);
             System.out.println("세션을 제거했습니다.");
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             // 세션이 존재하지 않음
             System.out.println("세션이 존재하지 않습니다.");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/updateSession", method = RequestMethod.POST)
+    public ResponseEntity<String> updateSession(@RequestBody Map<String, Object> params) {
+        System.out.println("Update Session : " + params);
+
+        String sessionName = (String) params.get("sessionName");
+
+        if (openViduModel.getMapSessions().containsKey(sessionName)) {
+            System.out.println("이미 존재하는 세션 예외처리 필요");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // SessionProperties를 설정해준다
+        SessionProperties sessionProperties = new SessionProperties.Builder().customSessionId(sessionName).build();
+
+        try {
+            Session session = openViduModel.getOpenvidu().createSession(sessionProperties);
+            SessionSetting setting;
+
+            int numberOfParticipants = Integer.parseInt((String) params.get("numberOfParticipants"));
+            System.out.println(numberOfParticipants);
+            boolean isPublic = (boolean) params.get("isPublic");
+            if (isPublic) {
+                String password = (String) params.get("password");
+                setting = new SessionSetting(numberOfParticipants, isPublic, password);
+            } else {
+                setting = new SessionSetting(numberOfParticipants, isPublic);
+            }
+
+            // 세션을 컬렉션에 저장함
+            openViduModel.getMapSessions().put(sessionName, session);
+            openViduModel.getMapSessionSettings().put(sessionName, setting);
+            openViduModel.getMapSessionNamesTokens().put(sessionName, new ConcurrentHashMap<>());
+            openViduModel.getMapSessionTokenConnectionId().put(sessionName, new ConcurrentHashMap<>());
+
+            return ResponseEntity.ok(sessionName);
+        } catch (Exception e) {
+            // 오류가 발생하면 오류 메시지를 생성하고 클라이언트에 반환함
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 사용자를 강퇴하는 메소드(방장)
+    @RequestMapping(value = "/kickUser", method = RequestMethod.POST)
+    public ResponseEntity<JsonObject> kickUser(@RequestBody Map<String, Object> params) {
+        System.out.println("Kick User : " + params);
+
+        try {
+            String sessionName = (String) params.get("sessionName");
+            String reqUser = (String) params.get("reqUser");
+            String connectionId = (String) params.get("connectionId");
+
+            // 요청한 유저가 방장이 아니면 요청 수행하지 않음
+            if(!openViduModel.getMapSessionNamesTokens().get(sessionName).get(reqUser)){
+                System.out.println("강퇴를 요청한 유저가 방장이 아님");
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            // 세션이 존재하는 경우
+            if (openViduModel.getMapSessions().get(sessionName) != null && openViduModel.getMapSessionNamesTokens().get(sessionName) != null) {
+                Session s = openViduModel.getMapSessions().get(sessionName);
+                s.forceDisconnect(connectionId);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                System.out.println("세션이 존재하지 않음");
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -199,7 +281,7 @@ public class SessionController {
 
     @RequestMapping(value = "/checkPrivate", method = RequestMethod.POST)
     public ResponseEntity<Boolean> checkPrivate(@RequestBody Map<String, Object> params) {
-        System.out.println("Check Password : " + params);
+        System.out.println("Check Private : " + params);
 
         String sessionName = (String) params.get("sessionName");
 
@@ -230,7 +312,8 @@ public class SessionController {
         return ResponseEntity.ok(false);
     }
 
-    // 모든 세션 정보를 가져오는 엔드포인트
+    // 오픈비두 서버에서 모든 세션 정보를 가져오는 메소드
+    // 백엔드 서버에서 세션 정보 가져오는 메소드로 수정 예정
     @RequestMapping(value = "/sessionList", method = RequestMethod.GET)
     public ResponseEntity<?> fetchAll() {
         try {
