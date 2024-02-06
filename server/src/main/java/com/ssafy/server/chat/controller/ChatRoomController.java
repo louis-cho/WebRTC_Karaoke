@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/chatroom")
+@RequestMapping("/api/v1/chatroom")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 

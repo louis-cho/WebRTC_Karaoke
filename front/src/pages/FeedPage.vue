@@ -1,13 +1,32 @@
 <template>
-  <div>
+  <div @scroll="handleScroll">
     <TabItem/>
     <!-- <h3>전체 피드 페이지</h3> -->
     <div class="my-feed">
       <!-- 첫번째 div -->
-      <!-- 검색창 -->
+      <!-- 검색창 --> <!-- 닉네임/노래제목 검색 가능 -->
+                                                        <!-- <div>
+                                                          <input v-model="searchQuery" placeholder="검색어를 입력하세요" />
+                                                          <button @click="search">검색</button>
+                                                        </div> -->
+      <div class="search-container">
+        <q-input
+          v-model="searchQuery"
+          outlined
+          placeholder="검색어를 입력하세요"
+          dense
+          class="search-input"
+        >
+          <template v-slot:before>
+            <q-icon name="search" class="search-icon" />
+          </template>
+        </q-input>
+        <q-btn @click="search" class="search-button" color="primary" label="검색" dense />
+      </div>
+
 
       <!-- 두번째 div -->
-      <div v-for="feed in feeds" :key="feed.id">
+      <div v-for="feed in filteredFeeds" :key="feed.FEED_ID" >
         <div class="profile">
           <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }">
             <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
@@ -16,14 +35,17 @@
           <div class="width-100">
             <div class="space-between" >
               <div>
-                <p>{{ getUserName(feed.USER_PK) }}닉네임</p>
+                <!-- 닉네임 -->
+                <p>{{ getUserName(feed.USER_PK) }}</p>
               </div>
 
             </div>
             <div class="space-start">
-              <div>{{ getSongTitle(feed.FEED_ID) }}거짓말-</div>
-              <div>{{ getSongSinger(feed.FEED_ID) }}빅뱅</div>
-              <q-btn color="secondary" :label="feed.STATUS === '전체 공개' ? '전체 공개' : (feed.STATUS === '나만 공개' ? '나만 공개' : '비공개')" size="sm" />
+              <!-- 노래제목 -->
+              <div>{{ getSongTitle(feed.FEED_ID) }}-</div>
+              <!-- 가수 -->
+              <div>{{ getSongSinger(feed.FEED_ID) }}</div>
+              <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.STATUS === '1' ? 'secondary' : 'black')" :label="feed.STATUS === '0' ? '전체 공개' : (feed.STATUS === '1' ? '친구 공개' : '비공개')" size="sm" />
             </div>
           </div>
         </div>
@@ -61,24 +83,27 @@
       </div>
     </div>
 
+    <div v-if="loading">Loading...</div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import TabItem from "@/layouts/TabItem.vue";
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import TabItem from "@/layouts/TabItem.vue"
 
+const itemsPerLoad = 10; // 한 번에 로드할 피드 수
+const loading = ref(false)
 //가상 피드 데이터
 const feeds = ref([
   {
     FEED_ID: 1,
     USER_PK: 1,
     SONG_ID: 3,
-    CONTENT: "오랜만에 빅뱅 노래 불러봄",
+    CONTENT: "오랜만에 노래 불러봄",
     THUMBNAIL_URL: "썸네일 주소1",
     VIDEO_URL: "your_video_url.mp4",
     VIDEO_LENGTH: "190",
-    STATUS: "비공개",
+    STATUS: "2",
     TOTAL_POINT: "20000"
   },
   {
@@ -89,7 +114,7 @@ const feeds = ref([
     THUMBNAIL_URL: "썸네일 주소2",
     VIDEO_URL: "your_video_url2.mp4",
     VIDEO_LENGTH: "170",
-    STATUS: "전체 공개",
+    STATUS: "0",
     TOTAL_POINT: "5000"
   }
 ])
@@ -122,6 +147,85 @@ const getSongSinger = (feed_id) => {
   // SONG_ID를 사용하여 SINGER를 가져오기...
   return '빅뱅';
 }
+
+// 스크롤 이벤트 핸들러
+const handleScroll = () => {
+  const element = document.documentElement;
+  const { scrollTop, scrollHeight, clientHeight } = element;
+
+  // 스크롤이 아래로 내려갔는지 확인
+  if (scrollTop + clientHeight >= scrollHeight - 10) {
+    // 무한 스크롤 로딩 시작
+    loading.value = true;
+
+    // 새로운 피드를 불러오는 로직 (예시로 비동기 setTimeout 사용)
+    setTimeout(() => {
+      // 새로운 피드 데이터를 여기서 추가
+      const newFeeds = [
+        {
+          FEED_ID: 3,
+          USER_PK: 5,
+          SONG_ID: 5,
+          CONTENT: "새로운 피드 내용!!",
+          THUMBNAIL_URL: "새 썸네일 주소",
+          VIDEO_URL: "your_video_url.mp4",
+          VIDEO_LENGTH: "220",
+          STATUS: "1",
+          TOTAL_POINT: "0"
+        },
+
+      ];
+
+      // 새로운 피드를 기존 피드 배열에 추가
+      feeds.value = feeds.value.concat(newFeeds.slice(0, itemsPerLoad));
+
+      // 무한 스크롤 로딩 종료
+      loading.value = false;
+    }, 1000); // 적절한 비동기 로딩 시간으로 조절
+  }
+};
+
+
+// 컴포넌트가 마운트된 후에 스크롤 이벤트를 추가
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll);
+});
+
+// 컴포넌트가 언마운트될 때 스크롤 이벤트 리스너 제거
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
+});
+
+// 검색 기능을 위한 변수와 메소드 추가
+const searchQuery = ref('');
+
+const filteredFeeds = computed(() => {
+  return feeds.value.filter(feed => {
+    const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
+    const songTitleLowerCase = getSongTitle(feed.FEED_ID).toLowerCase();
+    return (
+      userNameLowerCase.includes(searchQuery.value.toLowerCase()) ||
+      songTitleLowerCase.includes(searchQuery.value.toLowerCase())
+    )
+  })
+})
+
+const search = () => {
+  const searchQueryLowerCase = searchQuery.value.toLowerCase();
+
+  feeds.value = feeds.value.filter(feed => {
+    const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
+    const songTitleLowerCase = getSongTitle(feed.FEED_ID).toLowerCase();
+
+    // 닉네임이나 노래제목에 검색어가 포함되어 있는지 확인
+    return (
+      userNameLowerCase.includes(searchQueryLowerCase) ||
+      songTitleLowerCase.includes(searchQueryLowerCase)
+    );
+  });
+}
+
+
 
 // const playVideo = (videoUrl) => {
 //   const videoPlayer = document.getElementById('video-player');
@@ -263,5 +367,25 @@ const getSongSinger = (feed_id) => {
   height: 50px;
   background: url("@/assets/icon/play-button.png") no-repeat center center;
   background-size: cover;
+}
+
+
+
+.search-container {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex: 1;
+  border-radius: 5px;
+}
+
+.search-button {
+  margin-left: 10px;
+}
+
+.search-icon {
+  color: grey;
 }
 </style>

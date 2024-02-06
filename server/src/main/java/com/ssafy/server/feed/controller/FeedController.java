@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/feed")
+@RequestMapping("/api/v1/feed")
 public class FeedController {
 
     @Autowired

@@ -1,60 +1,81 @@
 package com.ssafy.server.like.controller;
 
-import com.ssafy.server.like.model.Likes;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.ssafy.server.api.ApiResponse;
+import com.ssafy.server.common.error.ApiException;
+import com.ssafy.server.common.error.ApiExceptionFactory;
+import com.ssafy.server.like.error.LikeExceptionEnum;
 import com.ssafy.server.like.service.LikeService;
+import com.ssafy.server.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
-@RequestMapping("/likes")
+@RequestMapping("/api/v1/like")
 public class LikeController {
 
     @Autowired
     private final LikeService likeService;
 
     @Autowired
-    public LikeController(LikeService likeService) {
+    private final UserService userService;
+
+    @Autowired
+    LikeController(LikeService likeService, UserService userService) {
         this.likeService = likeService;
+        this.userService = userService;
     }
 
+    /**
+     * 테스트 용으로 작성해서 userPk를 주게 되어있음 UUID를 인자로 바꾸기
+     * @param jsonNode
+     * @return
+     */
     @PostMapping("/create")
-    public ResponseEntity<Likes> createLike(@RequestBody Likes newLike) {
-        likeService.createLike(newLike);
-        return new ResponseEntity<>(newLike, HttpStatus.CREATED);
-    }
+    public ResponseEntity<ApiResponse<Boolean>> create(@RequestBody JsonNode jsonNode) {
+        int feedId = -1, userPk = -1;
+        UUID userUUID = null;
+        try {
+            feedId = Integer.parseInt(jsonNode.get("feedId").asText());
+            if(jsonNode.get("uuid") != null) {
+                userUUID = UUID.fromString(jsonNode.get("uuid").asText());
+                userPk = userService.getUserPk(userUUID);
+            }
+            else {
+                userPk = Integer.parseInt(jsonNode.get("userPk").asText());
+            }
 
-    @GetMapping("/{likeId}")
-    public ResponseEntity<Likes> getLikeById(@PathVariable int likeId) {
-        Likes like = likeService.getLikeById(likeId);
-
-        if (like != null) {
-            return new ResponseEntity<>(like, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            likeService.save(feedId, userPk);
+        } catch(Exception e) {
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(LikeExceptionEnum.LIKE_CREATION_FAILED));
         }
+
+        return new ResponseEntity<>(ApiResponse.success(true), HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("/{likeId}")
-    public ResponseEntity<Likes> updateLike(@RequestBody Likes updatedLike) {
-        Likes updated = likeService.updateLike(updatedLike);
-
-        if (updated != null) {
-            return new ResponseEntity<>(updated, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/delete/{userPk}/{feedId}")
+    public ResponseEntity<ApiResponse<Boolean>> delete(@PathVariable int userPk, @PathVariable int feedId) {
+        try {
+            likeService.delete(userPk, feedId);
+        } catch(Exception e) {
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(LikeExceptionEnum.LIKE_DELETE_FAILED));
         }
+        return new ResponseEntity<>(ApiResponse.success(true), HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/{likeId}")
-    public ResponseEntity<Boolean> deleteLike(@PathVariable int likeId) {
-        boolean result = likeService.deleteLike(likeId);
-
-        if (result) {
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+    @GetMapping("/get/{feedId}")
+    public ResponseEntity<ApiResponse<Integer>> get(@PathVariable int feedId) {
+        Integer count = Integer.MIN_VALUE;
+        try {
+            count = likeService.findAllByFeedId(feedId);
+        } catch(Exception e) {
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(LikeExceptionEnum.LIKE_FETCH_ERROR));
         }
+        return new ResponseEntity<>(ApiResponse.success(count), HttpStatus.ACCEPTED);
     }
+
 }

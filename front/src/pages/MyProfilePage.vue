@@ -11,7 +11,8 @@
           <img src="@/assets/icon/back.png" alt="뒤로가기">
         </div>
         <div>
-          <h3>{{ getUserName(feed.USER_PK) }}닉네임</h3>
+          <!-- <h3>{{ getUserName(feed.USER_PK) }}</h3> -->
+          <h3>닉네임</h3>
         </div>
         <div class="icons">
           <div><img src="@/assets/icon/send.png" alt="dm"></div>
@@ -23,6 +24,7 @@
 
       <!-- 두번째 div -->
       <div class="profile">
+        <!-- 프로필 이미지 가져오기 -->
         <div class="profile-img-container">
           <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
         </div>
@@ -47,7 +49,7 @@
       <!-- 세번째 div -->
       <div class="feed-list">
         <!-- 각 피드 항목을 감싸는 그리드 레이아웃 부모 요소 -->
-        <div v-for="feed in feeds" :key="feed.id" class="feed-item">
+        <div v-for="feed in feeds" :key="feed.FEED_ID" class="feed-item">
           <!-- 피드 내용 및 요소들을 표시 -->
           <img :src="feed.THUMBNAIL_URL" alt="피드 이미지(썸네일)" class="feed-image">
         </div>
@@ -64,8 +66,8 @@ import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 
 const goBack = function () {
-  router.go(-1);
-};
+  router.go(-1)
+}
 
 // 가상의 피드 데이터 예시
 const feeds = ref([
@@ -77,7 +79,7 @@ const feeds = ref([
     THUMBNAIL_URL: "src/assets/icon/logo.png",
     VIDEO_URL: "your_video_url.mp4",
     VIDEO_LENGTH: "190",
-    STATUS: "비공개",
+    STATUS: "2",
     TOTAL_POINT: "20000"
   },
   {
@@ -88,7 +90,7 @@ const feeds = ref([
     THUMBNAIL_URL: "src/assets/icon/web_light_sq_ctn@1x.png",
     VIDEO_URL: "your_video_url2.mp4",
     VIDEO_LENGTH: "170",
-    STATUS: "전체 공개",
+    STATUS: "0",
     TOTAL_POINT: "5000"
   }
 ])

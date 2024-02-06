@@ -14,23 +14,26 @@
 
       <!-- 두번째 div -->
       <div class="profile">
-        <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }">
-          <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
-        </div>
+        <!-- <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }"> -->
+          <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img">
+        <!-- </div> -->
 
         <div class="width-100">
           <div class="space-between" >
             <div>
-              <p>{{ getUserName(feed.USER_PK) }}JennierubyJane</p>
+              <!-- <p>{{ getNickName(feed.USER_PK) }}</p> -->
+              <p>JennierubyJane</p>
             </div>
             <div @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정">
             </div>
           </div>
           <div class="space-start">
-            <div>{{ getSongTitle(feed.FEED_ID) }} 거짓말/</div>
-            <div>{{ getSongSinger(feed.FEED_ID) }}빅뱅/</div>
-            <q-btn color="secondary" label=" 공개 " size="sm" />
+            <!-- <div>{{ getSongTitle(feed.FEED_ID) }} </div> -->
+            <p>거짓말-</p>
+            <!-- <div>{{ getSongSinger(feed.FEED_ID) }}</div> -->
+            <p>빅뱅</p>
+            <!-- <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.STATUS === '1' ? 'secondary' : 'black')" :label="feed.STATUS === '0' ? '전체 공개' : (feed.STATUS === '1' ? '친구 공개' : '비공개')" size="sm" /> -->
           </div>
         </div>
       </div>
@@ -74,7 +77,7 @@
               <!-- <img :src="comment.profileImage" class="profile-image" alt="댓글 작성자 프로필 이미지"> -->
             </div>
             <div class="comments">
-              <div><strong>{{ comment.username }} {{ 닉네임 }}</strong></div>
+              <div><strong>{{ comment.nickname }} 닉네임</strong></div>
               <div>{{ comment.CONTENT }}</div>
             </div>
           </div>
@@ -109,18 +112,25 @@
 <script setup>
 import { ref, nextTick } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
+import { useRouter, useRoute } from "vue-router";
+
+const router = useRouter();
 
 const newComment = ref("");
 const commentContainer = ref(null);
 const modal = ref(false);
 
+const goBack = function () {
+  router.go(-1);
+};
+
 
 const getUserProfile = (user_pk) => {
   // 사용자 프로필 이미지 가져오기 로직..
-  return '@/assets/img/capture.png';
+  return '@/assets/img/capture3.png';
 }
 
-const getUserName = (user_pk) => {
+const getNickName = (user_pk) => {
   // 닉네임 가져오기 로직...
   return '닉네임1';
 }
@@ -150,13 +160,13 @@ const addComment = function() {
   // 댓글 추가
   const newCommentData = {
     COMMENT_ID: comments.value.length + 1,
-    USER_PK: user_pk,
-    FEED_ID: 8, // 수정 필요
+    USER_PK: 15, //임의로..수정 필요
+    FEED_ID: 8, // 임의로..수정 필요
     CONTENT: newComment.value,
     CREATED_AT: new Date().toLocaleString(),
     MODIFIED_AT: new Date().toLocaleString(),
-    userProfile,
-    username,
+    // userProfile,
+    // username,
   };
 
   comments.value.push(newCommentData);

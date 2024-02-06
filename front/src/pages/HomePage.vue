@@ -1,7 +1,7 @@
 <template>
   <!-- class="bg-purple" -->
   <div>
-    <Navbar/>
+    <nav-bar />
     <q-carousel
       v-model="slide"
       vertical
@@ -43,9 +43,7 @@
 import { ref } from "vue";
 import StartTest from "@/components/StartTest.vue";
 import NavBar from "@/layouts/NavBar.vue";
-import SearchUser from "@/components/SearchUser.vue";
 import SignIn from "@/components/SignIn.vue";
-
 
 
 const slide = ref("style");
@@ -54,17 +52,13 @@ const lorem2 = "어디서나 노래와 함께하는 새로운 자유, 노래해�
 const lorem3 = "너는 어때? 나는 어때?";
 const lorem4 = "너도 나도 올려방";
 const lorem5 = "스트레스 해소해방";
-
-
-
 </script>
 
 <style scoped>
 .carousel_height {
-  height:100%;
+  height: 100%;
   /* position: fixed; */
   /* bottom: 0; */
   width: 100%;
 }
 </style>
-
