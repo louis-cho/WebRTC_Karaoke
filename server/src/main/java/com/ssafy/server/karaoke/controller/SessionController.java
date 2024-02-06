@@ -48,13 +48,12 @@ public class SessionController {
             SessionSetting setting;
 
             int numberOfParticipants = Integer.parseInt((String) params.get("numberOfParticipants"));
-            System.out.println(numberOfParticipants);
-            boolean isPublic = (boolean) params.get("isPublic");
-            if (isPublic) {
+            boolean isPrivate = (boolean) params.get("isPrivate");
+            if (isPrivate) {
                 String password = (String) params.get("password");
-                setting = new SessionSetting(numberOfParticipants, isPublic, password);
+                setting = new SessionSetting(numberOfParticipants, isPrivate, password);
             } else {
-                setting = new SessionSetting(numberOfParticipants, isPublic);
+                setting = new SessionSetting(numberOfParticipants, isPrivate);
             }
 
             // 세션을 컬렉션에 저장함
@@ -188,41 +187,34 @@ public class SessionController {
         }
     }
 
+    // 세션 정보를 수정하는 메소드(방장)
     @RequestMapping(value = "/updateSession", method = RequestMethod.POST)
     public ResponseEntity<String> updateSession(@RequestBody Map<String, Object> params) {
         System.out.println("Update Session : " + params);
 
         String sessionName = (String) params.get("sessionName");
 
-        if (openViduModel.getMapSessions().containsKey(sessionName)) {
-            System.out.println("이미 존재하는 세션 예외처리 필요");
+        if (!openViduModel.getMapSessions().containsKey(sessionName)) {
+            System.out.println("존재하지 않는 세션");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // SessionProperties를 설정해준다
-        SessionProperties sessionProperties = new SessionProperties.Builder().customSessionId(sessionName).build();
-
         try {
-            Session session = openViduModel.getOpenvidu().createSession(sessionProperties);
             SessionSetting setting;
 
             int numberOfParticipants = Integer.parseInt((String) params.get("numberOfParticipants"));
-            System.out.println(numberOfParticipants);
-            boolean isPublic = (boolean) params.get("isPublic");
-            if (isPublic) {
+            boolean isPrivate = (boolean) params.get("isPrivate");
+            if (isPrivate) {
                 String password = (String) params.get("password");
-                setting = new SessionSetting(numberOfParticipants, isPublic, password);
+                setting = new SessionSetting(numberOfParticipants, isPrivate, password);
             } else {
-                setting = new SessionSetting(numberOfParticipants, isPublic);
+                setting = new SessionSetting(numberOfParticipants, isPrivate);
             }
 
             // 세션을 컬렉션에 저장함
-            openViduModel.getMapSessions().put(sessionName, session);
             openViduModel.getMapSessionSettings().put(sessionName, setting);
-            openViduModel.getMapSessionNamesTokens().put(sessionName, new ConcurrentHashMap<>());
-            openViduModel.getMapSessionTokenConnectionId().put(sessionName, new ConcurrentHashMap<>());
 
-            return ResponseEntity.ok(sessionName);
+            return ResponseEntity.ok("변경되었습니다.");
         } catch (Exception e) {
             // 오류가 발생하면 오류 메시지를 생성하고 클라이언트에 반환함
             System.out.println(e.getMessage());

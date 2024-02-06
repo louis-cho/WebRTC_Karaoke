@@ -10,7 +10,8 @@ export const useKaraokeStore = defineStore("karaoke", {
     APPLICATION_SERVER_URL:
       process.env.NODE_ENV === "production" ? "" : "http://localhost:8081/",
 
-    isModalOpen: false,
+    createModal: false,
+    updateModal: false,
     isPrivate: false,
     userName: "사용자" + Math.round(Math.random() * 100),
     isModerator: false,
@@ -25,6 +26,11 @@ export const useKaraokeStore = defineStore("karaoke", {
     token: undefined,
     sessionName: undefined,
 
+    // 방 설정을 위한 변수
+    numberOfParticipants: undefined,
+    isPrivate: undefined,
+    password: undefined,
+
     // 채팅창을 위한 변수
     inputMessage: "",
     messages: [],
@@ -38,15 +44,24 @@ export const useKaraokeStore = defineStore("karaoke", {
     audios: [],
   }),
   actions: {
-    async createSession(sessionName, numberOfParticipants, isPublic, password) {
+    async createSession(
+      sessionName,
+      numberOfParticipants,
+      isPrivate,
+      password
+    ) {
       this.joinSession();
+
+      this.numberOfParticipants = numberOfParticipants;
+      this.isPrivate = isPrivate;
+      this.password = password;
 
       await axios.post(
         this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/createSession",
         {
           sessionName: sessionName,
           numberOfParticipants: numberOfParticipants,
-          isPublic: isPublic,
+          isPrivate: isPrivate,
           password: password,
         },
         {

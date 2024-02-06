@@ -5,8 +5,7 @@
       <!-- {{ clientData }}이게 내 현재 이름임 -->
       <div class="flex-container">
         <div>{{ clientData }}</div>
-        {{ connectionId }}
-        <div v-if="store.isModerator">
+        <div v-if="store.isModerator && props.streamManager.remote">
           <q-btn
             type="submit"
             color="negative"

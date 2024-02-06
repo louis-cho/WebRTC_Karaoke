@@ -52,7 +52,7 @@ const { pages, changeRoute } = defineProps(["pages", "changeRoute"]);
 const router = changeRoute;
 
 const openModal = () => {
-  store.isModalOpen = true;
+  store.createModal = true;
 };
 
 async function joinSession(url) {

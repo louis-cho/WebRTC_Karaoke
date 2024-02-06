@@ -3,22 +3,37 @@
   <div id="main-container">
     <!-- session이 true일때! 즉, 방에 들어갔을 때 -->
     <div id="session" v-if="store.session" class="q-pa-md">
-      <div id="session-header" class="q-mb-md">
-        <q-toolbar-title style="font-size: 40px">
-          {{ pref.app.kor.karaokePage.sessionId }} : {{ store.sessionName }}
-        </q-toolbar-title>
-
-        <q-btn
-          @click="leaveSession"
-          color="negative"
-          :label="pref.app.kor.karaokePage.leaveSession"
-        />
+      <div
+        id="session-header"
+        class="q-mb-md"
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <q-toolbar-title style="font-size: 40px"
+          >{{ pref.app.kor.karaokePage.sessionId }} :
+          {{ store.sessionName }}</q-toolbar-title
+        >
+        <div style="display: flex">
+          <q-btn
+            @click="openModal"
+            color="positive"
+            :label="pref.app.kor.karaokePage.updateSession"
+          />
+          <q-btn
+            @click="leaveSession"
+            color="negative"
+            :label="pref.app.kor.karaokePage.leaveSession"
+          />
+        </div>
       </div>
 
       <!-- 음성 필터 -->
       <audio-filter />
 
-      <!-- 내 캠 -->
+      <!-- 메인 캠 -->
       <div
         id="main-video"
         style="display: flex; flex-direction: row; overflow-x: auto"
@@ -55,6 +70,8 @@
 
       <!-- 녹화 기능 -->
       <recording-video />
+
+      <update-modal />
     </div>
   </div>
 </template>
@@ -76,6 +93,7 @@ import InputSelector from "@/components/karaoke/InputSelector.vue";
 import RecordingVideo from "src/components/karaoke/RecordingVideo.vue";
 import NormalMode from "src/components/karaoke/NormalMode.vue";
 import PerfectScore from "src/components/karaoke/PerfectScore.vue";
+import UpdateModal from "src/components/karaoke/UpdateModal.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -88,6 +106,10 @@ const songMode = ref(true);
 const mainStreamManagerComputed = computed(() => store.mainStreamManager);
 const publisherComputed = computed(() => store.publisher);
 const subscribersComputed = computed(() => store.subscribers);
+
+const openModal = () => {
+  store.updateModal = true;
+};
 
 async function leaveSession() {
   await store.leaveSession();
