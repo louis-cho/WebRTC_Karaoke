@@ -5,10 +5,25 @@
     <div class="my-feed">
       <!-- 첫번째 div -->
       <!-- 검색창 --> <!-- 닉네임/노래제목 검색 가능 -->
-      <div>
-        <input v-model="searchQuery" placeholder="검색어를 입력하세요" />
-        <button @click="search">검색</button>
+                                                        <!-- <div>
+                                                          <input v-model="searchQuery" placeholder="검색어를 입력하세요" />
+                                                          <button @click="search">검색</button>
+                                                        </div> -->
+      <div class="search-container">
+        <q-input
+          v-model="searchQuery"
+          outlined
+          placeholder="검색어를 입력하세요"
+          dense
+          class="search-input"
+        >
+          <template v-slot:before>
+            <q-icon name="search" class="search-icon" />
+          </template>
+        </q-input>
+        <q-btn @click="search" class="search-button" color="primary" label="검색" dense />
       </div>
+
 
       <!-- 두번째 div -->
       <div v-for="feed in filteredFeeds" :key="feed.FEED_ID" >
@@ -352,5 +367,25 @@ const search = () => {
   height: 50px;
   background: url("@/assets/icon/play-button.png") no-repeat center center;
   background-size: cover;
+}
+
+
+
+.search-container {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex: 1;
+  border-radius: 5px;
+}
+
+.search-button {
+  margin-left: 10px;
+}
+
+.search-icon {
+  color: grey;
 }
 </style>

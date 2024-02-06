@@ -9,11 +9,7 @@
       <q-card>
         <q-card-section>
           <q-input v-model="loginForm.username" label="아이디" />
-          <q-input
-            v-model="loginForm.password"
-            label="비밀번호"
-            type="password"
-          />
+          <q-input v-model="loginForm.password" label="비밀번호" type="password"/>
         </q-card-section>
 
         <q-card-actions align="right">
@@ -45,7 +41,7 @@
 </template>
 
 <script>
-import { getPublicKey, register, login } from "@/js/encrypt/authRequest.js";
+import { getPublicKey, register, login, } from "@/js/encrypt/authRequest.js";
 
 export default {
   data() {
@@ -83,30 +79,7 @@ export default {
 
       this.closeLoginModal();
 
-      // ------------------------------
-      // try {
-      //   await login(username, password);
-      //   this.isLoggedIn = true;
-      //   this.closeLoginModal();
-      // } catch (error) {
-      //   console.error("Login failed:", error);
-      //   this.isLoggedIn = false;
-      // }
-      // ---------------------------------
-
     },
-    // ----------------------
-    // logout() {
-    //   // 로그아웃 동작 수행
-    //   this.isLoggedIn = false;
-
-    //   // 로그인 폼을 초기화합니다
-    //   this.loginForm = {
-    //     username: "",
-    //     password: "",
-    //   };
-    // },
-    // ----------------------
 
     async openSignupModal() {
       await getPublicKey();
