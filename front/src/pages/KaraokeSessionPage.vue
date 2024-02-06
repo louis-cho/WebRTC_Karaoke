@@ -1,8 +1,7 @@
 <template>
-  <nav-bar />
-  <div id="main-container">
-    <!-- session이 true일때! 즉, 방에 들어갔을 때 -->
-    <div id="session" v-if="store.session" class="q-pa-md">
+  <q-layout view="lHh Lpr lFf" v-if="store.session">
+    <!-- 상단 AppBar -->
+    <q-header elevated class="custom-header">
       <div
         id="session-header"
         class="q-mb-md"
@@ -29,10 +28,10 @@
           />
         </div>
       </div>
+    </q-header>
 
-      <!-- 음성 필터 -->
-      <audio-filter />
-
+    <!-- 메인 컨텐츠 영역 -->
+    <q-page-container>
       <!-- 메인 캠 -->
       <div
         id="main-video"
@@ -58,22 +57,66 @@
           @click="updateMainVideoStreamManager(sub)"
         />
       </div>
+    </q-page-container>
 
-      <!-- 방에 들어갔을 때 같이 보이게 될 채팅창 -->
-      <karaoke-chat />
+    <!-- 하단 메뉴바 -->
+    <q-footer>
+      <q-tabs align="justify" active-color="positive" indicator-color="primary">
+        <q-tab
+          name="audio-filter"
+          label="Audio Filter"
+          @click="toggleModal('audio-filter')"
+        />
 
-      <!-- 캠활성화, 음소거 버튼 -->
-      <input-controller />
+        <q-tab
+          name="karaoke-chat"
+          label="Karaoke Chat"
+          @click="toggleModal('karaoke-chat')"
+        />
 
-      <!-- 캠,오디오 선택 옵션 -->
-      <input-selector />
+        <q-tab
+          name="input-controller"
+          label="Input Controller"
+          @click="toggleModal('input-controller')"
+        />
 
-      <!-- 녹화 기능 -->
-      <recording-video />
+        <q-tab
+          name="input-selector"
+          label="Input Selector"
+          @click="toggleModal('input-selector')"
+        />
 
-      <update-modal />
-    </div>
-  </div>
+        <q-tab
+          name="recording-video"
+          label="Recording Video"
+          @click="toggleModal('recording-video')"
+        />
+      </q-tabs>
+    </q-footer>
+  </q-layout>
+
+  <audio-filter
+    v-if="modals['audio-filter']"
+    @close="closeModal('audio-filter')"
+  />
+  <karaoke-chat
+    v-if="modals['karaoke-chat']"
+    @close="closeModal('karaoke-chat')"
+  />
+  <input-controller
+    v-if="modals['input-controller']"
+    @close="closeModal('input-controller')"
+  />
+  <input-selector
+    v-if="modals['input-selector']"
+    @close="closeModal('input-selector')"
+  />
+  <recording-video
+    v-if="modals['recording-video']"
+    @close="closeModal('recording-video')"
+  />
+
+  <update-modal />
 </template>
 
 <script setup>
@@ -84,7 +127,6 @@ import axios from "axios";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import pref from "@/js/config/preference.js";
 
-import NavBar from "@/layouts/NavBar.vue";
 import UserVideo from "@/components/karaoke/UserVideo.vue";
 import AudioFilter from "@/components/karaoke/AudioFilter.vue";
 import KaraokeChat from "@/components/karaoke/KaraokeChat.vue";
@@ -121,9 +163,28 @@ function updateMainVideoStreamManager(stream) {
   if (store.mainStreamManager === stream) return;
   store.mainStreamManager = stream;
 }
+
+const modals = {
+  "audio-filter": false,
+  "karaoke-chat": false,
+  "input-controller": false,
+  "input-selector": false,
+  "recording-video": false,
+};
+
+const toggleModal = (modalName) => {
+  modals[modalName] = !modals[modalName];
+};
+
+const closeModal = (modalName) => {
+  modals[modalName] = false;
+};
 </script>
 
 <style scoped>
+.custom-header {
+  height: 50px;
+}
 .user-video {
   cursor: pointer;
 }
