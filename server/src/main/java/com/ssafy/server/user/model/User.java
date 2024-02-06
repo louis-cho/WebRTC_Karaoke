@@ -1,6 +1,7 @@
 package com.ssafy.server.user.model;
 
 import com.ssafy.server.auth.model.entity.RefreshToken;
+import com.ssafy.server.song.model.entity.SingLog;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,6 +46,9 @@ public class User {
 
     @OneToMany
     private List<RefreshToken> refreshToken;
+
+    @OneToMany
+    private List<SingLog> singLog;
 
     // Constructors, getters, setters, etc.
 
