@@ -90,10 +90,10 @@ import AudioFilter from "@/components/karaoke/AudioFilter.vue";
 import KaraokeChat from "@/components/karaoke/KaraokeChat.vue";
 import InputController from "@/components/karaoke/InputController.vue";
 import InputSelector from "@/components/karaoke/InputSelector.vue";
-import RecordingVideo from "src/components/karaoke/RecordingVideo.vue";
-import NormalMode from "src/components/karaoke/NormalMode.vue";
-import PerfectScore from "src/components/karaoke/PerfectScore.vue";
-import UpdateModal from "src/components/karaoke/UpdateModal.vue";
+import RecordingVideo from "@/components/karaoke/RecordingVideo.vue";
+import NormalMode from "@/components/karaoke/NormalMode.vue";
+import PerfectScore from "@/components/karaoke/PerfectScore.vue";
+import UpdateModal from "@/components/karaoke/UpdateModal.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
