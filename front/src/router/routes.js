@@ -11,6 +11,10 @@ const routes = [
     component: () => import("@/pages/KaraokeListPage.vue"),
   },
   {
+    path: "/point",
+    component: () => import("@/pages/PointPage.vue"),
+  },
+  {
     path: "/feed",
     component: () => import("@/pages/FeedPage.vue"),
   },
@@ -47,7 +51,6 @@ const routes = [
     path: "/canvas_test",
     component: () => import("@/components/karaoke/CanvasTest.vue"),
   },
-
   {
     path: "/karaoke/:sessionId", // 동적 세션 ID
     name: "KaraokeSession",

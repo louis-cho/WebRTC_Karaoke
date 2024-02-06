@@ -1,7 +1,6 @@
 package com.ssafy.server.feed.model;
 
 import com.ssafy.server.like.model.Like;
-import com.ssafy.server.syncdata.LikeSyncData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -29,7 +28,7 @@ public class Feed {
     private int totalPoint;
 
     @OneToMany(mappedBy = "feed")
-    private List<LikeSyncData> likes = new ArrayList<>();
+    private List<Like> likes = new ArrayList<>();
 
     // getters, setters, constructors
 }
