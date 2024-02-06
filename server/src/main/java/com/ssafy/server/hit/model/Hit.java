@@ -3,6 +3,7 @@ package com.ssafy.server.hit.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.server.audit.Auditable;
 import com.ssafy.server.feed.model.Feed;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 
@@ -18,9 +20,9 @@ import java.util.Objects;
 @Getter
 @ToString
 @NoArgsConstructor
-@Entity(name = "hit")
-@Table(name = "hit")
-public class Hit implements Serializable {
+@Entity(name = "hits")
+@Table(name = "hits")
+public class Hit implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,10 +32,9 @@ public class Hit implements Serializable {
     private Integer userPk;
     @Column(name = "feed_id", insertable = false, updatable = false)
     private Integer feedId;
+    @Column(name = "timestamp", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false)
+    private Timestamp timestamp;
 
-    @ManyToOne
-    @JoinColumn(name = "feed_id")
-    private Feed feed;
 
     // transient 키워드를 사용하여 직렬화에서 제외시킬 필드
     @Transient
@@ -49,7 +50,7 @@ public class Hit implements Serializable {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Hit that = (Hit) obj;
-        return Objects.equals(userPk, that.userPk) && Objects.equals(feed, that.feed);
+        return Objects.equals(userPk, that.userPk) && Objects.equals(feedId, that.feedId);
     }
 
     // 객체를 JSON 문자열로 직렬화하여 반환하는 메서드
@@ -67,6 +68,6 @@ public class Hit implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userPk, feed);
+        return Objects.hash(userPk, feedId);
     }
 }

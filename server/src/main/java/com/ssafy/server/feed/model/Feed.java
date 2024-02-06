@@ -37,8 +37,5 @@ public class Feed {
     @Column(name = "total_point")
     private int totalPoint;
 
-    @OneToMany(mappedBy = "feed")
-    private List<Like> likes = new ArrayList<>();
-
     // getters, setters, constructors
 }
