@@ -47,9 +47,6 @@ public class User {
     @OneToMany
     private List<RefreshToken> refreshToken;
 
-    @OneToMany
-    private List<SingLog> singLog;
-
     // Constructors, getters, setters, etc.
 
     public User() {

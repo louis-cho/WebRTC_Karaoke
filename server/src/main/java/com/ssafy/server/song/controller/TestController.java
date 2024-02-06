@@ -47,23 +47,4 @@ public class TestController {
         return ResponseEntity.ok("");
     }
 
-//    @GetMapping("/refresh")
-//     public ResponseEntity<String> refreshAuth(HttpServletRequest request) {
-//         HttpHeaders responseHeader = new HttpHeaders();
-//         String token = request.getHeader(TokenKey.REFRESH.getKey());
-//
-//         if (token != null && tokenProvider.validateToken(token) == JwtCode.ACCESS) {
-//             String email = tokenProvider.getUid(token);
-//             Token newToken = tokenProvider.generateToken(email, Role.USER.getKey());
-//
-//             responseHeader.set(TokenKey.ACCESS.getKey(), newToken.getAccessToken());
-//             responseHeader.set(TokenKey.REFRESH.getKey(), newToken.getRefreshToken());
-//             responseHeader.setContentType(MediaType.APPLICATION_JSON);
-//
-//             return ResponseEntity.ok()
-//                     .headers(responseHeader)
-//                     .body("new Token");
-//         }
-//         throw new RuntimeException();
-//     }
 }

@@ -17,13 +17,11 @@ public class SingLog extends Auditable {
     @Column(name = "sing_log_id")
     private int singLogId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_pk")
-    private User user;
+    @Column(name = "user_pk")
+    private int userPk;
 
-    @ManyToOne
-    @JoinColumn(name = "song_id")
-    private Song song;
+    @Column(name = "song_id")
+    private int songId;
 
     @Column(name = "sing_mode")
     private String singMode;

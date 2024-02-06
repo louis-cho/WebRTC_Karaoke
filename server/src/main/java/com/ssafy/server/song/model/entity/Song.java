@@ -24,9 +24,4 @@ public class Song {
     @Column(name = "test")
     private String test;
 
-    @OneToOne
-    private SongInfo songInfo;
-
-    @OneToMany
-    private List<SingLog> singLog;
 }
