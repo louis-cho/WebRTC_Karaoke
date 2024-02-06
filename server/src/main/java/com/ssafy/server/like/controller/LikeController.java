@@ -25,7 +25,7 @@ public class LikeController {
     private final UserService userService;
 
     @Autowired
-    public LikeController(LikeService likeService, UserService userService) {
+    LikeController(LikeService likeService, UserService userService) {
         this.likeService = likeService;
         this.userService = userService;
     }

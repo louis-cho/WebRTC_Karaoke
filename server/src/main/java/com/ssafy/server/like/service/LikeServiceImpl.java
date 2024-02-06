@@ -18,12 +18,8 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class LikeServiceImpl implements LikeService {
     private static final String LIKE_HASH_KEY = "likes";
-    @Autowired
     private final LikeRepository likeRepository;
-    @Autowired
     private final LikeStatRepository likeStatRepository;
-
-    @Autowired
     private final RedisTemplate<String, Like> redisTemplate;
 
     @Autowired

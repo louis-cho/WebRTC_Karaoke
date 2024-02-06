@@ -12,15 +12,14 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Entity
+
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
-@Table(name = "like_sync_data")
+@Entity(name = "like")
+@Table(name = "like")
 public class Like implements Serializable {
-
-    private static final long serialVersionUID = 2L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
