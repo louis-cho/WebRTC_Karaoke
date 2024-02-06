@@ -24,7 +24,7 @@ public class ScheduledTask {
                 String keyNumStr = keyName.replaceAll("[^0-9]", "");
                 chatService.saveToJPA(chatService.loadFromRedis(keyNumStr, false, true));
             }
-            else{
+            else if(keyName.startsWith("oldChat")){
                 chatService.deleteKeyInRedis(keyName);
             }
         }
