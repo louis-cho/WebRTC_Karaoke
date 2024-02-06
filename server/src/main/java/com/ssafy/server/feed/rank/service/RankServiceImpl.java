@@ -92,7 +92,7 @@ public class RankServiceImpl implements RankService {
             if (lastTime != null) {
                 searchSourceBuilder.query(QueryBuilders.boolQuery()
                         .must(QueryBuilders.matchAllQuery())
-                        .filter(QueryBuilders.rangeQuery("timestamp").gte(lastTime)));
+                        .filter(QueryBuilders.rangeQuery("timestamp").gt(lastTime)));
                 searchSourceBuilder.sort(new FieldSortBuilder("timestamp").order(SortOrder.DESC));
             } else {
                 searchSourceBuilder.query(QueryBuilders.boolQuery()
@@ -137,7 +137,7 @@ public class RankServiceImpl implements RankService {
                     int likeId = (int) source.get("like_id");
                     int feedId = (int) source.get("feed_id");
                     int userPk = (int) source.get("user_pk");
-                    char status = source.get("status").toString().charAt(0);
+                    boolean status = Boolean.TRUE.equals(source.get("status"));
 
                     // LikesDocument 객체 생성
                     LikesDocument likesDocument = new LikesDocument();

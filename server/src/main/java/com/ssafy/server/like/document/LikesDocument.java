@@ -28,7 +28,7 @@ public class LikesDocument {
     private int feedId;
 
     @Field(type = FieldType.Keyword) // Assuming you want to use FieldType.Keyword for 'status'
-    private char status;
+    private boolean status;
 
     @Field(type = FieldType.Date)
     private Date timestamp;
