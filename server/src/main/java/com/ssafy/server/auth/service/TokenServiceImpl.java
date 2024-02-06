@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,15 +26,22 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String getRefreshToken(int userPk) {
-        Optional<RefreshToken> tokenOptional = tokenRepository.findById(userPk);
+        // userPk를 조건으로 최신순 정렬로 가져옴
+        Optional<RefreshToken> refreshTokenOptional = tokenRepository.findTopByUser_UserPkOrderByExpiredAtDesc(userPk);
 
-        return tokenOptional.map(RefreshToken::getTokenValue).orElse(null);
+        // refreshToken이 존재하는 경우
+        if (refreshTokenOptional.isPresent()) {
+            RefreshToken refreshToken = refreshTokenOptional.get();
+            return refreshToken.getTokenValue();
+        } else {
+            // refreshToken이 존재하지 않는 경우
+            return null;
+        }
     }
 
     @Override
     public void saveRefreshToken(int userPk, String tokenValue, LocalDateTime expiredAt) {
         User user = userRepository.findByUserPk(userPk);
-
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setTokenValue(tokenValue);
@@ -42,6 +50,4 @@ public class TokenServiceImpl implements TokenService {
         // 저장
         tokenRepository.save(refreshToken);
     }
-
-
 }

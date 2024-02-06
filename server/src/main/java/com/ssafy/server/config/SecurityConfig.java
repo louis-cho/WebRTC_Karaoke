@@ -48,7 +48,8 @@ public class SecurityConfig {
                 .and()
                 // token 검증하는 페이지&메인페이지는 인가 허가, 외엔 모두 인가 필요
                 .authorizeRequests()
-                .antMatchers("/test/login").permitAll()
+                .antMatchers("/api/v1/test/login").permitAll()
+                .antMatchers("/api/v1/user/**").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                 .and()

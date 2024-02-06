@@ -7,7 +7,7 @@ export let rsa = new RSA.RSAKey();
 // Empty function for the "공개키 받아오기" button
 async function getPublicKey() {
   // Add your logic here or leave it empty
-  const serverUrl = "https://i10a705.p.ssafy.io/api/user/login"; // Update the URL accordingly
+  const serverUrl = "http://localhost:8081/api/v1/user/login"; // Update the URL accordingly
 
   // Create a data object with the user credentials
   const data = {
@@ -39,7 +39,7 @@ async function getPublicKey() {
 export async function sendAESKey(aesKeyData) {
   let encryptedKey = rsa.encrypt(aesKeyData);
 
-  const serverUrl = "https://i10a705.p.ssafy.io/user/login"; // Update the URL accordingly
+  const serverUrl = "http://localhost:8081/user/login"; // Update the URL accordingly
 
   const data = {
     "type": "setAESKey",
@@ -66,7 +66,7 @@ export async function sendAESKey(aesKeyData) {
 
 async function login(id, pw) {
     // Add your logic here or leave it empty
-    const serverUrl = "https://i10a705.p.ssafy.io/user/login"; // Update the URL accordingly
+    const serverUrl = "http://localhost:8081/api/v1/user/login"; // Update the URL accordingly
 
     // Create a data object with the user credentials
     const data = {
@@ -94,7 +94,7 @@ async function login(id, pw) {
 }
 
 async function register(id, pw, email, nickname) {
-  const serverUrl = "https://i10a705.p.ssafy.io/user/register"; // Update the URL accordingly
+  const serverUrl = "http://localhost:8081/api/v1/user/register"; // Update the URL accordingly
 
   // Create a data object with the user credentials
   const data = {

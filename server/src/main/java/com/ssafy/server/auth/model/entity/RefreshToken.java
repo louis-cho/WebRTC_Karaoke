@@ -9,15 +9,18 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
+@Entity(name = "refresh_token")
 @Getter
 @Setter
 public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "token_id")
     private int tokenId;
+    @Column(name = "token_value")
     private String tokenValue;
+    @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
     @ManyToOne

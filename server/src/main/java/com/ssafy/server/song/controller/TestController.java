@@ -25,7 +25,7 @@ public class TestController {
 
     @GetMapping("/login")
     public ResponseEntity<?> getToken() {
-        int userPk = 001;
+        int userPk = 124;
         Token newToken = jwtUtil.generateToken(userPk, Role.USER.getKey());
         HttpHeaders responseHeader = new HttpHeaders();
         System.out.println("JWT Test");

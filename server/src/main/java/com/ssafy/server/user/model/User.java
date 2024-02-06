@@ -42,8 +42,8 @@ public class User {
     @Column(name = "introduction")
     private String introduction;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<RefreshToken> refreshTokens;
+    @OneToMany
+    private List<RefreshToken> refreshToken;
 
     // Constructors, getters, setters, etc.
 

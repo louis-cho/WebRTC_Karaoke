@@ -76,11 +76,11 @@ public class JwtUtil implements InitializingBean {
         return new Token(accessToken, refreshToken);
     }
 
-    public String createToken(String userId, String role, TokenKey tokenKey) {
+    public String createToken(String userPk, String role, TokenKey tokenKey) {
         // access : 1 hour, refresh : 1 month
         LocalDateTime expiredAt = getExpiration(tokenKey);
         log.info("Date.from(expiredAt.toInstant(ZoneOffset.UTC)): {}", Date.from(expiredAt.toInstant(ZoneOffset.UTC)));
-        Claims claims = Jwts.claims().setSubject(userId);
+        Claims claims = Jwts.claims().setSubject(userPk);
         claims.put("role", role);
 
         Date now = new Date();
