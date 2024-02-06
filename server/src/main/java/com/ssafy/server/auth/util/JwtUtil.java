@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 
@@ -53,38 +54,41 @@ public class JwtUtil implements InitializingBean {
         return tokenService.getRefreshToken(userPk);
     }
 
-    public void setSaveRefresh(int userPk, String tokenValue, LocalDateTime expiredAt) {
+    public void saveRefreshToken(int userPk, String tokenValue, LocalDateTime expiredAt) {
         tokenService.saveRefreshToken(userPk, tokenValue, expiredAt);
     }
 
-    public String generateAccess(int userPk) {
-        return createToken(String.valueOf(userPk), TokenKey.ACCESS);
+    public String generateAccess(int userPk, String role) {
+        return createToken(String.valueOf(userPk), role, TokenKey.ACCESS);
     }
 
-    public String generateRefresh(int userPk) {
-        return createToken(String.valueOf(userPk), TokenKey.REFRESH);
+    public String generateRefresh(int userPk, String role) {
+        String refreshToken = createToken(String.valueOf(userPk), role, TokenKey.REFRESH);
+        saveRefreshToken(userPk, refreshToken, getExpiration(TokenKey.REFRESH));    // 생성과 동시애 db에 저장
+        log.info("refreshToken 생성 & 저장: {}", refreshToken);
+        return refreshToken;
     }
 
-    public Token generateToken(int userPk) {
-        String accessToken = generateAccess(userPk);
-        String refreshToken = generateRefresh(userPk);
+    public Token generateToken(int userPk, String role) {
+        String accessToken = generateAccess(userPk, role);
+        String refreshToken = generateRefresh(userPk, role);
 
         return new Token(accessToken, refreshToken);
     }
 
-    public String createToken(String userId, TokenKey tokenKey) {
+    public String createToken(String userId, String role, TokenKey tokenKey) {
         // access : 1 hour, refresh : 1 month
         LocalDateTime expiredAt = getExpiration(tokenKey);
-
+        log.info("Date.from(expiredAt.toInstant(ZoneOffset.UTC)): {}", Date.from(expiredAt.toInstant(ZoneOffset.UTC)));
         Claims claims = Jwts.claims().setSubject(userId);
-        claims.put("additionalData", "");
+        claims.put("role", role);
 
         Date now = new Date();
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(Date.from(expiredAt.toInstant(ZoneOffset.UTC)))
+                .setExpiration(Date.from(expiredAt.atZone(ZoneId.of("Asia/Seoul")).toInstant()))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -118,9 +122,9 @@ public class JwtUtil implements InitializingBean {
 
         String delimiter = tokenKey.getKey();
         if (delimiter.equals(TokenKey.ACCESS.getKey())) {
-            return now.plusHours(1);
+            return now.plusMinutes(1);
         } else if (delimiter.equals(TokenKey.REFRESH.getKey())) {
-            return now.plusMonths(1);
+            return now.plusMinutes(2);
         } else {
             throw new RuntimeException("Invalid TokenKey");
         }

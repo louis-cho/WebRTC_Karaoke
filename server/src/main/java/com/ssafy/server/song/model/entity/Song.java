@@ -16,6 +16,7 @@ public class Song {
     private int songId;
     private String singer;
     private String title;
+    private String test;
 
     @OneToOne(mappedBy = "song")
     private SongInfo songInfo;
