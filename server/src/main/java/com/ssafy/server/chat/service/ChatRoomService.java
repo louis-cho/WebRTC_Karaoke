@@ -9,6 +9,8 @@ import com.ssafy.server.chat.repository.ChatRoomRepository;
 import com.ssafy.server.chat.repository.UsersChatsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +24,8 @@ public class ChatRoomService {
     private UsersChatsRepository usersChatsRepository;
 
     //참여중인 채팅방 목록
-    public List<UsersChats> findAllRoomByUserId(long userId){
-        return usersChatsRepository.findByUserPkAndStatus(userId, '1');
+    public Page<UsersChats> findAllRoomByUserId(long userId, Pageable pageable){
+        return usersChatsRepository.findByUserPkAndStatus(userId, '1', pageable);
     }
 
     // roomName으로 채팅방 만들기

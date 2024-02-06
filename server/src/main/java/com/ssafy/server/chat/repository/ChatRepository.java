@@ -9,6 +9,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
-    @Query("SELECT c FROM Chat c WHERE c.roomId = :roomId AND DATE(c.time) = (SELECT MAX(DATE(c2.time)) FROM Chat c2 WHERE c2.roomId = :roomId)")
+    @Query("SELECT c FROM chat c WHERE c.roomId = :roomId AND DATE(c.time) = (SELECT MAX(DATE(c2.time)) FROM chat c2 WHERE c2.roomId = :roomId)")
     List<Chat> findLatestChatsByRoomId(@Param("roomId") String roomId);
 }

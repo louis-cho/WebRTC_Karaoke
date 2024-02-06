@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity(name = "chat")
+@Table(name ="chat")
 @ToString
 public class Chat {
 
