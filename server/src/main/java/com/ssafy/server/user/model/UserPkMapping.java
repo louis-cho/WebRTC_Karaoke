@@ -6,10 +6,12 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Entity(name = "user_pk_mapping")
 @Getter
 @Setter
+@Entity(name = "user_pk_mapping")
+@Table(name = "user_pk_mapping")
 public class UserPkMapping {
 
     @Id

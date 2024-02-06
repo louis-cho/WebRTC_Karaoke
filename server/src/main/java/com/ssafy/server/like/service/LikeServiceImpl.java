@@ -1,7 +1,7 @@
 package com.ssafy.server.like.service;
 
 
-import com.ssafy.server.like.model.LikeStat;
+import com.ssafy.server.like.model.LikeStats;
 import com.ssafy.server.like.repository.LikeRepository;
 import com.ssafy.server.like.repository.LikeStatRepository;
 import com.ssafy.server.like.model.Like;
@@ -18,12 +18,8 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class LikeServiceImpl implements LikeService {
     private static final String LIKE_HASH_KEY = "likes";
-    @Autowired
     private final LikeRepository likeRepository;
-    @Autowired
     private final LikeStatRepository likeStatRepository;
-
-    @Autowired
     private final RedisTemplate<String, Like> redisTemplate;
 
     @Autowired
@@ -121,9 +117,9 @@ public class LikeServiceImpl implements LikeService {
                     } else {
                         likeRepository.save(like);  // 상태가 다르면 저장하고
                         if (like.isStatus()) {   // 집계 테이블 업데이트
-                            likeStatRepository.findById(like.getFeedId()).ifPresent(LikeStat::increment);
+                            likeStatRepository.findById(like.getFeedId()).ifPresent(LikeStats::increment);
                         } else {
-                            likeStatRepository.findById(like.getFeedId()).ifPresent(LikeStat::decrement);
+                            likeStatRepository.findById(like.getFeedId()).ifPresent(LikeStats::decrement);
                         }
                     }
 

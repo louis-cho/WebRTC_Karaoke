@@ -5,15 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
+import javax.persistence.*;
 import java.util.UUID;
 
-@Entity(name = "user_key_mapping")
+
 @Data
-@IdClass(UserKeyMappingPK.class)
+@Entity(name = "user_key_mapping")
+@Table(name = "user_key_mapping")
+@IdClass(KeyMapping.class)
 public class UserKeyMapping {
 
     @Id
