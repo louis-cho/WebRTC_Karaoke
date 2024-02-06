@@ -1,6 +1,7 @@
 package com.ssafy.server.song.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.ssafy.server.song.model.entity.SingLog;
 import com.ssafy.server.song.model.entity.Song;
 import com.ssafy.server.song.model.entity.SongInfo;
 import com.ssafy.server.song.service.SongService;
@@ -41,12 +42,13 @@ public class SongController {
     }
 
     @PostMapping("/createLog")
-    public ResponseEntity<?> createSingLog(@RequestBody JsonNode jsonNode) {
-        int songId = -1, userPk = -1;
+    public void createSongLog(@RequestBody JsonNode jsonNode) {
+        SingLog singlog = new SingLog();
+        int songId = -1, userPk = -1, singScore = -1;
+        String singMode = "", singStatus = "";
         UUID userUUID = null;
         try {
             songId = Integer.parseInt(jsonNode.get("songId").asText());
-
             if(jsonNode.get("uuid") != null) {
                 userUUID = UUID.fromString(jsonNode.get("uuid").asText());
                 userPk = userService.getUserPk(userUUID);
@@ -54,11 +56,22 @@ public class SongController {
             else {
                 userPk = Integer.parseInt(jsonNode.get("userPk").asText());
             }
+            singMode = jsonNode.get("singMode").asText();
+            singStatus = jsonNode.get("singStatus").asText();
 
+            if(jsonNode.get("songId").asText() != null) {
+                singScore = Integer.parseInt(jsonNode.get("singScore").asText());
+            }
         } catch(Exception e) {
-//            return;
+            return ;
         }
-        return null;
+        singlog.setSongId(songId);
+        singlog.setUserPk(userPk);
+        singlog.setSingMode(singMode);
+        singlog.setSingStatus(singStatus);
+        singlog.setSingScore(singScore);
+
+        songService.createSongLog(singlog);
     }
 
 }
