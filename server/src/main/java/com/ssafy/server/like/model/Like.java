@@ -2,14 +2,17 @@ package com.ssafy.server.like.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.server.audit.Auditable;
 import com.ssafy.server.feed.model.Feed;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 
@@ -17,8 +20,8 @@ import java.util.Objects;
 @Setter
 @ToString
 @NoArgsConstructor
-@Entity(name = "like")
-@Table(name = "like")
+@Entity(name = "likes")
+@Table(name = "likes")
 public class Like implements Serializable {
 
     @Id
@@ -32,10 +35,8 @@ public class Like implements Serializable {
     private Integer feedId;
     @Column(name = "status")
     private boolean status;
-
-    @ManyToOne
-    @JoinColumn(name = "feed_id")
-    private Feed feed;
+    @Column(name = "timestamp", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false)
+    private Timestamp timestamp;
 
     // transient 키워드를 사용하여 직렬화에서 제외시킬 필드
     @Transient
@@ -64,10 +65,7 @@ public class Like implements Serializable {
     // JSON 문자열을 이용하여 객체를 역직렬화하여 반환하는 메서드
     public static Like deserializeObject(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        Like like = objectMapper.readValue(json, Like.class);
-        // transient 필드를 복구
-        like.feed = like.transientFeed;
-        return like;
+        return objectMapper.readValue(json, Like.class);
     }
     @Override
     public int hashCode() {

@@ -21,7 +21,9 @@ import java.util.UUID;
 @RequestMapping("/api/v1/hit")
 public class HitController {
 
+    @Autowired
     private final HitService hitService;
+    @Autowired
     private final UserService userService;
 
     @Autowired
