@@ -1,13 +1,10 @@
 package com.ssafy.server.like.service;
 
-import com.ssafy.server.like.model.Likes;
-import com.ssafy.server.syncdata.LikeSyncData;
+import java.util.concurrent.CompletableFuture;
 
 public interface LikeService {
-    void createLike(Likes newLike);
-    Likes getLikeById(int likeId);
-    Likes updateLike(Likes updatedLike);
-    boolean deleteLike(int likeId);
-
-    void syncToDB(Integer likeId, LikeSyncData likeSyncData);
+    void save(int feedId, int userPk);
+    int findAllByFeedId(int feedId);
+    void delete(int feedId, int userPk);
+     CompletableFuture<Void> saveToMySQLAsync();
 }

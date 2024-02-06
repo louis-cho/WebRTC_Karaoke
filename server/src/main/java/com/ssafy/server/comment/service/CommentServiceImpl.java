@@ -23,17 +23,11 @@ public class CommentServiceImpl implements CommentService {
     private EntityManager entityManager;
 
     @Autowired
-    private final CommentRepository commentRepository;
-
-    @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
+    private CommentRepository commentRepository;
 
     @Override
-    public Comment createComment(Comment newComment) {
-        // 데이터베이스에 새로운 댓글 생성
-        return commentRepository.save(newComment);
+    public void createComment(Comment newComment) {
+        commentRepository.save(newComment);
     }
 
     @Override

@@ -13,13 +13,16 @@ import java.util.TimeZone;
 @EnableScheduling
 public class ServerApplication {
 
+	static {
+		System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");
+	}
+
 	@PostConstruct
 	public void setTimeZone() {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 	}
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(ServerApplication.class, args);
 	}
 

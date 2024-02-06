@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/api/v1/comment")
 public class CommentController {
 
     private final String START_INDEX = "0";
@@ -44,14 +44,15 @@ public class CommentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<Comment>> createComment(@RequestBody Comment newComment) {
+    public ResponseEntity<ApiResponse<?>> createComment(@RequestBody Comment newComment) {
 
-        Comment created = commentService.createComment(newComment);
-        if(created == null) {
+        try {
+            commentService.createComment(newComment);
+        } catch(Exception e) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(CommentExceptionEnum.COMMENT_CREATION_FAILED));
         }
 
-        return new ResponseEntity<>(ApiResponse.success(created), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(ApiResponse.success(null), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/update/{commentId}")

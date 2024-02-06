@@ -20,7 +20,7 @@ public class RecordingController {
     private final OpenViduModel openViduModel;
 
     @Autowired
-    public RecordingController(@Value("${OPENVIDU_URL}") String openviduUrl, @Value("${OPENVIDU_SECRET}") String openviduSecret, OpenViduModel openViduModel) {
+    public RecordingController(OpenViduModel openViduModel) {
         this.openViduModel = openViduModel;
     }
 

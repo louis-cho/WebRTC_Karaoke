@@ -3,22 +3,27 @@ package com.ssafy.server.user.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-@Entity
+
 @Getter
 @Setter
+@Entity(name = "user_auth")
+@Table(name = "user_auth")
 public class UserAuth {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_pk")
     private int userPk;
 
+    @Column(name = "user_id")
     private String userId;
+
+    @Column(name = "user_password")
     private String userPassword;
+
+    @Column(name = "status")
     private char status;
 
     // Constructors, getters, setters, etc.

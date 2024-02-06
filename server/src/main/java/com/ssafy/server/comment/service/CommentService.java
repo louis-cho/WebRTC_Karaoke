@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CommentService {
 
-    Comment createComment(Comment newComment);
+    void createComment(Comment newComment);
 
     Comment getCommentById(int commentId);
 
