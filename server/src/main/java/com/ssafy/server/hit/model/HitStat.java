@@ -4,18 +4,23 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Entity
+
 @Getter
 @Setter
 @ToString
+@Entity(name = "hit_stat")
+@Table(name = "hit_stat")
 public class HitStat {
 
     @Id
+    @Column(name = "feed_id")
     private Integer feedId;  // feedId를 식별자로 사용
-
+    @Column(name = "hit_count")
     private Integer hitCount;
 
     // getters, setters, constructors 등 생략

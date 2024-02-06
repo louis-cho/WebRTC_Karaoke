@@ -55,7 +55,7 @@ public class HitServiceImpl implements HitService {
         int cacheSize = result.size();  // 캐시 사이즈는 무조건 안맞을 수 밖에 없음 (좋아요 취소까지 계산하도록 함)
 
         if (hitStatRepository.findById(feedId).isPresent()) {  // DB 집계 테이블 내역도 가져오기
-            return cacheSize + hitStatRepository.findById(feedId).get().getHitCount();
+            cacheSize += hitStatRepository.findById(feedId).get().getHitCount();
         }
         return cacheSize;
     }
@@ -73,8 +73,22 @@ public class HitServiceImpl implements HitService {
                     List<Hit> list = hitRepository.findByUserPkAndFeedId(hit.getUserPk(), hit.getFeedId());
                     if (list.size() < 1) {      // DB에 조회 정보가 없는 경우
                         hitRepository.save(hit);
-                        hitStatRepository.findById(hit.getFeedId()).ifPresent(HitStat::increment);
-                    }
+                        hitStatRepository.findById(hit.getFeedId())
+                                .ifPresentOrElse(
+                                        existingHitStat -> {
+                                            // HitStat 데이터가 이미 존재하는 경우
+                                            existingHitStat.increment(); // HitStat 값을 증가시킴
+                                            hitStatRepository.save(existingHitStat); // 업데이트된 HitStat 데이터를 저장
+                                        },
+                                        () -> {
+                                            // HitStat 데이터가 존재하지 않는 경우
+                                            HitStat newHitStat = new HitStat();
+                                            newHitStat.setFeedId(hit.getFeedId());
+                                            newHitStat.setHitCount(1); // 초기 값 설정
+                                            hitStatRepository.save(newHitStat); // 새로운 HitStat 데이터를 저장
+                                        }
+                                );
+                      }
                     
                     // 저장 후 해당 데이터를 해시에서 삭제
                     hashOperations.delete(HIT_HASH_KEY, entry.getKey());

@@ -1,6 +1,7 @@
 package com.ssafy.server.config;
 
 import com.ssafy.server.feed.rank.model.FeedStats;
+import com.ssafy.server.hit.model.Hit;
 import com.ssafy.server.like.model.Like;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
@@ -15,7 +16,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableCaching
-public class ChatRedisConfig extends CachingConfigurerSupport {
+public class RedisConfig extends CachingConfigurerSupport {
 
     @Bean
     public RedisTemplate<String, Object> chatRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
@@ -30,7 +31,6 @@ public class ChatRedisConfig extends CachingConfigurerSupport {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         template.setDefaultSerializer(new JdkSerializationRedisSerializer());
-        // 다른 설정 추가
         return template;
     }
 
@@ -39,7 +39,14 @@ public class ChatRedisConfig extends CachingConfigurerSupport {
         RedisTemplate<String, Like> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         template.setDefaultSerializer(new JdkSerializationRedisSerializer());
-        // 다른 설정 추가
+        return template;
+    }
+
+    @Bean
+    public RedisTemplate<String, Hit> hitRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Hit> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setDefaultSerializer(new JdkSerializationRedisSerializer());
         return template;
     }
 
