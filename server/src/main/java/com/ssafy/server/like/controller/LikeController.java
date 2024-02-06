@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/like")
+@RequestMapping("/api/v1/like")
 public class LikeController {
 
     @Autowired

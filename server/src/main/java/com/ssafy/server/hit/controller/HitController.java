@@ -12,7 +12,7 @@ import javax.json.Json;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/hit")
+@RequestMapping("/api/v1/hit")
 public class HitController {
 
     @Autowired
