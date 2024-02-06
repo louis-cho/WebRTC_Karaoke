@@ -63,11 +63,13 @@ import { ref } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 import { useRouter, useRoute } from "vue-router";
 
+
 const router = useRouter();
 
 const goBack = function () {
   router.go(-1)
 }
+
 
 // 가상의 피드 데이터 예시
 const feeds = ref([

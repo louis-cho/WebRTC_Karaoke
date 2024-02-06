@@ -5,10 +5,6 @@
     <div class="my-feed">
       <!-- 첫번째 div -->
       <!-- 검색창 --> <!-- 닉네임/노래제목 검색 가능 -->
-                                                        <!-- <div>
-                                                          <input v-model="searchQuery" placeholder="검색어를 입력하세요" />
-                                                          <button @click="search">검색</button>
-                                                        </div> -->
       <div class="search-container">
         <q-input
           v-model="searchQuery"
@@ -49,11 +45,6 @@
             </div>
           </div>
         </div>
-
-        <!-- <div class="thumbnail-container" @click="playVideo(feed.VIDEO_URL)">
-          <img :src="feed.THUMBNAIL_URL" alt="썸네일" class="thumbnail" />
-          <div class="play-button"></div>
-        </div> -->
 
         <p>{{ feed.CONTENT }}</p>
         <video controls width="100%" ref="videoPlayer">
@@ -358,16 +349,7 @@ const search = () => {
   cursor: pointer;
 } */
 
-.play-button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50px;
-  height: 50px;
-  background: url("@/assets/icon/play-button.png") no-repeat center center;
-  background-size: cover;
-}
+
 
 
 
