@@ -1,5 +1,15 @@
 let app = {};
 
+app.api = {};
+
+app.api.prefix = "/api/v1";
+app.api.protocol = "http:";
+app.api.host = "//localhost:8081/api/v1";
+
+app.api.user = {};
+app.api.user.login = "/user/login";
+app.api.user.register = "/user/register";
+
 app.kor = {};
 
 app.kor.mainPage = {};

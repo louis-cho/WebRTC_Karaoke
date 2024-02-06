@@ -1,5 +1,7 @@
 import * as RSA from './rsa.js';
+import app from "../config/preference.js";
 
+let pref = app;
 let modulus = null;
 let exponent = null;
 export let rsa = new RSA.RSAKey();
@@ -7,7 +9,8 @@ export let rsa = new RSA.RSAKey();
 // Empty function for the "공개키 받아오기" button
 async function getPublicKey() {
   // Add your logic here or leave it empty
-  const serverUrl = "https://i10a705.p.ssafy.io/api/user/login"; // Update the URL accordingly
+  // const serverUrl = "https://i10a705.p.ssafy.io/api/user/login"; // Update the URL accordingly
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.user.login;
 
   // Create a data object with the user credentials
   const data = {
@@ -39,7 +42,8 @@ async function getPublicKey() {
 export async function sendAESKey(aesKeyData) {
   let encryptedKey = rsa.encrypt(aesKeyData);
 
-  const serverUrl = "https://i10a705.p.ssafy.io/user/login"; // Update the URL accordingly
+  // const serverUrl = "https://i10a705.p.ssafy.io/user/login"; // Update the URL accordingly
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.user.login;
 
   const data = {
     "type": "setAESKey",
@@ -66,7 +70,8 @@ export async function sendAESKey(aesKeyData) {
 
 async function login(id, pw) {
     // Add your logic here or leave it empty
-    const serverUrl = "https://i10a705.p.ssafy.io/user/login"; // Update the URL accordingly
+    // const serverUrl = "https://i10a705.p.ssafy.io/user/login"; // Update the URL accordingly
+    const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.user.login;
 
     // Create a data object with the user credentials
     const data = {
@@ -94,7 +99,8 @@ async function login(id, pw) {
 }
 
 async function register(id, pw, email, nickname) {
-  const serverUrl = "https://i10a705.p.ssafy.io/user/register"; // Update the URL accordingly
+  // const serverUrl = "https://i10a705.p.ssafy.io/user/register"; // Update the URL accordingly
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.user.register;
 
   // Create a data object with the user credentials
   const data = {
