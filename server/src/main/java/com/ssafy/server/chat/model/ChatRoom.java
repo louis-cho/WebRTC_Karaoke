@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "chat_room")
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
