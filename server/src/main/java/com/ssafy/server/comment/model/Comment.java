@@ -21,8 +21,9 @@ import javax.persistence.*;
                 @StoredProcedureParameter(name = "pageSizeParam", mode = ParameterMode.IN, type = Integer.class)
         }
 )
-
-@Table(name = "comment")
+@Table(name = "comment", indexes = {
+        @Index(name = "idx_feed_id", columnList = "feed_id")
+})
 public class Comment extends Auditable {
 
     @Id

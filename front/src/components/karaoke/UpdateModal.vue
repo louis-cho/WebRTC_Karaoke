@@ -1,30 +1,22 @@
 <template>
   <!-- 모달 -->
-  <q-dialog v-model="store.createModal">
+  <q-dialog v-model="store.updateModal">
     <q-card>
       <q-card-section>
         <q-form>
           <!-- 세션 ID 입력 -->
           <q-input
-            v-model="sessionName"
+            v-model="store.sessionName"
             :label="pref.app.kor.karaokePage.sessionId"
             outlined
             dense
             class="q-mb-md"
-          />
-
-          <!-- 사용자 이름 입력 -->
-          <q-input
-            v-model="store.userName"
-            :label="pref.app.kor.karaokePage.userName"
-            outlined
-            dense
-            class="q-mb-md"
+            disable
           />
 
           <!-- 인원수 설정 -->
           <q-input
-            v-model="numberOfParticipants"
+            v-model="store.numberOfParticipants"
             :label="pref.app.kor.karaokePage.numberOfParticipants"
             outlined
             dense
@@ -37,7 +29,7 @@
 
           <!-- 공개 여부 설정 -->
           <q-toggle
-            v-model="isPrivate"
+            v-model="store.isPrivate"
             :label="pref.app.kor.karaokePage.public"
             color="primary"
             class="q-mb-md"
@@ -45,8 +37,8 @@
 
           <!-- 비밀번호 설정 -->
           <q-input
-            v-if="isPrivate"
-            v-model="password"
+            v-if="store.isPrivate"
+            v-model="store.password"
             :label="pref.app.kor.karaokePage.password"
             outlined
             dense
@@ -60,9 +52,9 @@
           <q-btn
             type="submit"
             color="primary"
-            :label="pref.app.kor.karaokePage.joinSession"
+            :label="pref.app.kor.karaokePage.updateSession"
             class="q-mt-md"
-            @click="createSession"
+            @click="updateSession"
           />
           <!-- 닫기 버튼 -->
           <q-btn
@@ -78,48 +70,43 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
 import pref from "@/js/config/preference.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
+import axios from "axios";
 
 const store = useKaraokeStore();
 
-const { changeRoute } = defineProps(["changeRoute"]);
-const router = changeRoute;
-
-const sessionName = ref(undefined);
-const numberOfParticipants = ref("1");
-const isPrivate = ref(false);
-const password = ref(undefined);
-
 function closeModal() {
-  store.createModal = false;
+  store.updateModal = false;
 }
 
-async function createSession() {
-  await store.createSession(
-    sessionName.value,
-    numberOfParticipants.value,
-    isPrivate.value,
-    password.value
-  );
-
-  await joinSession();
-}
-
-function joinSession() {
+function updateSession() {
   closeModal();
 
-  const url = `/karaoke/${sessionName.value}`;
-  router.push(url);
+  axios
+    .post(
+      store.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/updateSession",
+      {
+        sessionName: store.sessionName,
+        numberOfParticipants: store.numberOfParticipants,
+        isPrivate: store.isPrivate,
+        password: store.password,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+    .then((response) => {
+      alert(response.data);
+    });
 }
 
 const handleInput = () => {
   // 사용자가 입력한 값을 범위 내에 제한
-  if (numberOfParticipants.value < 1) {
-    numberOfParticipants.value = 1;
-  } else if (numberOfParticipants.value > 6) {
-    numberOfParticipants.value = 6;
+  if (store.numberOfParticipants < 1) {
+    store.numberOfParticipants = 1;
+  } else if (store.numberOfParticipants > 6) {
+    store.numberOfParticipants = 6;
   }
 };
 </script>

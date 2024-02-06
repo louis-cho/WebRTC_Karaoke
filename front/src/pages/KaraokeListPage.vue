@@ -38,6 +38,7 @@ onMounted(() => {
     )
     .then((response) => {
       pages.value = response.data;
+      console.log(pages.value);
     })
     .catch((error) => {
       console.error(error);

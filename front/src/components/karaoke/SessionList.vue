@@ -1,9 +1,6 @@
 <template>
   <q-layout>
-    <!-- QHeader, QDrawer, 등등 다양한 QLayout 컴포넌트들이 올 수 있습니다. -->
-
     <q-page-container>
-      <!-- 여기에 QPage 컴포넌트를 배치합니다. -->
       <q-page>
         <q-header>
           <q-toolbar>
@@ -18,7 +15,11 @@
               <q-item-section>
                 <q-item-label>방 제목 : {{ session.sessionId }}</q-item-label>
                 <q-item-label caption>
-                  참가자 수 : {{ session.connections.numberOfElements }}
+                  인원 : {{ session.connections.numberOfElements }} /
+                  {{ session.numberOfParticipants }}
+                </q-item-label>
+                <q-item-label caption>
+                  상태: {{ session.isPrivate ? "비공개" : "공개" }}
                 </q-item-label>
               </q-item-section>
 
@@ -38,8 +39,6 @@
         </q-page-container>
       </q-page>
     </q-page-container>
-
-    <!-- QFooter 등등 다양한 QLayout 컴포넌트들이 올 수 있습니다. -->
   </q-layout>
 </template>
 
@@ -53,10 +52,10 @@ const { pages, changeRoute } = defineProps(["pages", "changeRoute"]);
 const router = changeRoute;
 
 const openModal = () => {
-  store.isModalOpen = true;
+  store.createModal = true;
 };
 
-function joinSession(url) {
+async function joinSession(url) {
   router.push("karaoke/" + url);
 }
 </script>
