@@ -1,13 +1,13 @@
 <template>
   <div>
     <!-- 로그인이 되어있다면 -->
-    <div v-if="isLoggedIn">
+    <!-- <div v-if="isLoggedIn"> -->
       <TabItem />
-    </div>
+    <!-- </div> -->
     <!-- 로그인이 안되어있다면 -->
-    <div v-else>
+    <!-- <div v-else> -->
       <TabItemStart/>
-    </div>
+    <!-- </div> -->
 
     <!-- (주석처리) -->
     <SignIn />
