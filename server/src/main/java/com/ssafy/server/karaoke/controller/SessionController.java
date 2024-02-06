@@ -179,6 +179,24 @@ public class SessionController {
         }
     }
 
+    @RequestMapping(value = "/checkNumber", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> checkNumber(@RequestBody Map<String, Object> params) {
+        System.out.println("Check Number of Participant : " + params);
+
+        String sessionName = (String) params.get("sessionName");
+
+        if (openViduModel.getMapSessionSettings().containsKey(sessionName)) {
+            int numberOfParticipants = openViduModel.getMapSessionSettings().get(sessionName).getNumberOfParticipants();
+            int numberOfElements = openViduModel.getMapSessions().get(sessionName).getConnections().size();
+
+            // 현재 인원이 전체 인원 이상이면 접속 불가능
+            if (numberOfElements >= numberOfParticipants) {
+                return ResponseEntity.ok(false);
+            }
+        }
+        return ResponseEntity.ok(true);
+    }
+
     @RequestMapping(value = "/checkPrivate", method = RequestMethod.POST)
     public ResponseEntity<Boolean> checkPrivate(@RequestBody Map<String, Object> params) {
         System.out.println("Check Password : " + params);

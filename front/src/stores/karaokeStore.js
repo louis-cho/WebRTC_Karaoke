@@ -90,6 +90,17 @@ export const useKaraokeStore = defineStore("karaoke", {
         this.joinSession();
       }
 
+      // 인원수 확인
+      const participants = await axios.post(
+        this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/checkNumber",
+        { sessionName: sessionName },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      if (!participants.data) {
+        alert("인원이 초과했습니다!");
+        return false;
+      }
+
       // 비공개 확인
       const isPrivate = await axios.post(
         this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/checkPrivate",
