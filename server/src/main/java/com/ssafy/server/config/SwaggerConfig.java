@@ -24,6 +24,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.ssafy.server.friends.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.ssafy.server.chat.controller"))
                 //추가하려면 컨트롤러 넣으삼 ㅎ
 //                .apis(RequestHandlerSelectors.basePackage("com.ssafy.server.users.controller"))
                 .paths(PathSelectors.any())
