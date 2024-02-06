@@ -1,7 +1,5 @@
 package com.ssafy.server.chat.controller;
 
-import java.util.*;
-
 import com.ssafy.server.chat.model.ChatRoom;
 import com.ssafy.server.chat.model.UsersChats;
 import com.ssafy.server.chat.service.ChatRoomService;
@@ -43,6 +41,12 @@ public class ChatRoomController {
     @PostMapping("/invite/{roomId}")
     public void inviteUser(@PathVariable long roomId, @RequestParam List<Long> guests){
         chatRoomService.inviteUser(guests, roomId);
+    }
+
+    //채팅방 입, 퇴장
+    @PostMapping("/eoInfo/{roomId}")
+    public void enterOutInfo(@PathVariable long roomId, @RequestParam long userId){
+        chatRoomService.enterOutInfo(roomId, userId);
     }
 
     //방 나가기
