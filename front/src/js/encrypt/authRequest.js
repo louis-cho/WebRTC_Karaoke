@@ -3,6 +3,8 @@ import * as RSA from './rsa.js';
 let modulus = null;
 let exponent = null;
 export let rsa = new RSA.RSAKey();
+export let isLoggedIn = false;
+
 
 // Empty function for the "공개키 받아오기" button
 async function getPublicKey() {
@@ -87,9 +89,11 @@ async function login(id, pw) {
       .then(result => {
         // Handle the result from the server as needed
         console.log("서버로부터 받은 결과 >> " + result);
+        isLoggedIn = true;
       })
       .catch(error => {
         console.error('Error:', error);
+        isLoggedIn = false;
       });
 }
 
@@ -135,4 +139,4 @@ function handleRegister() {
 }
 
 
-export { getPublicKey, modulus, exponent, handleRegister, register, login };
+export { getPublicKey, modulus, exponent, handleRegister, register, login, };
