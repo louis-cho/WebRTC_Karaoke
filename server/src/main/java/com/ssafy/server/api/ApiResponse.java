@@ -1,3 +1,4 @@
+
 package com.ssafy.server.api;
 
 import com.ssafy.server.common.error.ApiExceptionEntity;
