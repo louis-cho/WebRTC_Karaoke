@@ -352,9 +352,6 @@ const search = () => {
 } */
 
 
-
-
-
 .search-container {
   display: flex;
   margin-bottom: 20px;

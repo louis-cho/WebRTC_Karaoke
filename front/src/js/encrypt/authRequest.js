@@ -126,10 +126,11 @@ async function login(id, pw) {
         console.log(getCookie("uuid"))
         isLoggedIn = true;
         console.log("서버로부터 받은 결과 >> " + result);
+        // isLoggedIn.value = true;
       })
       .catch(error => {
         console.error('Error:', error);
-        isLoggedIn = false;
+        // isLoggedIn.value = false;
       });
 }
 
