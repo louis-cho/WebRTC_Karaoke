@@ -159,18 +159,7 @@ const getSongSinger = (feed_id) => {
 }
 
 
-const addComment = function() {
-  // 댓글 추가
-  const newCommentData = {
-    COMMENT_ID: comments.value.length + 1,
-    USER_PK: 15, //임의로..수정 필요
-    FEED_ID: 8, // 임의로..수정 필요
-    CONTENT: newComment.value,
-    CREATED_AT: new Date().toLocaleString(),
-    MODIFIED_AT: new Date().toLocaleString(),
-    // userProfile,
-    // username,
-  };
+const addComment = function(newCommentData) {
 
   comments.value.push(newCommentData);
   // 댓글 입력 창 초기화
@@ -227,16 +216,17 @@ onMounted(async () => {
 async function fetchAndRenderComments() {
   try {
     // 피드 아이디와 페이지 번호를 지정하여 댓글을 가져옴
-    const feedId = 123; // 피드 아이디를 실제 값으로 변경
+    const feedId = 1; // 피드 아이디를 실제 값으로 변경
     const pageNo = 0; // 페이지 번호를 필요에 맞게 변경
 
     const commentTree = await fetchComment(feedId, pageNo);
 
     // 댓글 렌더링
-    renderComments(commentTree);
+    for(let elem in commentTree) {
+      console.log(elem);
+      addComment(elem);
+    }
 
-    // 댓글 상태 업데이트
-    comments.value = commentTree;
   } catch (error) {
     console.error('Error fetching and rendering comments:', error);
   }
