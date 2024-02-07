@@ -1,11 +1,11 @@
 import * as RSA from './rsa.js';
 import app from "../config/preference.js";
-
+import { ref } from 'vue';
 let pref = app;
 let modulus = null;
 let exponent = null;
 export let rsa = new RSA.RSAKey();
-export let isLoggedIn = false;
+export let isLoggedIn = ref(false);
 
 
 // Empty function for the "공개키 받아오기" button
@@ -94,11 +94,11 @@ async function login(id, pw) {
       .then(result => {
         // Handle the result from the server as needed
         console.log("서버로부터 받은 결과 >> " + result);
-        isLoggedIn = true;
+        isLoggedIn.value = true;
       })
       .catch(error => {
         console.error('Error:', error);
-        isLoggedIn = false;
+        isLoggedIn.value = false;
       });
 }
 

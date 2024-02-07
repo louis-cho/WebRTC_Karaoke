@@ -36,6 +36,10 @@ const routes = [
     component: () => import("@/pages/FeedDetailPage.vue"),
   },
   {
+    path: "/info_edit",
+    component: () => import("@/pages/InformationEditPage.vue"),
+  },
+  {
     path: "/:catchAll(.*)*",
     component: () => import("@/pages/ErrorNotFound.vue"),
   },
