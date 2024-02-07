@@ -1,5 +1,7 @@
 package com.ssafy.server.user.model;
 
+import com.ssafy.server.auth.model.entity.RefreshToken;
+import com.ssafy.server.song.model.entity.SingLog;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +10,7 @@ import org.hibernate.annotations.Type;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -40,6 +43,9 @@ public class User {
 
     @Column(name = "introduction")
     private String introduction;
+
+    @OneToMany
+    private List<RefreshToken> refreshToken;
 
     // Constructors, getters, setters, etc.
 
