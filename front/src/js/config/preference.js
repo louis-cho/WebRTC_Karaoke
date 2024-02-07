@@ -25,6 +25,12 @@ app.api.chat.old = "/oldMsg";
 app.api.chat.new = "/newMsg";
 app.api.chat.subscribe = "/exchange/chat.exchange/room.";
 
+app.api.hit = {};
+app.api.hit.count = "/hit/get/";
+
+app.api.like = {};
+app.api.like.count = "/like/get/";
+
 app.kor = {};
 
 app.kor.mainPage = {};
