@@ -99,7 +99,7 @@ export default {
       await login(username, password);
 
       this.closeLoginModal();
-      console.log(isLoggedIn)
+      // console.log(isLoggedIn)
     },
 
     async openSignupModal() {
