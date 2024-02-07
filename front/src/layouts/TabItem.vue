@@ -22,17 +22,35 @@
       <div class="container">
         <q-tabs>
           <q-tab name="person" icon="person" @click="goToPage('/my_profile')"/>
-          <q-tab name="notifications" icon="notifications"/>
-          <q-tab name="menu" icon="menu" @click="toggleDropdown"/>
+          <q-tab name="notifications" icon="notifications" @click="toggleDropdown1"/>
+          <q-tab name="menu" icon="menu" @click="toggleDropdown2"/>
         </q-tabs>
 
         <!-- Dropdown 내용 -->
-        <div v-if="isDropdownOpen" class="dropdown-content">
+        <!-- <div v-if="isDropdownOpen1" class="dropdown-content">
+          <q-tabs vertical>
+            <q-tab name="유저검색" label="유저검색" @click="handleDropdownItemClick('/item1')" />
+            <q-tab name="로그아웃" label="로그아웃" @click="handleDropdownItemClick('/item6')" />
+          </q-tabs>
+        </div> -->
+
+        <q-card  v-if="isDropdownOpen1" class="dropdown-content my-card">
+          <q-card-actions vertical>
+            <q-btn flat>노래방에 초대되었습니다</q-btn>
+            <q-btn flat>친구 요청</q-btn>
+          </q-card-actions>
+          <q-card-actions class="justify-center">
+            <q-btn flat>모두 읽음 처리</q-btn>
+            <q-btn flat>닫기</q-btn>
+          </q-card-actions>
+        </q-card>
+
+        <!-- Dropdown 내용 -->
+        <div v-if="isDropdownOpen2" class="dropdown-content">
           <q-tabs vertical>
             <q-tab name="유저검색" label="유저검색" @click="handleDropdownItemClick('/item1')" />
             <q-tab name="친구목록" label="친구목록" @click="handleDropdownItemClick('/item2')" />
             <q-tab name="포인트" label="포인트" @click="handleDropdownItemClick('/item3')" />
-            <q-tab name="알림목록" label="알림목록" @click="handleDropdownItemClick('/item4')" />
             <q-tab name="프로필 수정" label="프로필 수정" @click="handleDropdownItemClick('/info_edit')" />
             <q-tab name="로그아웃" label="로그아웃" @click="handleDropdownItemClick('/item6')" />
           </q-tabs>
@@ -48,7 +66,8 @@ import { useRouter } from 'vue-router'
 
 // const tab = ref('feed')
 const router = useRouter()
-const isDropdownOpen = ref(false)
+const isDropdownOpen1 = ref(false)
+const isDropdownOpen2 = ref(false)
 
 
 
@@ -57,14 +76,18 @@ const goToPage = (path) => {
   router.push(path);
 }
 
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value
+const toggleDropdown1 = () => {
+  isDropdownOpen1.value = !isDropdownOpen1.value
+}
+
+const toggleDropdown2 = () => {
+  isDropdownOpen2.value = !isDropdownOpen2.value
 }
 
 const handleDropdownItemClick = (itemPath) => {
   // Dropdown 내 아이템을 클릭했을 때 수행할 로직 추가
   goToPage(itemPath)
-  toggleDropdown()
+  toggleDropdown2()
 }
 </script>
 
@@ -100,6 +123,12 @@ const handleDropdownItemClick = (itemPath) => {
   text-decoration: none;
   display: block;
   cursor: pointer;
+}
+
+.justify-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 </style>
 
