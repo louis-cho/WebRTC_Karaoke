@@ -1,83 +1,93 @@
 <template>
-  <div id="recording-btns">
-    <!-- Start Recording Section -->
-    <div v-if="!checkBtnsRecordings">
-      <q-btn
-        class="q-mb-md"
-        @click="startRecording"
-        color="primary"
-        label="Start Recording"
-      />
+  <q-dialog v-model="store.toggleModals['recording-video']">
+    <q-card>
+      <q-card-section>
+        <div id="recording-btns">
+          <!-- Start Recording Section -->
+          <div v-if="!checkBtnsRecordings">
+            <q-btn
+              class="q-mb-md"
+              @click="startRecording"
+              color="primary"
+              label="Start Recording"
+            />
 
-      <div class="q-gutter-md">
-        <q-form>
-          <!-- Radio Options -->
-          <q-option-group
-            v-model="outputMode"
-            type="radio"
-            inline
-            :options="[
-              { label: 'COMPOSED', value: 'COMPOSED' },
-              { label: 'INDIVIDUAL', value: 'INDIVIDUAL' },
-            ]"
-          />
-        </q-form>
+            <div class="q-gutter-md">
+              <q-form>
+                <!-- Radio Options -->
+                <q-option-group
+                  v-model="outputMode"
+                  type="radio"
+                  inline
+                  :options="[
+                    { label: 'COMPOSED', value: 'COMPOSED' },
+                    { label: 'INDIVIDUAL', value: 'INDIVIDUAL' },
+                  ]"
+                />
+              </q-form>
 
-        <q-form>
-          <!-- Checkbox Options -->
-          <q-checkbox v-model="hasAudio" label="Has Audio" />
-          <q-checkbox v-model="hasVideo" label="Has Video" />
-        </q-form>
-      </div>
-    </div>
+              <q-form>
+                <!-- Checkbox Options -->
+                <q-checkbox v-model="hasAudio" label="Has Audio" />
+                <q-checkbox v-model="hasVideo" label="Has Video" />
+              </q-form>
+            </div>
+          </div>
 
-    <!-- Stop Recording Section -->
-    <div v-if="checkBtnsRecordings">
-      <q-btn
-        class="btn-md"
-        @click="stopRecording"
-        label="Stop Recording"
-        color="negative"
-        :disable="!checkBtnsRecordings"
-      />
-    </div>
+          <!-- Stop Recording Section -->
+          <div v-if="checkBtnsRecordings">
+            <q-btn
+              class="btn-md"
+              @click="stopRecording"
+              label="Stop Recording"
+              color="negative"
+              :disable="!checkBtnsRecordings"
+            />
+          </div>
 
-    <!-- Other Buttons Section -->
-    <div v-if="RecordingFinished">
-      <q-btn
-        class="btn-md"
-        @click="getRecording"
-        label="Get Recording"
-        color="primary"
-      />
+          <!-- Other Buttons Section -->
+          <div v-if="RecordingFinished">
+            <q-btn
+              class="btn-md"
+              @click="getRecording"
+              label="Get Recording"
+              color="primary"
+            />
 
-      <q-btn
-        class="btn-md"
-        @click="deleteRecording"
-        label="Delete Recording"
-        color="negative"
-      />
+            <q-btn
+              class="btn-md"
+              @click="deleteRecording"
+              label="Delete Recording"
+              color="negative"
+            />
 
-      <q-btn
-        class="btn-md"
-        @click="UploadRecording(fileUrl)"
-        label="Upload Recording"
-        color="secondary"
-      />
-    </div>
+            <q-btn
+              class="btn-md"
+              @click="UploadRecording(fileUrl)"
+              label="Upload Recording"
+              color="secondary"
+            />
+          </div>
 
-    <!-- List Recordings Section -->
-    <div>
-      <div class="btns">
-        <q-btn
-          class="btn-md"
-          @click="listRecordings"
-          label="List Recordings"
-          color="positive"
-        />
-      </div>
-    </div>
-  </div>
+          <!-- List Recordings Section -->
+          <div>
+            <div class="btns">
+              <q-btn
+                class="btn-md"
+                @click="listRecordings"
+                label="List Recordings"
+                color="positive"
+              />
+            </div>
+          </div>
+        </div>
+      </q-card-section>
+
+      <q-card-section class="q-mt-sm q-mb-sm float-right">
+        <q-btn @click="closeModal" color="negative" label="닫기" />
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
@@ -98,7 +108,7 @@ const fileUrl = ref("");
 
 function startRecording() {
   axios
-    .post(store.APPLICATION_SERVER_URL + "api/v1/karaoke/recording/start", {
+    .post(store.APPLICATION_SERVER_URL + "/karaoke/recording/start", {
       sessionId: store.session.sessionId,
       outputMode: outputMode.value,
       hasAudio: hasAudio.value,
@@ -116,7 +126,7 @@ function startRecording() {
 
 function stopRecording() {
   axios
-    .post(store.APPLICATION_SERVER_URL + "api/v1/karaoke/recording/stop", {
+    .post(store.APPLICATION_SERVER_URL + "/karaoke/recording/stop", {
       recordingId: forceRecordingId.value,
     })
     .then((res) => {
@@ -132,7 +142,7 @@ function stopRecording() {
 
 function deleteRecording() {
   axios
-    .post(store.APPLICATION_SERVER_URL + "api/v1/karaoke/recording/delete", {
+    .post(store.APPLICATION_SERVER_URL + "/karaoke/recording/delete", {
       recordingId: forceRecordingId.value,
     })
     .then(() => {
@@ -148,7 +158,7 @@ function getRecording() {
   axios
     .get(
       store.APPLICATION_SERVER_URL +
-        "api/v1/karaoke/recording/get/" +
+        "/karaoke/recording/get/" +
         forceRecordingId.value,
       {}
     )
@@ -162,7 +172,7 @@ function getRecording() {
 
 function listRecordings() {
   axios
-    .get(store.APPLICATION_SERVER_URL + "api/v1/karaoke/recording/list", {})
+    .get(store.APPLICATION_SERVER_URL + "/karaoke/recording/list", {})
     .then((res) => {
       console.log(res.data);
     })
@@ -174,7 +184,7 @@ function listRecordings() {
 function UploadRecording(fileUrl) {
   console.log(fileUrl);
   axios
-    .post(store.APPLICATION_SERVER_URL + "api/v1/karaoke/file/upload", {
+    .post(store.APPLICATION_SERVER_URL + "/karaoke/file/upload", {
       fileUrl: fileUrl,
     })
     .then((res) => {
@@ -185,6 +195,10 @@ function UploadRecording(fileUrl) {
     .catch((error) => {
       console.error("List recordings WRONG", error);
     });
+}
+
+function closeModal() {
+  store.toggleModals["recording-video"] = false;
 }
 </script>
 

@@ -32,10 +32,7 @@ const pages = ref([]);
 // 페이지가 마운트된 후에 실행되는 코드
 onMounted(() => {
   axios
-    .get(
-      store.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/sessionList",
-      {}
-    )
+    .get(store.APPLICATION_SERVER_URL + "/karaoke/sessions/sessionList", {})
     .then((response) => {
       pages.value = response.data;
       console.log(pages.value);

@@ -31,7 +31,7 @@
     </q-header>
 
     <!-- 메인 컨텐츠 영역 -->
-    <q-page-container>
+    <q-page-container class="q-pa-md">
       <!-- 메인 캠 -->
       <div
         id="main-video"
@@ -95,26 +95,11 @@
     </q-footer>
   </q-layout>
 
-  <audio-filter
-    v-if="modals['audio-filter']"
-    @close="closeModal('audio-filter')"
-  />
-  <karaoke-chat
-    v-if="modals['karaoke-chat']"
-    @close="closeModal('karaoke-chat')"
-  />
-  <input-controller
-    v-if="modals['input-controller']"
-    @close="closeModal('input-controller')"
-  />
-  <input-selector
-    v-if="modals['input-selector']"
-    @close="closeModal('input-selector')"
-  />
-  <recording-video
-    v-if="modals['recording-video']"
-    @close="closeModal('recording-video')"
-  />
+  <audio-filter />
+  <karaoke-chat />
+  <input-controller />
+  <input-selector />
+  <recording-video />
 
   <update-modal />
 </template>
@@ -164,20 +149,8 @@ function updateMainVideoStreamManager(stream) {
   store.mainStreamManager = stream;
 }
 
-const modals = {
-  "audio-filter": false,
-  "karaoke-chat": false,
-  "input-controller": false,
-  "input-selector": false,
-  "recording-video": false,
-};
-
 const toggleModal = (modalName) => {
-  modals[modalName] = !modals[modalName];
-};
-
-const closeModal = (modalName) => {
-  modals[modalName] = false;
+  store.toggleModals[modalName] = true;
 };
 </script>
 
