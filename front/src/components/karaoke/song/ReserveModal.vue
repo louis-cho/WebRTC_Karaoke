@@ -63,6 +63,7 @@ onMounted(() => {
 function reserveSong(songId) {
   axios
     .post(store.APPLICATION_SERVER_URL + "/song/reserve", {
+      sessionName: store.sessionName,
       userName: store.userName,
       songId: songId,
     })

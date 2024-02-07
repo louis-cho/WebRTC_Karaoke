@@ -5,7 +5,8 @@ import pref from "@/js/config/preference.js";
 
 export const useKaraokeStore = defineStore("karaoke", {
   state: () => ({
-    APPLICATION_SERVER_URL: pref.app.api.protocol + pref.app.api.host,
+    APPLICATION_SERVER_URL:
+      pref.app.api.protocol + pref.app.api.host + pref.app.api.prefix,
 
     createModal: false,
     updateModal: false,
@@ -16,6 +17,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       "input-selector": false,
       "recording-video": false,
       "reserve-song": false,
+      "reserve-list": false,
     },
     audioFilter: false,
     chatModal: false,

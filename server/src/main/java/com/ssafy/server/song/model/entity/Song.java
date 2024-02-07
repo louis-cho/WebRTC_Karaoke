@@ -21,5 +21,4 @@ public class Song {
     private String singer;
     @Column(name = "title")
     private String title;
-
 }

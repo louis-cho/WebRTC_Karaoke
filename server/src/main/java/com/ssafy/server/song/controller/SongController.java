@@ -8,27 +8,28 @@ import com.ssafy.server.song.model.entity.SongInfo;
 import com.ssafy.server.song.service.SongService;
 import com.ssafy.server.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/song")
 public class SongController {
 
-    @Autowired
     private final SongService songService;
+    private final UserService userService;
+    private final ReserveModel reserveModel;
 
     @Autowired
-    private final UserService userService;
-
-    private Queue<ReserveModel> reserveList;
-
-    public SongController(SongService songService, UserService userService) {
+    public SongController(SongService songService, UserService userService, ReserveModel reserveModel) {
         this.songService = songService;
         this.userService = userService;
-        this.reserveList = new ArrayDeque<>();
+        this.reserveModel = reserveModel;
     }
 
     @GetMapping("/list")
@@ -42,13 +43,39 @@ public class SongController {
     public ResponseEntity<?> reserveSong(@RequestBody Map<String, Object> params) {
         System.out.println("Reserve Song : " + params);
 
+        String sessionName = (String) params.get("sessionName");
         String userName = (String) params.get("userName");
         int songId = (Integer) params.get("songId");
 
-        ReserveModel reserveModel = new ReserveModel(userName, songId);
-        reserveList.offer(reserveModel);
+        Song song = songService.getSongById(songId);
+        String hashString = userName + "&" + song.getTitle() + "&" + song.getSinger();
+        reserveModel.getMapSongReserveDeq().get(sessionName).add(hashString);
 
-        return ResponseEntity.ok(reserveList);
+        return ResponseEntity.ok(reserveModel.getMapSongReserveDeq().get(sessionName));
+    }
+
+    @PostMapping("/reserveList")
+    public ResponseEntity<?> getReserveList(@RequestBody Map<String, Object> params) {
+        String sessionName = (String) params.get("sessionName");
+        ArrayDeque<String> reserveDeq = reserveModel.getMapSongReserveDeq().get(sessionName);
+
+        return ResponseEntity.ok(reserveDeq);
+    }
+
+    @PostMapping("/cancel")
+    public ResponseEntity<?> cancelReserve(@RequestBody Map<String, Object> params) {
+        System.out.println("Reserve Song : " + params);
+
+        String sessionName = (String) params.get("sessionName");
+        String hashString = (String) params.get("hashString");
+
+        if (!reserveModel.getMapSongReserveDeq().get(sessionName).contains(hashString)) {
+            System.out.println("존재하지 않는 예약");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        reserveModel.getMapSongReserveDeq().get(sessionName).remove(hashString);
+
+        return ResponseEntity.ok(hashString);
     }
 
     @GetMapping("/{songId}")

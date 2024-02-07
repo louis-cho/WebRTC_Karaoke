@@ -1,15 +1,19 @@
 package com.ssafy.server.song.model;
 
 import lombok.Getter;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayDeque;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
+@Component
 public class ReserveModel {
-    private final String userName;
-    private final int songId;
+    private final Map<String, ArrayDeque<String>> mapSongReserveDeq;
 
-    public ReserveModel(String userName, int songId) {
-        this.userName = userName;
-        this.songId = songId;
+    public ReserveModel() {
+        mapSongReserveDeq = new ConcurrentHashMap<>();
     }
 
 }

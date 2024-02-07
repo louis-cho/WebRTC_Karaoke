@@ -97,6 +97,12 @@
           label="예약하기"
           @click="toggleModal('reserve-song')"
         />
+
+        <q-tab
+          name="reserve-list"
+          label="예약목록"
+          @click="toggleModal('reserve-list')"
+        />
       </q-tabs>
     </q-footer>
   </q-layout>
@@ -107,6 +113,7 @@
   <input-selector />
   <recording-video />
   <reserve-modal />
+  <reserve-list />
 
   <update-modal />
 </template>
@@ -127,6 +134,7 @@ import InputSelector from "@/components/karaoke/session/InputSelector.vue";
 import RecordingVideo from "@/components/karaoke/session/RecordingVideo.vue";
 import UpdateModal from "@/components/karaoke/session/UpdateModal.vue";
 import ReserveModal from "@/components/karaoke/song/ReserveModal.vue";
+import ReserveList from "@/components/karaoke/song/ReserveList.vue";
 import NormalMode from "@/components/karaoke/NormalMode.vue";
 import PerfectScore from "@/components/karaoke/PerfectScore.vue";
 
