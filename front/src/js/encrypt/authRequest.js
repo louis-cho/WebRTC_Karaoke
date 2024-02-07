@@ -133,6 +133,7 @@ async function login(id, pw) {
       });
 }
 
+
 async function register(id, pw, email, nickname) {
   // const serverUrl = "http://localhost:8081/api/v1/user/register"; // Update the URL accordingly
   // const serverUrl = "https://i10a705.p.ssafy.io/user/register"; // Update the URL accordingly
