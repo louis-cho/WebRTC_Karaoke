@@ -74,7 +74,7 @@ export function renderComments(comments, level = 0) {
     const container = document.getElementById('comments-container');
     comments.forEach(comment => {
         const commentElement = document.createElement('div');
-        commentElement.innerHTML = "&nbsp;".repeat(level) + comment.content;
+        commentElement.innerHTML += "&nbsp;".repeat(level) + comment.content;
         container.appendChild(commentElement);
         renderComments(comment.children, level + 1);
     });

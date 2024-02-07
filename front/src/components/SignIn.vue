@@ -59,7 +59,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getPublicKey, register, login, } from "@/js/encrypt/authRequest.js";
-import { isLoggedIn } from 'src/js/encrypt/authRequest';
+// import { isLoggedIn } from 'src/js/encrypt/authRequest';
 
 // const router = useRouter()
 
@@ -98,7 +98,7 @@ export default {
       await login(username, password);
 
       this.closeLoginModal();
-      console.log(isLoggedIn)
+      // console.log(isLoggedIn)
     },
 
     async openSignupModal() {
