@@ -35,4 +35,6 @@ public interface UserService {
     UUID getUUID(String userId);
 
     List<UserDocument> searchUsersByNickname(String nickname);
+
+    String getUserNickname(int userPk) throws Exception;
 }

@@ -209,4 +209,9 @@ public class UserServiceImpl implements UserService {
     public List<UserDocument> searchUsersByNickname(String nickname) {
         return userElasticsearchRepository.findByNickname(nickname);
     }
+
+    @Override
+    public String getUserNickname(int userPk) throws Exception {
+        return getUser(userPk).getNickname();
+    }
 }
