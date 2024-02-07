@@ -100,6 +100,7 @@ public class UserController {
                     }
 
                     jsonResponse.put("uuid", uuid.toString());
+                    jsonResponse.put("nickname", userService.getUser(userPk).getNickname());
 
                     return ResponseEntity.ok(jsonResponse.toString());
                 } else {
