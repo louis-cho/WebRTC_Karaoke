@@ -1,12 +1,13 @@
 <template>
   <div>
-    <div v-for="elem in comments" :key="elem.comment.commentId" :style="{maringLeft: level * 20 + 'px'}">
+    <!-- 댓글을 반복적으로 표시 -->
+    <div v-for="elem in comments" :key="elem.commentId" :style="{ marginLeft: elem.comment.level * 20 + 'px' }">
       <div class="display-flex">
         <div class="comment-img-container2">
           <!-- 프로필 이미지 -->
         </div>
         <div class="comments">
-          <div><strong>{{ elem.nickname }} 닉네임</strong></div>
+          <div><strong>{{ elem.nickname }}</strong></div>
           <div>
             {{ elem.comment.content }}
           </div>
@@ -18,7 +19,7 @@
       <hr>
       <!-- 재귀적으로 CommentItem 컴포넌트 호출하여 자식 댓글 렌더링 -->
       <div class="child-comments">
-        <CommentItem v-if="elem.comment.children && elem.comment.children.length > 0" :comments="elem.comment.children" />
+        <CommentItem v-if="elem.children && elem.children.length > 0" :comments="elem.children" />
       </div>
     </div>
   </div>
@@ -27,6 +28,8 @@
 <script setup>
 // props로 comments를 받아 사용
 const props = defineProps(["comments"]);
+
+
 </script>
 
 <style scoped>
