@@ -1,6 +1,7 @@
 <template>
   <div>
-    <TabItem />
+    <NavBar/>
+    <!-- <TabItem /> -->
     <!-- <h4>상세 피드 페이지</h4> -->
     <div class="my-feed">
 
@@ -112,6 +113,7 @@
 <script setup>
 import { ref, nextTick } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
+import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
