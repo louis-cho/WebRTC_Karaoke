@@ -1,5 +1,4 @@
 <template>
-  <!-- <div class="q-pa-md q-gutter-sm"> -->
   <div>
     <q-btn label="시작하기" color="black" @click="prompt = true" />
     <q-dialog v-model="prompt" persistent>
@@ -22,11 +21,11 @@
           <q-input rounded outlined v-model="loginForm.username" label="아이디" />
         </q-card-section>
         <q-card-section class="q-pt-none">
-          <q-input rounded outlined v-model="loginForm.password" label="비밀번호" type="password" @keyup.enter="login"/>
+          <q-input rounded outlined v-model="loginForm.password" label="비밀번호" type="password" @keyup.enter="loginUser"/>
         </q-card-section>
 
         <q-card-actions align="center" class="text-primary">
-          <q-btn flat label="로그인" @click="login"/>
+          <q-btn flat label="로그인" @click="loginUser"/>
           <q-btn flat label="회원가입" @click="openSignupModal"/>
         </q-card-actions>
 
@@ -130,7 +129,7 @@ export default {
       loginModal.value = false;
     }
 
-    async function login() {
+    async function loginUser() {
       console.log("로그인:", loginForm.value);
 
       let username = loginForm.value.username;
@@ -190,7 +189,7 @@ export default {
       signupForm,
       openLoginModal,
       closeLoginModal,
-      login,
+      loginUser,
       openSignupModal,
       closeSignupModal,
       signup,

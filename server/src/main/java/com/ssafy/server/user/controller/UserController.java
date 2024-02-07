@@ -5,13 +5,20 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
+import com.ssafy.server.auth.model.dto.JwtCode;
+import com.ssafy.server.auth.model.dto.Role;
+import com.ssafy.server.auth.model.dto.Token;
+import com.ssafy.server.auth.model.dto.TokenKey;
+import com.ssafy.server.auth.util.JwtUtil;
 import com.ssafy.server.user.document.UserDocument;
 import com.ssafy.server.user.model.User;
 import com.ssafy.server.user.model.UserAuth;
 import com.ssafy.server.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +34,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/login")
     public ResponseEntity<String> login(HttpServletRequest servletRequest,  @RequestBody JsonNode request) throws Exception{
@@ -67,7 +77,30 @@ public class UserController {
 
                 if(uuid != null) {
                     // DB 저장 데이터와 일치하는 경우 토큰 발급
+                    System.out.println("사용자 인증 성공");
+                    int userPk = userService.getUserPk(uuid);
+                    System.out.println("UserContoller.userPk: " + " " + userPk);
+                    String refreshToken = jwtUtil.getSavedRefresh(userPk);
+                    if(refreshToken != null && jwtUtil.validateToken(refreshToken) == JwtCode.ACCESS) {
+                        // db에 저장된 refreshToken이 있고, 유효한 경우
+                        String newAccessToken = jwtUtil.generateAccess(userPk, Role.USER.getKey());
+                        System.out.println("db에 저장된 refreshToken이 있고, 유효한 경우, AccessToken 재발급: " + " " + newAccessToken);
+
+                        jsonResponse.put(TokenKey.ACCESS.getKey(), newAccessToken);
+                        jsonResponse.put(TokenKey.REFRESH.getKey(), refreshToken);
+                    } else {
+                        // db에 저장된  refreshToken이 없거나, 있어도 유효하지 않은 경우
+                        Token newToken = jwtUtil.generateToken(userPk, Role.USER.getKey());
+                        System.out.println("accessToken & refreshToken 둘다 발급.");
+                        System.out.println(newToken.getAccessToken());
+                        System.out.println(newToken.getRefreshToken());
+
+                        jsonResponse.put(TokenKey.ACCESS.getKey(), newToken.getAccessToken());
+                        jsonResponse.put(TokenKey.REFRESH.getKey(), newToken.getRefreshToken());
+                    }
+
                     jsonResponse.put("uuid", uuid.toString());
+
                     return ResponseEntity.ok(jsonResponse.toString());
                 } else {
                     // throw new InvalidCredentialException("fail to login");

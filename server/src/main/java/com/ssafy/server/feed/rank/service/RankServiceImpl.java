@@ -68,13 +68,17 @@ public class RankServiceImpl implements RankService {
 
     private void updateTop100Ranking() {
         // Sort feed_stats based on scores and select top 100
-        top100Ranking = elasticsearchRestTemplate.search(
-                        new NativeSearchQueryBuilder()
-                                .withPageable(PageRequest.of(0, 100, Sort.by(Sort.Order.desc("score"))))
-                                .build(), FeedStatsDocument.class)
-                .stream()
-                .map(searchHit -> (FeedStatsDocument) searchHit.getContent())
-                .collect(Collectors.toList());
+        try {
+            top100Ranking = elasticsearchRestTemplate.search(
+                            new NativeSearchQueryBuilder()
+                                    .withPageable(PageRequest.of(0, 100, Sort.by(Sort.Order.desc("score"))))
+                                    .build(), FeedStatsDocument.class)
+                    .stream()
+                    .map(searchHit -> (FeedStatsDocument) searchHit.getContent())
+                    .collect(Collectors.toList());
+        } catch(Exception e) {
+            return;
+        }
     }
 
     private List<SearchHit> fetchDataFromElasticsearch(String index) {

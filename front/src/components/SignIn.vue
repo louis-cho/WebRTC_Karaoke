@@ -1,7 +1,22 @@
 <template>
-  <div>
-    <q-btn @click="openLoginModal" color="black">로그인</q-btn>
-    <q-btn @click="openSignupModal" color="black">회원가입</q-btn>
+
+  <div class="parent">
+    <div @click="goToPage('/')" style="cursor: pointer;">
+        <img
+          src="@/assets/icon/logo1-removebg-preview.png"
+          alt="Logo"
+          width="150"
+          class="d-inline-block align-text-top"
+        />
+    </div>
+    <div class="center">
+      <div class="login-margin">
+        <q-btn @click="openLoginModal" color="black">로그인</q-btn>
+      </div>
+      <div>
+        <q-btn @click="openSignupModal" color="black">회원가입</q-btn>
+      </div>
+    </div>
 
     <!-- 로그인 모달 -->
 
@@ -41,7 +56,13 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { getPublicKey, register, login, } from "@/js/encrypt/authRequest.js";
+import { isLoggedIn } from '@/js/encrypt/authRequest';
+
+
+// const router = useRouter()
 
 export default {
   data() {
@@ -78,7 +99,7 @@ export default {
       await login(username, password);
 
       this.closeLoginModal();
-
+      console.log(isLoggedIn)
     },
 
     async openSignupModal() {
@@ -124,4 +145,23 @@ export default {
 </script>
 
 <style scoped>
+.parent {
+  /* width : 300px; */
+  /* height : 100px; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  /* border : 3px solid red; */
+}
+
+.center {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+/* 로그인 버튼 오른쪽 마진 */
+.login-margin {
+  margin-right: 10px;
+}
 </style>

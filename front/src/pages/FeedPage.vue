@@ -1,6 +1,7 @@
 <template>
   <div @scroll="handleScroll">
-    <TabItem/>
+    <!-- <TabItem/> -->
+    <NavBar/>
     <!-- <h3>전체 피드 페이지</h3> -->
     <div class="my-feed">
       <!-- 첫번째 div -->
@@ -81,6 +82,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import TabItem from "@/layouts/TabItem.vue"
+import NavBar from '@/layouts/NavBar.vue';
 
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false)

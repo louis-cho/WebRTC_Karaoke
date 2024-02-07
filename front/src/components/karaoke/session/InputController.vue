@@ -1,19 +1,27 @@
 <template>
-  <!-- 캠활성화, 음소거 버튼 -->
-  <div class="q-mt-md">
-    <q-btn
-      id="camera-activate"
-      @click="handleCameraBtn"
-      :color="store.camerOff ? 'negative' : 'primary'"
-      label="카메라 비활성화"
-    />
-    <q-btn
-      id="mute-activate"
-      @click="handleMuteBtn"
-      :color="store.muted ? 'negative' : 'primary'"
-      label="음소거 활성화"
-    />
-  </div>
+  <q-dialog v-model="store.toggleModals['input-controller']">
+    <q-card>
+      <q-card-section>
+        <!-- 캠활성화, 음소거 버튼 -->
+        <q-btn
+          id="camera-activate"
+          @click="handleCameraBtn"
+          :color="store.camerOff ? 'negative' : 'primary'"
+          label="카메라 비활성화"
+        />
+        <q-btn
+          id="mute-activate"
+          @click="handleMuteBtn"
+          :color="store.muted ? 'negative' : 'primary'"
+          label="음소거 활성화"
+        />
+      </q-card-section>
+
+      <q-card-section class="q-mt-sm q-mb-sm float-right">
+        <q-btn @click="closeModal" color="negative" label="닫기" />
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
@@ -54,6 +62,10 @@ function handleMuteBtn() {
   }
   // 음소거 설정을 적용
   store.publisher.publishAudio(!store.muted);
+}
+
+function closeModal() {
+  store.toggleModals["input-controller"] = false;
 }
 </script>
 
