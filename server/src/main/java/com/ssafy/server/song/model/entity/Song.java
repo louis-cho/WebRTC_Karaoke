@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "song")
-@Table(name = "song")
 @Getter
 @Setter
 @ToString
@@ -22,7 +21,5 @@ public class Song {
     private String singer;
     @Column(name = "title")
     private String title;
-    @Column(name = "test")
-    private String test;
 
 }

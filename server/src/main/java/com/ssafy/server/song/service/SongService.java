@@ -4,6 +4,8 @@ import com.ssafy.server.song.model.entity.SingLog;
 import com.ssafy.server.song.model.entity.Song;
 import com.ssafy.server.song.model.entity.SongInfo;
 
+import java.util.List;
+
 public interface SongService {
 
     Song getSongById(int songId);
@@ -11,4 +13,6 @@ public interface SongService {
     SongInfo getSongInfoById(int songId);
 
     void createSongLog(SingLog singlog);
+
+    List<Song> getSongList();
 }
