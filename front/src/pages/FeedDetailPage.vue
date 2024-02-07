@@ -217,7 +217,7 @@ const scrollToBottom = () => {
 // ]);
 
 
-const comments = ref([]);
+const comments = ref([])
 
 onMounted(async () => {
   // 페이지 로드 시 댓글을 가져오도록 설정하거나, 필요한 이벤트에 맞게 호출하세요.
@@ -256,9 +256,9 @@ async function fetchAndRenderComments() {
   border-radius: 25px;
   background-size: cover;
   background-position: center;
-  display: flex; /* Flexbox 사용 */
-  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
-  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .comment-img-container {
@@ -269,9 +269,9 @@ async function fetchAndRenderComments() {
   border-radius: 25px;
   background-size: cover;
   background-position: center;
-  display: flex; /* Flexbox 사용 */
-  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
-  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .comment-img-container2 {
@@ -282,9 +282,9 @@ async function fetchAndRenderComments() {
   border-radius: 25px;
   background-size: cover;
   background-position: center;
-  display: flex; /* Flexbox 사용 */
-  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
-  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 
