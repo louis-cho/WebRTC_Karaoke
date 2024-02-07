@@ -91,6 +91,12 @@
           label="Recording Video"
           @click="toggleModal('recording-video')"
         />
+
+        <q-tab
+          name="reserve-song"
+          label="예약하기"
+          @click="toggleModal('reserve-song')"
+        />
       </q-tabs>
     </q-footer>
   </q-layout>
@@ -112,15 +118,15 @@ import axios from "axios";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import pref from "@/js/config/preference.js";
 
-import UserVideo from "@/components/karaoke/UserVideo.vue";
-import AudioFilter from "@/components/karaoke/AudioFilter.vue";
-import KaraokeChat from "@/components/karaoke/KaraokeChat.vue";
-import InputController from "@/components/karaoke/InputController.vue";
-import InputSelector from "@/components/karaoke/InputSelector.vue";
-import RecordingVideo from "src/components/karaoke/RecordingVideo.vue";
+import UserVideo from "@/components/karaoke/video/UserVideo.vue";
+import AudioFilter from "@/components/karaoke/session/AudioFilter.vue";
+import KaraokeChat from "@/components/karaoke/session/KaraokeChat.vue";
+import InputController from "@/components/karaoke/session/InputController.vue";
+import InputSelector from "@/components/karaoke/session/InputSelector.vue";
+import RecordingVideo from "src/components/karaoke/session/RecordingVideo.vue";
+import UpdateModal from "src/components/karaoke/session/UpdateModal.vue";
 import NormalMode from "src/components/karaoke/NormalMode.vue";
 import PerfectScore from "src/components/karaoke/PerfectScore.vue";
-import UpdateModal from "src/components/karaoke/UpdateModal.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 

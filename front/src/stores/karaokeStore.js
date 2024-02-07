@@ -5,7 +5,8 @@ import pref from "@/js/config/preference.js";
 
 export const useKaraokeStore = defineStore("karaoke", {
   state: () => ({
-    APPLICATION_SERVER_URL: pref.app.api.protocol + pref.app.api.host,
+    // APPLICATION_SERVER_URL: pref.app.api.protocol + pref.app.api.host,
+    APPLICATION_SERVER_URL: "http://localhost:8081/api/v1",
 
     createModal: false,
     updateModal: false,
@@ -15,6 +16,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       "input-controller": false,
       "input-selector": false,
       "recording-video": false,
+      "reserve-song": false,
     },
     audioFilter: false,
     chatModal: false,
@@ -225,17 +227,30 @@ export const useKaraokeStore = defineStore("karaoke", {
     async leaveSession() {
       this.kicked = false;
 
-      // --- 7) 'removeToken' 메서드를 호출하여 세션을 나갑니다. ---
-      await axios.post(
-        this.APPLICATION_SERVER_URL + "/karaoke/sessions/removeToken",
-        {
-          sessionName: this.sessionName,
-          token: this.token,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      // 방장이면 세션 닫기
+      if (this.isModerator) {
+        await axios.post(
+          this.APPLICATION_SERVER_URL + "/karaoke/sessions/closeSession",
+          {
+            sessionName: this.sessionName,
+            token: this.token,
+          },
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      } else {
+        await axios.post(
+          this.APPLICATION_SERVER_URL + "/karaoke/sessions/removeToken",
+          {
+            sessionName: this.sessionName,
+            token: this.token,
+          },
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      }
 
       // 모든 속성 비우기...
       this.session = undefined;

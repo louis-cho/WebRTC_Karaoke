@@ -20,8 +20,8 @@ import axios from "axios";
 import pref from "@/js/config/preference.js";
 import NavBar from "@/layouts/NavBar.vue";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
-import CreateModal from "@/components/karaoke/CreateModal.vue";
-import SessionList from "@/components/karaoke/SessionList.vue";
+import CreateModal from "@/components/karaoke/list/CreateModal.vue";
+import SessionList from "@/components/karaoke/list/SessionList.vue";
 
 // store 사용
 const store = useKaraokeStore();
