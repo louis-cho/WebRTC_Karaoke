@@ -20,10 +20,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         //메시지 구독 url
         config.enableStompBrokerRelay("/exchange")
-                .setClientLogin("admin")
-                .setClientPasscode("admin")
-                .setSystemLogin("admin")
-                .setSystemPasscode("admin")
+                .setClientLogin("guest")
+                .setClientPasscode("guest")
+                .setSystemLogin("guest")
+                .setSystemPasscode("guest")
                 .setRelayHost("i10a705.p.ssafy.io")
                 .setRelayPort(5674)
                 .setVirtualHost("/");
