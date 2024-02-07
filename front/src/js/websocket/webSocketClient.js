@@ -17,7 +17,7 @@ function connectWebSocket() {
     console.log('Chat Room ID:', chatRoomId);
     console.log('Sender ID:', senderId);
 
-    const url = `ws://localhost:8081/chat`;
+    const url = `ws://i10a705.p.ssafy.io/chat`;
     socket = new WebSocket(url);
 
     socket.onopen = (event) => {
