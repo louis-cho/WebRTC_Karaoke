@@ -1,16 +1,20 @@
 import * as RSA from './rsa.js';
 import app from "../config/preference.js";
+import useCookie  from '../cookie.js';
+
 import { ref } from 'vue';
 let pref = app;
 let modulus = null;
 let exponent = null;
 export let rsa = new RSA.RSAKey();
-export let isLoggedIn = ref(false);
+export let isLoggedIn = false;
+const { setCookie, getCookie, removeCookie } = useCookie();
 
 
 // Empty function for the "공개키 받아오기" button
 async function getPublicKey() {
   // Add your logic here or leave it empty
+  // const serverUrl = "http://localhost:8081/api/v1/user/login"; // Update the URL accordingly
   // const serverUrl = "https://i10a705.p.ssafy.io/api/user/login"; // Update the URL accordingly
   const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.user.login;
 
@@ -44,6 +48,7 @@ async function getPublicKey() {
 export async function sendAESKey(aesKeyData) {
   let encryptedKey = rsa.encrypt(aesKeyData);
 
+  // const serverUrl = "http://localhost:8081/user/login"; // Update the URL accordingly
   // const serverUrl = "https://i10a705.p.ssafy.io/user/login"; // Update the URL accordingly
   const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.user.login;
 
@@ -72,6 +77,7 @@ export async function sendAESKey(aesKeyData) {
 
 async function login(id, pw) {
     // Add your logic here or leave it empty
+    // const serverUrl = "http://localhost:8081/api/v1/user/login"; // Update the URL accordingly
     // const serverUrl = "https://i10a705.p.ssafy.io/user/login"; // Update the URL accordingly
     const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.user.login;
 
@@ -93,6 +99,32 @@ async function login(id, pw) {
       .then(response => response.json())
       .then(result => {
         // Handle the result from the server as needed
+        console.log("서버에서 넘어온 ACCESS_TOKEN ==> " + result.Authorization)
+        console.log("서버에서 넘어온 REFRESH_TOKEN ==> " + result.refreshToken)
+        console.log("서버에서 넘어온 UUID ==> " + result.uuid)
+
+        const ACCESS_TOKEN = result.Authorization;
+        const REFRESH_TOKEN = result.refreshToken;
+        const UUID = result.uuid;
+        setCookie("Authorization", ACCESS_TOKEN, {
+          path: '/',
+          secure: true,
+          sameSite: 'none',
+        })
+        setCookie("refreshToken", REFRESH_TOKEN, {
+          path: '/',
+          secure: true,
+          sameSite: 'none',
+        })
+        setCookie("uuid", UUID, {
+          path: '/',
+          secure: true,
+          sameSite: 'none',
+        })
+        console.log(getCookie("Authorization"))
+        console.log(getCookie("refreshToken"))
+        console.log(getCookie("uuid"))
+        isLoggedIn = true;
         console.log("서버로부터 받은 결과 >> " + result);
         isLoggedIn.value = true;
       })
@@ -103,6 +135,7 @@ async function login(id, pw) {
 }
 
 async function register(id, pw, email, nickname) {
+  // const serverUrl = "http://localhost:8081/api/v1/user/register"; // Update the URL accordingly
   // const serverUrl = "https://i10a705.p.ssafy.io/user/register"; // Update the URL accordingly
   const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.user.register;
 
@@ -144,5 +177,17 @@ function handleRegister() {
   register(id, pw, email, nickname);
 }
 
+async function checkLogin() {
+  const accessToken = getCookie("Authorization");
+  const refreshToken = getCookie("refreshToken");
+  const uuid = getCookie("uuid");
+
+  if(!accessToken || !refreshToken || !uuid) {
+    alert("세션이 만료되어 재로그인 바랍니다.");
+    window.location("/");
+  }
+
+  await fetch
+}
 
 export { getPublicKey, modulus, exponent, handleRegister, register, login, };
