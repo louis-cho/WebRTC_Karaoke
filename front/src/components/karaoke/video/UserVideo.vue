@@ -20,7 +20,7 @@
 
 <script setup>
 import { computed } from "vue";
-import OvVideo from "@/components/karaoke/OvVideo.vue";
+import OvVideo from "@/components/karaoke/video/OvVideo.vue";
 import axios from "axios";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 
@@ -48,7 +48,7 @@ function getConnectionData() {
 
 function kickUser() {
   axios.post(
-    store.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/kickUser",
+    store.APPLICATION_SERVER_URL + "/karaoke/sessions/kickUser",
     {
       sessionName: store.sessionName,
       reqUser: store.token,

@@ -20,8 +20,8 @@ import axios from "axios";
 import pref from "@/js/config/preference.js";
 import NavBar from "@/layouts/NavBar.vue";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
-import CreateModal from "@/components/karaoke/CreateModal.vue";
-import SessionList from "@/components/karaoke/SessionList.vue";
+import CreateModal from "@/components/karaoke/list/CreateModal.vue";
+import SessionList from "@/components/karaoke/list/SessionList.vue";
 
 // store 사용
 const store = useKaraokeStore();
@@ -32,10 +32,7 @@ const pages = ref([]);
 // 페이지가 마운트된 후에 실행되는 코드
 onMounted(() => {
   axios
-    .get(
-      store.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/sessionList",
-      {}
-    )
+    .get(store.APPLICATION_SERVER_URL + "/karaoke/sessions/sessionList", {})
     .then((response) => {
       pages.value = response.data;
       console.log(pages.value);

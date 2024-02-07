@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STOMP 채팅 페이지</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+    <h1>STOMP 채팅 페이지</h1>
+
+    <div>
+        <label for="roomId">Room ID:</label>
+        <input type="text" id="roomId" required>
+    </div>
+
+    <div>
+        <label for="sender">Sender:</label>
+        <input type="text" id="sender" required>
+    </div>
+
+    <button id="connectButton">연결</button>
+
+    <!-- 채팅방 리스트 -->
+    <div id="chatRoomList"></div>
+
+    <!-- 메시지 입력 폼 -->
+    <form id="messageForm" style="display: none;">
+        <label for="message" id="messageInputLabel">메시지 입력:</label>
+        <input type="text" id="message" required>
+        <button type="button" id="sendButton">전송</button>
+    </form>
+
+    <!-- 채팅 메시지 스크롤 뷰 -->
+    <div id="chatMessages" style="max-height: 200px; overflow-y: auto;"></div>
+
+    <script type="module">
+      import {fetchChatRoomList} from "./chat.js";
+        let stompClient = null;
+        let selectedRoom = null;
+
+        document.getElementById("connectButton").addEventListener("click", connectToChat);
+        document.getElementById("sendButton").addEventListener("click", sendMessage);
+
+        function connectToChat() {
+            // const socket = new WebSocket("ws://your-chat-server-url"); // 실제 채팅 서버 주소로 변경
+
+            // stompClient = Stomp.over(socket);
+            // stompClient.connect({}, function (frame) {
+            //     console.log("Connected: " + frame);
+
+            //     // 연결에 성공하면 채팅방 리스트를 가져와 화면에 표시
+            //     showChatRoomList();
+            // });
+
+            // 주석 처리된 부분 대신, 실제 채팅 서버와의 연결 및 초기화 코드를 작성
+            showChatRoomList();
+        }
+
+        async function showChatRoomList() {
+            const chatRoomListDiv = document.getElementById("chatRoomList");
+            chatRoomListDiv.innerHTML = "<h2>채팅방 리스트</h2>";
+
+            // 실제 서버에서 채팅방 리스트를 가져오는 코드로 변경
+            const chatRooms = await fetchChatRoomList(1, 0, 10);
+
+            chatRooms.forEach(room => {
+                const roomDiv = document.createElement("div");
+                roomDiv.textContent = "roomPk >> " + room.roomPk + " time >> " +room.time;
+                roomDiv.style.cursor = "pointer";
+                roomDiv.addEventListener("dblclick", () => joinChatRoom(room.roomPk));
+                chatRoomListDiv.appendChild(roomDiv);
+            });
+        }
+
+        function joinChatRoom(roomId) {
+            selectedRoom = roomId;
+            document.getElementById("roomId").value = roomId;
+            document.getElementById("messageInputLabel").innerText = roomId + "방 메시지 입력 : ";
+            document.getElementById("messageForm").style.display = "block";
+            // 실제 서버에서 메시지를 가져와 화면에 표시하도록 변경
+            showChatMessages();
+            // 선택한 방에 대한 채팅 메시지를 구독
+            subscribeToChat(selectedRoom);
+        }
+
+        function showChatMessages() {
+            const chatMessagesDiv = document.getElementById("chatMessages");
+            chatMessagesDiv.innerHTML = "<h2>채팅 메시지</h2>";
+
+            // 실제 서버에서 채팅 메시지를 가져오는 코드로 변경
+            fetchChatMessages(selectedRoom);
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById("message");
+            const message = messageInput.value;
+
+            if (selectedRoom && message) {
+                // 실제 서버에 메시지를 전송하는 코드로 변경
+                // stompClient.send(`/app/chat/${selectedRoom}`, {}, JSON.stringify({
+                //     sender: document.getElementById("sender").value,
+                //     content: message
+                // }));
+
+                messageInput.value = ""; // 메시지 전송 후 입력 필드 비우기
+                showChatMessages(); // 메시지를 표시하는 코드로 변경
+            }
+        }
+
+        function subscribeToChat(roomId) {
+            // 채팅방에 입장할 때 해당 채팅방의 메시지를 구독
+            stompClient.subscribe(`/topic/chat/${roomId}`, function (message) {
+                const msg = JSON.parse(message.body);
+                const chatMessagesDiv = document.getElementById("chatMessages");
+                const messageDiv = document.createElement("div");
+                messageDiv.innerHTML = `<strong>${msg.sender}:</strong> ${msg.content}`;
+                chatMessagesDiv.appendChild(messageDiv);
+
+                // 스크롤을 항상 가장 아래로 이동
+                chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+            });
+        }
+
+        function fetchChatMessages(roomId) {
+            // Assuming this is an API endpoint that returns chat messages for the given room
+            fetch(`/api/chat/messages?room=${roomId}`)
+                .then(response => response.json())
+                .then(messages => {
+                    messages.forEach(msg => {
+                        const messageDiv = document.createElement("div");
+                        messageDiv.innerHTML = `<strong>${msg.sender}:</strong> ${msg.content}`;
+                        chatMessagesDiv.appendChild(messageDiv);
+                    });
+
+                    // After fetching messages, scroll to the bottom
+                    chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+                })
+                .catch(error => console.error("Error fetching messages:", error));
+        }
+    </script>
+</body>
+</html>

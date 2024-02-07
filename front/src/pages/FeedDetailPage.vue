@@ -111,10 +111,11 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from "vue";
+import { ref, nextTick, onMounted } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
+import { fetchComment, renderComments } from "@/js/comment/comment.js";
 
 const router = useRouter();
 
@@ -179,6 +180,7 @@ const addComment = function() {
 }
 
 
+
 const toggleModal = () => {
   modal.value = !modal.value;
 }
@@ -198,21 +200,47 @@ const scrollToBottom = () => {
 
 
 // 가상의 댓글 예시
-const comments = ref([
-  { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
-    CONTENT: '노래 잘 들었슴다',
-    // ROOT_COMMENT_ID : 3,
-    // PARENT_COMMENT_ID : 4,
-    CREATED_AT: "2021-10-08-10:27",
-    MODIFIED_AT: "2021-10-08-11:20"
-  },
-  { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
-    CONTENT: '음정이 조큼 아쉽네여',
-    // ROOT_COMMENT_ID : 3,
-    // PARENT_COMMENT_ID : 4,
-    CREATED_AT: "2023-03-08-10:27",
-    MODIFIED_AT: "2023-03-11-11:20" },
-]);
+// const comments = ref([
+//   { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
+//     CONTENT: '노래 잘 들었슴다',
+//     // ROOT_COMMENT_ID : 3,
+//     // PARENT_COMMENT_ID : 4,
+//     CREATED_AT: "2021-10-08-10:27",
+//     MODIFIED_AT: "2021-10-08-11:20"
+//   },
+//   { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
+//     CONTENT: '음정이 조큼 아쉽네여',
+//     // ROOT_COMMENT_ID : 3,
+//     // PARENT_COMMENT_ID : 4,
+//     CREATED_AT: "2023-03-08-10:27",
+//     MODIFIED_AT: "2023-03-11-11:20" },
+// ]);
+
+
+const comments = ref([]);
+
+onMounted(async () => {
+  // 페이지 로드 시 댓글을 가져오도록 설정하거나, 필요한 이벤트에 맞게 호출하세요.
+  await fetchAndRenderComments();
+});
+
+async function fetchAndRenderComments() {
+  try {
+    // 피드 아이디와 페이지 번호를 지정하여 댓글을 가져옴
+    const feedId = 123; // 피드 아이디를 실제 값으로 변경
+    const pageNo = 0; // 페이지 번호를 필요에 맞게 변경
+
+    const commentTree = await fetchComment(feedId, pageNo);
+
+    // 댓글 렌더링
+    renderComments(commentTree);
+
+    // 댓글 상태 업데이트
+    comments.value = commentTree;
+  } catch (error) {
+    console.error('Error fetching and rendering comments:', error);
+  }
+}
 
 
 </script>

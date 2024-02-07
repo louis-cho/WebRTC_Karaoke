@@ -1,8 +1,7 @@
 <template>
-  <nav-bar />
-  <div id="main-container">
-    <!-- session이 true일때! 즉, 방에 들어갔을 때 -->
-    <div id="session" v-if="store.session" class="q-pa-md">
+  <q-layout view="lHh Lpr lFf" v-if="store.session">
+    <!-- 상단 AppBar -->
+    <q-header elevated class="custom-header">
       <div
         id="session-header"
         class="q-mb-md"
@@ -29,10 +28,10 @@
           />
         </div>
       </div>
+    </q-header>
 
-      <!-- 음성 필터 -->
-      <audio-filter />
-
+    <!-- 메인 컨텐츠 영역 -->
+    <q-page-container class="q-pa-md">
       <!-- 메인 캠 -->
       <div
         id="main-video"
@@ -58,22 +57,57 @@
           @click="updateMainVideoStreamManager(sub)"
         />
       </div>
+    </q-page-container>
 
-      <!-- 방에 들어갔을 때 같이 보이게 될 채팅창 -->
-      <karaoke-chat />
+    <!-- 하단 메뉴바 -->
+    <q-footer>
+      <q-tabs align="justify" active-color="positive" indicator-color="primary">
+        <q-tab
+          name="audio-filter"
+          label="Audio Filter"
+          @click="toggleModal('audio-filter')"
+        />
 
-      <!-- 캠활성화, 음소거 버튼 -->
-      <input-controller />
+        <q-tab
+          name="karaoke-chat"
+          label="Karaoke Chat"
+          @click="toggleModal('karaoke-chat')"
+        />
 
-      <!-- 캠,오디오 선택 옵션 -->
-      <input-selector />
+        <q-tab
+          name="input-controller"
+          label="Input Controller"
+          @click="toggleModal('input-controller')"
+        />
 
-      <!-- 녹화 기능 -->
-      <recording-video />
+        <q-tab
+          name="input-selector"
+          label="Input Selector"
+          @click="toggleModal('input-selector')"
+        />
 
-      <update-modal />
-    </div>
-  </div>
+        <q-tab
+          name="recording-video"
+          label="Recording Video"
+          @click="toggleModal('recording-video')"
+        />
+
+        <q-tab
+          name="reserve-song"
+          label="예약하기"
+          @click="toggleModal('reserve-song')"
+        />
+      </q-tabs>
+    </q-footer>
+  </q-layout>
+
+  <audio-filter />
+  <karaoke-chat />
+  <input-controller />
+  <input-selector />
+  <recording-video />
+
+  <update-modal />
 </template>
 
 <script setup>
@@ -84,16 +118,15 @@ import axios from "axios";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import pref from "@/js/config/preference.js";
 
-import NavBar from "@/layouts/NavBar.vue";
-import UserVideo from "@/components/karaoke/UserVideo.vue";
-import AudioFilter from "@/components/karaoke/AudioFilter.vue";
-import KaraokeChat from "@/components/karaoke/KaraokeChat.vue";
-import InputController from "@/components/karaoke/InputController.vue";
-import InputSelector from "@/components/karaoke/InputSelector.vue";
-import RecordingVideo from "@/components/karaoke/RecordingVideo.vue";
+import UserVideo from "@/components/karaoke/video/UserVideo.vue";
+import AudioFilter from "@/components/karaoke/session/AudioFilter.vue";
+import KaraokeChat from "@/components/karaoke/session/KaraokeChat.vue";
+import InputController from "@/components/karaoke/session/InputController.vue";
+import InputSelector from "@/components/karaoke/session/InputSelector.vue";
+import RecordingVideo from "@/components/karaoke/session/RecordingVideo.vue";
+import UpdateModal from "@/components/karaoke/session/UpdateModal.vue";
 import NormalMode from "@/components/karaoke/NormalMode.vue";
 import PerfectScore from "@/components/karaoke/PerfectScore.vue";
-import UpdateModal from "@/components/karaoke/UpdateModal.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -121,9 +154,16 @@ function updateMainVideoStreamManager(stream) {
   if (store.mainStreamManager === stream) return;
   store.mainStreamManager = stream;
 }
+
+const toggleModal = (modalName) => {
+  store.toggleModals[modalName] = true;
+};
 </script>
 
 <style scoped>
+.custom-header {
+  height: 50px;
+}
 .user-video {
   cursor: pointer;
 }

@@ -8,8 +8,7 @@
     <!-- <div v-else> -->
       <!-- <TabItemStart/> -->
       <SignIn />
-
-    <!-- </div> -->
+    </div>
 
   </div>
 </template>
