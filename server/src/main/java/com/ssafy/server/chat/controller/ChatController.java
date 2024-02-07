@@ -45,7 +45,7 @@ public class ChatController {
         return ResponseEntity.ok(chatService.loadFromRedis(chatRoomId,false, false));
     }
 
-    //redis에 있는 해당 채팅방의 "모든" 채팅 내역 조회 후, 반환
+    //redis에 있는 해당 채팅방의 채팅 내역 조회 및 페이징 처리 반환
     @GetMapping("/room/{chatRoomId}/oldMsg")
     public ResponseEntity<List<Object>> loadOldMsg( @PathVariable String chatRoomId,
                                                     @RequestParam int page,
