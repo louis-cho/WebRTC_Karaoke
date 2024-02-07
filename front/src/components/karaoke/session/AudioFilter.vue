@@ -1,54 +1,75 @@
 <template>
-  <q-btn
-    v-if="!filterApplied"
-    @click="applyFilter"
-    color="primary"
-    :label="pref.app.kor.karaokePage.applyFilter"
-  />
-  <q-btn
-    v-if="filterApplied"
-    @click="removeFilter"
-    color="negative"
-    :label="pref.app.kor.karaokePage.removeFilter"
-  />
-  <!-- 필터 버튼 목록 -->
-  <div class="q-mb-md">
-    <q-select
-      v-model="selectedFilter"
-      :options="filterOptions"
-      :label="pref.app.kor.karaokePage.filterList"
-      filled
-    />
-    <!-- 슬라이더 목록을 보여주는 부분 -->
-    <div>
-      <!-- 선택된 필터에 따라 동적으로 보여지는 슬라이더 목록 -->
-      <div
-        class="q-mb-md"
-        v-for="(slider, index) in filteredSliders"
-        :key="index"
-      >
-        <label style="white-space: nowrap">
-          {{ slider.label }}:
-          <!-- 슬라이더의 현재 값 표시 -->
-          {{ slider.value }}
-          <!-- 슬라이더 컴포넌트 -->
-          <q-slider
-            v-model="slider.value"
-            :min="slider.min"
-            :max="slider.max"
-            :step="slider.step"
-            style="width: 50%"
+  <q-dialog v-model="store.toggleModals['audio-filter']">
+    <q-card>
+      <q-card-section>
+        <!-- 필터 버튼 목록 -->
+        <div class="q-mb-md">
+          <q-select
+            v-model="selectedFilter"
+            :options="filterOptions"
+            :label="pref.app.kor.karaokePage.filterList"
+            filled
           />
-        </label>
-      </div>
-    </div>
-  </div>
+          <!-- 슬라이더 목록을 보여주는 부분 -->
+          <div>
+            <!-- 선택된 필터에 따라 동적으로 보여지는 슬라이더 목록 -->
+            <div
+              class="q-mb-md"
+              v-for="(slider, index) in filteredSliders"
+              :key="index"
+            >
+              <label style="white-space: nowrap">
+                {{ slider.label }}:
+                <!-- 슬라이더의 현재 값 표시 -->
+                {{ slider.value }}
+                <!-- 슬라이더 컴포넌트 -->
+                <q-slider
+                  v-model="slider.value"
+                  :min="slider.min"
+                  :max="slider.max"
+                  :step="slider.step"
+                  style="width: 50%"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+      </q-card-section>
+
+      <q-card-section>
+        <q-btn
+          v-if="!filterApplied"
+          @click="applyFilter"
+          color="primary"
+          class="q-mt-md"
+          :label="pref.app.kor.karaokePage.applyFilter"
+        />
+        <q-btn
+          v-if="filterApplied"
+          @click="removeFilter"
+          color="negative"
+          class="q-mt-md"
+          :label="pref.app.kor.karaokePage.removeFilter"
+        />
+        <q-btn
+          @click="closeModal"
+          color="negative"
+          class="q-mt-md"
+          label="닫기"
+        />
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
 import pref from "@/js/config/preference.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
+
+const props = defineProps({
+  toggle: Boolean,
+});
 
 const store = useKaraokeStore();
 
@@ -119,6 +140,10 @@ const filteredSliders = computed(() => {
   }
 });
 // 필터 함수 종료
+
+function closeModal() {
+  store.toggleModals["audio-filter"] = false;
+}
 </script>
 
 <style scoped></style>

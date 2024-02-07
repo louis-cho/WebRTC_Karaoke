@@ -1,45 +1,84 @@
-// 가상의 댓글 데이터 (프론트엔드에서 받아온 데이터)
-const commentsData = [
-  { commentId: 1, content: "댓글 1", parentCommentId: null },
-  { commentId: 2, content: "댓글 2", parentCommentId: null },
-  { commentId: 3, content: "대댓글 1-1", parentCommentId: 1 },
-  { commentId: 4, content: "대댓글 1-2", parentCommentId: 1 },
-  { commentId: 5, content: "댓글 3", parentCommentId: 3 },
-  // ... (더 많은 댓글 데이터)
-];
+import app from "../config/preference.js";
 
-// 댓글을 계층 구조로 변환하는 함수
+let pref = app;
+
+/**
+ * 이전에 그려진 댓글 지우기
+ */
+export function clearComment() {
+  const container = document.getElementById("comments-container");
+  container.innerHTML = "";
+}
+
+/**
+ * 주어진 페이지 번호 게시글을 10개 (서버 기본 설정값) 가져와 댓글 계층 구조를 설정한다.
+ * @param {Integer} feedId 피드 아이디
+ * @param {Integer} pageNo 페이지 번호 (0부터 시작)
+ */
+export async function fetchComment(feedId, pageNo) {
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.comment.fetch  + feedId;
+
+  const data = {
+    startIndex: pageNo,
+    pageSize: 10
+  };
+
+  return await fetch(serverUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  .then(response => response.json())
+  .then(result => {
+    return buildCommentTree(result);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+/**
+ * 주어진 댓글 데이터로부터 댓글 계층 구조를 생성한다.
+ * @param {Array} comments
+ * @returns
+ */
 function buildCommentTree(comments) {
-  const commentMap = new Map();
+    const commentMap = new Map();
 
-  comments.forEach(comment => {
-      comment.children = [];
-      commentMap.set(comment.commentId, comment);
-  });
+    comments.data.forEach(comment => {
+        comment.children = [];
+        commentMap.set(comment.commentId, comment);
+    });
 
-  const tree = [];
+    const tree = [];
 
-  comments.forEach(comment => {
-      if (comment.parentCommentId !== null) {
-          commentMap.get(comment.parentCommentId).children.push(comment);
-      } else {
-          tree.push(comment);
-      }
-  });
+    comments.data.forEach(comment => {
+        if (comment.parentCommentId !== null && comment.parentCommentId >= 0) {
+            commentMap.get(comment.parentCommentId).children.push(comment);
+        } else {
+            tree.push(comment);
+        }
+    });
 
-  return tree;
+    return tree;
 }
 
-// 댓글을 출력하는 재귀적인 함수
-function renderComments(comments, level = 0) {
-  comments.forEach(comment => {
-      console.log("  ".repeat(level) + comment.content);
-      renderComments(comment.children, level + 1);
-  });
+/**
+ * 댓글 계층 구조 데이터로부터 div를 렌더링한다
+ * @param {Object} comments
+ * @param {Integer} level
+ */
+export function renderComments(comments, level = 0) {
+    const container = document.getElementById('comments-container');
+    comments.forEach(comment => {
+        const commentElement = document.createElement('div');
+        commentElement.innerHTML = "&nbsp;".repeat(level) + comment.content;
+        container.appendChild(commentElement);
+        renderComments(comment.children, level + 1);
+    });
 }
 
-// 댓글 데이터를 계층 구조로 변환
-const commentTree = buildCommentTree(commentsData);
-
-// 계층 구조로 변환된 댓글을 출력
-renderComments(commentTree);
+// const commentTree = buildCommentTree(commentsData);
+// renderComments(commentTree);

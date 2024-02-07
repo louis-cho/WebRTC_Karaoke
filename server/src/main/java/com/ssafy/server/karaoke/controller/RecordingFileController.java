@@ -5,6 +5,7 @@ import com.ssafy.server.common.util.S3FileUploader;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,7 @@ public class RecordingFileController {
     private S3FileUploader fileUploader;
 
     private static final String USERNAME = "OPENVIDUAPP";
-    private static final String PASSWORD = "MY_SECRET";
+    private static final String PASSWORD = "haebang";
 
     @PostMapping("/upload")
     public ResponseEntity<String> downloadAndUploadFile(@RequestBody Map<String, Object> params) throws IOException {
@@ -50,8 +51,7 @@ public class RecordingFileController {
             InputStream input = new FileInputStream(file);
             OutputStream os = fileItem.getOutputStream();
             IOUtils.copy(input, os);
-            // Or faster..
-            // IOUtils.copy(new FileInputStream(file), fileItem.getOutputStream());
+            input.close();
         } catch (IOException ex) {
             // do something.
         }

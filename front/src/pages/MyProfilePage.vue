@@ -1,6 +1,7 @@
 <template>
   <div>
-    <TabItem />
+    <NavBar/>
+    <!-- <TabItem /> -->
     <!-- 내 피드 페이지(마이페이지)-->
     <div class="my-feed">
       <!-- style="padding-left:100px; padding-right:100px" -->
@@ -61,13 +62,16 @@
 <script setup>
 import { ref } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
+import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
+
 
 const router = useRouter();
 
 const goBack = function () {
-  router.go(-1);
-};
+  router.go(-1)
+}
+
 
 // 가상의 피드 데이터 예시
 const feeds = ref([

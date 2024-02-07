@@ -68,13 +68,17 @@ public class RankServiceImpl implements RankService {
 
     private void updateTop100Ranking() {
         // Sort feed_stats based on scores and select top 100
-        top100Ranking = elasticsearchRestTemplate.search(
-                        new NativeSearchQueryBuilder()
-                                .withPageable(PageRequest.of(0, 100, Sort.by(Sort.Order.desc("score"))))
-                                .build(), FeedStatsDocument.class)
-                .stream()
-                .map(searchHit -> (FeedStatsDocument) searchHit.getContent())
-                .collect(Collectors.toList());
+        try {
+            top100Ranking = elasticsearchRestTemplate.search(
+                            new NativeSearchQueryBuilder()
+                                    .withPageable(PageRequest.of(0, 100, Sort.by(Sort.Order.desc("score"))))
+                                    .build(), FeedStatsDocument.class)
+                    .stream()
+                    .map(searchHit -> (FeedStatsDocument) searchHit.getContent())
+                    .collect(Collectors.toList());
+        } catch(Exception e) {
+            return;
+        }
     }
 
     private List<SearchHit> fetchDataFromElasticsearch(String index) {
@@ -88,7 +92,7 @@ public class RankServiceImpl implements RankService {
             if (lastTime != null) {
                 searchSourceBuilder.query(QueryBuilders.boolQuery()
                         .must(QueryBuilders.matchAllQuery())
-                        .filter(QueryBuilders.rangeQuery("timestamp").gte(lastTime)));
+                        .filter(QueryBuilders.rangeQuery("timestamp").gt(lastTime)));
                 searchSourceBuilder.sort(new FieldSortBuilder("timestamp").order(SortOrder.DESC));
             } else {
                 searchSourceBuilder.query(QueryBuilders.boolQuery()
@@ -133,7 +137,7 @@ public class RankServiceImpl implements RankService {
                     int likeId = (int) source.get("like_id");
                     int feedId = (int) source.get("feed_id");
                     int userPk = (int) source.get("user_pk");
-                    char status = source.get("status").toString().charAt(0);
+                    boolean status = Boolean.TRUE.equals(source.get("status"));
 
                     // LikesDocument 객체 생성
                     LikesDocument likesDocument = new LikesDocument();

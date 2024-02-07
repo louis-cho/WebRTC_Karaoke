@@ -34,10 +34,10 @@ public class CommentController {
         Comment comment = null;
         try {
             comment = commentService.getCommentById(commentId);
-            if(comment == null) {
+            if (comment == null) {
                 throw new ApiException(ApiExceptionFactory.fromExceptionEnum(CommentExceptionEnum.COMMENT_NOT_FOUND));
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(CommentExceptionEnum.COMMENT_NOT_FOUND));
         }
         return new ResponseEntity<>(ApiResponse.success(comment), HttpStatus.ACCEPTED);

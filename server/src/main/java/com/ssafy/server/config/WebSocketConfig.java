@@ -25,7 +25,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setSystemLogin("guest")
                 .setSystemPasscode("guest")
                 .setRelayHost("localhost")
-                .setRelayPort(61613)
+                .setRelayPort(5674)
                 .setVirtualHost("/");
         //메시지 발행 url
         config.setPathMatcher(new AntPathMatcher("."));

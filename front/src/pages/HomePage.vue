@@ -1,6 +1,7 @@
 <template>
   <!-- class="bg-purple" -->
   <div>
+
     <nav-bar />
     <q-carousel
       v-model="slide"
@@ -43,8 +44,9 @@
 import { ref } from "vue";
 import StartTest from "@/components/StartTest.vue";
 import NavBar from "@/layouts/NavBar.vue";
-import SearchUser from "@/components/SearchUser.vue";
 import SignIn from "@/components/SignIn.vue";
+
+
 
 const slide = ref("style");
 const lorem1 = "노래하고 싶어? 여기서 노래해방!";
