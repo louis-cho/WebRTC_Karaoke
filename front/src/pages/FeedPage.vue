@@ -122,7 +122,7 @@ const feeds = ref([
 ])
 const getUserProfile = (userPK) => {
   // 사용자 프로필 이미지 가져오기 로직..
-  return '@/assets/img/capture.png';
+  return 'https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg';
 }
 
 const getUserName = (userPK) => {
