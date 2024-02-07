@@ -7,9 +7,9 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 
 export const useKaraokeStore = defineStore("karaoke", {
   state: () => ({
-    APPLICATION_SERVER_URL:
-      process.env.NODE_ENV === "production" ? "" : "https://i10a705.p.ssafy.io/",
-    // APPLICATION_SERVER_URL: process.env.NODE_ENV === "production" ? "" : "http://localhost:8081/",
+    // APPLICATION_SERVER_URL:
+    //   process.env.NODE_ENV === "production" ? "" : "https://i10a705.p.ssafy.io/",
+    APPLICATION_SERVER_URL: process.env.NODE_ENV === "production" ? "" : "http://localhost:8081/",
 
     createModal: false,
     updateModal: false,

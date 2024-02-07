@@ -23,10 +23,10 @@ public class SingLog extends Auditable {
     @Column(name = "song_id")
     private int songId;
 
-    @Column(name = "sing_mode")
+    @Column(name = "sing_mode", length = 2)
     private String singMode;
 
-    @Column(name = "sing_status")
+    @Column(name = "sing_status", length = 2)
     private String singStatus;
 
     @Column(name = "sing_score")

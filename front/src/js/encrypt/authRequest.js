@@ -1,12 +1,13 @@
 import * as RSA from './rsa.js';
 import app from "../config/preference.js";
+import useCookie  from '../cookie.js';
 
 let pref = app;
 let modulus = null;
 let exponent = null;
 export let rsa = new RSA.RSAKey();
 export let isLoggedIn = false;
-
+const { setCookie, getCookie, removeCookie } = useCookie();
 
 // Empty function for the "공개키 받아오기" button
 async function getPublicKey() {
@@ -96,7 +97,31 @@ async function login(id, pw) {
       .then(response => response.json())
       .then(result => {
         // Handle the result from the server as needed
-        console.log("서버로부터 받은 결과 >> " + result);
+        console.log("서버에서 넘어온 ACCESS_TOKEN ==> " + result.Authorization)
+        console.log("서버에서 넘어온 REFRESH_TOKEN ==> " + result.refreshToken)
+        console.log("서버에서 넘어온 UUID ==> " + result.uuid)
+
+        const ACCESS_TOKEN = result.Authorization;
+        const REFRESH_TOKEN = result.refreshToken;
+        const UUID = result.uuid;
+        setCookie("Authorization", ACCESS_TOKEN, {
+          path: '/',
+          secure: true,
+          sameSite: 'none',
+        })
+        setCookie("refreshToken", REFRESH_TOKEN, {
+          path: '/',
+          secure: true,
+          sameSite: 'none',
+        })
+        setCookie("uuid", UUID, {
+          path: '/',
+          secure: true,
+          sameSite: 'none',
+        })
+        console.log(getCookie("Authorization"))
+        console.log(getCookie("refreshToken"))
+        console.log(getCookie("uuid"))
         isLoggedIn = true;
       })
       .catch(error => {
@@ -148,5 +173,17 @@ function handleRegister() {
   register(id, pw, email, nickname);
 }
 
+async function checkLogin() {
+  const accessToken = getCookie("Authorization");
+  const refreshToken = getCookie("refreshToken");
+  const uuid = getCookie("uuid");
+
+  if(!accessToken || !refreshToken || !uuid) {
+    alert("세션이 만료되어 재로그인 바랍니다.");
+    window.location("/");
+  }
+
+  await fetch
+}
 
 export { getPublicKey, modulus, exponent, handleRegister, register, login, };

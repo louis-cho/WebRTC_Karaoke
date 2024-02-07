@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "song")
+@Table(name = "song")
 @Getter
 @Setter
 @ToString
