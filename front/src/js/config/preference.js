@@ -3,13 +3,16 @@ let app = {};
 app.api = {};
 
 app.api.prefix = "/api/v1";
-app.api.protocol = "https:";
-app.api.host = "//i10a705.p.ssafy.io/api/v1";
+app.api.protocol = "http:";
+// app.api.host = "//i10a705.p.ssafy.io/api/v1";
+app.api.host = "//localhost:8081/api/v1";
 
 app.api.user = {};
 app.api.user.login = "/user/login";
 app.api.user.register = "/user/register";
 
+app.api.comment = {};
+app.api.comment.fetch = "/comment/feed/";
 app.kor = {};
 
 app.kor.mainPage = {};
