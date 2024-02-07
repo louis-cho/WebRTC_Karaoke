@@ -85,7 +85,7 @@ function updateSession() {
 
   axios
     .post(
-      store.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/updateSession",
+      store.APPLICATION_SERVER_URL + "/karaoke/sessions/updateSession",
       {
         sessionName: store.sessionName,
         numberOfParticipants: store.numberOfParticipants,

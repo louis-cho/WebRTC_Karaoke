@@ -1,39 +1,50 @@
 <template>
-  <!-- 방에 들어갔을 때 같이 보이게 될 채팅창 -->
-  <div id="chat-container" class="outer-border q-pa-md">
-    <q-card class="q-mb-md chat-window">
-      <q-card-section class="q-pa-md dark-bg">
-        <div class="chat-title q-mb-md">
-          <h2 class="q-mb-none title-font-size">채팅</h2>
-          <div class="section-divider"></div>
+  <q-dialog v-model="store.toggleModals['karaoke-chat']">
+    <q-card>
+      <q-card-section>
+        <!-- 방에 들어갔을 때 같이 보이게 될 채팅창 -->
+        <div id="chat-container" class="outer-border q-pa-md">
+          <q-card class="q-mb-md chat-window">
+            <q-card-section class="q-pa-md dark-bg">
+              <div class="chat-title q-mb-md">
+                <h2 class="q-mb-none title-font-size">채팅</h2>
+                <div class="section-divider"></div>
+              </div>
+              <ul class="chat-history q-mb-md">
+                <li
+                  v-for="(message, index) in store.messages"
+                  :key="index"
+                  class="message-item q-py-md dark-item-bg"
+                >
+                  <strong class="message-username dark-text"
+                    >{{ message.username }}:</strong
+                  >
+                  {{ message.message }}
+                </li>
+              </ul>
+            </q-card-section>
+          </q-card>
+
+          <form id="chat-write" class="q-mt-md" @submit.prevent="sendMessage">
+            <q-input
+              type="text"
+              placeholder="전달할 내용을 입력하세요."
+              v-model="store.inputMessage"
+              outlined
+              dense
+              class="inline-input"
+              @keydown.enter="sendMessage"
+            />
+            <q-btn @click="sendMessage" color="primary" label="전송" />
+          </form>
         </div>
-        <ul class="chat-history q-mb-md">
-          <li
-            v-for="(message, index) in store.messages"
-            :key="index"
-            class="message-item q-py-md dark-item-bg"
-          >
-            <strong class="message-username dark-text"
-              >{{ message.username }}:</strong
-            >
-            {{ message.message }}
-          </li>
-        </ul>
+
+        <q-card-section class="q-mt-sm q-mb-sm float-right">
+          <q-btn @click="closeModal" color="negative" label="닫기" />
+        </q-card-section>
       </q-card-section>
     </q-card>
-
-    <form id="chat-write" class="q-mt-md">
-      <q-input
-        type="text"
-        placeholder="전달할 내용을 입력하세요."
-        v-model="store.inputMessage"
-        outlined
-        dense
-        class="inline-input"
-      />
-      <q-btn @click="sendMessage" color="primary" label="전송" />
-    </form>
-  </div>
+  </q-dialog>
 </template>
 
 <script setup>
@@ -55,6 +66,10 @@ function sendMessage(event) {
     });
     store.inputMessage = "";
   }
+}
+
+function closeModal() {
+  store.toggleModals["karaoke-chat"] = false;
 }
 </script>
 

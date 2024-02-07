@@ -168,6 +168,12 @@ public class SessionController {
 
         // BODY에서 파라미터를 검색함
         String sessionName = (String) params.get("sessionName");
+        String token = (String) params.get("token");
+
+        if(!openViduModel.getMapSessionNamesTokens().get(sessionName).get(token)){
+            System.out.println("방장이 아닙니다");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         // 세션이 존재하는 경우
         if (openViduModel.getMapSessions().get(sessionName) != null && openViduModel.getMapSessionNamesTokens().get(sessionName) != null) {
