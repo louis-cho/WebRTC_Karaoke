@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import com.ssafy.server.exception.request.InvalidParameterException;
-import com.ssafy.server.exception.user.InvalidCredentialException;
-import com.ssafy.server.exception.user.InvalidPasswordException;
 
 import com.ssafy.server.user.document.UserDocument;
 import com.ssafy.server.user.model.User;
@@ -24,7 +21,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v1/user")
 @Slf4j
 public class UserController {
 
@@ -41,7 +38,7 @@ public class UserController {
 
                 String ip = servletRequest.getRemoteAddr();
                 String[] publicKey = userService.getPublicKey(ip);
-
+                System.out.println(publicKey[0] + " " + publicKey[1]);
                 ObjectNode jsonResponse = JsonNodeFactory.instance.objectNode();
                 jsonResponse.put("modulus", publicKey[0]);
                 jsonResponse.put("exponent", publicKey[1]);
@@ -55,7 +52,7 @@ public class UserController {
                 JsonNode pwNode = request.get("pw");
 
                 if(idNode == null || pwNode == null) {
-                    throw new InvalidParameterException("there is no id or pw");
+                    // throw new InvalidParameterException("there is no id or pw");
                 }
 
                 String id = idNode.asText();
@@ -73,14 +70,15 @@ public class UserController {
                     jsonResponse.put("uuid", uuid.toString());
                     return ResponseEntity.ok(jsonResponse.toString());
                 } else {
-                    throw new InvalidCredentialException("fail to login");
+                    // throw new InvalidCredentialException("fail to login");
                 }
             }
 
             default: {
-                throw new InvalidPasswordException("Invalid request type");
+                // throw new InvalidPasswordException("Invalid request type");
             }
         }
+        return null;
     }
     // register
     @PostMapping("/register")

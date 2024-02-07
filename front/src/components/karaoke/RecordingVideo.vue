@@ -37,13 +37,13 @@
         class="btn-md"
         @click="stopRecording"
         label="Stop Recording"
-        color="primary"
+        color="negative"
         :disable="!checkBtnsRecordings"
       />
     </div>
 
     <!-- Other Buttons Section -->
-    <div v-if="forceRecordingId">
+    <div v-if="RecordingFinished">
       <q-btn
         class="btn-md"
         @click="getRecording"
@@ -55,7 +55,14 @@
         class="btn-md"
         @click="deleteRecording"
         label="Delete Recording"
-        color="primary"
+        color="negative"
+      />
+
+      <q-btn
+        class="btn-md"
+        @click="UploadRecording(fileUrl)"
+        label="Upload Recording"
+        color="secondary"
       />
     </div>
 
@@ -66,7 +73,7 @@
           class="btn-md"
           @click="listRecordings"
           label="List Recordings"
-          color="primary"
+          color="positive"
         />
       </div>
     </div>
@@ -74,7 +81,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import axios from "axios";
 import pref from "@/js/config/preference.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
@@ -86,6 +93,8 @@ const hasAudio = ref(true);
 const hasVideo = ref(true);
 const forceRecordingId = ref(undefined);
 const checkBtnsRecordings = ref(false);
+const RecordingFinished = ref(false);
+const fileUrl = ref("");
 
 function startRecording() {
   axios
@@ -112,6 +121,8 @@ function stopRecording() {
     })
     .then((res) => {
       console.log(res.data);
+      fileUrl.value = res.data.url;
+      RecordingFinished.value = true;
       checkBtnsRecordings.value = false;
     })
     .catch((error) => {
@@ -126,6 +137,7 @@ function deleteRecording() {
     })
     .then(() => {
       console.log("DELETE ok");
+      RecordingFinished.value = false;
     })
     .catch((error) => {
       console.error("Delete recording WRONG\n", error);
@@ -153,6 +165,22 @@ function listRecordings() {
     .get(store.APPLICATION_SERVER_URL + "api/v1/karaoke/recording/list", {})
     .then((res) => {
       console.log(res.data);
+    })
+    .catch((error) => {
+      console.error("List recordings WRONG", error);
+    });
+}
+
+function UploadRecording(fileUrl) {
+  console.log(fileUrl);
+  axios
+    .post(store.APPLICATION_SERVER_URL + "api/v1/karaoke/file/upload", {
+      fileUrl: fileUrl,
+    })
+    .then((res) => {
+      console.log(res.data);
+      forceRecordingId.value = undefined;
+      RecordingFinished.value = false;
     })
     .catch((error) => {
       console.error("List recordings WRONG", error);

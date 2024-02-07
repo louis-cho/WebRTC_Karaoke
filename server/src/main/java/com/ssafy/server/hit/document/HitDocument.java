@@ -9,8 +9,10 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.util.Date;
 
-@Document(indexName = "hit")
+
+@Document(indexName = "hits")
 @Getter
 @Setter
 @ToString
@@ -26,7 +28,8 @@ public class HitDocument {
     @Field(type = FieldType.Integer)
     private int feedId;
 
-
+    @Field(type = FieldType.Date)
+    private Date timestamp;
 
     // Constructor, getters, setters, and other necessary methods
 }
