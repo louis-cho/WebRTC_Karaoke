@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/v1/test/login").permitAll()
                 .antMatchers("/api/v1/user/**").permitAll()
+                .antMatchers("/api/v1/**").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                 .and()
