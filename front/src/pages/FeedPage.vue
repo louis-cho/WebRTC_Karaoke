@@ -23,6 +23,8 @@
 
 
       <!-- 두번째 div -->
+      <q-btn @click="goFeedDetail">피드 디테일 페이지로</q-btn>
+
       <div v-for="feed in filteredFeeds" :key="feed.FEED_ID" >
         <div class="profile">
           <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }">
@@ -82,7 +84,14 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import TabItem from "@/layouts/TabItem.vue"
-import NavBar from '@/layouts/NavBar.vue';
+import NavBar from '@/layouts/NavBar.vue'
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goFeedDetail = () => {
+  router.push('/feed_detail')
+}
 
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false)
