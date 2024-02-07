@@ -6,23 +6,28 @@ import com.ssafy.server.comment.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
+import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class CommentServiceImpl implements CommentService {
 
-    @Autowired
-    private final CommentRepository commentRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
+    private CommentRepository commentRepository;
 
     @Override
-    public Comment createComment(Comment newComment) {
-        // 데이터베이스에 새로운 댓글 생성
-        return commentRepository.save(newComment);
+    public void createComment(Comment newComment) {
+        commentRepository.save(newComment);
     }
 
     @Override
@@ -39,12 +44,8 @@ public class CommentServiceImpl implements CommentService {
 
         if (optionalExistingComment.isPresent()) {
             Comment existingComment = optionalExistingComment.get();
-            existingComment.setUserPk(updatedComment.getUserPk());
-            existingComment.setFeedId(updatedComment.getFeedId());
             existingComment.setContent(updatedComment.getContent());
-            existingComment.setRootCommentId(updatedComment.getRootCommentId());
-            existingComment.setParentCommentId(updatedComment.getParentCommentId());
-
+            existingComment.setDeleted(updatedComment.isDeleted());
             return commentRepository.save(existingComment);
         }
 
@@ -54,10 +55,23 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public boolean deleteComment(int commentId) {
         // commentId에 해당하는 댓글 삭제
-        if (commentRepository.existsById(commentId)) {
-            commentRepository.deleteById(commentId);
+
+        Optional<Comment> optionalExistingComment = commentRepository.findById(commentId);
+        if(optionalExistingComment.isPresent()) {
+            optionalExistingComment.get().setDeleted(true);
             return true;
         }
         return false;
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Comment> getCommentsByFeedIdWithPagination(int feedId, int startIndex, int pageSize) {
+        return (List<Comment>) entityManager.createNamedStoredProcedureQuery("GetCommentsByFeedIdWithPagination")
+                .setParameter("feedIdParam", feedId)
+                .setParameter("startIndexParam", startIndex)
+                .setParameter("pageSizeParam", pageSize)
+                .getResultList();
+    }
+
 }

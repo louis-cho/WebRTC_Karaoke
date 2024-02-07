@@ -1,82 +1,158 @@
 <template>
-  <nav-bar />
-  <div id="main-container">
-    <!-- session이 true일때! 즉, 방에 들어갔을 때 -->
-    <div id="session" v-if="store.session" class="q-pa-md">
-      <div id="session-header" class="q-mb-md">
-        <q-toolbar-title style="font-size: 40px">
-          {{ pref.app.kor.karaokePage.sessionId }} : {{ store.mySessionId }}
-        </q-toolbar-title>
-
-        <q-btn
-          @click="leaveSession"
-          color="negative"
-          :label="pref.app.kor.karaokePage.leaveSession"
-        />
+  <q-layout view="lHh Lpr lFf" v-if="store.session">
+    <!-- 상단 AppBar -->
+    <q-header elevated class="custom-header">
+      <div
+        id="session-header"
+        class="q-mb-md"
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <q-toolbar-title style="font-size: 40px"
+          >{{ pref.app.kor.karaokePage.sessionId }} :
+          {{ store.sessionName }}</q-toolbar-title
+        >
+        <div style="display: flex">
+          <q-btn
+            @click="openModal"
+            color="positive"
+            :label="pref.app.kor.karaokePage.updateSession"
+          />
+          <q-btn
+            @click="leaveSession"
+            color="negative"
+            :label="pref.app.kor.karaokePage.leaveSession"
+          />
+        </div>
       </div>
+    </q-header>
 
-      <!-- 음성 필터 -->
-      <audio-filter />
-
-      <!-- 내 캠 -->
-      <div id="main-video">
+    <!-- 메인 컨텐츠 영역 -->
+    <q-page-container class="q-pa-md">
+      <!-- 메인 캠 -->
+      <div
+        id="main-video"
+        style="display: flex; flex-direction: row; overflow-x: auto"
+      >
         <UserVideo :stream-manager="mainStreamManagerComputed" />
+        <normal-mode v-if="!songMode" />
+        <perfect-score v-if="songMode" />
       </div>
+
       <!-- 모든 캠 -->
-      <div id="video-container">
+      <div id="video-container" class="responsive-container">
         <UserVideo
           :stream-manager="publisherComputed"
+          class="user-video"
           @click="updateMainVideoStreamManager(store.publisher)"
         />
         <UserVideo
           v-for="sub in subscribersComputed"
           :key="sub.stream.connection.connectionId"
           :stream-manager="sub"
+          class="user-video"
           @click="updateMainVideoStreamManager(sub)"
         />
       </div>
+    </q-page-container>
 
-      <!-- 방에 들어갔을 때 같이 보이게 될 채팅창 -->
-      <karaoke-chat />
+    <!-- 하단 메뉴바 -->
+    <q-footer>
+      <q-tabs align="justify" active-color="positive" indicator-color="primary">
+        <q-tab
+          name="audio-filter"
+          label="Audio Filter"
+          @click="toggleModal('audio-filter')"
+        />
 
-      <!-- 캠활성화, 음소거 버튼 -->
-      <input-controller />
+        <q-tab
+          name="karaoke-chat"
+          label="Karaoke Chat"
+          @click="toggleModal('karaoke-chat')"
+        />
 
-      <!-- 캠,오디오 선택 옵션 -->
-      <input-selector />
+        <q-tab
+          name="input-controller"
+          label="Input Controller"
+          @click="toggleModal('input-controller')"
+        />
 
-      <!-- 녹화 기능 -->
-      <recording-video />
-    </div>
-  </div>
+        <q-tab
+          name="input-selector"
+          label="Input Selector"
+          @click="toggleModal('input-selector')"
+        />
+
+        <q-tab
+          name="recording-video"
+          label="Recording Video"
+          @click="toggleModal('recording-video')"
+        />
+
+        <q-tab
+          name="reserve-song"
+          label="예약하기"
+          @click="toggleModal('reserve-song')"
+        />
+
+        <q-tab
+          name="reserve-list"
+          label="예약목록"
+          @click="toggleModal('reserve-list')"
+        />
+      </q-tabs>
+    </q-footer>
+  </q-layout>
+
+  <audio-filter />
+  <karaoke-chat />
+  <input-controller />
+  <input-selector />
+  <recording-video />
+  <reserve-modal />
+  <reserve-list />
+
+  <update-modal />
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import pref from "@/js/config/preference.js";
 
-import NavBar from "@/layouts/NavBar.vue";
-import UserVideo from "@/components/karaoke/UserVideo.vue";
-import AudioFilter from "@/components/karaoke/AudioFilter.vue";
-import KaraokeChat from "@/components/karaoke/KaraokeChat.vue";
-import InputController from "@/components/karaoke/InputController.vue";
-import InputSelector from "@/components/karaoke/InputSelector.vue";
-import RecordingVideo from "src/components/karaoke/RecordingVideo.vue";
+import UserVideo from "@/components/karaoke/video/UserVideo.vue";
+import AudioFilter from "@/components/karaoke/session/AudioFilter.vue";
+import KaraokeChat from "@/components/karaoke/session/KaraokeChat.vue";
+import InputController from "@/components/karaoke/session/InputController.vue";
+import InputSelector from "@/components/karaoke/session/InputSelector.vue";
+import RecordingVideo from "@/components/karaoke/session/RecordingVideo.vue";
+import UpdateModal from "@/components/karaoke/session/UpdateModal.vue";
+import ReserveModal from "@/components/karaoke/song/ReserveModal.vue";
+import ReserveList from "@/components/karaoke/song/ReserveList.vue";
+import NormalMode from "@/components/karaoke/NormalMode.vue";
+import PerfectScore from "@/components/karaoke/PerfectScore.vue";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 // store 사용
 const store = useKaraokeStore();
 const router = useRouter();
+const songMode = ref(true);
 
 // 다시그려내기 위해 computed 작성
 const mainStreamManagerComputed = computed(() => store.mainStreamManager);
 const publisherComputed = computed(() => store.publisher);
 const subscribersComputed = computed(() => store.subscribers);
+
+const openModal = () => {
+  store.updateModal = true;
+};
 
 async function leaveSession() {
   await store.leaveSession();
@@ -88,6 +164,35 @@ function updateMainVideoStreamManager(stream) {
   if (store.mainStreamManager === stream) return;
   store.mainStreamManager = stream;
 }
+
+const toggleModal = (modalName) => {
+  store.toggleModals[modalName] = true;
+};
 </script>
 
-<style scoped></style>
+<style scoped>
+.custom-header {
+  height: 50px;
+}
+.user-video {
+  cursor: pointer;
+}
+
+#video-container {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+}
+
+/* 추가한 클래스로 반응형 스타일을 지정합니다. */
+.responsive-container {
+  flex-wrap: nowrap; /* 자식 요소들이 한 줄에 나오도록 설정 */
+}
+
+/* 미디어 쿼리를 사용하여 페이지 크기에 따라 스타일을 동적으로 조절합니다. */
+@media (max-width: 768px) {
+  .responsive-container {
+    flex-wrap: wrap; /* 페이지 크기가 작을 때는 요소들이 여러 줄에 나오도록 설정 */
+  }
+}
+</style>
