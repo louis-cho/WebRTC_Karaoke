@@ -72,18 +72,7 @@
 
       <!-- 네번째 div(댓글 목록) -->
       <div ref="commentContainer">
-        <div v-for="comment in comments" :key="comment.COMMENT_ID">
-          <div class="display-flex">
-            <div class="comment-img-container2">
-              <!-- <img :src="comment.profileImage" class="profile-image" alt="댓글 작성자 프로필 이미지"> -->
-            </div>
-            <div class="comments">
-              <div><strong>{{ comment.nickname }} 닉네임</strong></div>
-              <div>{{ comment.CONTENT }}</div>
-            </div>
-          </div>
-          <hr>
-        </div>
+        <CommentItem :comments="comments" />
       </div>
 
     </div>
@@ -115,13 +104,17 @@ import { ref, nextTick, onMounted } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
-import { fetchComment, renderComments } from "@/js/comment/comment.js";
+import { fetchComment } from "@/js/comment/comment.js";
+import CommentItem from "@/components/CommentItem.vue";
+
 
 const router = useRouter();
-
+const comments = ref([]);
 const newComment = ref("");
 const commentContainer = ref(null);
 const modal = ref(false);
+
+
 
 const goBack = function () {
   router.go(-1);
@@ -158,15 +151,6 @@ const getSongSinger = (feed_id) => {
   return '빅뱅';
 }
 
-
-const addComment = function(newCommentData) {
-
-  comments.value.push(newCommentData);
-  // 댓글 입력 창 초기화
-  newComment.value = '';
-  // 스크롤을 항상 아래로 내림
-  scrollToBottom();
-}
 
 
 
@@ -205,30 +189,27 @@ const scrollToBottom = () => {
 //     MODIFIED_AT: "2023-03-11-11:20" },
 // ]);
 
-
-const comments = ref([]);
-
 onMounted(async () => {
   // 페이지 로드 시 댓글을 가져오도록 설정하거나, 필요한 이벤트에 맞게 호출하세요.
   await fetchAndRenderComments();
 });
 
+// fetchAndRenderComments 함수 내부에 추가
 async function fetchAndRenderComments() {
   try {
-    // 피드 아이디와 페이지 번호를 지정하여 댓글을 가져옴
-    const feedId = 1; // 피드 아이디를 실제 값으로 변경
-    const pageNo = 0; // 페이지 번호를 필요에 맞게 변경
+    const feedId = 1; // 실제 feedId로 교체
+    const pageNo = 0; // 실제 pageNo로 교체
 
+    // 댓글 가져오기
     const commentTree = await fetchComment(feedId, pageNo);
 
-    // 댓글 렌더링
-    for(let elem in commentTree) {
-      console.log(elem);
-      addComment(elem);
-    }
+    // 댓글 ref 업데이트
+    comments.value = commentTree;
 
+    // 콘솔에 댓글 출력
+    console.log('Comments:', comments.value);
   } catch (error) {
-    console.error('Error fetching and rendering comments:', error);
+    console.error('댓글 가져오기 및 렌더링 중 오류 발생:', error);
   }
 }
 
