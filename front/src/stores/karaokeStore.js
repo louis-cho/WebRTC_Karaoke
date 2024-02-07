@@ -1,9 +1,7 @@
 import { defineStore } from "pinia";
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
-import { useRouter } from "vue-router";
-
-axios.defaults.headers.post["Content-Type"] = "application/json";
+import pref from "@/js/config/preference.js";
 
 export const useKaraokeStore = defineStore("karaoke", {
   state: () => ({
@@ -13,8 +11,22 @@ export const useKaraokeStore = defineStore("karaoke", {
 
     createModal: false,
     updateModal: false,
-    isPrivate: false,
+    toggleModals: {
+      "audio-filter": false,
+      "karaoke-chat": false,
+      "input-controller": false,
+      "input-selector": false,
+      "recording-video": false,
+      "reserve-song": false,
+    },
+    audioFilter: false,
+    chatModal: false,
+    inputControllerModal: false,
+    inputSelectorModal: false,
+
+    sessionName: undefined,
     userName: "사용자" + Math.round(Math.random() * 100),
+    isPrivate: false,
     isModerator: false,
     kicked: true,
 
@@ -25,7 +37,6 @@ export const useKaraokeStore = defineStore("karaoke", {
     publisher: undefined,
     subscribers: [],
     token: undefined,
-    sessionName: undefined,
 
     // 방 설정을 위한 변수
     numberOfParticipants: undefined,
@@ -58,7 +69,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       this.password = password;
 
       await axios.post(
-        this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/createSession",
+        this.APPLICATION_SERVER_URL + "/karaoke/sessions/createSession",
         {
           sessionName: sessionName,
           numberOfParticipants: numberOfParticipants,
@@ -121,7 +132,7 @@ export const useKaraokeStore = defineStore("karaoke", {
 
       // 인원수 확인
       const participants = await axios.post(
-        this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/checkNumber",
+        this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkNumber",
         { sessionName: sessionName },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -132,7 +143,7 @@ export const useKaraokeStore = defineStore("karaoke", {
 
       // 비공개 확인
       const isPrivate = await axios.post(
-        this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/checkPrivate",
+        this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPrivate",
         { sessionName: sessionName },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -143,7 +154,7 @@ export const useKaraokeStore = defineStore("karaoke", {
         const userInput = await this.showModal();
 
         const response = await axios.post(
-          this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/checkPassword",
+          this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPassword",
           { sessionName: sessionName, password: userInput },
           { headers: { "Content-Type": "application/json" } }
         );
@@ -156,7 +167,7 @@ export const useKaraokeStore = defineStore("karaoke", {
 
       // 토큰 생성
       const token = await axios.post(
-        this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/getToken",
+        this.APPLICATION_SERVER_URL + "/karaoke/sessions/getToken",
         {
           sessionName: sessionName,
           // filter 사용을 위해 create connection 시 body를 추가
@@ -217,17 +228,30 @@ export const useKaraokeStore = defineStore("karaoke", {
     async leaveSession() {
       this.kicked = false;
 
-      // --- 7) 'removeToken' 메서드를 호출하여 세션을 나갑니다. ---
-      await axios.post(
-        this.APPLICATION_SERVER_URL + "api/v1/karaoke/sessions/removeToken",
-        {
-          sessionName: this.sessionName,
-          token: this.token,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      // 방장이면 세션 닫기
+      if (this.isModerator) {
+        await axios.post(
+          this.APPLICATION_SERVER_URL + "/karaoke/sessions/closeSession",
+          {
+            sessionName: this.sessionName,
+            token: this.token,
+          },
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      } else {
+        await axios.post(
+          this.APPLICATION_SERVER_URL + "/karaoke/sessions/removeToken",
+          {
+            sessionName: this.sessionName,
+            token: this.token,
+          },
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      }
 
       // 모든 속성 비우기...
       this.session = undefined;

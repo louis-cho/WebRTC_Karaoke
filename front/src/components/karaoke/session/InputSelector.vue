@@ -1,31 +1,37 @@
 <template>
-  <!-- 캠,오디오 선택 옵션 -->
-  <div class="inline-selects">
-    <q-select
-      v-model="store.selectedCamera"
-      @update:model-value="handleCameraChange"
-      label="사용할 카메라를 선택하세요"
-      outlined
-      :options="store.cameras"
-      emit-value
-      map-options
-      option-value="deviceId"
-      option-label="label"
-      class="inline-select"
-    />
-    <q-select
-      v-model="store.selectedAudio"
-      @update:model-value="handleAudioChange"
-      label="사용할 마이크를 선택하세요"
-      outlined
-      :options="store.audios"
-      emit-value
-      map-options
-      option-value="deviceId"
-      option-label="label"
-      class="inline-select"
-    />
-  </div>
+  <q-dialog v-model="store.toggleModals['input-selector']">
+    <q-card>
+      <q-card-section>
+        <!-- 캠,오디오 선택 옵션 -->
+        <q-select
+          v-model="store.selectedCamera"
+          @update:model-value="handleCameraChange"
+          label="사용할 카메라를 선택하세요"
+          outlined
+          :options="store.cameras"
+          emit-value
+          map-options
+          option-value="deviceId"
+          option-label="label"
+        />
+        <q-select
+          v-model="store.selectedAudio"
+          @update:model-value="handleAudioChange"
+          label="사용할 마이크를 선택하세요"
+          outlined
+          :options="store.audios"
+          emit-value
+          map-options
+          option-value="deviceId"
+          option-label="label"
+        />
+      </q-card-section>
+
+      <q-card-section class="q-mt-sm q-mb-sm float-right">
+        <q-btn @click="closeModal" color="negative" label="닫기" />
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
@@ -81,16 +87,10 @@ async function replaceAudioTrack(deviceId) {
     console.error("Error replacing audio track:", error);
   }
 }
+
+function closeModal() {
+  store.toggleModals["input-selector"] = false;
+}
 </script>
 
-<style scoped>
-.inline-selects {
-  white-space: nowrap; /* 줄 바꿈 방지 */
-}
-
-.inline-select {
-  display: inline-block;
-  width: 33%; /* 적절한 너비를 조절하세요 */
-  margin-right: 10px; /* 필요한 간격을 조절하세요 */
-}
-</style>
+<style scoped></style>

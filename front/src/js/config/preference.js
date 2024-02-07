@@ -12,6 +12,8 @@ app.api.user = {};
 app.api.user.login = "/user/login";
 app.api.user.register = "/user/register";
 
+app.api.comment = {};
+app.api.comment.fetch = "/comment/feed/";
 app.kor = {};
 
 app.kor.mainPage = {};
