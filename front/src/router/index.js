@@ -48,16 +48,10 @@ export default route(function (/* { store, ssrContext } */) {
       },
     })
       .then(response => {
-        console.log("response---");
-        console.log(response.data.authStatus)
+        console.log("ComponenGuardResponse---");
+        console.log(response.headers)
         console.log(response.headers['authStatus'])
-        const authStatus = response.data.authStatus;
 
-        if(authStatus == 0 && !(window.location.href == "http://localhost:9000/")) {
-          alert("로그인이 필요합니다")
-          window.location.replace("http://localhost:9000/")
-          return ;
-        }
         next();
       })
       .catch(error => {
