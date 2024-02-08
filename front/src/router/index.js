@@ -34,31 +34,31 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE)
   })
 
-  Router.beforeResolve((to, from, next) => {
-    console.log("컴포넌트 가드 적용")
+  // Router.beforeResolve((to, from, next) => {
+  //   console.log("컴포넌트 가드 적용")
 
-    const serverUrl = pref.app.api.protocol + pref.app.api.host + "/point";
+  //   const serverUrl = pref.app.api.protocol + pref.app.api.host + "/auth/filter";
 
-    axios.get(serverUrl, {
-      method: 'GET',
-      headers: {
-        'Authorization' : getCookie("Authorization"),
-        'refreshToken' : getCookie("refreshToken"),
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => {
-        console.log("ComponenGuardResponse---");
-        console.log(response.headers)
-        console.log(response.headers['authStatus'])
+  //   axios.get(serverUrl, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Authorization' : getCookie("Authorization"),
+  //       'refreshToken' : getCookie("refreshToken"),
+  //       'Content-Type': 'application/json',
+  //     },
+  //   })
+  //     .then(response => {
+  //       console.log("ComponenGuardResponse---");
+  //       console.log(response.headers)
+  //       console.log(response.headers['authStatus'])
 
-        next();
-      })
-      .catch(error => {
-        console.error("Error: ", error);
-      })
+  //       next();
+  //     })
+  //     .catch(error => {
+  //       console.error("Error: ", error);
+  //     })
 
-  })
+  // })
 
   return Router
 })
