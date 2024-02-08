@@ -1,6 +1,12 @@
 import { route } from 'quasar/wrappers'
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
 import routes from './routes'
+import app from "../js/config/preference.js";
+import useCookie  from '../js/cookie.js';
+import axios from "axios";
+
+let pref = app;
+const { setCookie, getCookie, removeCookie } = useCookie();
 
 /*
  * 만약 SSR 모드로 빌드되지 않았다면,
@@ -26,6 +32,46 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE)
+  })
+
+  Router.beforeResolve((to, from, next) => {
+    const serverUrl = pref.app.api.protocol + pref.app.api.host + "/auth/filter";
+
+    axios.get(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization' : getCookie("Authorization"),
+        'refreshToken' : getCookie("refreshToken"),
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => {
+        console.log("ComponenGuardResponse---");
+        console.log(response.data["authStatus"])
+        const authStatus = response.data["authStatus"]
+
+        // const pattern = /^http:\/\/localhost:9000\/.+/;
+        // const destUrl = "http://localhost:9000" + to.fullPath
+
+        const pattern = /^https:\/\/i10a705.p.ssafy.io\/.+/;
+        const destUrl = "https://i10a705.p.ssafy.io" + to.fullPath
+
+
+        if((authStatus == 0 || authStatus == 3 || authStatus == 4) && pattern.test(destUrl)) {
+          alert("로그인 후 이용가능합니다.")
+          // window.location.replace("/")
+          next();
+        } else {
+          next();
+        }
+
+      })
+      .catch(error => {
+        console.error("Error: ", error);
+        console.log("router/index.js ComponentGuard axios 통신 에러, 일단 넘김")
+        next();
+      })
+
   })
 
   return Router
