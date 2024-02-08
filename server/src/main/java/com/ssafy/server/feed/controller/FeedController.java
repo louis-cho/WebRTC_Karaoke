@@ -30,24 +30,19 @@ public class FeedController {
     @Autowired
     private RankService rankService;
 
+    //그냥 전체 Feed 목록 Default를 최신순으로
     @GetMapping("/get/all")
     public ResponseEntity<Page<Feed>> getAllPost(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "10") int size){
         Page<Feed> recentPageList;
         try{
             Pageable pageable = PageRequest.of(page, size);
-            recentPageList = feedService.getAllFeedList()
+            recentPageList = feedService.sortRecentFeedList(pageable);
+        } catch (Exception e){
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_SORT_ERROR));
         }
-        Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(feedService.getAllFeedList(pageable));
+        return ResponseEntity.ok(recentPageList);
     }
-
-//    @GetMapping("/get/recent")
-//    public ResponseEntity<Page<Feed>> getRecentPost(@RequestParam(defaultValue = "0") int page,
-//                                                    @RequestParam(defaultValue = "10") int size){
-//        Pageable pageable = PageRequest.of(page, size);
-//        return ResponseEntity.ok(feedService.sortRecentFeedList(pageable));
-//    }
 
     @GetMapping("/get/old")
     public ResponseEntity<Page<Feed>> getOldPost(@RequestParam(defaultValue = "0") int page,

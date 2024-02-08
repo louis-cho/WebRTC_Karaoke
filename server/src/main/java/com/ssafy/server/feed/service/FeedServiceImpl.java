@@ -58,6 +58,7 @@ public class FeedServiceImpl implements FeedService {
             Feed existingFeed = optionalExistingFeed.get();
             existingFeed.setUserPk(updatedFeed.getUserPk());
             existingFeed.setSongId(updatedFeed.getSongId());
+            existingFeed.setTitle(updatedFeed.getTitle());
             existingFeed.setContent(updatedFeed.getContent());
             existingFeed.setThumbnailUrl(updatedFeed.getThumbnailUrl());
             existingFeed.setVideoUrl(updatedFeed.getVideoUrl());
