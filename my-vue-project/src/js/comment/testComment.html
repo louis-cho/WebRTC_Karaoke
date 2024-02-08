@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>댓글</title>
+</head>
+<body>
+  <div id="comments-container"></div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+<script type="module">
+  /*
+  회원 가입 비밀 번호 암호화 예제
+  */
+  import {fetchComment, clearComment, renderComments } from "./comment.js";
+
+  let commentTree = await fetchComment(1, 0);
+
+  // clearComment();
+  renderComments(commentTree);
+
+</script>
+</html>
