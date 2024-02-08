@@ -202,6 +202,7 @@ public class UserController {
 
     @PostMapping("/update")
     public ResponseEntity<Boolean> update(@RequestBody JsonNode jsonNode) {
+        JsonNode userKey = jsonNode.get("userKey");
         JsonNode nicknameNode = jsonNode.get("nickname");
         JsonNode profileImgUrlNode = jsonNode.get("profileImgUrl");
         JsonNode introductionNode = jsonNode.get("introduction");
@@ -214,6 +215,8 @@ public class UserController {
         if(profileImgUrlNode != null)
             user.setProfileImgUrl(profileImgUrlNode.asText());
         try {
+            int userPk = userService.getUserPk(UUID.fromString(userKey.asText()));
+            user.setUserPk(userPk);
             userService.updateUser(user);
         } catch(Exception e ) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(UserExceptionEnum.USER_UPDATE_FAIL));
