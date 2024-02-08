@@ -37,7 +37,7 @@ export default route(function (/* { store, ssrContext } */) {
   // Router.beforeResolve((to, from, next) => {
   //   console.log("컴포넌트 가드 적용")
 
-  //   const serverUrl = pref.app.api.protocol + pref.app.api.host + "/point";
+  //   const serverUrl = pref.app.api.protocol + pref.app.api.host + "/auth/filter";
 
   //   axios.get(serverUrl, {
   //     method: 'GET',
