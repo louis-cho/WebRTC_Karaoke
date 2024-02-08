@@ -13,9 +13,11 @@ app.api.socket = "ws:";
 app.api.user = {};
 app.api.user.login = "/user/login";
 app.api.user.register = "/user/register";
+app.api.user.fetch = "/user/get/"
 
 app.api.comment = {};
 app.api.comment.fetch = "/comment/feed/";
+app.api.comment.count = "/comment/get/count/";
 
 app.api.feed = {};
 app.api.feed.fetch = "/feed/get/all";

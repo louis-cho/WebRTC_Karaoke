@@ -27,7 +27,7 @@
 
       <div v-for="feed in feeds" :key="feed.feedId" >
         <div class="profile">
-          <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.userPk)})` }">
+          <div class="profile-img-container" v-if="feed.user" :style="{ backgroundImage: `url(${feed.user.profileImgUrl})` }">
             <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
           </div>
 
@@ -35,7 +35,7 @@
             <div class="space-between" >
               <div>
                 <!-- 닉네임 -->
-                <p>{{ getUserName(feed.userPk) }}</p>
+                <p v-if="feed.user">{{ feed.user.nickname }}</p>
               </div>
 
             </div>
@@ -57,7 +57,7 @@
         <div class="flex-row">
         <div class="margin-right-20"  @click="goFeedDetail(feed.feedId)">
           <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
-          <span>0</span>
+          <span>{{feed.commentCount}}</span>
         </div>
         <div class="margin-right-20" @click="toggleLike(feed.feedId)">
           <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
@@ -91,6 +91,8 @@ import {fetchHitCount} from "@/js/hit/hit.js";
 import {fetchLikeCount} from "@/js/like/like.js";
 import { fetchFeedList } from '@/js/feed/feed.js';
 import { fetchSong } from '@/js/song/song.js';
+import { fetchUser } from '@/js/user/user.js';
+import {fetchCommentCount} from '@/js/comment/comment.js';
 
 let pref = app;
 const feeds = ref([]);
@@ -112,6 +114,8 @@ const fetchFeedData = async () => {
 
   for(let elem of feeds.value) {
     elem.song = await fetchSong(elem.songId);
+    elem.user = await fetchUser(elem.userPk);
+    elem.commentCount = await fetchCommentCount(elem.feedId);
     elem.viewCount = await fetchHitCount(elem.feedId);
     elem.likeCount = await fetchLikeCount(elem.feedId);
   }
@@ -121,25 +125,12 @@ const fetchFeedData = async () => {
   console.log('Feeds:', feeds.value);
 }
 
-const getUserProfile = (userPK) => {
-  // 사용자 프로필 이미지 가져오기 로직..
-  return 'https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg';
+const getUser = async (userPk) => {
+  let user = await fetchUser(userPk);
+  return user;
 }
 
-const getUserName = (userPK) => {
-  // 닉네임 가져오기 로직...
-  return '닉네임1';
-}
 
-const getSongTitle = async (songId) => {
-  let song = await fetchSong(songId);
-  return song.title;
-}
-
-const getSongSinger = async (songId) => {
-  let song = await fetchSong(songId);
-  return song.singer;
-}
 
 // 스크롤 이벤트 핸들러
 const handleScroll = () => {

@@ -56,13 +56,13 @@ function buildCommentTree(comments) {
 
     comments.data.forEach(elem => {
       elem.level = 0; // Initialize level for top-level comments
-  
+
       if (elem.comment.parentCommentId !== null && elem.comment.parentCommentId >= 0) {
           const parentComment = commentMap.get(elem.comment.parentCommentId);
-  
+
           // Set the level of the current comment based on the parent's level
           elem.comment.level = parentComment.level + 1;
-  
+
           // Add the current comment as a child of the parent comment
           parentComment.children.push(elem);
       } else {
@@ -90,3 +90,21 @@ export function renderComments(comments, level = 0) {
 
 // const commentTree = buildCommentTree(commentsData);
 // renderComments(commentTree);
+
+export async function fetchCommentCount(feedId) {
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.comment.count  + feedId;
+
+  return await fetch(serverUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+  .then(response => response.json())
+  .then(result => {
+    return result.data;
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
