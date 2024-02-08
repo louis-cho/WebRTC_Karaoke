@@ -45,6 +45,10 @@ const routes = [
     component: () => import("@/pages/InformationEditPage.vue"),
   },
   {
+    path: "/friend_list",
+    component: () => import("@/pages/MyFriendList.vue"),
+  },
+  {
     path: "/:catchAll(.*)*",
     component: () => import("@/pages/ErrorNotFound.vue"),
   },
