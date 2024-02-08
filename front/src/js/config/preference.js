@@ -20,7 +20,8 @@ app.api.comment.fetch = "/comment/feed/";
 app.api.comment.count = "/comment/get/count/";
 
 app.api.feed = {};
-app.api.feed.fetch = "/feed/get/all";
+app.api.feed.fetchAll = "/feed/get/all";
+app.api.feed.fetchOne = "/feed/get/";
 
 app.api.chat = {};
 app.api.chat.room = {};
