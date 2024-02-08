@@ -11,21 +11,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/chat")
+@RequestMapping("/api/v1/chat")
 public class ChatController {
 
     private final ChatService chatService;
@@ -49,17 +45,28 @@ public class ChatController {
         return ResponseEntity.ok(chatService.loadFromRedis(chatRoomId,false, false));
     }
 
-    //redis에 있는 해당 채팅방의 "모든" 채팅 내역 조회 후, 반환
+    //redis에 있는 해당 채팅방의 채팅 내역 조회 및 페이징 처리 반환
     @GetMapping("/room/{chatRoomId}/oldMsg")
-    public ResponseEntity<List<Object>> loadOldMsg(@PathVariable String chatRoomId) throws JsonProcessingException {
-        List<Object> res = chatService.loadFromRedis(chatRoomId,true, false);
-        int lenCheck = res.size();
-        if(lenCheck == 0){
+    public ResponseEntity<List<Object>> loadOldMsg( @PathVariable String chatRoomId,
+                                                    @RequestParam int page,
+                                                    @RequestParam int size) throws JsonProcessingException {
+        // Redis에서 해당 채팅방의 전체 데이터를 가져오기
+        List<Object> res = chatService.loadFromRedis(chatRoomId, true, false);
+
+        if (res.isEmpty()) {
+            // Redis에 데이터가 없으면 JPA에서 데이터를 가져와서 Redis에 저장
             List<Chat> chatList = chatService.loadFromJPA(chatRoomId);
-            for(Chat chat : chatList) chatService.saveToRedis(chat, true);
-            res = new ArrayList<>(chatList);
-            Collections.reverse(res);
+            for (Chat chat : chatList) {
+                chatService.saveToRedis(chat, true);
+            }
+
+            // 전체 데이터를 Redis에 저장한 후, 페이지네이션을 위해 일부만 가져와서 반환
+            res = paginate(Collections.singletonList(chatList), page, size);
+        } else {
+            // Redis에 데이터가 있으면 해당 페이지의 데이터만 가져와서 반환
+            res = paginate(res, page, size);
         }
+
         return ResponseEntity.ok(res);
     }
 
@@ -75,5 +82,18 @@ public class ChatController {
     @RabbitListener(queues = CHAT_QUEUE_NAME)
     public void receive(Chat chat){
         System.out.println("received : " + chat.getMessage());
+    }
+
+    //redis로 페이지네이션 처리
+    private List<Object> paginate(List<Object> dataList, int page, int size) {
+        int totalSize = dataList.size();
+        int startIndex = (page - 1) * size;
+        int endIndex = Math.min(startIndex + size, totalSize);
+
+        if (startIndex >= totalSize) {
+            return Collections.emptyList(); // 페이지 범위를 벗어나면 빈 리스트 반환
+        }
+
+        return dataList.subList(startIndex, endIndex);
     }
 }

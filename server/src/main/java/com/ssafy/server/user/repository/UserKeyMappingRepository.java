@@ -9,4 +9,7 @@ import java.util.UUID;
 public interface UserKeyMappingRepository extends JpaRepository<UserKeyMapping, UUID> {
 
     Optional<UserKeyMapping> findByUserPk(int userPk);
+
+    Optional<UserKeyMapping> findByUuid(UUID uuid);
+
 }

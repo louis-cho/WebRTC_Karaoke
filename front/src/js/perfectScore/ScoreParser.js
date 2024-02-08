@@ -86,7 +86,6 @@ export function parseScore(txt) {
                   tmp += ch;
                   next();
               }
-              console.log(tmp.length)
               note.lyric = tmp; // 가사 설정
               tmp = "";
               next();

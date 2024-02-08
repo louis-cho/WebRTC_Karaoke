@@ -1,10 +1,7 @@
 package com.ssafy.server.user.service;
 
 import com.ssafy.server.user.document.UserDocument;
-import com.ssafy.server.user.model.User;
-import com.ssafy.server.user.model.UserAuth;
-import com.ssafy.server.user.model.UserKeyMapping;
-import com.ssafy.server.user.model.UserPkMapping;
+import com.ssafy.server.user.model.*;
 import com.ssafy.server.user.repository.*;
 import com.ssafy.server.user.secure.RSA_2048;
 import com.ssafy.server.user.util.RSAKeyManager;
@@ -120,6 +117,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUser(int userPk) throws Exception {
+       return userRepository.findByUserPk(userPk);
+    }
+
+    @Override
     public User createUser(UserAuth userAuth, String nickname) throws Exception {
 
         int userPk = userAuth.getUserPk();
@@ -173,14 +175,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public int getUserPk(UUID uuid) {
-        Optional<UserKeyMapping> optionalData = userKeyMappingRepository.findById(uuid);
+        Optional<UserKeyMapping> optionalData = userKeyMappingRepository.findByUuid(uuid);
 
         if (optionalData.isPresent()) {
             UserKeyMapping data = optionalData.get();
-            int userPk = data.getUserPk();
-            return userPk;
+            return data.getUserPk();
         } else {
-            // Optional에 값이 없는 경우, 원하는 로직을 수행하거나 에러 처리를 수행할 수 있음
             throw new RuntimeException("User not found for UUID: " + uuid);
         }
     }
