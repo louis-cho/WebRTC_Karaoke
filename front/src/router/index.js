@@ -35,8 +35,6 @@ export default route(function (/* { store, ssrContext } */) {
   })
 
   Router.beforeResolve((to, from, next) => {
-    console.log("컴포넌트 가드 적용")
-
     const serverUrl = pref.app.api.protocol + pref.app.api.host + "/auth/filter";
 
     axios.get(serverUrl, {
@@ -49,9 +47,24 @@ export default route(function (/* { store, ssrContext } */) {
     })
       .then(response => {
         console.log("ComponenGuardResponse---");
-        console.log(response.data)
+        console.log(response.data["authStatus"])
+        const authStatus = response.data["authStatus"]
 
-        next();
+        // const pattern = /^http:\/\/localhost:9000\/.+/;
+        // const destUrl = "http://localhost:9000" + to.fullPath
+
+        const pattern = /^https:\/\/i10a705.p.ssafy.io\/.+/;
+        const destUrl = "https://https://i10a705.p.ssafy.io/" + to.fullPath
+
+
+        if((authStatus == 0 || authStatus == 3 || authStatus == 4) && pattern.test(destUrl)) {
+          alert("로그인 후 이용가능합니다.")
+          // window.location.replace("/")
+          next();
+        } else {
+          next();
+        }
+
       })
       .catch(error => {
         console.error("Error: ", error);
