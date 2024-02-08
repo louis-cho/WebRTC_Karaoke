@@ -3,9 +3,11 @@ package com.ssafy.server.feed.service;
 import com.ssafy.server.feed.model.Feed;
 import com.ssafy.server.feed.repository.FeedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -20,6 +22,21 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    public Page<Feed> getAllFeedList(Pageable pageable) {
+        return feedRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Feed> sortRecentFeedList(Pageable pageable) {
+        return feedRepository.findAllByOrderByTimeDesc(pageable);
+    }
+
+    @Override
+    public Page<Feed> sortOldFeedList(Pageable pageable) {
+        return feedRepository.findAllByOrderByTimeAsc(pageable);
+    }
+
+    @Override
     public Feed getFeedById(int feedId) {
         Optional<Feed> optionalFeed = feedRepository.findById(feedId);
         return optionalFeed.orElse(null);
@@ -27,6 +44,7 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     public Feed createFeed(Feed newFeed) {
+        newFeed.setTime(String.valueOf(LocalDateTime.now()));
         // 데이터베이스에 새로운 피드 생성
         return feedRepository.save(newFeed);
     }

@@ -32,6 +32,8 @@ public class Feed {
     private char status;
     @Column(name = "total_point")
     private int totalPoint;
+    @Column(name = "time")
+    private String time;
 
     // getters, setters, constructors
 }
