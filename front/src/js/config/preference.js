@@ -17,6 +17,9 @@ app.api.user.register = "/user/register";
 app.api.comment = {};
 app.api.comment.fetch = "/comment/feed/";
 
+app.api.feed = {};
+app.api.feed.fetch = "/feed/get/all";
+
 app.api.chat = {};
 app.api.chat.room = {};
 app.api.chat.room.list = "/chatroom/list/";
@@ -25,11 +28,26 @@ app.api.chat.old = "/oldMsg";
 app.api.chat.new = "/newMsg";
 app.api.chat.subscribe = "/exchange/chat.exchange/room.";
 
+app.api.song = {};
+app.api.song.fetch = "/song/";
+
 app.api.hit = {};
 app.api.hit.count = "/hit/get/";
 
 app.api.like = {};
 app.api.like.count = "/like/get/";
+
+// app.api.infoEdit = {};
+
+app.api.friends = {};
+app.api.friends.get = "/friends/";
+app.api.friends.list ="/list/";
+// app.api.friends.request = "friends/request/";
+// app.api.friends.accept = "friends/accept/";
+// app.api.friends.delete = "friends/delete/";
+// app.api.friends.incoming.requests = "friends/incoming-requests/";
+// app.api.friends.outgoing.requests = "friends/outgoing-requests/";
+
 
 app.kor = {};
 

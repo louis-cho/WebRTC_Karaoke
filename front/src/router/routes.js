@@ -7,6 +7,11 @@ const routes = [
     component: () => import("@/pages/HomePage.vue"),
   },
   {
+    path: "/notification",
+    name: "notification",
+    component: () => import("@/pages/NotificationTest.vue"),
+  },
+  {
     path: "/karaoke",
     component: () => import("@/pages/KaraokeListPage.vue"),
   },
@@ -38,6 +43,10 @@ const routes = [
   {
     path: "/info_edit",
     component: () => import("@/pages/InformationEditPage.vue"),
+  },
+  {
+    path: "/friend_list",
+    component: () => import("@/pages/MyFriendList.vue"),
   },
   {
     path: "/:catchAll(.*)*",

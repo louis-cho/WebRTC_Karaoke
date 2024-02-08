@@ -1,7 +1,7 @@
 <template>
   <q-dialog v-model="store.toggleModals['reserve-list']">
     <q-card>
-      <q-card-section>
+      <q-card-section style="min-width: 512px">
         <q-layout>
           <q-header
             class="bg-transparent"
@@ -19,19 +19,24 @@
             <q-page class="flex flex-center">
               <q-list>
                 <q-item v-for="list in lists" :key="list.id">
-                  <q-item-section
-                    style="
-                      display: flex;
-                      justify-content: space-between;
-                      width: 100%;
-                    "
-                  >
-                    <q-item-label>{{ list.userName }}</q-item-label>
-                    <q-item-label>{{ list.title }}</q-item-label>
-                    <q-item-label>{{ list.singer }}</q-item-label>
+                  <q-item-section class="q-mb-md">
+                    <div style="flex: 1">
+                      <q-item-label class="text-h6">
+                        {{ list.title }}
+                      </q-item-label>
+                      <q-item-label class="text-h6">
+                        {{ list.singer }}
+                      </q-item-label>
+                    </div>
+                    <div>
+                      <q-item-label class="text-h6">
+                        {{ list.userName }}
+                      </q-item-label>
+                    </div>
                   </q-item-section>
 
                   <q-btn
+                    v-if="list.userName == store.userName || store.isModerator"
                     color="negative"
                     label="취소"
                     @click="
@@ -99,7 +104,6 @@ function cancelReserve(hashString) {
     })
     .then((response) => {
       console.log(response.data);
-      closeModal();
     })
     .catch((error) => {
       console.error("Error fetching songs:", error);

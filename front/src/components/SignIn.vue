@@ -100,6 +100,9 @@ export default {
     closeLoginModal() {
       this.loginModal = false;
     },
+    subNotification(){
+      console.log("구독요청실행.");
+    },
     async login() {
       console.log("로그인:", this.loginForm);
 
@@ -107,7 +110,7 @@ export default {
       let password = this.loginForm.password;
 
       await login(username, password);
-
+      await this.subNotification();
       this.closeLoginModal();
       // console.log(isLoggedIn)
     },
