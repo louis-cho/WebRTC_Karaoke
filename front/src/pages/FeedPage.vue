@@ -25,9 +25,9 @@
       <!-- 두번째 div -->
       <q-btn @click="goFeedDetail">피드 디테일 페이지로</q-btn>
 
-      <div v-for="feed in filteredFeeds" :key="feed.FEED_ID" >
+      <div v-for="feed in feeds" :key="feed.feedId" >
         <div class="profile">
-          <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }">
+          <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.userPk)})` }">
             <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
           </div>
 
@@ -35,37 +35,37 @@
             <div class="space-between" >
               <div>
                 <!-- 닉네임 -->
-                <p>{{ getUserName(feed.USER_PK) }}</p>
+                <p>{{ getUserName(feed.userPk) }}</p>
               </div>
 
             </div>
             <div class="space-start">
               <!-- 노래제목 -->
-              <div>{{ getSongTitle(feed.FEED_ID) }}-</div>
+              <div v-if="feed.song">{{ feed.song.title }}-</div>
               <!-- 가수 -->
-              <div>{{ getSongSinger(feed.FEED_ID) }}</div>
-              <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.STATUS === '1' ? 'secondary' : 'black')" :label="feed.STATUS === '0' ? '전체 공개' : (feed.STATUS === '1' ? '친구 공개' : '비공개')" size="sm" />
+              <div v-if="feed.song">{{ feed.song.singer }}</div>
+              <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.status === '1' ? 'secondary' : 'black')" :label="feed.status === '0' ? '전체 공개' : (feed.status === '1' ? '친구 공개' : '비공개')" size="sm" />
             </div>
           </div>
         </div>
 
-        <p>{{ feed.CONTENT }}</p>
+        <p>{{ feed.content }}</p>
         <video controls width="100%" ref="videoPlayer">
           <source :src="feed.VIDEO_URL" type="video/mp4">
         </video>
 
         <div class="flex-row">
-        <div class="margin-right-20"  @click="goFeedDetail(feed.FEED_ID)">
+        <div class="margin-right-20"  @click="goFeedDetail(feed.feedId)">
           <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
           <span>0</span>
         </div>
-        <div class="margin-right-20" @click="toggleLike(feed.FEED_ID)">
+        <div class="margin-right-20" @click="toggleLike(feed.feedId)">
           <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
-          <span>{{ feed.LIKE_COUNT }}</span>
+          <span>{{ feed.likeCount }}</span>
         </div>
         <div class="margin-right-20">
           <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
-          <span>{{ feed.VIEW_COUNT }}</span>
+          <span>{{ feed.viewCount }}</span>
         </div>
         <div class="margin-right-20">
           <img class="margin-right-10" src="@/assets/icon/dollar.png" alt="후원">
@@ -90,30 +90,35 @@ import app from "@/js/config/preference.js";
 import {fetchHitCount} from "@/js/hit/hit.js";
 import {fetchLikeCount} from "@/js/like/like.js";
 import { fetchFeedList } from '@/js/feed/feed.js';
+import { fetchSong } from '@/js/song/song.js';
 
 let pref = app;
-let feeds = ref([]);
-
+const feeds = ref([]);
 const router = useRouter();
 
 const goFeedDetail = () => {
   router.push('/feed_detail')
 }
 
-onBeforeMount(() => {
-   fetchFeedData();
+onBeforeMount(async () => {
+   await fetchFeedData();
 });
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false)
 //가상 피드 데이터
 const fetchFeedData = async () => {
 
-  feeds.value = fetchFeedList(0);
+  feeds.value = await fetchFeedList(0,3);
 
   for(let elem of feeds.value) {
-    elem.VIEW_COUNT = await fetchHitCount(elem.feedId);
-    elem.LIKE_COUNT = await fetchLikeCount(elem.feedId);
+    elem.song = await fetchSong(elem.songId);
+    elem.viewCount = await fetchHitCount(elem.feedId);
+    elem.likeCount = await fetchLikeCount(elem.feedId);
   }
+
+
+  // feeds.value를 출력
+  console.log('Feeds:', feeds.value);
 }
 
 const getUserProfile = (userPK) => {
@@ -126,24 +131,14 @@ const getUserName = (userPK) => {
   return '닉네임1';
 }
 
-const getSongId = (feed_id) => {
-  // FEED_ID를 사용하여 SONG_ID를 가져오기...
-  // 예를 들어 빅뱅 거짓말 SONG_ID 10번이라 할 때
-  return 10;
+const getSongTitle = async (songId) => {
+  let song = await fetchSong(songId);
+  return song.title;
 }
 
-const getSongTitle = (feed_id) => {
-  // FEED_ID를 사용하여 SONG_ID를 가져오기...
-  const song_id = getSongId(feed_id);
-  // SONG_ID를 사용하여 TITLE을 가져오기...
-  return '거짓말';
-}
-
-const getSongSinger = (feed_id) => {
-  // FEED_ID를 사용하여 SONG_ID를 가져오기...
-  const song_id = getSongId(feed_id);
-  // SONG_ID를 사용하여 SINGER를 가져오기...
-  return '빅뱅';
+const getSongSinger = async (songId) => {
+  let song = await fetchSong(songId);
+  return song.singer;
 }
 
 // 스크롤 이벤트 핸들러
@@ -197,31 +192,31 @@ onUnmounted(() => {
 // 검색 기능을 위한 변수와 메소드 추가
 const searchQuery = ref('');
 
-const filteredFeeds = computed(() => {
-  return feeds.value.filter(feed => {
-    const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
-    const songTitleLowerCase = getSongTitle(feed.FEED_ID).toLowerCase();
-    return (
-      userNameLowerCase.includes(searchQuery.value.toLowerCase()) ||
-      songTitleLowerCase.includes(searchQuery.value.toLowerCase())
-    )
-  })
-})
+// const filteredFeeds = computed(() => {
+//   return feeds.value.filter(feed => {
+//     const userNameLowerCase = getUserName(feed.userPk).toLowerCase();
+//     const songTitleLowerCase = getSongTitle(feed.songId).toLowerCase();
+//     return (
+//       userNameLowerCase.includes(searchQuery.value.toLowerCase()) ||
+//       songTitleLowerCase.includes(searchQuery.value.toLowerCase())
+//     )
+//   })
+// })
 
-const search = () => {
-  const searchQueryLowerCase = searchQuery.value.toLowerCase();
+// const search = () => {
+//   const searchQueryLowerCase = searchQuery.value.toLowerCase();
 
-  feeds.value = feeds.value.filter(feed => {
-    const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
-    const songTitleLowerCase = getSongTitle(feed.FEED_ID).toLowerCase();
+//   feeds.value = feeds.value.filter(feed => {
+//     const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
+//     const songTitleLowerCase = getSongTitle(feed.songId).toLowerCase();
 
-    // 닉네임이나 노래제목에 검색어가 포함되어 있는지 확인
-    return (
-      userNameLowerCase.includes(searchQueryLowerCase) ||
-      songTitleLowerCase.includes(searchQueryLowerCase)
-    );
-  });
-}
+//     // 닉네임이나 노래제목에 검색어가 포함되어 있는지 확인
+//     return (
+//       userNameLowerCase.includes(searchQueryLowerCase) ||
+//       songTitleLowerCase.includes(searchQueryLowerCase)
+//     );
+//   });
+// }
 
 
 

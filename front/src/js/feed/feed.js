@@ -3,10 +3,10 @@ import app from "../config/preference.js";
 let pref = app;
 
 
-export async function fetchFeedList(feedId, pageNo, pageSize) {
-  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.fetch  + feedId;
+export async function fetchFeedList(pageNo, pageSize) {
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.fetch;
 
-  return await fetch(serverUrl, {
+  return await fetch(`${serverUrl}?page=${pageNo}&size=${pageSize}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -14,6 +14,6 @@ export async function fetchFeedList(feedId, pageNo, pageSize) {
   })
   .then(response => response.json())
   .then(result => {
-      return result.data;
+      return result.content;
     });
 }
