@@ -64,7 +64,7 @@ module.exports = configure(function (/* ctx */) {
         '@': '/src',
       },
 
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,

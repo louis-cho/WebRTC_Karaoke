@@ -100,6 +100,7 @@ export class App {
 
   // 악보 재생
   playSong() {
+    console.log(this.songEditor.score)
     console.log(parseScore(this.songEditor.score))
     this.drawer.start(parseScore(this.songEditor.score)); // 악보 그리기 시작
   }

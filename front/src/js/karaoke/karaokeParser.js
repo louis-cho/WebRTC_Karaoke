@@ -1,8 +1,8 @@
 // 가사 txt 관련 파싱 함수들 정의
+// parseScore: mml to score / parseLyric: score to lyrics / parseBundle: lyrics to bundles
 
 
-export function paserLyric(scoreData) {   // score to lyrics
-  console.log(scoreData)
+export function parseLyric(scoreData) {   // score to lyrics
   const lyrics = [];
   let lyricSet = [];
 
@@ -31,8 +31,6 @@ export function paserLyric(scoreData) {   // score to lyrics
       lyrics.push(lyricSet);
   }
 
-  console.log(lyrics)
-
   return lyrics;
 }
 
@@ -49,8 +47,6 @@ export function parseBundle(lyrics) { // lyrics to bundle
         bundles.push(combinedLyric);
     }
 
-
-    console.log(bundles)
     return bundles;
 }
 
@@ -142,7 +138,6 @@ export function parseScore(txt) {   // mml to score
                   tmp += ch;
                   next();
               }
-              console.log(tmp.length)
               note.lyric = tmp; // 가사 설정
               tmp = "";
               next();
@@ -367,7 +362,7 @@ const lyrics = [  // 개별 가사 data
   ],
 ]
 
-const parsedMML = [ // MML에서 ScoreParser.js로 최초로 parse된 data
+const scoreData = [ // MML에서 ScoreParser.js로 최초로 parse된 data
 {note: 2, octav: 3, length: 882.3529411764706, start: 0, lyric: '동'},
 {note: 7, octav: 3, length: 1323.5294117647059, start: 882.3529411764706, lyric: '해'},
 {note: 6, octav: 3, length: 441.1764705882353, start: 2205.8823529411766, lyric: '물'},

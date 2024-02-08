@@ -8,6 +8,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.util.Date;
+
 
 @Document(indexName = "likes")
 @Getter
@@ -26,7 +28,11 @@ public class LikesDocument {
     private int feedId;
 
     @Field(type = FieldType.Keyword) // Assuming you want to use FieldType.Keyword for 'status'
-    private char status;
+    private boolean status;
+
+    @Field(type = FieldType.Date)
+    private Date timestamp;
+
 
     // Constructor, getters, setters, and other necessary methods
 }

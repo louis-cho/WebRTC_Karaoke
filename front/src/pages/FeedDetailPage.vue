@@ -1,6 +1,7 @@
 <template>
   <div>
-    <TabItem />
+    <NavBar/>
+    <!-- <TabItem /> -->
     <!-- <h4>상세 피드 페이지</h4> -->
     <div class="my-feed">
 
@@ -14,23 +15,26 @@
 
       <!-- 두번째 div -->
       <div class="profile">
-        <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }">
-          <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
-        </div>
+        <!-- <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }"> -->
+          <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img">
+        <!-- </div> -->
 
         <div class="width-100">
           <div class="space-between" >
             <div>
-              <p>{{ getUserName(feed.USER_PK) }}JennierubyJane</p>
+              <!-- <p>{{ getNickName(feed.USER_PK) }}</p> -->
+              <p>JennierubyJane</p>
             </div>
             <div @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정">
             </div>
           </div>
           <div class="space-start">
-            <div>{{ getSongTitle(feed.FEED_ID) }} 거짓말/</div>
-            <div>{{ getSongSinger(feed.FEED_ID) }}빅뱅/</div>
-            <q-btn color="secondary" label=" 공개 " size="sm" />
+            <!-- <div>{{ getSongTitle(feed.FEED_ID) }} </div> -->
+            <p>거짓말-</p>
+            <!-- <div>{{ getSongSinger(feed.FEED_ID) }}</div> -->
+            <p>빅뱅</p>
+            <!-- <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.STATUS === '1' ? 'secondary' : 'black')" :label="feed.STATUS === '0' ? '전체 공개' : (feed.STATUS === '1' ? '친구 공개' : '비공개')" size="sm" /> -->
           </div>
         </div>
       </div>
@@ -74,7 +78,7 @@
               <!-- <img :src="comment.profileImage" class="profile-image" alt="댓글 작성자 프로필 이미지"> -->
             </div>
             <div class="comments">
-              <div><strong>{{ comment.username }} {{ 닉네임 }}</strong></div>
+              <div><strong>{{ comment.nickname }} 닉네임</strong></div>
               <div>{{ comment.CONTENT }}</div>
             </div>
           </div>
@@ -107,20 +111,29 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from "vue";
+import { ref, nextTick, onMounted } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
+import NavBar from "@/layouts/NavBar.vue";
+import { useRouter, useRoute } from "vue-router";
+import { fetchComment, renderComments } from "@/js/comment/comment.js";
+
+const router = useRouter();
 
 const newComment = ref("");
 const commentContainer = ref(null);
 const modal = ref(false);
 
+const goBack = function () {
+  router.go(-1);
+};
+
 
 const getUserProfile = (user_pk) => {
   // 사용자 프로필 이미지 가져오기 로직..
-  return '@/assets/img/capture.png';
+  return '@/assets/img/capture3.png';
 }
 
-const getUserName = (user_pk) => {
+const getNickName = (user_pk) => {
   // 닉네임 가져오기 로직...
   return '닉네임1';
 }
@@ -150,13 +163,13 @@ const addComment = function() {
   // 댓글 추가
   const newCommentData = {
     COMMENT_ID: comments.value.length + 1,
-    USER_PK: user_pk,
-    FEED_ID: 8, // 수정 필요
+    USER_PK: 15, //임의로..수정 필요
+    FEED_ID: 8, // 임의로..수정 필요
     CONTENT: newComment.value,
     CREATED_AT: new Date().toLocaleString(),
     MODIFIED_AT: new Date().toLocaleString(),
-    userProfile,
-    username,
+    // userProfile,
+    // username,
   };
 
   comments.value.push(newCommentData);
@@ -165,6 +178,7 @@ const addComment = function() {
   // 스크롤을 항상 아래로 내림
   scrollToBottom();
 }
+
 
 
 const toggleModal = () => {
@@ -186,21 +200,47 @@ const scrollToBottom = () => {
 
 
 // 가상의 댓글 예시
-const comments = ref([
-  { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
-    CONTENT: '노래 잘 들었슴다',
-    // ROOT_COMMENT_ID : 3,
-    // PARENT_COMMENT_ID : 4,
-    CREATED_AT: "2021-10-08-10:27",
-    MODIFIED_AT: "2021-10-08-11:20"
-  },
-  { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
-    CONTENT: '음정이 조큼 아쉽네여',
-    // ROOT_COMMENT_ID : 3,
-    // PARENT_COMMENT_ID : 4,
-    CREATED_AT: "2023-03-08-10:27",
-    MODIFIED_AT: "2023-03-11-11:20" },
-]);
+// const comments = ref([
+//   { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
+//     CONTENT: '노래 잘 들었슴다',
+//     // ROOT_COMMENT_ID : 3,
+//     // PARENT_COMMENT_ID : 4,
+//     CREATED_AT: "2021-10-08-10:27",
+//     MODIFIED_AT: "2021-10-08-11:20"
+//   },
+//   { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
+//     CONTENT: '음정이 조큼 아쉽네여',
+//     // ROOT_COMMENT_ID : 3,
+//     // PARENT_COMMENT_ID : 4,
+//     CREATED_AT: "2023-03-08-10:27",
+//     MODIFIED_AT: "2023-03-11-11:20" },
+// ]);
+
+
+const comments = ref([]);
+
+onMounted(async () => {
+  // 페이지 로드 시 댓글을 가져오도록 설정하거나, 필요한 이벤트에 맞게 호출하세요.
+  await fetchAndRenderComments();
+});
+
+async function fetchAndRenderComments() {
+  try {
+    // 피드 아이디와 페이지 번호를 지정하여 댓글을 가져옴
+    const feedId = 123; // 피드 아이디를 실제 값으로 변경
+    const pageNo = 0; // 페이지 번호를 필요에 맞게 변경
+
+    const commentTree = await fetchComment(feedId, pageNo);
+
+    // 댓글 렌더링
+    renderComments(commentTree);
+
+    // 댓글 상태 업데이트
+    comments.value = commentTree;
+  } catch (error) {
+    console.error('Error fetching and rendering comments:', error);
+  }
+}
 
 
 </script>

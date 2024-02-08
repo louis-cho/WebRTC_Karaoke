@@ -7,7 +7,8 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "users_chats")
+@Table(name ="users_chats")
 public class UsersChats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,11 +17,13 @@ public class UsersChats {
 
     private long userPk;
     private long roomPk;
+    private char status; // 1 : enter 0 : exit
+    private String time;
     public UsersChats() {}
-    public UsersChats(long up, long rp){
+    public UsersChats(long up, long rp, String time){
         this.userPk = up;
         this.roomPk = rp;
+        this.status = '1';
+        this.time = time;
     }
-
-
 }
