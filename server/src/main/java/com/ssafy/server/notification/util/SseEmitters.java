@@ -1,10 +1,7 @@
-package com.ssafy.server.notification;
+package com.ssafy.server.notification.util;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +15,7 @@ public class SseEmitters {
 
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>(); //thread-safe한 자료구조.
 
-    SseEmitter add(String userId, SseEmitter emitter) {
+    public SseEmitter add(String userId, SseEmitter emitter) {
         this.emitters.put(userId, emitter);
         log.info("new emitter added: {}", emitter);
         log.info("emitter list size: {}", emitters.size());
@@ -35,10 +32,10 @@ public class SseEmitters {
         return emitter;
     }
 
-    SseEmitter getSseEmitter(String userId){
+    public SseEmitter getSseEmitter(String userId){
         return emitters.get(userId);
     }
-    void remove(String userId, SseEmitter emitter){
+    public void remove(String userId, SseEmitter emitter){
         emitters.remove(userId,emitter);
     }
 
