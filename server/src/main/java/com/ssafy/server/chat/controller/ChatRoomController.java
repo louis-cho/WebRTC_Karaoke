@@ -6,6 +6,7 @@ import com.ssafy.server.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,10 @@ public class ChatRoomController {
 
     // 채팅 리스트 화면
     @GetMapping("/list/{userId}")
-    public Page<UsersChats> chatRoomList(@PathVariable long userId, Pageable pageable){
+    public Page<UsersChats> chatRoomList(@PathVariable long userId,
+                                         @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
         System.out.println(chatRoomService.findAllRoomByUserId(userId, pageable));
         return chatRoomService.findAllRoomByUserId(userId, pageable);
     }
