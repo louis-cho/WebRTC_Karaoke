@@ -8,6 +8,7 @@
 <script setup>
 // 아래처럼 ref를 사용하여 index.js를 가져오는 부분을 지연시킵니다.
 import { ref, onMounted } from "vue";
+import { parseLyric, parseBundle, parseScore } from '@/js/karaoke/karaokeParser.js'
 
 const appInstance = ref(null);
 const audio = ref(null);
@@ -67,6 +68,8 @@ const choose = () => {
   console.log("노래 예약");
   appInstance.value.songEditor.score = song.score; // 퍼펙트스코어 데이터주입
   console.log(appInstance.value.songEditor.score);
+  console.log(parseBundle(parseLyric(parseScore(sampleMML))));
+  appInstance.value.lyrics = parseBundle(parseLyric(parseScore(sampleMML)));
   audio.value = new Audio(song.url); // mp3 url 연결
 };
 
@@ -80,6 +83,12 @@ const stop = () => {
   audio.value.pause();
   audio.value.currentTime = 0;
 };
+
+const sampleMML = `t68 o3 l4
+  d'동'g.'해'f+8'물'e'과\t'g'백'd'두'c-'산'd'이\n' g'마'a8'르'b8'고\t'b+.'닳'b8'도' a2'록\n'.r
+  >d.'하'c8'느'<b'님'a'이\t' g'보'f+8'우'e8d'하'c-'사\n' d'우'g'리'a8'나'a8'라\t'b'만' g2.'세\n'r
+  f+.'무'g8a'궁'f+'화\t' b.'삼'>c8d'천'<b'리\n' a'화'g'려'f+'강'g a2.'산\n'r
+  >d.'대'c8'한'<b'사'a'람\t' g'대'f+8'한'e8d'으'c-'로\n' d'길'g'이\t'a8'보'a8'전'b'하'g2.'세'r`;
 </script>
 
 <style scoped>

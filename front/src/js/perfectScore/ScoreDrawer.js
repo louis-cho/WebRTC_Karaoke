@@ -12,6 +12,8 @@ export class ScoreDrawer {
     this._playScore = []; // 재생되는 음표
     this._inited = false; // 초기화 여부
     this._currentNote = null; // 현재 음표
+    this.lyricUpper = ""; // 위에 띄울 가사
+    this.lyricLower = ""; // 아래 띄울 가사
 
     // 캔버스 생성 및 설정
     this._canvas = document.createElement("canvas");
@@ -163,7 +165,7 @@ export class ScoreDrawer {
 
     ctx.globalAlpha = 0.5;
     ctx.fillStyle = "blue";
-    this._renderNotes(ctx);
+    this._renderNotes(ctx); // 음
 
     this._renderVoice(ctx);
 
@@ -174,8 +176,10 @@ export class ScoreDrawer {
     ctx.stroke();
 
     ctx.restore();
-    ctx.font = "30px monospace";
-    ctx.fillText(this._oct.toString(), 0, 20);
+    ctx.font = "20px monospace";
+    // ctx.fillText(this._oct.toString(), 0, 20); // 옥타브 렌더링
+    ctx.fillText( this.lyricUpper, 0, 50);
+    ctx.fillText(this.lyricLower, 0, 80);
   }
 
   // 음성 렌더링

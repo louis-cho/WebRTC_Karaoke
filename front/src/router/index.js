@@ -50,11 +50,11 @@ export default route(function (/* { store, ssrContext } */) {
         console.log(response.data["authStatus"])
         const authStatus = response.data["authStatus"]
 
-        // const pattern = /^http:\/\/localhost:9000\/.+/;
-        // const destUrl = "http://localhost:9000" + to.fullPath
+        const pattern = /^http:\/\/localhost:9000\/.+/;
+        const destUrl = "http://localhost:9000" + to.fullPath
 
-        const pattern = /^https:\/\/i10a705.p.ssafy.io\/.+/;
-        const destUrl = "https://i10a705.p.ssafy.io" + to.fullPath
+        // const pattern = /^https:\/\/i10a705.p.ssafy.io\/.+/;
+        // const destUrl = "https://i10a705.p.ssafy.io" + to.fullPath
 
 
         if((authStatus == 0 || authStatus == 3 || authStatus == 4) && pattern.test(destUrl)) {

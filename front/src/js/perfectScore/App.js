@@ -15,11 +15,15 @@ export class App {
     this.elapsed = 0; // 경과 시간
     this.inited = false; // 초기화 여부
     this.key = 0; // 음악 키
-    this.playMusic = true; // 음악 재생 상태
+    this.playMusic = false; // 음악 재생 상태
     // 각각의 앱 구성 요소를 생성
     this.sharer = new Sharer(); // 음악 공유기
     this.songEditor = new SongEditor(); // 음악 편집기
     this.drawer = new ScoreDrawer(); // 악보 그리기 객체
+    this.lyrics = []; // 렌더링 할 가사
+    this.lyricIndex = 0;
+    this.startTimeRef = 0;  // 노래 시작 시간(가사 렌더링에 필요)
+    this.lyricFlag = true;   // 윗가사를 update할지, 아랫가사를 update할지.
 
     // 앱 UI 생성
     this.createElements();
@@ -39,7 +43,7 @@ export class App {
 
     // UI 요소를 래퍼에 추가
     wrapper.appendChild(canvasContainer); // 악보 컨테이너 추가
-    // wrapper.appendChild(this.songEditor.render()); // 음악 편집기 추가
+    wrapper.appendChild(this.songEditor.render()); // 음악 편집기 추가
     // wrapper.appendChild(this.sharer.render()); // 음악 공유기 추가
     this.wrapper = wrapper; // 앱 래퍼 엘리먼트 설정
     this.bindEvents(); // 이벤트 핸들러 바인딩
@@ -71,8 +75,6 @@ export class App {
         window.alert("노래를 선택해주세요")
         return;
       } // 악보 렌더링이 안됐으면 무시
-      console.log(this.songEditor.score)
-      console.log(parseScore(this.songEditor.score))
       this.playSong(parseScore(this.songEditor.score)); // 음악 재생
     });
     this.songEditor.on("stop", this.stopSong.bind(this)); // 음악 정지 이벤트 핸들러 등록
@@ -100,9 +102,14 @@ export class App {
 
   // 악보 재생
   playSong() {
-    console.log(this.songEditor.score)
-    console.log(parseScore(this.songEditor.score))
+    this.startTimeRef = Date.now()
+    this.playMusic = true;
+    this.lyricIndex = 2;
+    this.lyricFlag = true;
+    this.drawer.lyricUpper = this.lyrics[0].lyric;
+    this.drawer.lyricLower = this.lyrics[1].lyric;
     this.drawer.start(parseScore(this.songEditor.score)); // 악보 그리기 시작
+
   }
 
   // 악보 정지
@@ -117,6 +124,22 @@ export class App {
 
   // 애니메이션 루프
   loop(time) {
+    if(this.playMusic) {
+      if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start) {
+        if(this.lyricFlag) {  // 윗가사 업데이트
+          this.drawer.lyricUpper = this.lyrics[this.lyricIndex].lyric;
+          this.lyricFlag = !this.lyricFlag
+          this.lyricIndex++;
+        } else {  // 아랫가사 업데이트
+          this.drawer.lyricLower = this.lyrics[this.lyricIndex].lyric;
+          this.lyricFlag = !this.lyricFlag
+          this.lyricIndex++;
+        }
+        if(this.lyricIndex >= this.lyrics.length) this.playMusic = false;
+      }
+
+    }
+
     if (this.lastTime === 0) {
       this.lastTime = time; // 이전 프레임 시간 설정
     }
