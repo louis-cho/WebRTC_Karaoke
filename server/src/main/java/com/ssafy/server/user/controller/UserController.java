@@ -178,4 +178,47 @@ public class UserController {
            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(UserExceptionEnum.USER_NOT_FOUND));
        }
     }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Boolean> delete(@RequestBody JsonNode jsonNode) {
+        JsonNode uuidNode = jsonNode.get("uuid");
+        JsonNode userPkNode = jsonNode.get("userPk");
+
+        int userPk = -1;
+
+        try {
+            if (uuidNode == null) {
+                userPk = userService.getUserPk(UUID.fromString(uuidNode.asText()));
+            } else {
+                userPk = Integer.parseInt(userPkNode.asText());
+            }
+            userService.deleteUser(userPk);
+        } catch(Exception e) {
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(UserExceptionEnum.USER_DELETE_FAIL));
+        }
+
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<Boolean> update(@RequestBody JsonNode jsonNode) {
+        JsonNode nicknameNode = jsonNode.get("nickname");
+        JsonNode profileImgUrlNode = jsonNode.get("profileImgUrl");
+        JsonNode introductionNode = jsonNode.get("introduction");
+
+        User user = new User();
+        if(nicknameNode != null)
+            user.setNickname(nicknameNode.asText());
+        if(introductionNode != null)
+            user.setIntroduction(introductionNode.asText());
+        if(profileImgUrlNode != null)
+            user.setProfileImgUrl(profileImgUrlNode.asText());
+        try {
+            userService.updateUser(user);
+        } catch(Exception e ) {
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(UserExceptionEnum.USER_UPDATE_FAIL));
+        }
+
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+    }
 }

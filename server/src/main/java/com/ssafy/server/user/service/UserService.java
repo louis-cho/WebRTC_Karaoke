@@ -30,6 +30,10 @@ public interface UserService {
 
     boolean saveUser(User user);
 
+    void deleteUser(int userPk);
+
+    void updateUser(User user);
+
     int getUserPk(UUID uuid);
 
     UUID getUUID(String userId);
