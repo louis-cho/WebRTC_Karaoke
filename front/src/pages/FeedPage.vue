@@ -23,7 +23,6 @@
 
 
       <!-- 두번째 div -->
-      <q-btn @click="goFeedDetail">피드 디테일 페이지로</q-btn>
 
       <div v-for="feed in feeds" :key="feed.feedId" >
         <div class="profile">
@@ -71,6 +70,7 @@
           <img class="margin-right-10" src="@/assets/icon/dollar.png" alt="후원">
           <span>{{ feed.TOTAL_POINT }}</span>
         </div>
+      <q-btn @click="goFeedDetail(feed.feedId)">피드 디테일 페이지로</q-btn>
         </div>
         <hr>
 
@@ -98,9 +98,9 @@ let pref = app;
 const feeds = ref([]);
 const router = useRouter();
 
-const goFeedDetail = () => {
-  router.push('/feed_detail')
-}
+const goFeedDetail = (feedId) => {
+  router.push({ name: 'feed_detail', params: { feedId } });
+};
 
 onBeforeMount(async () => {
    await fetchFeedData();

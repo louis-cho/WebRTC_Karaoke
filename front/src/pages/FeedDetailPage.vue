@@ -190,14 +190,16 @@ const deletePost = () => {
 // ]);
 
 onMounted(async () => {
-  // 페이지 로드 시 댓글을 가져오도록 설정하거나, 필요한 이벤트에 맞게 호출하세요.
-  await fetchAndRenderComments();
+  console.log(this);
+  let feedId = window.location.href.split('/').pop();
+  feedId = isNaN(feedId) ? 0 : parseInt(feedId);
+  await fetchAndRenderComments(feedId);
 });
 
 // fetchAndRenderComments 함수 내부에 추가
-async function fetchAndRenderComments() {
+async function fetchAndRenderComments(feedId) {
   try {
-    const feedId = 1; // 실제 feedId로 교체
+    // const feedId = 1; // 실제 feedId로 교체
     const pageNo = 0; // 실제 pageNo로 교체
 
     // 댓글 가져오기
