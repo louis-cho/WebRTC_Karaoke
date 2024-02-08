@@ -5,9 +5,7 @@ import pref from "@/js/config/preference.js";
 
 export const useKaraokeStore = defineStore("karaoke", {
   state: () => ({
-    // APPLICATION_SERVER_URL:
-    //   process.env.NODE_ENV === "production" ? "" : "https://i10a705.p.ssafy.io/",
-    APPLICATION_SERVER_URL: process.env.NODE_ENV === "production" ? "https://i10a705.p.ssafy.io/" : "http://localhost:8081/",
+    APPLICATION_SERVER_URL: pref.app.api.protocol + pref.app.api.host,
 
     createModal: false,
     updateModal: false,
@@ -18,6 +16,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       "input-selector": false,
       "recording-video": false,
       "reserve-song": false,
+      "reserve-list": false,
     },
     audioFilter: false,
     chatModal: false,

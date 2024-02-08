@@ -5,11 +5,10 @@ app.api = {};
 app.api.prefix = "/api/v1";
 app.api.protocol = "https:";
 
-app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix;  // ec2
+app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
 // app.api.protocol = "http:";
 app.api.socket = "ws:";
 // app.api.host = "//localhost:8081" + app.api.prefix;
-
 
 app.api.user = {};
 app.api.user.login = "/user/login";
@@ -25,6 +24,12 @@ app.api.chat.send = "/pub/chat.message";
 app.api.chat.old = "/oldMsg";
 app.api.chat.new = "/newMsg";
 app.api.chat.subscribe = "/exchange/chat.exchange/room.";
+
+app.api.hit = {};
+app.api.hit.count = "/hit/get/";
+
+app.api.like = {};
+app.api.like.count = "/like/get/";
 
 app.kor = {};
 

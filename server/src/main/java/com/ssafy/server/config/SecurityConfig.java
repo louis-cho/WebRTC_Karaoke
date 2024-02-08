@@ -50,13 +50,13 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/v1/test/login").permitAll()
                 .antMatchers("/api/v1/user/**").permitAll()
-                .antMatchers("/").permitAll()
-                .antMatchers("/**").permitAll() //필터끄기 우해 추가.
+                .antMatchers("/api/v1/**").permitAll()
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .logout().logoutSuccessUrl("/");
 
-//        http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); 필터끄기위해 추가
+        // http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

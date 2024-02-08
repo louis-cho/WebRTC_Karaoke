@@ -47,20 +47,28 @@ export async function fetchComment(feedId, pageNo) {
 function buildCommentTree(comments) {
     const commentMap = new Map();
 
-    comments.data.forEach(comment => {
-        comment.children = [];
-        commentMap.set(comment.commentId, comment);
+    comments.data.forEach(elem => {
+        elem.children = [];
+        commentMap.set(elem.comment.commentId, elem);
     });
 
     const tree = [];
 
-    comments.data.forEach(comment => {
-        if (comment.parentCommentId !== null && comment.parentCommentId >= 0) {
-            commentMap.get(comment.parentCommentId).children.push(comment);
-        } else {
-            tree.push(comment);
-        }
-    });
+    comments.data.forEach(elem => {
+      elem.level = 0; // Initialize level for top-level comments
+  
+      if (elem.comment.parentCommentId !== null && elem.comment.parentCommentId >= 0) {
+          const parentComment = commentMap.get(elem.comment.parentCommentId);
+  
+          // Set the level of the current comment based on the parent's level
+          elem.comment.level = parentComment.level + 1;
+  
+          // Add the current comment as a child of the parent comment
+          parentComment.children.push(elem);
+      } else {
+          tree.push(elem);
+      }
+  });
 
     return tree;
 }
@@ -74,7 +82,7 @@ export function renderComments(comments, level = 0) {
     const container = document.getElementById('comments-container');
     comments.forEach(comment => {
         const commentElement = document.createElement('div');
-        commentElement.innerHTML = "&nbsp;".repeat(level) + comment.content;
+        commentElement.innerHTML += "&nbsp;".repeat(level) + comment.content;
         container.appendChild(commentElement);
         renderComments(comment.children, level + 1);
     });

@@ -23,6 +23,8 @@
 
 
       <!-- 두번째 div -->
+      <q-btn @click="goFeedDetail">피드 디테일 페이지로</q-btn>
+
       <div v-for="feed in filteredFeeds" :key="feed.FEED_ID" >
         <div class="profile">
           <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }">
@@ -53,17 +55,17 @@
         </video>
 
         <div class="flex-row">
-        <div class="margin-right-20">
+        <div class="margin-right-20"  @click="goFeedDetail(feed.FEED_ID)">
           <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
           <span>0</span>
         </div>
-        <div class="margin-right-20">
+        <div class="margin-right-20" @click="toggleLike(feed.FEED_ID)">
           <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
-          <span>0</span>
+          <span>{{ feed.LIKE_COUNT }}</span>
         </div>
         <div class="margin-right-20">
           <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
-          <span>0</span>
+          <span>{{ feed.VIEW_COUNT }}</span>
         </div>
         <div class="margin-right-20">
           <img class="margin-right-10" src="@/assets/icon/dollar.png" alt="후원">
@@ -80,40 +82,68 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, onBeforeMount } from 'vue'
 import TabItem from "@/layouts/TabItem.vue"
-import NavBar from '@/layouts/NavBar.vue';
+import NavBar from '@/layouts/NavBar.vue'
+import { useRouter } from 'vue-router';
+import app from "@/js/config/preference.js";
+import {fetchHitCount} from "@/js/hit/hit.js";
+import {fetchLikeCount} from "@/js/like/like.js";
 
+let pref = app;
+let feeds = ref([]);
+
+const router = useRouter();
+
+const goFeedDetail = () => {
+  router.push('/feed_detail')
+}
+
+onBeforeMount(() => {
+   fetchFeedData();
+});
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false)
 //가상 피드 데이터
-const feeds = ref([
-  {
-    FEED_ID: 1,
-    USER_PK: 1,
-    SONG_ID: 3,
-    CONTENT: "오랜만에 노래 불러봄",
-    THUMBNAIL_URL: "썸네일 주소1",
-    VIDEO_URL: "your_video_url.mp4",
-    VIDEO_LENGTH: "190",
-    STATUS: "2",
-    TOTAL_POINT: "20000"
-  },
-  {
-    FEED_ID: 2,
-    USER_PK: 4,
-    SONG_ID: 7,
-    CONTENT: "평가 좀 해주세요",
-    THUMBNAIL_URL: "썸네일 주소2",
-    VIDEO_URL: "your_video_url2.mp4",
-    VIDEO_LENGTH: "170",
-    STATUS: "0",
-    TOTAL_POINT: "5000"
-  }
-])
+const fetchFeedData = async () => {
+  const view_count_1 = await fetchHitCount(1);
+  const view_count_2 = await fetchHitCount(2);
+  const like_count_1 = await fetchLikeCount(1);
+  const like_count_2 = await fetchLikeCount(2);
+
+  feeds.value = [
+    {
+      FEED_ID: 1,
+      USER_PK: 1,
+      SONG_ID: 3,
+      CONTENT: "오랜만에 노래 불러봄",
+      THUMBNAIL_URL: "썸네일 주소1",
+      VIDEO_URL: "your_video_url.mp4",
+      VIDEO_LENGTH: "190",
+      STATUS: "2",
+      TOTAL_POINT: "20000",
+      VIEW_COUNT:  view_count_1,
+      LIKE_COUNT:  like_count_1
+    },
+    {
+      FEED_ID: 2,
+      USER_PK: 4,
+      SONG_ID: 7,
+      CONTENT: "평가 좀 해주세요",
+      THUMBNAIL_URL: "썸네일 주소2",
+      VIDEO_URL: "your_video_url2.mp4",
+      VIDEO_LENGTH: "170",
+      STATUS: "0",
+      TOTAL_POINT: "5000",
+      VIEW_COUNT: view_count_2,
+      LIKE_COUNT: like_count_2
+    }
+  ];
+}
+
 const getUserProfile = (userPK) => {
   // 사용자 프로필 이미지 가져오기 로직..
-  return '@/assets/img/capture.png';
+  return 'https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg';
 }
 
 const getUserName = (userPK) => {
@@ -218,6 +248,11 @@ const search = () => {
   });
 }
 
+
+
+const toggleLike = async (feedId) => {
+  
+};
 
 
 // const playVideo = (videoUrl) => {
@@ -350,9 +385,6 @@ const search = () => {
   position: relative;
   cursor: pointer;
 } */
-
-
-
 
 
 .search-container {
