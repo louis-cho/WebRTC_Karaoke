@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,10 @@ public class FriendsController {
 
     @Operation(summary = "친구 목록 API", description = "userPK를 기반으로 친구 목록을 조회(페이지네이션 적용)")
     @GetMapping("/{userId}/list")
-    public Page<Friends> getFriendsList(@PathVariable long userId, Pageable pageable) {
+    public Page<Friends> getFriendsList(@PathVariable long userId,
+                                        @RequestParam int page,
+                                        @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
         return friendsService.getFriendsList(userId, pageable);
     }
 
@@ -45,13 +49,19 @@ public class FriendsController {
 
     @Operation(summary = "친구 요청 목록 API", description = "나에게 온 친구 요청 목록 확인")
     @GetMapping("/incoming-requests")
-    public Page<Friends> getIncomingRequests(@RequestParam long toUser, Pageable pageable) {
+    public Page<Friends> getIncomingRequests(@RequestParam long toUser,
+                                             @RequestParam int page,
+                                             @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
         return friendsService.getIncomingRequests(toUser, pageable);
     }
 
     @Operation(summary = "보낸 친구 요청 목록 API", description = "내가 보낸 친구 요청 목록 확인")
     @GetMapping("/outgoing-requests")
-    public Page<Friends> getOutgoingRequests(@RequestParam long fromUser, Pageable pageable) {
+    public Page<Friends> getOutgoingRequests(@RequestParam long fromUser,
+                                             @RequestParam int page,
+                                             @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
         return friendsService.getOutgoingRequests(fromUser, pageable);
     }
 }

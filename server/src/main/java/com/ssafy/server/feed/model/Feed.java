@@ -20,6 +20,8 @@ public class Feed {
     private int userPk;
     @Column(name = "song_id")
     private int songId;
+    @Column(name = "title")
+    private String title;
     @Column(name = "content")
     private String content;
     @Column(name = "thumbnail_url")

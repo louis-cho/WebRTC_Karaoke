@@ -34,31 +34,45 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE)
   })
 
-  // Router.beforeResolve((to, from, next) => {
-  //   console.log("컴포넌트 가드 적용")
+  Router.beforeResolve((to, from, next) => {
+    const serverUrl = pref.app.api.protocol + pref.app.api.host + "/auth/filter";
 
-  //   const serverUrl = pref.app.api.protocol + pref.app.api.host + "/auth/filter";
+    axios.get(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization' : getCookie("Authorization"),
+        'refreshToken' : getCookie("refreshToken"),
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => {
+        console.log("ComponenGuardResponse---");
+        console.log(response.data["authStatus"])
+        const authStatus = response.data["authStatus"]
 
-  //   axios.get(serverUrl, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Authorization' : getCookie("Authorization"),
-  //       'refreshToken' : getCookie("refreshToken"),
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-  //     .then(response => {
-  //       console.log("ComponenGuardResponse---");
-  //       console.log(response.headers)
-  //       console.log(response.headers['authStatus'])
+        // const pattern = /^http:\/\/localhost:9000\/.+/;
+        // const destUrl = "http://localhost:9000" + to.fullPath
 
-  //       next();
-  //     })
-  //     .catch(error => {
-  //       console.error("Error: ", error);
-  //     })
+        const pattern = /^https:\/\/i10a705.p.ssafy.io\/.+/;
+        const destUrl = "https://i10a705.p.ssafy.io" + to.fullPath
 
-  // })
+
+        if((authStatus == 0 || authStatus == 3 || authStatus == 4) && pattern.test(destUrl)) {
+          alert("로그인 후 이용가능합니다.")
+          // window.location.replace("/")
+          next();
+        } else {
+          next();
+        }
+
+      })
+      .catch(error => {
+        console.error("Error: ", error);
+        console.log("router/index.js ComponentGuard axios 통신 에러, 일단 넘김")
+        next();
+      })
+
+  })
 
   return Router
 })
