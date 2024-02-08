@@ -1,11 +1,18 @@
 package com.ssafy.server.feed.controller;
 
 import com.ssafy.server.feed.model.Feed;
+import com.ssafy.server.feed.rank.document.FeedStatsDocument;
+import com.ssafy.server.feed.rank.service.RankService;
 import com.ssafy.server.feed.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 
 @RestController
@@ -15,6 +22,32 @@ public class FeedController {
     @Autowired
     private FeedService feedService;
 
+    @Autowired
+    private RankService rankService;
+
+    @GetMapping("/get/all")
+    public ResponseEntity<Page<Feed>> getAllPost(Pageable pageable){
+        return ResponseEntity.ok(feedService.getAllFeedList(pageable));
+    }
+
+    @GetMapping("/get/recent")
+    public ResponseEntity<Page<Feed>> getRecentPost(Pageable pageable){
+        return ResponseEntity.ok(feedService.sortRecentFeedList(pageable));
+    }
+
+    @GetMapping("/get/old")
+    public ResponseEntity<Page<Feed>> getOldPost(Pageable pageable){
+        return ResponseEntity.ok(feedService.sortOldFeedList(pageable));
+    }
+
+    @GetMapping("/get/top100")
+    public ResponseEntity<List<FeedStatsDocument>> getTop100(@RequestParam int page, @RequestParam int size){
+        List<FeedStatsDocument> topList = rankService.getTop100Ranking();
+        if(!topList.isEmpty()){
+            topList = paginate(topList, page, size);
+        }
+        return ResponseEntity.ok(topList);
+    }
 
     @GetMapping("/get/{feedId}")
     public ResponseEntity<Feed> getPostById(@PathVariable int feedId) {
@@ -45,5 +78,17 @@ public class FeedController {
             // 삭제가 실패한 경우 (해당 feedId를 찾지 못한 경우 등)
             return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         }
+    }
+
+    private List<FeedStatsDocument> paginate(List<FeedStatsDocument> dataList, int page, int size) {
+        int totalSize = dataList.size();
+        int startIndex = (page - 1) * size;
+        int endIndex = Math.min(startIndex + size, totalSize);
+
+        if (startIndex >= totalSize) {
+            return Collections.emptyList(); // 페이지 범위를 벗어나면 빈 리스트 반환
+        }
+
+        return dataList.subList(startIndex, endIndex);
     }
 }

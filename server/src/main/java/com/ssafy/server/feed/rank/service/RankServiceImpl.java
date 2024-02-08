@@ -3,6 +3,7 @@ package com.ssafy.server.feed.rank.service;
 import com.ssafy.server.feed.rank.document.FeedStatsDocument;
 import com.ssafy.server.hit.document.HitDocument;
 import com.ssafy.server.like.document.LikesDocument;
+import lombok.Getter;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -39,6 +40,7 @@ public class RankServiceImpl implements RankService {
 
     private final RestHighLevelClient elasticsearchClient;
     private final ElasticsearchRestTemplate elasticsearchRestTemplate;
+    @Getter
     private List<FeedStatsDocument> top100Ranking = new ArrayList<>();
 
     private String lastTime = null;
@@ -271,7 +273,4 @@ public class RankServiceImpl implements RankService {
         return likesCount * 5 + hitsCount * 3.0;
     }
 
-    public List<FeedStatsDocument> getTop100Ranking() {
-        return top100Ranking;
-    }
 }
