@@ -89,6 +89,7 @@ import { useRouter } from 'vue-router';
 import app from "@/js/config/preference.js";
 import {fetchHitCount} from "@/js/hit/hit.js";
 import {fetchLikeCount} from "@/js/like/like.js";
+import { fetchFeedList } from '@/js/feed/feed.js';
 
 let pref = app;
 let feeds = ref([]);
@@ -106,39 +107,13 @@ const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false)
 //가상 피드 데이터
 const fetchFeedData = async () => {
-  const view_count_1 = await fetchHitCount(1);
-  const view_count_2 = await fetchHitCount(2);
-  const like_count_1 = await fetchLikeCount(1);
-  const like_count_2 = await fetchLikeCount(2);
 
-  feeds.value = [
-    {
-      FEED_ID: 1,
-      USER_PK: 1,
-      SONG_ID: 3,
-      CONTENT: "오랜만에 노래 불러봄",
-      THUMBNAIL_URL: "썸네일 주소1",
-      VIDEO_URL: "your_video_url.mp4",
-      VIDEO_LENGTH: "190",
-      STATUS: "2",
-      TOTAL_POINT: "20000",
-      VIEW_COUNT:  view_count_1,
-      LIKE_COUNT:  like_count_1
-    },
-    {
-      FEED_ID: 2,
-      USER_PK: 4,
-      SONG_ID: 7,
-      CONTENT: "평가 좀 해주세요",
-      THUMBNAIL_URL: "썸네일 주소2",
-      VIDEO_URL: "your_video_url2.mp4",
-      VIDEO_LENGTH: "170",
-      STATUS: "0",
-      TOTAL_POINT: "5000",
-      VIEW_COUNT: view_count_2,
-      LIKE_COUNT: like_count_2
-    }
-  ];
+  feeds.value = fetchFeedList(0);
+
+  for(let elem of feeds.value) {
+    elem.VIEW_COUNT = await fetchHitCount(elem.feedId);
+    elem.LIKE_COUNT = await fetchLikeCount(elem.feedId);
+  }
 }
 
 const getUserProfile = (userPK) => {
@@ -251,7 +226,7 @@ const search = () => {
 
 
 const toggleLike = async (feedId) => {
-  
+
 };
 
 
