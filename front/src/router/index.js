@@ -49,8 +49,7 @@ export default route(function (/* { store, ssrContext } */) {
     })
       .then(response => {
         console.log("ComponenGuardResponse---");
-        console.log(response.headers)
-        console.log(response.headers['authStatus'])
+        console.log(response.data)
 
         next();
       })
