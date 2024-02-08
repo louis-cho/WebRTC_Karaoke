@@ -9,11 +9,11 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
 const { configure } = require("quasar/wrappers");
-const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
-module.exports = configure(function (/* ctx */) {
+module.exports = configure(function (ctx) {
   return {
-    plugins: [new MonacoWebpackPlugin(), "Notify"],
     eslint: {
       // fix: true,
       // include: [],
@@ -54,6 +54,12 @@ module.exports = configure(function (/* ctx */) {
       target: {
         browser: ["es2019", "edge88", "firefox78", "chrome87", "safari13.1"],
         node: "node16",
+      },
+
+      extendWebpack(cfg) {
+        if (ctx.prod) {
+          cfg.plugins.push(new BundleAnalyzerPlugin());
+        }
       },
 
       alias: {

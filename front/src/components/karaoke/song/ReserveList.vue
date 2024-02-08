@@ -19,20 +19,14 @@
             <q-page class="flex flex-center">
               <q-list>
                 <q-item v-for="list in lists" :key="list.id">
-                  <q-item-section class="q-mb-md">
-                    <div style="flex: 1">
-                      <q-item-label class="text-h6">
-                        {{ list.title }}
-                      </q-item-label>
-                      <q-item-label class="text-h6">
-                        {{ list.singer }}
-                      </q-item-label>
-                    </div>
-                    <div>
-                      <q-item-label class="text-h6">
-                        {{ list.userName }}
-                      </q-item-label>
-                    </div>
+                  <q-item-section class="q-mb-md" style="min-width: 400px">
+                    <q-item-label>
+                      {{ list.title }}
+                    </q-item-label>
+                    <q-item-label caption>
+                      {{ list.singer }}
+                    </q-item-label>
+                    <q-item-label> {{ list.userName }} </q-item-label>
                   </q-item-section>
 
                   <q-btn
@@ -103,7 +97,7 @@ function cancelReserve(hashString) {
       hashString: hashString,
     })
     .then((response) => {
-      console.log(response.data);
+      fetchReserveList();
     })
     .catch((error) => {
       console.error("Error fetching songs:", error);

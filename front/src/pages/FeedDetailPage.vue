@@ -15,14 +15,13 @@
 
       <!-- 두번째 div -->
       <div class="profile">
-        <!-- <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }"> -->
-          <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img">
-        <!-- </div> -->
+        <div class="profile-img-container" v-if="feed.user" :style="{ backgroundImage: `url(${feed.user.profileImgUrl})` }">
+        </div>
 
         <div class="width-100">
           <div class="space-between" >
             <div>
-              <!-- <p>{{ getNickName(feed.USER_PK) }}</p> -->
+                <p v-if="feed.user">{{ feed.user.nickname }}</p>
               <p>JennierubyJane</p>
             </div>
             <div @click="toggleModal">
@@ -30,32 +29,30 @@
             </div>
           </div>
           <div class="space-start">
-            <!-- <div>{{ getSongTitle(feed.FEED_ID) }} </div> -->
-            <p>거짓말-</p>
-            <!-- <div>{{ getSongSinger(feed.FEED_ID) }}</div> -->
-            <p>빅뱅</p>
-            <!-- <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.STATUS === '1' ? 'secondary' : 'black')" :label="feed.STATUS === '0' ? '전체 공개' : (feed.STATUS === '1' ? '친구 공개' : '비공개')" size="sm" /> -->
+            <div v-if="feed.song">{{ feed.song.title }}-</div>
+            <div v-if="feed.song">{{ feed.song.singer }}</div>
+            <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.status === '1' ? 'secondary' : 'black')" :label="feed.status === '0' ? '전체 공개' : (feed.status === '1' ? '친구 공개' : '비공개')" size="sm" />
           </div>
         </div>
       </div>
 
-      <p>{{ 게시글내용 }} 오랜만에 빅뱅 노래</p>
+      <p>{{ feed.content }}</p>
       <video controls width="100%">
         <source src="your_video_url.mp4" type="video/mp4">
       </video>
       <div class="flex-row">
-      <div class="margin-right-20">
-        <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
-        <span>0</span>
-      </div>
-      <div class="margin-right-20">
-        <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
-        <span>0</span>
-      </div>
-      <div class="margin-right-20">
-        <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
-        <span>0</span>
-      </div>
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
+          <span>{{feed.commentCount}}</span>
+        </div>
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
+          <span>{{ feed.likeCount }}</span>
+        </div>
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
+          <span>{{ feed.viewCount }}</span>
+        </div>
       </div>
       <hr>
 
@@ -95,19 +92,24 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-
   </div>
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted } from "vue";
+import { ref, nextTick, onMounted, onBeforeMount } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
-import { fetchComment } from "@/js/comment/comment.js";
+import { fetchComment,fetchCommentCount } from "@/js/comment/comment.js";
 import CommentItem from "@/components/CommentItem.vue";
 
+import {fetchHitCount} from "@/js/hit/hit.js";
+import {fetchLikeCount} from "@/js/like/like.js";
+import { fetchFeedList, fetchFeed } from '@/js/feed/feed.js';
+import { fetchSong } from '@/js/song/song.js';
+import { fetchUser } from '@/js/user/user.js';
 
+const feed = ref();
 const router = useRouter();
 const comments = ref([]);
 const newComment = ref("");
@@ -189,15 +191,26 @@ const deletePost = () => {
 //     MODIFIED_AT: "2023-03-11-11:20" },
 // ]);
 
-onMounted(async () => {
-  // 페이지 로드 시 댓글을 가져오도록 설정하거나, 필요한 이벤트에 맞게 호출하세요.
-  await fetchAndRenderComments();
+onBeforeMount(async () => {
+  console.log(this);
+  let feedId = window.location.href.split('/').pop();
+  feedId = isNaN(feedId) ? 0 : parseInt(feedId);
+  let elem = await fetchFeed(feedId);
+  elem.song = await fetchSong(elem.songId);
+  elem.user = await fetchUser(elem.userPk);
+  elem.commentCount = await fetchCommentCount(elem.feedId);
+  elem.viewCount = await fetchHitCount(elem.feedId);
+  elem.likeCount = await fetchLikeCount(elem.feedId);
+
+  feed.value = elem;
+
+  await fetchAndRenderComments(feedId);
 });
 
 // fetchAndRenderComments 함수 내부에 추가
-async function fetchAndRenderComments() {
+async function fetchAndRenderComments(feedId) {
   try {
-    const feedId = 1; // 실제 feedId로 교체
+    // const feedId = 1; // 실제 feedId로 교체
     const pageNo = 0; // 실제 pageNo로 교체
 
     // 댓글 가져오기

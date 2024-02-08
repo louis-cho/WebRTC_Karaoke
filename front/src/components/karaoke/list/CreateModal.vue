@@ -13,15 +13,6 @@
             class="q-mb-md"
           />
 
-          <!-- 사용자 이름 입력 -->
-          <q-input
-            v-model="store.userName"
-            :label="pref.app.kor.karaokePage.userName"
-            outlined
-            dense
-            class="q-mb-md"
-          />
-
           <!-- 인원수 설정 -->
           <q-input
             v-model="numberOfParticipants"

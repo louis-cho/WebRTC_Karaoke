@@ -1,0 +1,368 @@
+<template>
+  <div @scroll="handleScroll">
+    <!-- <TabItem/> -->
+    <NavBar/>
+    <!-- <h3>전체 피드 페이지</h3> -->
+    <div class="my-feed">
+      <!-- 첫번째 div -->
+      <!-- 검색창 --> <!-- 닉네임/노래제목 검색 가능 -->
+      <div class="search-container">
+        <q-input
+          v-model="searchQuery"
+          outlined
+          placeholder="검색어를 입력하세요"
+          dense
+          class="search-input"
+        >
+          <template v-slot:before>
+            <q-icon name="search" class="search-icon" />
+          </template>
+        </q-input>
+        <q-btn @click="search" class="search-button" color="primary" label="검색" dense />
+      </div>
+
+
+      <!-- 두번째 div -->
+      <q-btn @click="goFeedDetail">피드 디테일 페이지로</q-btn>
+
+      <div v-for="feed in feeds" :key="feed.feedId" >
+        <div class="profile">
+          <div class="profile-img-container" v-if="feed.user" :style="{ backgroundImage: `url(${feed.user.profileImgUrl})` }">
+            <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
+          </div>
+
+          <div class="width-100">
+            <div class="space-between" >
+              <div>
+                <!-- 닉네임 -->
+                <p v-if="feed.user">{{ feed.user.nickname }}</p>
+              </div>
+
+            </div>
+            <div class="space-start">
+              <!-- 노래제목 -->
+              <div v-if="feed.song">{{ feed.song.title }}-</div>
+              <!-- 가수 -->
+              <div v-if="feed.song">{{ feed.song.singer }}</div>
+              <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.status === '1' ? 'secondary' : 'black')" :label="feed.status === '0' ? '전체 공개' : (feed.status === '1' ? '친구 공개' : '비공개')" size="sm" />
+            </div>
+          </div>
+        </div>
+
+        <p>{{ feed.content }}</p>
+        <video controls width="100%" ref="videoPlayer">
+          <source :src="feed.VIDEO_URL" type="video/mp4">
+        </video>
+
+        <div class="flex-row">
+        <div class="margin-right-20"  @click="goFeedDetail(feed.feedId)">
+          <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
+          <span>{{feed.commentCount}}</span>
+        </div>
+        <div class="margin-right-20" @click="toggleLike(feed.feedId)">
+          <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
+          <span>{{ feed.likeCount }}</span>
+        </div>
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
+          <span>{{ feed.viewCount }}</span>
+        </div>
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/dollar.png" alt="후원">
+          <span>{{ feed.TOTAL_POINT }}</span>
+        </div>
+        </div>
+        <hr>
+
+      </div>
+    </div>
+
+    <div v-if="loading">Loading...</div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted, computed, onBeforeMount } from 'vue'
+import TabItem from "@/layouts/TabItem.vue"
+import NavBar from '@/layouts/NavBar.vue'
+import { useRouter } from 'vue-router';
+import app from "@/js/config/preference.js";
+import {fetchHitCount} from "@/js/hit/hit.js";
+import {fetchLikeCount} from "@/js/like/like.js";
+import { fetchFeedList } from '@/js/feed/feed.js';
+import { fetchSong } from '@/js/song/song.js';
+import { fetchUser } from '@/js/user/user.js';
+import {fetchCommentCount} from '@/js/comment/comment.js';
+
+let pref = app;
+const feeds = ref([]);
+const router = useRouter();
+
+const goFeedDetail = () => {
+  router.push('/feed_detail')
+}
+
+onBeforeMount(async () => {
+   await fetchFeedData();
+});
+const itemsPerLoad = 10; // 한 번에 로드할 피드 수
+const loading = ref(false)
+//가상 피드 데이터
+const fetchFeedData = async () => {
+
+  feeds.value = await fetchFeedList(0,3);
+
+  for(let elem of feeds.value) {
+    elem.song = await fetchSong(elem.songId);
+    elem.user = await fetchUser(elem.userPk);
+    elem.commentCount = await fetchCommentCount(elem.feedId);
+    elem.viewCount = await fetchHitCount(elem.feedId);
+    elem.likeCount = await fetchLikeCount(elem.feedId);
+  }
+
+
+  // feeds.value를 출력
+  console.log('Feeds:', feeds.value);
+}
+
+const getUser = async (userPk) => {
+  let user = await fetchUser(userPk);
+  return user;
+}
+
+
+
+// 스크롤 이벤트 핸들러
+const handleScroll = () => {
+  const element = document.documentElement;
+  const { scrollTop, scrollHeight, clientHeight } = element;
+
+  // 스크롤이 아래로 내려갔는지 확인
+  if (scrollTop + clientHeight >= scrollHeight - 10) {
+    // 무한 스크롤 로딩 시작
+    loading.value = true;
+
+    // 새로운 피드를 불러오는 로직 (예시로 비동기 setTimeout 사용)
+    setTimeout(() => {
+      // 새로운 피드 데이터를 여기서 추가
+      const newFeeds = [
+        {
+          FEED_ID: 3,
+          USER_PK: 5,
+          SONG_ID: 5,
+          CONTENT: "새로운 피드 내용!!",
+          THUMBNAIL_URL: "새 썸네일 주소",
+          VIDEO_URL: "your_video_url.mp4",
+          VIDEO_LENGTH: "220",
+          STATUS: "1",
+          TOTAL_POINT: "0"
+        },
+
+      ];
+
+      // 새로운 피드를 기존 피드 배열에 추가
+      feeds.value = feeds.value.concat(newFeeds.slice(0, itemsPerLoad));
+
+      // 무한 스크롤 로딩 종료
+      loading.value = false;
+    }, 1000); // 적절한 비동기 로딩 시간으로 조절
+  }
+};
+
+
+// 컴포넌트가 마운트된 후에 스크롤 이벤트를 추가
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll);
+});
+
+// 컴포넌트가 언마운트될 때 스크롤 이벤트 리스너 제거
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
+});
+
+// 검색 기능을 위한 변수와 메소드 추가
+const searchQuery = ref('');
+
+// const filteredFeeds = computed(() => {
+//   return feeds.value.filter(feed => {
+//     const userNameLowerCase = getUserName(feed.userPk).toLowerCase();
+//     const songTitleLowerCase = getSongTitle(feed.songId).toLowerCase();
+//     return (
+//       userNameLowerCase.includes(searchQuery.value.toLowerCase()) ||
+//       songTitleLowerCase.includes(searchQuery.value.toLowerCase())
+//     )
+//   })
+// })
+
+// const search = () => {
+//   const searchQueryLowerCase = searchQuery.value.toLowerCase();
+
+//   feeds.value = feeds.value.filter(feed => {
+//     const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
+//     const songTitleLowerCase = getSongTitle(feed.songId).toLowerCase();
+
+//     // 닉네임이나 노래제목에 검색어가 포함되어 있는지 확인
+//     return (
+//       userNameLowerCase.includes(searchQueryLowerCase) ||
+//       songTitleLowerCase.includes(searchQueryLowerCase)
+//     );
+//   });
+// }
+
+
+
+const toggleLike = async (feedId) => {
+
+};
+
+
+// const playVideo = (videoUrl) => {
+//   const videoPlayer = document.getElementById('video-player');
+//   videoPlayer.src = videoUrl;
+//   videoPlayer.play();
+// }
+</script>
+
+<style scoped>
+.my-feed {
+  padding-left: 200px;
+  padding-right: 200px;
+  }
+
+.display-flex{
+  display: flex;
+}
+.profile-img-container {
+  width: 70px;
+  height: 70px;
+  background-image: url("@/assets/img/capture.png");
+  /* object-fit : contain; */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+}
+
+.comment-img-container {
+  width: 70px;
+  height: 70px;
+  background-image: url("@/assets/img/capture3.png");
+  /* object-fit : contain; */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+}
+
+.comment-img-container2 {
+  width: 50px;
+  height: 50px;
+  background-image: url("@/assets/img/capture3.png");
+  /* object-fit : contain; */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+}
+
+
+.comment-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 30%;
+  display: block; /* 인라인 요소 간격 제거 */
+  object-fit: cover;
+}
+
+.my-feed {
+    /* padding: 20px; */
+  padding-left: 200px;
+  padding-right: 200px;
+  }
+.profile {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin: 20px 0;
+
+}
+
+.width-100 {
+  width:100%;
+  padding-left: 5%;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.space-start {
+  display: flex;
+  justify-content: start;
+}
+
+.flex-row {
+  display: flex;
+}
+
+.margin-right-10 {
+  margin-right: 10px;
+}
+
+.margin-right-20 {
+  margin-right: 20px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.align-between {
+  flex-wrap: wrap;
+  align-content: space-between;
+}
+
+.thumbnail {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* .thumbnail-container {
+  position: relative;
+  cursor: pointer;
+} */
+
+
+.search-container {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex: 1;
+  border-radius: 5px;
+}
+
+.search-button {
+  margin-left: 10px;
+}
+
+.search-icon {
+  color: grey;
+}
+</style>

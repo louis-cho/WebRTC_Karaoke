@@ -10,7 +10,10 @@ import com.ssafy.server.auth.model.dto.Role;
 import com.ssafy.server.auth.model.dto.Token;
 import com.ssafy.server.auth.model.dto.TokenKey;
 import com.ssafy.server.auth.util.JwtUtil;
+import com.ssafy.server.common.error.ApiException;
+import com.ssafy.server.common.error.ApiExceptionFactory;
 import com.ssafy.server.user.document.UserDocument;
+import com.ssafy.server.user.error.UserExceptionEnum;
 import com.ssafy.server.user.model.User;
 import com.ssafy.server.user.model.UserAuth;
 import com.ssafy.server.user.service.UserService;
@@ -164,5 +167,15 @@ public class UserController {
     public ResponseEntity<List<UserDocument>> searchUsersByNickname(@PathVariable String nickname) {
         List<UserDocument> users = userService.searchUsersByNickname(nickname);
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/get/{userPk}")
+    public ResponseEntity<User> getUser(@PathVariable int userPk) {
+       try {
+           return new ResponseEntity<>(userService.getUser(userPk), HttpStatus.OK);
+       }
+       catch(Exception e) {
+           throw new ApiException(ApiExceptionFactory.fromExceptionEnum(UserExceptionEnum.USER_NOT_FOUND));
+       }
     }
 }

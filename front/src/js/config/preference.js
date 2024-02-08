@@ -3,22 +3,24 @@ let app = {};
 app.api = {};
 
 app.api.prefix = "/api/v1";
-app.api.protocol = "https:";
-
-app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
-// app.api.protocol = "http:";
-// app.api.socket = "ws:";
-// app.api.host = "//localhost:8081" + app.api.prefix;
+// app.api.protocol = "https:";
+// app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
+app.api.socket = "ws:";
+app.api.protocol = "http:";
+app.api.host = "//localhost:8081" + app.api.prefix;
 
 app.api.user = {};
 app.api.user.login = "/user/login";
 app.api.user.register = "/user/register";
+app.api.user.fetch = "/user/get/";
 
 app.api.comment = {};
 app.api.comment.fetch = "/comment/feed/";
+app.api.comment.count = "/comment/get/count/";
 
 app.api.feed = {};
-app.api.feed.fetch = "/feed/get/all";
+app.api.feed.fetchAll = "/feed/get/all";
+app.api.feed.fetchOne = "/feed/get/";
 
 app.api.chat = {};
 app.api.chat.room = {};
@@ -47,7 +49,6 @@ app.api.friends.request = "/friends/request/";
 // app.api.friends.delete = "friends/delete/";
 // app.api.friends.incoming.requests = "friends/incoming-requests/";
 // app.api.friends.outgoing.requests = "friends/outgoing-requests/";
-
 
 app.kor = {};
 

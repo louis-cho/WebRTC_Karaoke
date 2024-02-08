@@ -23,11 +23,10 @@
 
 
       <!-- 두번째 div -->
-      <q-btn @click="goFeedDetail">피드 디테일 페이지로</q-btn>
 
       <div v-for="feed in feeds" :key="feed.feedId" >
         <div class="profile">
-          <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.userPk)})` }">
+          <div class="profile-img-container" v-if="feed.user" :style="{ backgroundImage: `url(${feed.user.profileImgUrl})` }">
             <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
           </div>
 
@@ -35,7 +34,7 @@
             <div class="space-between" >
               <div>
                 <!-- 닉네임 -->
-                <p>{{ getUserName(feed.userPk) }}</p>
+                <p v-if="feed.user">{{ feed.user.nickname }}</p>
               </div>
 
             </div>
@@ -57,7 +56,7 @@
         <div class="flex-row">
         <div class="margin-right-20"  @click="goFeedDetail(feed.feedId)">
           <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
-          <span>0</span>
+          <span>{{feed.commentCount}}</span>
         </div>
         <div class="margin-right-20" @click="toggleLike(feed.feedId)">
           <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
@@ -71,6 +70,7 @@
           <img class="margin-right-10" src="@/assets/icon/dollar.png" alt="후원">
           <span>{{ feed.TOTAL_POINT }}</span>
         </div>
+      <q-btn @click="goFeedDetail(feed.feedId)">피드 디테일 페이지로</q-btn>
         </div>
         <hr>
 
@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed, onBeforeMount } from 'vue'
+import { ref, onMounted, onUnmounted, computed, onBeforeMount, nextTick } from 'vue'
 import TabItem from "@/layouts/TabItem.vue"
 import NavBar from '@/layouts/NavBar.vue'
 import { useRouter } from 'vue-router';
@@ -91,90 +91,68 @@ import {fetchHitCount} from "@/js/hit/hit.js";
 import {fetchLikeCount} from "@/js/like/like.js";
 import { fetchFeedList } from '@/js/feed/feed.js';
 import { fetchSong } from '@/js/song/song.js';
+import { fetchUser } from '@/js/user/user.js';
+import {fetchCommentCount} from '@/js/comment/comment.js';
 
 let pref = app;
 const feeds = ref([]);
 const router = useRouter();
 
-const goFeedDetail = () => {
-  router.push('/feed_detail')
-}
+  let page = 0;
+  const amount = 3;
+
+const goFeedDetail = (feedId) => {
+  router.push({ name: 'feed_detail', params: { feedId } });
+};
 
 onBeforeMount(async () => {
    await fetchFeedData();
 });
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false)
+
 //가상 피드 데이터
 const fetchFeedData = async () => {
+  const newFeeds = await fetchFeedList(page++, amount);
 
-  feeds.value = await fetchFeedList(0,3);
-
-  for(let elem of feeds.value) {
+  for (let elem of newFeeds) {
     elem.song = await fetchSong(elem.songId);
+    elem.user = await fetchUser(elem.userPk);
+    elem.commentCount = await fetchCommentCount(elem.feedId);
     elem.viewCount = await fetchHitCount(elem.feedId);
     elem.likeCount = await fetchLikeCount(elem.feedId);
   }
 
+  // feeds.value를 새로운 데이터로 갱신
+  feeds.value = feeds.value.concat(newFeeds.slice(0, itemsPerLoad));
 
-  // feeds.value를 출력
+  // nextTick을 사용하여 Vue에게 DOM 업데이트를 기다리도록 함
+  await nextTick();
   console.log('Feeds:', feeds.value);
+};
+
+const getUser = async (userPk) => {
+  let user = await fetchUser(userPk);
+  return user;
 }
 
-const getUserProfile = (userPK) => {
-  // 사용자 프로필 이미지 가져오기 로직..
-  return 'https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg';
-}
 
-const getUserName = (userPK) => {
-  // 닉네임 가져오기 로직...
-  return '닉네임1';
-}
-
-const getSongTitle = async (songId) => {
-  let song = await fetchSong(songId);
-  return song.title;
-}
-
-const getSongSinger = async (songId) => {
-  let song = await fetchSong(songId);
-  return song.singer;
-}
 
 // 스크롤 이벤트 핸들러
-const handleScroll = () => {
+const handleScroll = async () => {
   const element = document.documentElement;
   const { scrollTop, scrollHeight, clientHeight } = element;
 
-  // 스크롤이 아래로 내려갔는지 확인
   if (scrollTop + clientHeight >= scrollHeight - 10) {
-    // 무한 스크롤 로딩 시작
     loading.value = true;
 
-    // 새로운 피드를 불러오는 로직 (예시로 비동기 setTimeout 사용)
-    setTimeout(() => {
-      // 새로운 피드 데이터를 여기서 추가
-      const newFeeds = [
-        {
-          FEED_ID: 3,
-          USER_PK: 5,
-          SONG_ID: 5,
-          CONTENT: "새로운 피드 내용!!",
-          THUMBNAIL_URL: "새 썸네일 주소",
-          VIDEO_URL: "your_video_url.mp4",
-          VIDEO_LENGTH: "220",
-          STATUS: "1",
-          TOTAL_POINT: "0"
-        },
-
-      ];
-
-      // 새로운 피드를 기존 피드 배열에 추가
-      feeds.value = feeds.value.concat(newFeeds.slice(0, itemsPerLoad));
-
-      // 무한 스크롤 로딩 종료
+    try {
+      await fetchFeedData();
+    } catch (error) {
+      console.error('Error fetching new feeds:', error);
+    } finally {
       loading.value = false;
-    }, 1000); // 적절한 비동기 로딩 시간으로 조절
+    }
   }
 };
 
