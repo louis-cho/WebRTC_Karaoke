@@ -6,6 +6,7 @@ import com.ssafy.server.feed.rank.service.RankService;
 import com.ssafy.server.feed.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,22 +27,29 @@ public class FeedController {
     private RankService rankService;
 
     @GetMapping("/get/all")
-    public ResponseEntity<Page<Feed>> getAllPost(Pageable pageable){
+    public ResponseEntity<Page<Feed>> getAllPost(@RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(feedService.getAllFeedList(pageable));
     }
 
     @GetMapping("/get/recent")
-    public ResponseEntity<Page<Feed>> getRecentPost(Pageable pageable){
+    public ResponseEntity<Page<Feed>> getRecentPost(@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(feedService.sortRecentFeedList(pageable));
     }
 
     @GetMapping("/get/old")
-    public ResponseEntity<Page<Feed>> getOldPost(Pageable pageable){
+    public ResponseEntity<Page<Feed>> getOldPost(@RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(feedService.sortOldFeedList(pageable));
     }
 
     @GetMapping("/get/top100")
-    public ResponseEntity<List<FeedStatsDocument>> getTop100(@RequestParam int page, @RequestParam int size){
+    public ResponseEntity<List<FeedStatsDocument>> getTop100(@RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "10") int size){
         List<FeedStatsDocument> topList = rankService.getTop100Ranking();
         if(!topList.isEmpty()){
             topList = paginate(topList, page, size);
