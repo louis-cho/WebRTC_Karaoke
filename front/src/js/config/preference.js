@@ -3,11 +3,11 @@ let app = {};
 app.api = {};
 
 app.api.prefix = "/api/v1";
-// app.api.protocol = "https:";
-app.api.protocol = "http:";
+app.api.protocol = "https:";
+// app.api.protocol = "http:";
 
-// app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
-app.api.host = "//localhost:8081" + app.api.prefix;
+app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
+// app.api.host = "//localhost:8081" + app.api.prefix;
 app.api.socket = "ws:";
 
 app.api.user = {};
