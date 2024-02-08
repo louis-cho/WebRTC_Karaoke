@@ -24,7 +24,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'io.openvidu:openvidu-java-client:2.20.0'
+	implementation 'io.openvidu:openvidu-java-client:2.29.0'
 
 	//RabbitMQ
 	//외부 브로커를 사용하기 위해
