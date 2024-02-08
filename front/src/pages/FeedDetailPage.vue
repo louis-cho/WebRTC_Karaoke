@@ -165,11 +165,11 @@ const deletePost = () => {
   toggleModal();
 }
 
-const scrollToBottom = () => {
-  nextTick(() => {
-    commentContainer.value.scrollTop = commentContainer.value.scrollHeight;
-  });
-}
+// const scrollToBottom = () => {
+//   nextTick(() => {
+//     commentContainer.value.scrollTop = commentContainer.value.scrollHeight;
+//   });
+// }
 
 
 // 가상의 댓글 예시

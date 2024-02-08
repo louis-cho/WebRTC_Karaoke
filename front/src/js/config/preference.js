@@ -3,12 +3,12 @@ let app = {};
 app.api = {};
 
 app.api.prefix = "/api/v1";
-//app.api.protocol = "https:";
+app.api.protocol = "https:";
 
-// app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
-app.api.protocol = "http:";
+app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
+// app.api.protocol = "http:";
 app.api.socket = "ws:";
-app.api.host = "//localhost:8081" + app.api.prefix;
+// app.api.host = "//localhost:8081" + app.api.prefix;
 
 app.api.user = {};
 app.api.user.login = "/user/login";
@@ -30,6 +30,18 @@ app.api.hit.count = "/hit/get/";
 
 app.api.like = {};
 app.api.like.count = "/like/get/";
+
+// app.api.infoEdit = {};
+
+app.api.friends = {};
+app.api.friends.get = "/friends/";
+app.api.friends.list ="/list/";
+// app.api.friends.request = "friends/request/";
+// app.api.friends.accept = "friends/accept/";
+// app.api.friends.delete = "friends/delete/";
+// app.api.friends.incoming.requests = "friends/incoming-requests/";
+// app.api.friends.outgoing.requests = "friends/outgoing-requests/";
+
 
 app.kor = {};
 
