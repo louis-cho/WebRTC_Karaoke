@@ -74,4 +74,10 @@ public class CommentServiceImpl implements CommentService {
                 .getResultList();
     }
 
+    @Override
+    public int getCommentCount(int feedId) {
+
+        return commentRepository.countCommentsByFeedId(feedId);
+    }
+
 }

@@ -49,6 +49,17 @@ public class CommentController {
         return new ResponseEntity<>(ApiResponse.success(comment), HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("/get/count/{feedId}")
+    public ResponseEntity<ApiResponse<Integer>> getCommentCount(@PathVariable int feedId) {
+        Integer count = 0;
+        try {
+            count = commentService.getCommentCount(feedId);
+        } catch (Exception e) {
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(CommentExceptionEnum.COMMENT_NOT_FOUND));
+        }
+        return new ResponseEntity<>(ApiResponse.success(count), HttpStatus.ACCEPTED);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<?>> createComment(@RequestBody Comment newComment) {
 

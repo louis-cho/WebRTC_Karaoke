@@ -48,8 +48,8 @@ public class ChatController {
     //redis에 있는 해당 채팅방의 채팅 내역 조회 및 페이징 처리 반환
     @GetMapping("/room/{chatRoomId}/oldMsg")
     public ResponseEntity<List<Object>> loadOldMsg( @PathVariable String chatRoomId,
-                                                    @RequestParam int page,
-                                                    @RequestParam int size) throws JsonProcessingException {
+                                                    @RequestParam(defaultValue = "1") int page,
+                                                    @RequestParam(defaultValue = "10") int size) throws JsonProcessingException {
         // Redis에서 해당 채팅방의 전체 데이터를 가져오기
         List<Object> res = chatService.loadFromRedis(chatRoomId, true, false);
 
@@ -60,12 +60,12 @@ public class ChatController {
                 chatService.saveToRedis(chat, true);
             }
 
-            // 전체 데이터를 Redis에 저장한 후, 페이지네이션을 위해 일부만 가져와서 반환
-            res = paginate(Collections.singletonList(chatList), page, size);
-        } else {
-            // Redis에 데이터가 있으면 해당 페이지의 데이터만 가져와서 반환
-            res = paginate(res, page, size);
+            // 전체 데이터를 Redis에 저장
+            res = chatService.loadFromRedis(chatRoomId, true, false);
         }
+
+        // Redis에 데이터가 있으면, 해당 페이지의 데이터만 가져와서 반환
+        res = paginate(res, page, size);
 
         return ResponseEntity.ok(res);
     }
