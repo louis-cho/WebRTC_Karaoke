@@ -49,13 +49,19 @@ public class FriendsController {
 
     @Operation(summary = "친구 요청 목록 API", description = "나에게 온 친구 요청 목록 확인")
     @GetMapping("/incoming-requests")
-    public Page<Friends> getIncomingRequests(@RequestParam long toUser, Pageable pageable) {
+    public Page<Friends> getIncomingRequests(@RequestParam long toUser,
+                                             @RequestParam int page,
+                                             @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
         return friendsService.getIncomingRequests(toUser, pageable);
     }
 
     @Operation(summary = "보낸 친구 요청 목록 API", description = "내가 보낸 친구 요청 목록 확인")
     @GetMapping("/outgoing-requests")
-    public Page<Friends> getOutgoingRequests(@RequestParam long fromUser, Pageable pageable) {
+    public Page<Friends> getOutgoingRequests(@RequestParam long fromUser,
+                                             @RequestParam int page,
+                                             @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
         return friendsService.getOutgoingRequests(fromUser, pageable);
     }
 }
