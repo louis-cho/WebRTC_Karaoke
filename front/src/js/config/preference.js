@@ -43,7 +43,7 @@ app.api.like.count = "/like/get/";
 
 app.api.friends = {};
 app.api.friends.get = "/friends/";
-app.api.friends.list ="/list/";
+app.api.friends.list = "/list/";
 app.api.friends.request = "/friends/request/";
 // app.api.friends.accept = "friends/accept/";
 // app.api.friends.delete = "friends/delete/";
@@ -63,15 +63,25 @@ app.kor.loginPage.idHint = "id를 입력해주세요";
 app.kor.loginPage.pwLabel = "pw";
 app.kor.loginPage.pwHint = "pw를 입력해주세요";
 
+app.kor.karaoke = {};
+app.kor.karaoke.list = {};
+app.kor.karaoke.list.sessionList = "노래방 목록";
+app.kor.karaoke.list.createSession = "방 만들기";
+app.kor.karaoke.list.sessionId = "방 제목";
+app.kor.karaoke.list.numberOfParticipants = "인원";
+app.kor.karaoke.list.status = "상태";
+app.kor.karaoke.list.private = "비공개";
+app.kor.karaoke.list.public = "공개";
+app.kor.karaoke.list.joinSession = "입장하기";
+app.kor.karaoke.list.recording = "녹화 중";
+app.kor.karaoke.list.waiting = "대기 중";
+app.kor.karaoke.list.maxNumber = "(최대 6명)";
+app.kor.karaoke.list.password = "비밀번호";
+
+app.kor.karaoke.session = {};
+
 app.kor.karaokePage = {};
-app.kor.karaokePage.title = "바로 지금 노래해방!";
-app.kor.karaokePage.sessionId = "방 제목";
-app.kor.karaokePage.userName = "참가자 이름";
-app.kor.karaokePage.numberOfParticipants = "인원(최대 6명)";
-app.kor.karaokePage.password = "비밀번호";
-app.kor.karaokePage.public = "비공개";
 app.kor.karaokePage.joinSession = "참가하기";
-app.kor.karaokePage.leaveSession = "방 나가기";
 app.kor.karaokePage.updateSession = "변경하기";
 app.kor.karaokePage.applyFilter = "필터 적용하기";
 app.kor.karaokePage.removeFilter = "필터 해제하기";

@@ -64,13 +64,13 @@
       <q-tabs align="justify" active-color="positive" indicator-color="primary">
         <q-tab
           name="audio-filter"
-          label="Audio Filter"
+          label="입력"
           @click="toggleModal('audio-filter')"
         />
 
         <q-tab
           name="karaoke-chat"
-          label="Karaoke Chat"
+          label="채팅"
           @click="toggleModal('karaoke-chat')"
         />
 
