@@ -49,6 +49,7 @@
             color="negative"
             :label="pref.app.kor.karaoke.session.stop"
           />
+          <q-btn @click="finishSong()" color="primary" label="종료" />
         </div>
         <normal-mode v-if="!songMode" />
         <perfect-score v-if="songMode" />
@@ -130,6 +131,8 @@ import PerfectScore from "@/components/karaoke/PerfectScore.vue";
 const store = useKaraokeStore();
 const router = useRouter();
 const songMode = ref(true);
+
+const fileUrl = ref(undefined);
 const recordingId = ref(undefined);
 
 // 다시그려내기 위해 computed 작성
@@ -156,36 +159,50 @@ const toggleModal = (modalName) => {
   store.toggleModals[modalName] = true;
 };
 
-async function startSong() {
-  removeReserve().then((success) => {
-    if (success) {
+function startSong() {
+  removeReserve()
+    .then(() => {
       startRecording();
-    } else {
-      console.log("실패");
-    }
-  });
+    })
+    .catch((error) => {
+      console.log("removeReserve 실패", error);
+    });
 }
 
-async function stopSong() {
-  stopRecording().then((success) => {
-    if (success) {
+function stopSong() {
+  stopRecording()
+    .then(() => {
       removeRecording();
-    } else {
-      console.log("실패");
-    }
-  });
+    })
+    .catch((error) => {
+      console.log("stopRecording 실패", error);
+    });
+}
+
+function finishSong() {
+  stopRecording()
+    .then(() => {
+      uploadRecording();
+    })
+    .catch((error) => {
+      console.log("stopRecording 실패", error);
+    });
 }
 
 function removeReserve() {
-  return axios.post(
-    store.APPLICATION_SERVER_URL + "/song/start",
-    {
-      sessionName: store.sessionName,
-    },
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
+  return axios
+    .post(
+      store.APPLICATION_SERVER_URL + "/song/start",
+      {
+        sessionName: store.sessionName,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+    .then((res) => {
+      console.log(res.data);
+    });
 }
 
 function startRecording() {
@@ -218,6 +235,7 @@ function stopRecording() {
     )
     .then((res) => {
       console.log(res.data);
+      fileUrl.value = res.data.url;
     });
 }
 
@@ -233,7 +251,23 @@ function removeRecording() {
       }
     )
     .then(() => {
+      fileUrl.value = undefined;
       recordingId.value = undefined;
+    });
+}
+
+function uploadRecording() {
+  console.log(fileUrl.value);
+  axios
+    .post(store.APPLICATION_SERVER_URL + "/karaoke/file/upload", {
+      fileUrl: fileUrl.value,
+    })
+    .then((res) => {
+      console.log(res.data);
+      removeRecording();
+    })
+    .catch((error) => {
+      console.error("uploadRecording 실패", error);
     });
 }
 </script>

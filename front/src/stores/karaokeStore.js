@@ -10,11 +10,8 @@ export const useKaraokeStore = defineStore("karaoke", {
     createModal: false,
     updateModal: false,
     toggleModals: {
-      "audio-filter": false,
       "karaoke-chat": false,
       "input-controller": false,
-      "input-selector": false,
-      "recording-video": false,
       "reserve-song": false,
       "reserve-list": false,
     },
