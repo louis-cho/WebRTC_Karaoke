@@ -38,6 +38,18 @@
         style="display: flex; flex-direction: row; overflow-x: auto"
       >
         <UserVideo :stream-manager="mainStreamManagerComputed" />
+        <div style="display: flex; flex-direction: column">
+          <q-btn
+            @click="startSong()"
+            color="positive"
+            :label="pref.app.kor.karaoke.session.start"
+          />
+          <q-btn
+            @click="stopSong()"
+            color="negative"
+            :label="pref.app.kor.karaoke.session.stop"
+          />
+        </div>
         <normal-mode v-if="!songMode" />
         <perfect-score v-if="songMode" />
       </div>
@@ -103,6 +115,7 @@ import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import pref from "@/js/config/preference.js";
+import axios from "axios";
 
 import UserVideo from "@/components/karaoke/video/UserVideo.vue";
 import KaraokeChat from "@/components/karaoke/session/KaraokeChat.vue";
@@ -141,6 +154,20 @@ function updateMainVideoStreamManager(stream) {
 const toggleModal = (modalName) => {
   store.toggleModals[modalName] = true;
 };
+
+function startSong() {
+  axios.post(
+    store.APPLICATION_SERVER_URL + "/song/start",
+    {
+      sessionName: store.sessionName,
+    },
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+}
+
+function stopSong() {}
 </script>
 
 <style scoped>

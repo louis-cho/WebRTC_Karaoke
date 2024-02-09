@@ -88,6 +88,9 @@ app.kor.karaoke.session.reserve = "예약하기";
 app.kor.karaoke.session.reserveList = "예약목록";
 app.kor.karaoke.session.message = "전달할 내용을 입력하세요";
 app.kor.karaoke.session.send = "전송";
+app.kor.karaoke.session.kick = "강퇴";
+app.kor.karaoke.session.start = "시작";
+app.kor.karaoke.session.stop = "취소";
 
 app.kor.karaokePage = {};
 app.kor.karaokePage.applyFilter = "필터 적용하기";

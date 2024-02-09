@@ -78,6 +78,27 @@ public class SongController {
         return ResponseEntity.ok(hashString);
     }
 
+    @PostMapping("/start")
+    public ResponseEntity<?> startSing(@RequestBody Map<String, Object> params) {
+        System.out.println("Start Song : " + params);
+
+        String sessionName = (String) params.get("sessionName");
+
+        if (!reserveModel.getMapSongReserveDeq().containsKey(sessionName)) {
+            System.out.println("존재하지 않는 세션");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        if (reserveModel.getMapSongReserveDeq().get(sessionName).isEmpty()) {
+            System.out.println("예약 없음");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        String hashString = reserveModel.getMapSongReserveDeq().get(sessionName).pollFirst();
+        reserveModel.getMapSongReserveDeq().get(sessionName).remove(hashString);
+
+        return ResponseEntity.ok(hashString);
+    }
+
     @GetMapping("/{songId}")
     public ResponseEntity<Song> getSongById(@PathVariable int songId) {
         Song song = songService.getSongById(songId);
