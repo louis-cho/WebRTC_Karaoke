@@ -130,6 +130,7 @@ import PerfectScore from "@/components/karaoke/PerfectScore.vue";
 const store = useKaraokeStore();
 const router = useRouter();
 const songMode = ref(true);
+const recordingId = ref(undefined);
 
 // 다시그려내기 위해 computed 작성
 const mainStreamManagerComputed = computed(() => store.mainStreamManager);
@@ -155,8 +156,28 @@ const toggleModal = (modalName) => {
   store.toggleModals[modalName] = true;
 };
 
-function startSong() {
-  axios.post(
+async function startSong() {
+  removeReserve().then((success) => {
+    if (success) {
+      startRecording();
+    } else {
+      console.log("실패");
+    }
+  });
+}
+
+async function stopSong() {
+  stopRecording().then((success) => {
+    if (success) {
+      removeRecording();
+    } else {
+      console.log("실패");
+    }
+  });
+}
+
+function removeReserve() {
+  return axios.post(
     store.APPLICATION_SERVER_URL + "/song/start",
     {
       sessionName: store.sessionName,
@@ -167,7 +188,54 @@ function startSong() {
   );
 }
 
-function stopSong() {}
+function startRecording() {
+  axios
+    .post(
+      store.APPLICATION_SERVER_URL + "/karaoke/recording/start",
+      {
+        sessionName: store.sessionName,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+    .then((res) => {
+      console.log(res.data);
+      recordingId.value = res.data.id;
+    });
+}
+
+function stopRecording() {
+  return axios
+    .post(
+      store.APPLICATION_SERVER_URL + "/karaoke/recording/stop",
+      {
+        recordingId: recordingId.value,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+    .then((res) => {
+      console.log(res.data);
+    });
+}
+
+function removeRecording() {
+  axios
+    .post(
+      store.APPLICATION_SERVER_URL + "/karaoke/recording/delete",
+      {
+        recordingId: recordingId.value,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+    .then(() => {
+      recordingId.value = undefined;
+    });
+}
 </script>
 
 <style scoped>
