@@ -65,7 +65,7 @@
           <!-- 닫기 버튼 -->
           <q-btn
             color="negative"
-            label="닫기"
+            :label="pref.app.kor.karaoke.list.close"
             class="q-mt-md"
             @click="closeModal"
           />

@@ -77,12 +77,19 @@ app.kor.karaoke.list.recording = "녹화 중";
 app.kor.karaoke.list.waiting = "대기 중";
 app.kor.karaoke.list.maxNumber = "(최대 6명)";
 app.kor.karaoke.list.password = "비밀번호";
-
+app.kor.karaoke.list.close = "닫기";
 app.kor.karaoke.session = {};
+app.kor.karaoke.session.setting = "설정";
+app.kor.karaoke.session.leave = "나가기";
+app.kor.karaoke.session.update = "변경하기";
+app.kor.karaoke.session.chatting = "채팅";
+app.kor.karaoke.session.input = "입력 설정";
+app.kor.karaoke.session.reserve = "예약하기";
+app.kor.karaoke.session.reserveList = "예약목록";
+app.kor.karaoke.session.message = "전달할 내용을 입력하세요";
+app.kor.karaoke.session.send = "전송";
 
 app.kor.karaokePage = {};
-app.kor.karaokePage.joinSession = "참가하기";
-app.kor.karaokePage.updateSession = "변경하기";
 app.kor.karaokePage.applyFilter = "필터 적용하기";
 app.kor.karaokePage.removeFilter = "필터 해제하기";
 app.kor.karaokePage.filterList = "적용할 필터를 고르세요";

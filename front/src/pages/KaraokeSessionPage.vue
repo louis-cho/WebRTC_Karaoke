@@ -12,19 +12,19 @@
         "
       >
         <q-toolbar-title style="font-size: 40px"
-          >{{ pref.app.kor.karaokePage.sessionId }} :
+          >{{ pref.app.kor.karaoke.list.sessionId }} :
           {{ store.sessionName }}</q-toolbar-title
         >
         <div style="display: flex">
           <q-btn
             @click="openModal"
             color="positive"
-            :label="pref.app.kor.karaokePage.updateSession"
+            :label="pref.app.kor.karaoke.session.setting"
           />
           <q-btn
             @click="leaveSession"
             color="negative"
-            :label="pref.app.kor.karaokePage.leaveSession"
+            :label="pref.app.kor.karaoke.session.leave"
           />
         </div>
       </div>
@@ -63,54 +63,34 @@
     <q-footer>
       <q-tabs align="justify" active-color="positive" indicator-color="primary">
         <q-tab
-          name="audio-filter"
-          label="입력"
-          @click="toggleModal('audio-filter')"
-        />
-
-        <q-tab
           name="karaoke-chat"
-          label="채팅"
+          :label="pref.app.kor.karaoke.session.chatting"
           @click="toggleModal('karaoke-chat')"
         />
 
         <q-tab
           name="input-controller"
-          label="Input Controller"
+          :label="pref.app.kor.karaoke.session.input"
           @click="toggleModal('input-controller')"
         />
 
         <q-tab
-          name="input-selector"
-          label="Input Selector"
-          @click="toggleModal('input-selector')"
-        />
-
-        <q-tab
-          name="recording-video"
-          label="Recording Video"
-          @click="toggleModal('recording-video')"
-        />
-
-        <q-tab
           name="reserve-song"
-          label="예약하기"
+          :label="pref.app.kor.karaoke.session.reserve"
           @click="toggleModal('reserve-song')"
         />
 
         <q-tab
           name="reserve-list"
-          label="예약목록"
+          :label="pref.app.kor.karaoke.session.reserveList"
           @click="toggleModal('reserve-list')"
         />
       </q-tabs>
     </q-footer>
   </q-layout>
 
-  <audio-filter />
   <karaoke-chat />
   <input-controller />
-  <input-selector />
   <recording-video />
   <reserve-modal />
   <reserve-list />
@@ -121,24 +101,17 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
-
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import pref from "@/js/config/preference.js";
 
 import UserVideo from "@/components/karaoke/video/UserVideo.vue";
-import AudioFilter from "@/components/karaoke/session/AudioFilter.vue";
 import KaraokeChat from "@/components/karaoke/session/KaraokeChat.vue";
 import InputController from "@/components/karaoke/session/InputController.vue";
-import InputSelector from "@/components/karaoke/session/InputSelector.vue";
-import RecordingVideo from "@/components/karaoke/session/RecordingVideo.vue";
 import UpdateModal from "@/components/karaoke/session/UpdateModal.vue";
 import ReserveModal from "@/components/karaoke/song/ReserveModal.vue";
 import ReserveList from "@/components/karaoke/song/ReserveList.vue";
 import NormalMode from "@/components/karaoke/NormalMode.vue";
 import PerfectScore from "@/components/karaoke/PerfectScore.vue";
-
-axios.defaults.headers.post["Content-Type"] = "application/json";
 
 // store 사용
 const store = useKaraokeStore();
