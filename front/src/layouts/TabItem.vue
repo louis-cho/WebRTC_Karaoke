@@ -49,7 +49,7 @@
         <div v-if="isDropdownOpen2" class="dropdown-content">
           <q-tabs vertical>
             <q-tab name="유저검색" label="유저검색" @click="handleDropdownItemClick('/item1')" />
-            <q-tab name="친구목록" label="친구목록" @click="handleDropdownItemClick('/item2')" />
+            <q-tab name="친구목록" label="친구목록" @click="handleDropdownItemClick('/friend_list')" />
             <q-tab name="포인트" label="포인트" @click="handleDropdownItemClick('/item3')" />
             <q-tab name="프로필 수정" label="프로필 수정" @click="handleDropdownItemClick('/info_edit')" />
             <q-tab name="로그아웃" label="로그아웃" @click="handleDropdownItemClick('/item6')" />
