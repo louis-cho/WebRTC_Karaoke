@@ -4,12 +4,14 @@
     <!-- <h3>나의 친구 목록 페이지</h3> -->
     <div class="my-feed">
       <!-- tab 사용해서 왼쪽탭은 친구 요청 들어온 목록, 오른쪽 탭 클릭 시 친구 목록 나오게  -->
+      <SearchUser/>
     </div>
   </div>
 </template>
 
 <script setup>
 import NavBar from '@/layouts/NavBar.vue';
+import SearchUser from '@/components/SearchUser.vue';
 import { fetchFriendList, fetchFriendRequest } from "@/js/friends/friends.js";
 import { ref, onMounted } from "vue";
 
