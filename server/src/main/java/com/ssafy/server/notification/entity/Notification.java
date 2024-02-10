@@ -13,17 +13,23 @@ public class Notification extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="notification_id", updatable = false)
-    private long notificationId;
+    private Integer notificationId;
 
-    @Column(name="user_pk", nullable = false)
-    private long userPk;
+    @Column(name="toUser", nullable = false)
+    private Integer toUser;
+
+    @Column(name="fromUser", nullable = false)
+    private Integer fromUser; //백
+
+    @Column(name="message")
+    private String message;
 
     @Column(nullable = false)
-    private String info;
-
-    @Column(name="push_url")
-    private String pushUrl;
+    private String info; //게시글번호, 노래방주소, 친구번호
 
     @Column(nullable = false)
-    private char status;
+    private String type;
+
+    @Column(nullable = false)
+    private Character status;
 }
