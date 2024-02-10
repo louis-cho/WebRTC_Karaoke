@@ -74,30 +74,30 @@ const goBack = function () {
 
 
 // 가상의 피드 데이터 예시
-const feeds = ref([
-  {
-    FEED_ID: 1,
-    USER_PK: 1,
-    SONG_ID: 3,
-    CONTENT: "오랜만에 빅뱅 노래 불러봄",
-    THUMBNAIL_URL: "src/assets/icon/logo.png",
-    VIDEO_URL: "your_video_url.mp4",
-    VIDEO_LENGTH: "190",
-    STATUS: "2",
-    TOTAL_POINT: "20000"
-  },
-  {
-    FEED_ID: 2,
-    USER_PK: 1,
-    SONG_ID: 7,
-    CONTENT: "평가 좀 해주세요",
-    THUMBNAIL_URL: "src/assets/icon/web_light_sq_ctn@1x.png",
-    VIDEO_URL: "your_video_url2.mp4",
-    VIDEO_LENGTH: "170",
-    STATUS: "0",
-    TOTAL_POINT: "5000"
-  }
-])
+// const feeds = ref([
+//   {
+//     FEED_ID: 1,
+//     USER_PK: 1,
+//     SONG_ID: 3,
+//     CONTENT: "오랜만에 빅뱅 노래 불러봄",
+//     THUMBNAIL_URL: "src/assets/icon/logo.png",
+//     VIDEO_URL: "your_video_url.mp4",
+//     VIDEO_LENGTH: "190",
+//     STATUS: "2",
+//     TOTAL_POINT: "20000"
+//   },
+//   {
+//     FEED_ID: 2,
+//     USER_PK: 1,
+//     SONG_ID: 7,
+//     CONTENT: "평가 좀 해주세요",
+//     THUMBNAIL_URL: "src/assets/icon/web_light_sq_ctn@1x.png",
+//     VIDEO_URL: "your_video_url2.mp4",
+//     VIDEO_LENGTH: "170",
+//     STATUS: "0",
+//     TOTAL_POINT: "5000"
+//   }
+// ])
 
 
 
