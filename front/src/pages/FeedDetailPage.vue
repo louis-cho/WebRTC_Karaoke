@@ -22,7 +22,6 @@
           <div class="space-between" >
             <div>
                 <p v-if="feed.user">{{ feed.user.nickname }}</p>
-              <p>JennierubyJane</p>
             </div>
             <div @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정">
@@ -62,7 +61,8 @@
           <!-- <img src="@/assets/img/capture3.png" class="comment-img" alt="내 프로필 이미지"> -->
         </div>
         <div class="comment-input-container">
-          <textarea v-model="newComment"  @keydown.enter.prevent="addComment" placeholder="댓글을 입력하세요..."></textarea>
+          <input v-model="newComment" placeholder="댓글을 입력하세요..." class="comment-input">
+          <button class="comment-button bg-blue-7">등록</button>
         </div>
       </div>
       <hr>
@@ -174,22 +174,6 @@ const deletePost = () => {
 // }
 
 
-// 가상의 댓글 예시
-// const comments = ref([
-//   { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
-//     CONTENT: '노래 잘 들었슴다',
-//     // ROOT_COMMENT_ID : 3,
-//     // PARENT_COMMENT_ID : 4,
-//     CREATED_AT: "2021-10-08-10:27",
-//     MODIFIED_AT: "2021-10-08-11:20"
-//   },
-//   { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
-//     CONTENT: '음정이 조큼 아쉽네여',
-//     // ROOT_COMMENT_ID : 3,
-//     // PARENT_COMMENT_ID : 4,
-//     CREATED_AT: "2023-03-08-10:27",
-//     MODIFIED_AT: "2023-03-11-11:20" },
-// ]);
 
 onBeforeMount(async () => {
   console.log(this);
@@ -349,27 +333,28 @@ async function fetchAndRenderComments(feedId) {
   flex-wrap: wrap;
   align-content: space-between;
 }
-
-/* .just-row-container {
+.comment-container {
+  margin-top: 20px;
+}
+.comment-input-container {
   display: flex;
-  justify-content: row;
+  align-items: center;
 }
 
-.row-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+.comment-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-left :10px;
+  margin-right: 10px;
 }
 
-.column-container {
-  display: flex;
-  flex-direction: column;
-} */
-
-/* .profile-img {
-  border-radius: 30%;
-  object-fit: cover;
-  width: 50%;
-  height: 50%;
-} */
+.comment-button {
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 </style>
