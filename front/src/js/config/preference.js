@@ -18,6 +18,7 @@ app.api.user.update = "/user/update";
 app.api.comment = {};
 app.api.comment.fetch = "/comment/feed/";
 app.api.comment.count = "/comment/get/count/";
+app.api.comment.add = "/comment/create";
 
 app.api.feed = {};
 app.api.feed.fetchAll = "/feed/get/all";

@@ -16,27 +16,31 @@ export function clearComment() {
  * @param {Integer} pageNo 페이지 번호 (0부터 시작)
  */
 export async function fetchComment(feedId, pageNo) {
-  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.comment.fetch  + feedId;
+  const serverUrl =
+    pref.app.api.protocol +
+    pref.app.api.host +
+    pref.app.api.comment.fetch +
+    feedId;
 
   const data = {
     startIndex: pageNo,
-    pageSize: 10
+    pageSize: 10,
   };
 
   return await fetch(serverUrl, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
   })
-  .then(response => response.json())
-  .then(result => {
-    return buildCommentTree(result);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+    .then((response) => response.json())
+    .then((result) => {
+      return buildCommentTree(result);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }
 
 /**
@@ -45,32 +49,35 @@ export async function fetchComment(feedId, pageNo) {
  * @returns
  */
 function buildCommentTree(comments) {
-    const commentMap = new Map();
+  const commentMap = new Map();
 
-    comments.data.forEach(elem => {
-        elem.children = [];
-        commentMap.set(elem.comment.commentId, elem);
-    });
-
-    const tree = [];
-
-    comments.data.forEach(elem => {
-      elem.level = 0; // Initialize level for top-level comments
-
-      if (elem.comment.parentCommentId !== null && elem.comment.parentCommentId >= 0) {
-          const parentComment = commentMap.get(elem.comment.parentCommentId);
-
-          // Set the level of the current comment based on the parent's level
-          elem.comment.level = parentComment.level + 1;
-
-          // Add the current comment as a child of the parent comment
-          parentComment.children.push(elem);
-      } else {
-          tree.push(elem);
-      }
+  comments.data.forEach((elem) => {
+    elem.children = [];
+    commentMap.set(elem.comment.commentId, elem);
   });
 
-    return tree;
+  const tree = [];
+
+  comments.data.forEach((elem) => {
+    elem.level = 0; // Initialize level for top-level comments
+
+    if (
+      elem.comment.parentCommentId !== null &&
+      elem.comment.parentCommentId >= 0
+    ) {
+      const parentComment = commentMap.get(elem.comment.parentCommentId);
+
+      // Set the level of the current comment based on the parent's level
+      elem.comment.level = parentComment.level + 1;
+
+      // Add the current comment as a child of the parent comment
+      parentComment.children.push(elem);
+    } else {
+      tree.push(elem);
+    }
+  });
+
+  return tree;
 }
 
 /**
@@ -79,32 +86,78 @@ function buildCommentTree(comments) {
  * @param {Integer} level
  */
 export function renderComments(comments, level = 0) {
-    const container = document.getElementById('comments-container');
-    comments.forEach(comment => {
-        const commentElement = document.createElement('div');
-        commentElement.innerHTML += "&nbsp;".repeat(level) + comment.content;
-        container.appendChild(commentElement);
-        renderComments(comment.children, level + 1);
-    });
+  const container = document.getElementById("comments-container");
+  comments.forEach((comment) => {
+    const commentElement = document.createElement("div");
+    commentElement.innerHTML += "&nbsp;".repeat(level) + comment.content;
+    container.appendChild(commentElement);
+    renderComments(comment.children, level + 1);
+  });
 }
 
 // const commentTree = buildCommentTree(commentsData);
 // renderComments(commentTree);
 
 export async function fetchCommentCount(feedId) {
-  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.comment.count  + feedId;
+  const serverUrl =
+    pref.app.api.protocol +
+    pref.app.api.host +
+    pref.app.api.comment.count +
+    feedId;
 
   return await fetch(serverUrl, {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
-    }
+      "Content-Type": "application/json",
+    },
   })
-  .then(response => response.json())
-  .then(result => {
-    return result.data;
+    .then((response) => response.json())
+    .then((result) => {
+      return result.data;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+// 댓글 추가
+export async function addComment(comment) {
+  const serverUrl =
+    pref.app.api.protocol + pref.app.api.host + pref.app.api.comment.add;
+
+  return await fetch(serverUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(comment),
   })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+    .then((response) => response.json())
+    .then((result) => {
+      return result.data;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+// 댓글 조회수 추가
+export async function addCommentCount(comment) {
+  const serverUrl =
+    pref.app.api.protocol + pref.app.api.host + pref.app.api.comment.add;
+
+  return await fetch(serverUrl, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(comment),
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      return result.data;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }

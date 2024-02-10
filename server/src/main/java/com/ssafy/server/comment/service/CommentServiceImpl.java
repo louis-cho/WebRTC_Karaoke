@@ -27,6 +27,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void createComment(Comment newComment) {
+
         commentRepository.save(newComment);
     }
 
@@ -45,7 +46,9 @@ public class CommentServiceImpl implements CommentService {
         if (optionalExistingComment.isPresent()) {
             Comment existingComment = optionalExistingComment.get();
             existingComment.setContent(updatedComment.getContent());
-            existingComment.setDeleted(updatedComment.isDeleted());
+
+
+
             return commentRepository.save(existingComment);
         }
 
@@ -57,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
         // commentId에 해당하는 댓글 삭제
 
         Optional<Comment> optionalExistingComment = commentRepository.findById(commentId);
-        if(optionalExistingComment.isPresent()) {
+        if(optionalExistingComment.isPresent() && optionalExistingComment.get().isDeleted()) {
             optionalExistingComment.get().setDeleted(true);
             return true;
         }
@@ -65,14 +68,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @SuppressWarnings("unchecked")
-    @Override
-    public List<Comment> getCommentsByFeedIdWithPagination(int feedId, int startIndex, int pageSize) {
-        return (List<Comment>) entityManager.createNamedStoredProcedureQuery("GetCommentsByFeedIdWithPagination")
-                .setParameter("feedIdParam", feedId)
-                .setParameter("startIndexParam", startIndex)
-                .setParameter("pageSizeParam", pageSize)
-                .getResultList();
-    }
+        @Override
+        public List<Comment> getCommentsByFeedIdWithPagination(int feedId, int startIndex, int pageSize) {
+            return (List<Comment>) entityManager.createNamedStoredProcedureQuery("GetCommentsByFeedIdWithPagination")
+                    .setParameter("feedIdParam", feedId)
+                    .setParameter("startIndexParam", startIndex)
+                    .setParameter("pageSizeParam", pageSize)
+                    .getResultList();
+        }
 
     @Override
     public int getCommentCount(int feedId) {
