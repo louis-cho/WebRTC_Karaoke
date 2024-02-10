@@ -10,7 +10,10 @@ import com.ssafy.server.auth.model.dto.Role;
 import com.ssafy.server.auth.model.dto.Token;
 import com.ssafy.server.auth.model.dto.TokenKey;
 import com.ssafy.server.auth.util.JwtUtil;
+import com.ssafy.server.common.error.ApiException;
+import com.ssafy.server.common.error.ApiExceptionFactory;
 import com.ssafy.server.user.document.UserDocument;
+import com.ssafy.server.user.error.UserExceptionEnum;
 import com.ssafy.server.user.model.User;
 import com.ssafy.server.user.model.UserAuth;
 import com.ssafy.server.user.service.UserService;
@@ -164,5 +167,61 @@ public class UserController {
     public ResponseEntity<List<UserDocument>> searchUsersByNickname(@PathVariable String nickname) {
         List<UserDocument> users = userService.searchUsersByNickname(nickname);
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/get/{userPk}")
+    public ResponseEntity<User> getUser(@PathVariable int userPk) {
+       try {
+           return new ResponseEntity<>(userService.getUser(userPk), HttpStatus.OK);
+       }
+       catch(Exception e) {
+           throw new ApiException(ApiExceptionFactory.fromExceptionEnum(UserExceptionEnum.USER_NOT_FOUND));
+       }
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Boolean> delete(@RequestBody JsonNode jsonNode) {
+        JsonNode uuidNode = jsonNode.get("uuid");
+        JsonNode userPkNode = jsonNode.get("userPk");
+
+        int userPk = -1;
+
+        try {
+            if (uuidNode == null) {
+                userPk = userService.getUserPk(UUID.fromString(uuidNode.asText()));
+            } else {
+                userPk = Integer.parseInt(userPkNode.asText());
+            }
+            userService.deleteUser(userPk);
+        } catch(Exception e) {
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(UserExceptionEnum.USER_DELETE_FAIL));
+        }
+
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<Boolean> update(@RequestBody JsonNode jsonNode) {
+        JsonNode userKey = jsonNode.get("userKey");
+        JsonNode nicknameNode = jsonNode.get("nickname");
+        JsonNode profileImgUrlNode = jsonNode.get("profileImgUrl");
+        JsonNode introductionNode = jsonNode.get("introduction");
+
+        User user = new User();
+        if(nicknameNode != null)
+            user.setNickname(nicknameNode.asText());
+        if(introductionNode != null)
+            user.setIntroduction(introductionNode.asText());
+        if(profileImgUrlNode != null)
+            user.setProfileImgUrl(profileImgUrlNode.asText());
+        try {
+            int userPk = userService.getUserPk(UUID.fromString(userKey.asText()));
+            user.setUserPk(userPk);
+            userService.updateUser(user);
+        } catch(Exception e ) {
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(UserExceptionEnum.USER_UPDATE_FAIL));
+        }
+
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
     }
 }

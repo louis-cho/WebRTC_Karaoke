@@ -7,6 +7,11 @@ const routes = [
     component: () => import("@/pages/HomePage.vue"),
   },
   {
+    path: "/notification",
+    name: "notification",
+    component: () => import("@/pages/NotificationTest.vue"),
+  },
+  {
     path: "/karaoke",
     component: () => import("@/pages/KaraokeListPage.vue"),
   },
@@ -32,12 +37,17 @@ const routes = [
   },
   // path 추후 수정 필요
   {
-    path: "/feed_detail",
-    component: () => import("@/pages/FeedDetailPage.vue"),
+    path: '/feed_detail/:feedId',
+    name: 'feed_detail',
+    component: () => import('@/pages/FeedDetailPage.vue'),
   },
   {
     path: "/info_edit",
     component: () => import("@/pages/InformationEditPage.vue"),
+  },
+  {
+    path: "/friend_list",
+    component: () => import("@/pages/MyFriendList.vue"),
   },
   {
     path: "/:catchAll(.*)*",
@@ -71,10 +81,6 @@ const routes = [
     },
   },
 
-  {
-    path: "/feed",
-    component: () => import("@/pages/FeedPage.vue"),
-  },
   {
     path: "/message",
     component: () => import("@/pages/MessagePage.vue"),

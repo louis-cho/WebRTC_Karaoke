@@ -2,12 +2,7 @@
   <nav-bar />
   <div id="main-container" class="q-pa-md q-gutter-md">
     <div id="join-dialog" class="q-pa-md">
-      <h1 class="q-mb-md text-h6">
-        {{ pref.app.kor.karaokePage.title }}
-      </h1>
-
       <session-list :pages="pages" :changeRoute="router" />
-
       <create-modal :changeRoute="router" />
     </div>
   </div>
@@ -17,9 +12,8 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import pref from "@/js/config/preference.js";
-import NavBar from "@/layouts/NavBar.vue";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
+import NavBar from "@/layouts/NavBar.vue";
 import CreateModal from "@/components/karaoke/list/CreateModal.vue";
 import SessionList from "@/components/karaoke/list/SessionList.vue";
 

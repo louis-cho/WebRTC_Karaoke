@@ -15,47 +15,43 @@
 
       <!-- 두번째 div -->
       <div class="profile">
-        <!-- <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }"> -->
-          <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img">
-        <!-- </div> -->
+        <div class="profile-img-container" v-if="feed.user" :style="{ backgroundImage: `url(${feed.user.profileImgUrl})` }">
+        </div>
 
         <div class="width-100">
           <div class="space-between" >
             <div>
-              <!-- <p>{{ getNickName(feed.USER_PK) }}</p> -->
-              <p>JennierubyJane</p>
+                <p v-if="feed.user">{{ feed.user.nickname }}</p>
             </div>
             <div @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정">
             </div>
           </div>
           <div class="space-start">
-            <!-- <div>{{ getSongTitle(feed.FEED_ID) }} </div> -->
-            <p>거짓말-</p>
-            <!-- <div>{{ getSongSinger(feed.FEED_ID) }}</div> -->
-            <p>빅뱅</p>
-            <!-- <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.STATUS === '1' ? 'secondary' : 'black')" :label="feed.STATUS === '0' ? '전체 공개' : (feed.STATUS === '1' ? '친구 공개' : '비공개')" size="sm" /> -->
+            <div v-if="feed.song">{{ feed.song.title }}-</div>
+            <div v-if="feed.song">{{ feed.song.singer }}</div>
+            <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.status === '1' ? 'secondary' : 'black')" :label="feed.status === '0' ? '전체 공개' : (feed.status === '1' ? '친구 공개' : '비공개')" size="sm" />
           </div>
         </div>
       </div>
 
-      <p>{{ 게시글내용 }} 오랜만에 빅뱅 노래</p>
+      <p>{{ feed.content }}</p>
       <video controls width="100%">
         <source src="your_video_url.mp4" type="video/mp4">
       </video>
       <div class="flex-row">
-      <div class="margin-right-20">
-        <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
-        <span>0</span>
-      </div>
-      <div class="margin-right-20">
-        <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
-        <span>0</span>
-      </div>
-      <div class="margin-right-20">
-        <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
-        <span>0</span>
-      </div>
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
+          <span>{{feed.commentCount}}</span>
+        </div>
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
+          <span>{{ feed.likeCount }}</span>
+        </div>
+        <div class="margin-right-20">
+          <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
+          <span>{{ feed.viewCount }}</span>
+        </div>
       </div>
       <hr>
 
@@ -65,25 +61,15 @@
           <!-- <img src="@/assets/img/capture3.png" class="comment-img" alt="내 프로필 이미지"> -->
         </div>
         <div class="comment-input-container">
-          <textarea v-model="newComment"  @keydown.enter.prevent="addComment" placeholder="댓글을 입력하세요..."></textarea>
+          <input v-model="newComment" placeholder="댓글을 입력하세요..." class="comment-input">
+          <button class="comment-button bg-blue-7">등록</button>
         </div>
       </div>
       <hr>
 
       <!-- 네번째 div(댓글 목록) -->
       <div ref="commentContainer">
-        <div v-for="comment in comments" :key="comment.COMMENT_ID">
-          <div class="display-flex">
-            <div class="comment-img-container2">
-              <!-- <img :src="comment.profileImage" class="profile-image" alt="댓글 작성자 프로필 이미지"> -->
-            </div>
-            <div class="comments">
-              <div><strong>{{ comment.nickname }} 닉네임</strong></div>
-              <div>{{ comment.CONTENT }}</div>
-            </div>
-          </div>
-          <hr>
-        </div>
+        <CommentItem :comments="comments" />
       </div>
 
     </div>
@@ -106,22 +92,31 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-
   </div>
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted } from "vue";
+import { ref, nextTick, onMounted, onBeforeMount } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
-import { fetchComment, renderComments } from "@/js/comment/comment.js";
+import { fetchComment,fetchCommentCount } from "@/js/comment/comment.js";
+import CommentItem from "@/components/CommentItem.vue";
 
+import {fetchHitCount} from "@/js/hit/hit.js";
+import {fetchLikeCount} from "@/js/like/like.js";
+import { fetchFeedList, fetchFeed } from '@/js/feed/feed.js';
+import { fetchSong } from '@/js/song/song.js';
+import { fetchUser } from '@/js/user/user.js';
+
+const feed = ref();
 const router = useRouter();
-
+const comments = ref([]);
 const newComment = ref("");
 const commentContainer = ref(null);
 const modal = ref(false);
+
+
 
 const goBack = function () {
   router.go(-1);
@@ -159,26 +154,6 @@ const getSongSinger = (feed_id) => {
 }
 
 
-const addComment = function() {
-  // 댓글 추가
-  const newCommentData = {
-    COMMENT_ID: comments.value.length + 1,
-    USER_PK: 15, //임의로..수정 필요
-    FEED_ID: 8, // 임의로..수정 필요
-    CONTENT: newComment.value,
-    CREATED_AT: new Date().toLocaleString(),
-    MODIFIED_AT: new Date().toLocaleString(),
-    // userProfile,
-    // username,
-  };
-
-  comments.value.push(newCommentData);
-  // 댓글 입력 창 초기화
-  newComment.value = '';
-  // 스크롤을 항상 아래로 내림
-  scrollToBottom();
-}
-
 
 
 const toggleModal = () => {
@@ -192,53 +167,46 @@ const deletePost = () => {
   toggleModal();
 }
 
-const scrollToBottom = () => {
-  nextTick(() => {
-    commentContainer.value.scrollTop = commentContainer.value.scrollHeight;
-  });
-}
+// const scrollToBottom = () => {
+//   nextTick(() => {
+//     commentContainer.value.scrollTop = commentContainer.value.scrollHeight;
+//   });
+// }
 
 
-// 가상의 댓글 예시
-// const comments = ref([
-//   { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
-//     CONTENT: '노래 잘 들었슴다',
-//     // ROOT_COMMENT_ID : 3,
-//     // PARENT_COMMENT_ID : 4,
-//     CREATED_AT: "2021-10-08-10:27",
-//     MODIFIED_AT: "2021-10-08-11:20"
-//   },
-//   { COMMENT_ID: 1, USER_PK:2, FEED_ID: 10,
-//     CONTENT: '음정이 조큼 아쉽네여',
-//     // ROOT_COMMENT_ID : 3,
-//     // PARENT_COMMENT_ID : 4,
-//     CREATED_AT: "2023-03-08-10:27",
-//     MODIFIED_AT: "2023-03-11-11:20" },
-// ]);
 
+onBeforeMount(async () => {
+  console.log(this);
+  let feedId = window.location.href.split('/').pop();
+  feedId = isNaN(feedId) ? 0 : parseInt(feedId);
+  let elem = await fetchFeed(feedId);
+  elem.song = await fetchSong(elem.songId);
+  elem.user = await fetchUser(elem.userPk);
+  elem.commentCount = await fetchCommentCount(elem.feedId);
+  elem.viewCount = await fetchHitCount(elem.feedId);
+  elem.likeCount = await fetchLikeCount(elem.feedId);
 
-const comments = ref([]);
+  feed.value = elem;
 
-onMounted(async () => {
-  // 페이지 로드 시 댓글을 가져오도록 설정하거나, 필요한 이벤트에 맞게 호출하세요.
-  await fetchAndRenderComments();
+  await fetchAndRenderComments(feedId);
 });
 
-async function fetchAndRenderComments() {
+// fetchAndRenderComments 함수 내부에 추가
+async function fetchAndRenderComments(feedId) {
   try {
-    // 피드 아이디와 페이지 번호를 지정하여 댓글을 가져옴
-    const feedId = 123; // 피드 아이디를 실제 값으로 변경
-    const pageNo = 0; // 페이지 번호를 필요에 맞게 변경
+    // const feedId = 1; // 실제 feedId로 교체
+    const pageNo = 0; // 실제 pageNo로 교체
 
+    // 댓글 가져오기
     const commentTree = await fetchComment(feedId, pageNo);
 
-    // 댓글 렌더링
-    renderComments(commentTree);
-
-    // 댓글 상태 업데이트
+    // 댓글 ref 업데이트
     comments.value = commentTree;
+
+    // 콘솔에 댓글 출력
+    console.log('Comments:', comments.value);
   } catch (error) {
-    console.error('Error fetching and rendering comments:', error);
+    console.error('댓글 가져오기 및 렌더링 중 오류 발생:', error);
   }
 }
 
@@ -365,27 +333,28 @@ async function fetchAndRenderComments() {
   flex-wrap: wrap;
   align-content: space-between;
 }
-
-/* .just-row-container {
+.comment-container {
+  margin-top: 20px;
+}
+.comment-input-container {
   display: flex;
-  justify-content: row;
+  align-items: center;
 }
 
-.row-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+.comment-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-left :10px;
+  margin-right: 10px;
 }
 
-.column-container {
-  display: flex;
-  flex-direction: column;
-} */
-
-/* .profile-img {
-  border-radius: 30%;
-  object-fit: cover;
-  width: 50%;
-  height: 50%;
-} */
+.comment-button {
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 </style>

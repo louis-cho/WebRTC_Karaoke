@@ -9,10 +9,11 @@ import com.ssafy.server.song.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SongServiceImpl implements SongService{
+public class SongServiceImpl implements SongService {
 
     @Autowired
     private SongRepository songRepository;
@@ -22,6 +23,11 @@ public class SongServiceImpl implements SongService{
     SingLogRepository singLogRepository;
 
     @Override
+    public List<Song> getSongList() {
+        return songRepository.findAll();
+    }
+
+    @Override
     public Song getSongById(int songId) {
         Optional<Song> optionalSong = songRepository.findById(songId);
         return optionalSong.orElse(null);
@@ -29,7 +35,7 @@ public class SongServiceImpl implements SongService{
 
     @Override
     public SongInfo getSongInfoById(int songId) {
-        Optional<SongInfo> optionalInfo= songInfoRepository.findById(songId);
+        Optional<SongInfo> optionalInfo = songInfoRepository.findById(songId);
         return optionalInfo.orElse(null);
     }
 

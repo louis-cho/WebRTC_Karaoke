@@ -7,16 +7,7 @@
           <!-- 세션 ID 입력 -->
           <q-input
             v-model="sessionName"
-            :label="pref.app.kor.karaokePage.sessionId"
-            outlined
-            dense
-            class="q-mb-md"
-          />
-
-          <!-- 사용자 이름 입력 -->
-          <q-input
-            v-model="store.userName"
-            :label="pref.app.kor.karaokePage.userName"
+            :label="pref.app.kor.karaoke.list.sessionId"
             outlined
             dense
             class="q-mb-md"
@@ -25,7 +16,10 @@
           <!-- 인원수 설정 -->
           <q-input
             v-model="numberOfParticipants"
-            :label="pref.app.kor.karaokePage.numberOfParticipants"
+            :label="
+              pref.app.kor.karaoke.list.numberOfParticipants +
+              pref.app.kor.karaoke.list.maxNumber
+            "
             outlined
             dense
             type="number"
@@ -38,7 +32,11 @@
           <!-- 공개 여부 설정 -->
           <q-toggle
             v-model="isPrivate"
-            :label="pref.app.kor.karaokePage.public"
+            :label="
+              isPrivate
+                ? pref.app.kor.karaoke.list.private
+                : pref.app.kor.karaoke.list.public
+            "
             color="primary"
             class="q-mb-md"
           />
@@ -47,7 +45,7 @@
           <q-input
             v-if="isPrivate"
             v-model="password"
-            :label="pref.app.kor.karaokePage.password"
+            :label="pref.app.kor.karaoke.list.password"
             outlined
             dense
             type="password"
@@ -60,14 +58,14 @@
           <q-btn
             type="submit"
             color="primary"
-            :label="pref.app.kor.karaokePage.joinSession"
+            :label="pref.app.kor.karaoke.list.joinSession"
             class="q-mt-md"
             @click="createSession"
           />
           <!-- 닫기 버튼 -->
           <q-btn
             color="negative"
-            label="닫기"
+            :label="pref.app.kor.karaoke.list.close"
             class="q-mt-md"
             @click="closeModal"
           />

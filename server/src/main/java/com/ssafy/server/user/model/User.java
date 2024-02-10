@@ -36,7 +36,7 @@ public class User {
     private String nickname;
 
     @Column(name = "role")
-    private char role;
+    private Character role;
 
     @Column(name = "profile_img_url")
     private String profileImgUrl;

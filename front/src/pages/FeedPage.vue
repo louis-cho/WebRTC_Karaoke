@@ -23,11 +23,10 @@
 
 
       <!-- 두번째 div -->
-      <q-btn @click="goFeedDetail">피드 디테일 페이지로</q-btn>
 
-      <div v-for="feed in filteredFeeds" :key="feed.FEED_ID" >
+      <div v-for="feed in feeds" :key="feed.feedId" >
         <div class="profile">
-          <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile(feed.USER_PK)})` }">
+          <div class="profile-img-container" v-if="feed.user" :style="{ backgroundImage: `url(${feed.user.profileImgUrl})` }">
             <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
           </div>
 
@@ -35,42 +34,43 @@
             <div class="space-between" >
               <div>
                 <!-- 닉네임 -->
-                <p>{{ getUserName(feed.USER_PK) }}</p>
+                <p v-if="feed.user">{{ feed.user.nickname }}</p>
               </div>
 
             </div>
             <div class="space-start">
               <!-- 노래제목 -->
-              <div>{{ getSongTitle(feed.FEED_ID) }}-</div>
+              <div v-if="feed.song">{{ feed.song.title }}-</div>
               <!-- 가수 -->
-              <div>{{ getSongSinger(feed.FEED_ID) }}</div>
-              <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.STATUS === '1' ? 'secondary' : 'black')" :label="feed.STATUS === '0' ? '전체 공개' : (feed.STATUS === '1' ? '친구 공개' : '비공개')" size="sm" />
+              <div v-if="feed.song">{{ feed.song.singer }}</div>
+              <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.status === '1' ? 'secondary' : 'black')" :label="feed.status === '0' ? '전체 공개' : (feed.status === '1' ? '친구 공개' : '비공개')" size="sm" />
             </div>
           </div>
         </div>
 
-        <p>{{ feed.CONTENT }}</p>
+        <p>{{ feed.content }}</p>
         <video controls width="100%" ref="videoPlayer">
           <source :src="feed.VIDEO_URL" type="video/mp4">
         </video>
 
         <div class="flex-row">
-        <div class="margin-right-20">
+        <div class="margin-right-20"  @click="goFeedDetail(feed.feedId)">
           <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
-          <span>0</span>
+          <span>{{feed.commentCount}}</span>
         </div>
-        <div class="margin-right-20">
+        <div class="margin-right-20" @click="toggleLike(feed.feedId)">
           <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
-          <span>0</span>
+          <span>{{ feed.likeCount }}</span>
         </div>
         <div class="margin-right-20">
           <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
-          <span>0</span>
+          <span>{{ feed.viewCount }}</span>
         </div>
         <div class="margin-right-20">
           <img class="margin-right-10" src="@/assets/icon/dollar.png" alt="후원">
           <span>{{ feed.TOTAL_POINT }}</span>
         </div>
+      <q-btn @click="goFeedDetail(feed.feedId)">피드 디테일 페이지로</q-btn>
         </div>
         <hr>
 
@@ -82,108 +82,77 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, onBeforeMount, nextTick } from 'vue'
 import TabItem from "@/layouts/TabItem.vue"
 import NavBar from '@/layouts/NavBar.vue'
 import { useRouter } from 'vue-router';
+import app from "@/js/config/preference.js";
+import {fetchHitCount} from "@/js/hit/hit.js";
+import {fetchLikeCount} from "@/js/like/like.js";
+import { fetchFeedList } from '@/js/feed/feed.js';
+import { fetchSong } from '@/js/song/song.js';
+import { fetchUser } from '@/js/user/user.js';
+import {fetchCommentCount} from '@/js/comment/comment.js';
 
+let pref = app;
+const feeds = ref([]);
 const router = useRouter();
 
-const goFeedDetail = () => {
-  router.push('/feed_detail')
-}
+  let page = 0;
+  const amount = 3;
 
+const goFeedDetail = (feedId) => {
+  router.push({ name: 'feed_detail', params: { feedId } });
+};
+
+onBeforeMount(async () => {
+   await fetchFeedData();
+});
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false)
+
 //가상 피드 데이터
-const feeds = ref([
-  {
-    FEED_ID: 1,
-    USER_PK: 1,
-    SONG_ID: 3,
-    CONTENT: "오랜만에 노래 불러봄",
-    THUMBNAIL_URL: "썸네일 주소1",
-    VIDEO_URL: "your_video_url.mp4",
-    VIDEO_LENGTH: "190",
-    STATUS: "2",
-    TOTAL_POINT: "20000"
-  },
-  {
-    FEED_ID: 2,
-    USER_PK: 4,
-    SONG_ID: 7,
-    CONTENT: "평가 좀 해주세요",
-    THUMBNAIL_URL: "썸네일 주소2",
-    VIDEO_URL: "your_video_url2.mp4",
-    VIDEO_LENGTH: "170",
-    STATUS: "0",
-    TOTAL_POINT: "5000"
+const fetchFeedData = async () => {
+  const newFeeds = await fetchFeedList(page++, amount);
+
+  for (let elem of newFeeds) {
+    elem.song = await fetchSong(elem.songId);
+    elem.user = await fetchUser(elem.userPk);
+    elem.commentCount = await fetchCommentCount(elem.feedId);
+    elem.viewCount = await fetchHitCount(elem.feedId);
+    elem.likeCount = await fetchLikeCount(elem.feedId);
   }
-])
-const getUserProfile = (userPK) => {
-  // 사용자 프로필 이미지 가져오기 로직..
-  return '@/assets/img/capture.png';
+
+  // feeds.value를 새로운 데이터로 갱신
+  feeds.value = feeds.value.concat(newFeeds.slice(0, itemsPerLoad));
+
+  // nextTick을 사용하여 Vue에게 DOM 업데이트를 기다리도록 함
+  await nextTick();
+  console.log('Feeds:', feeds.value);
+};
+
+const getUser = async (userPk) => {
+  let user = await fetchUser(userPk);
+  return user;
 }
 
-const getUserName = (userPK) => {
-  // 닉네임 가져오기 로직...
-  return '닉네임1';
-}
 
-const getSongId = (feed_id) => {
-  // FEED_ID를 사용하여 SONG_ID를 가져오기...
-  // 예를 들어 빅뱅 거짓말 SONG_ID 10번이라 할 때
-  return 10;
-}
-
-const getSongTitle = (feed_id) => {
-  // FEED_ID를 사용하여 SONG_ID를 가져오기...
-  const song_id = getSongId(feed_id);
-  // SONG_ID를 사용하여 TITLE을 가져오기...
-  return '거짓말';
-}
-
-const getSongSinger = (feed_id) => {
-  // FEED_ID를 사용하여 SONG_ID를 가져오기...
-  const song_id = getSongId(feed_id);
-  // SONG_ID를 사용하여 SINGER를 가져오기...
-  return '빅뱅';
-}
 
 // 스크롤 이벤트 핸들러
-const handleScroll = () => {
+const handleScroll = async () => {
   const element = document.documentElement;
   const { scrollTop, scrollHeight, clientHeight } = element;
 
-  // 스크롤이 아래로 내려갔는지 확인
   if (scrollTop + clientHeight >= scrollHeight - 10) {
-    // 무한 스크롤 로딩 시작
     loading.value = true;
 
-    // 새로운 피드를 불러오는 로직 (예시로 비동기 setTimeout 사용)
-    setTimeout(() => {
-      // 새로운 피드 데이터를 여기서 추가
-      const newFeeds = [
-        {
-          FEED_ID: 3,
-          USER_PK: 5,
-          SONG_ID: 5,
-          CONTENT: "새로운 피드 내용!!",
-          THUMBNAIL_URL: "새 썸네일 주소",
-          VIDEO_URL: "your_video_url.mp4",
-          VIDEO_LENGTH: "220",
-          STATUS: "1",
-          TOTAL_POINT: "0"
-        },
-
-      ];
-
-      // 새로운 피드를 기존 피드 배열에 추가
-      feeds.value = feeds.value.concat(newFeeds.slice(0, itemsPerLoad));
-
-      // 무한 스크롤 로딩 종료
+    try {
+      await fetchFeedData();
+    } catch (error) {
+      console.error('Error fetching new feeds:', error);
+    } finally {
       loading.value = false;
-    }, 1000); // 적절한 비동기 로딩 시간으로 조절
+    }
   }
 };
 
@@ -201,32 +170,37 @@ onUnmounted(() => {
 // 검색 기능을 위한 변수와 메소드 추가
 const searchQuery = ref('');
 
-const filteredFeeds = computed(() => {
-  return feeds.value.filter(feed => {
-    const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
-    const songTitleLowerCase = getSongTitle(feed.FEED_ID).toLowerCase();
-    return (
-      userNameLowerCase.includes(searchQuery.value.toLowerCase()) ||
-      songTitleLowerCase.includes(searchQuery.value.toLowerCase())
-    )
-  })
-})
+// const filteredFeeds = computed(() => {
+//   return feeds.value.filter(feed => {
+//     const userNameLowerCase = getUserName(feed.userPk).toLowerCase();
+//     const songTitleLowerCase = getSongTitle(feed.songId).toLowerCase();
+//     return (
+//       userNameLowerCase.includes(searchQuery.value.toLowerCase()) ||
+//       songTitleLowerCase.includes(searchQuery.value.toLowerCase())
+//     )
+//   })
+// })
 
-const search = () => {
-  const searchQueryLowerCase = searchQuery.value.toLowerCase();
+// const search = () => {
+//   const searchQueryLowerCase = searchQuery.value.toLowerCase();
 
-  feeds.value = feeds.value.filter(feed => {
-    const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
-    const songTitleLowerCase = getSongTitle(feed.FEED_ID).toLowerCase();
+//   feeds.value = feeds.value.filter(feed => {
+//     const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
+//     const songTitleLowerCase = getSongTitle(feed.songId).toLowerCase();
 
-    // 닉네임이나 노래제목에 검색어가 포함되어 있는지 확인
-    return (
-      userNameLowerCase.includes(searchQueryLowerCase) ||
-      songTitleLowerCase.includes(searchQueryLowerCase)
-    );
-  });
-}
+//     // 닉네임이나 노래제목에 검색어가 포함되어 있는지 확인
+//     return (
+//       userNameLowerCase.includes(searchQueryLowerCase) ||
+//       songTitleLowerCase.includes(searchQueryLowerCase)
+//     );
+//   });
+// }
 
+
+
+const toggleLike = async (feedId) => {
+
+};
 
 
 // const playVideo = (videoUrl) => {

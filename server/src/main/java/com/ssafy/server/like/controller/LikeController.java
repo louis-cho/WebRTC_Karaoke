@@ -67,7 +67,7 @@ public class LikeController {
         return new ResponseEntity<>(ApiResponse.success(true), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/get/{feedId}")
+    @PostMapping("/get/{feedId}")
     public ResponseEntity<ApiResponse<Integer>> get(@PathVariable int feedId) {
         Integer count = Integer.MIN_VALUE;
         try {

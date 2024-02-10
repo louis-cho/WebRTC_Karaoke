@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.ssafy.server.karaoke.model.OpenViduModel;
 import com.ssafy.server.karaoke.model.SessionSetting;
+import com.ssafy.server.song.model.ReserveModel;
 import io.openvidu.java.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,10 +25,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SessionController {
 
     private final OpenViduModel openViduModel;
+    private final ReserveModel reserveModel;
 
     @Autowired
-    public SessionController(OpenViduModel openViduModel) {
+    public SessionController(OpenViduModel openViduModel, ReserveModel reserveModel) {
         this.openViduModel = openViduModel;
+        this.reserveModel = reserveModel;
     }
 
     @RequestMapping(value = "/createSession", method = RequestMethod.POST)
@@ -61,6 +65,7 @@ public class SessionController {
             openViduModel.getMapSessionSettings().put(sessionName, setting);
             openViduModel.getMapSessionNamesTokens().put(sessionName, new ConcurrentHashMap<>());
             openViduModel.getMapSessionTokenConnectionId().put(sessionName, new ConcurrentHashMap<>());
+            reserveModel.getMapSongReserveDeq().put(sessionName, new ArrayDeque<>());
 
             return ResponseEntity.ok(sessionName);
         } catch (Exception e) {
@@ -95,7 +100,7 @@ public class SessionController {
             Connection connection = openViduModel.getMapSessions().get(sessionName).createConnection(connectionProperties);
             String token = connection.getToken();
             String connectionId = connection.getConnectionId();
-            System.out.println("토큰 생성 완료 : "+ token);
+            System.out.println("토큰 생성 완료 : " + token);
 
             // 새로운 토큰을 저장하는 컬렉션을 업데이트함
             openViduModel.getMapSessionNamesTokens().get(sessionName).put(token, isModerator);
@@ -144,6 +149,7 @@ public class SessionController {
                     openViduModel.getMapSessionSettings().remove(sessionName);
                     openViduModel.getSessionRecordings().remove(s.getSessionId());
                     openViduModel.getMapSessionTokenConnectionId().remove(sessionName);
+                    reserveModel.getMapSongReserveDeq().remove(sessionName);
                     System.out.println("세션을 제거했습니다.");
                 }
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -170,7 +176,7 @@ public class SessionController {
         String sessionName = (String) params.get("sessionName");
         String token = (String) params.get("token");
 
-        if(!openViduModel.getMapSessionNamesTokens().get(sessionName).get(token)){
+        if (!openViduModel.getMapSessionNamesTokens().get(sessionName).get(token)) {
             System.out.println("방장이 아닙니다");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -184,6 +190,7 @@ public class SessionController {
             openViduModel.getMapSessionNamesTokens().remove(sessionName);
             openViduModel.getSessionRecordings().remove(s.getSessionId());
             openViduModel.getMapSessionTokenConnectionId().remove(sessionName);
+            reserveModel.getMapSongReserveDeq().remove(sessionName);
             System.out.println("세션을 제거했습니다.");
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
@@ -239,7 +246,7 @@ public class SessionController {
             String connectionId = (String) params.get("connectionId");
 
             // 요청한 유저가 방장이 아니면 요청 수행하지 않음
-            if(!openViduModel.getMapSessionNamesTokens().get(sessionName).get(reqUser)){
+            if (!openViduModel.getMapSessionNamesTokens().get(sessionName).get(reqUser)) {
                 System.out.println("강퇴를 요청한 유저가 방장이 아님");
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
