@@ -39,7 +39,7 @@ export const useNotificationStore = defineStore("notification", {
         this.bellCount++;
         //알림 모달 열려있을경우
         //추가로 api 날려서 알림객체리스트에 추가. 요청은 e.data로 날라온 알림아이디이다.
-        axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications/1`)
+        axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications/${message.data}`)
         .then((response)=>{
           const notification = response.data;
           this.notificationList.splice(0,0,notification); //알림객체 맨앞에 추가.
@@ -48,7 +48,7 @@ export const useNotificationStore = defineStore("notification", {
       });
     },
     sendNotification(body){
-      axios.post(`${pref.app.api.protocol}${pref.app.api.host}/notifications/sendNotification`,body)
+      axios.post(`${pref.app.api.protocol}${pref.app.api.host}/notifications/sendNotification`,JSON.stringify(body))
       .then((response) => {
           console.log("알림 전송 완료.");
       })

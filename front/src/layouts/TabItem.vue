@@ -161,7 +161,7 @@ const handleNotificationClick = (notification) => {
 
 const readAllNotification = () => {
   console.log("모두읽기가 눌렸어잉");
-  axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications/readAll`)
+  axios.post(`${pref.app.api.protocol}${pref.app.api.host}/notifications/readAll`,notificationStore.notificationList)
   .then((response)=> {
     console.log("모두읽기처리완료");
     notificationStore.notificationList = [];
