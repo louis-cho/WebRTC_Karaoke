@@ -1,59 +1,89 @@
 <template>
   <div>
-    <NavBar/>
+    <NavBar />
     <!-- <TabItem /> -->
     <!-- <h4>상세 피드 페이지</h4> -->
     <div class="my-feed">
-
       <!-- 첫번째 div -->
-      <div class="header ">
+      <div class="header">
         <div @click="goBack">
-          <img src="@/assets/icon/back.png" alt="뒤로가기">
+          <img src="@/assets/icon/back.png" alt="뒤로가기" />
         </div>
       </div>
-      <hr>
+      <hr />
 
       <!-- 두번째 div -->
       <div class="profile">
-        <div class="profile-img-container" v-if="feed.user" :style="{ backgroundImage: `url(${feed.user.profileImgUrl})` }">
-        </div>
+        <div
+          class="profile-img-container"
+          v-if="feed && feed.user"
+          :style="{ backgroundImage: `url(${feed.user.profileImgUrl})` }"
+        ></div>
 
         <div class="width-100">
-          <div class="space-between" >
+          <div class="space-between">
             <div>
-                <p v-if="feed.user">{{ feed.user.nickname }}</p>
+              <p v-if="feed && feed.user">{{ feed.user.nickname }}</p>
             </div>
             <div @click="toggleModal">
-              <img src="@/assets/icon/setting.png" alt="설정">
+              <img src="@/assets/icon/setting.png" alt="설정" />
             </div>
           </div>
           <div class="space-start">
-            <div v-if="feed.song">{{ feed.song.title }}-</div>
-            <div v-if="feed.song">{{ feed.song.singer }}</div>
-            <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.status === '1' ? 'secondary' : 'black')" :label="feed.status === '0' ? '전체 공개' : (feed.status === '1' ? '친구 공개' : '비공개')" size="sm" />
+            <div v-if="feed && feed.song">{{ feed.song.title }}-</div>
+            <div v-if="feed && feed.song">{{ feed.song.singer }}</div>
+            <q-btn
+              :color="
+                feed.status === '0'
+                  ? 'primary'
+                  : feed.status === '1'
+                  ? 'secondary'
+                  : 'black'
+              "
+              :label="
+                feed.status === '0'
+                  ? '전체 공개'
+                  : feed.status === '1'
+                  ? '친구 공개'
+                  : '비공개'
+              "
+              size="sm"
+            />
           </div>
         </div>
       </div>
 
-      <p>{{ feed.content }}</p>
+      <p v-if="feed">{{ feed.content }}</p>
       <video controls width="100%">
-        <source src="your_video_url.mp4" type="video/mp4">
+        <source src="your_video_url.mp4" type="video/mp4" />
       </video>
       <div class="flex-row">
         <div class="margin-right-20">
-          <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
-          <span>{{feed.commentCount}}</span>
+          <img
+            class="margin-right-10"
+            src="@/assets/icon/chat.png"
+            alt="댓글"
+          />
+          <span v-if="feed">{{ feed.commentCount }}</span>
         </div>
         <div class="margin-right-20">
-          <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
-          <span>{{ feed.likeCount }}</span>
+          <img
+            class="margin-right-10"
+            src="@/assets/icon/love.png"
+            alt="좋아요"
+          />
+          <span v-if="feed">{{ feed.likeCount }}</span>
         </div>
         <div class="margin-right-20">
-          <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
-          <span>{{ feed.viewCount }}</span>
+          <img
+            class="margin-right-10"
+            src="@/assets/icon/show.png"
+            alt="조회수"
+          />
+          <span v-if="feed">{{ feed.viewCount }}</span>
         </div>
       </div>
-      <hr>
+      <hr />
 
       <!-- 세번째 div(내 댓글 입력창) -->
       <div class="profile">
@@ -61,17 +91,20 @@
           <!-- <img src="@/assets/img/capture3.png" class="comment-img" alt="내 프로필 이미지"> -->
         </div>
         <div class="comment-input-container">
-          <input v-model="newComment" placeholder="댓글을 입력하세요..." class="comment-input">
+          <input
+            v-model="newComment"
+            placeholder="댓글을 입력하세요..."
+            class="comment-input"
+          />
           <button class="comment-button bg-blue-7">등록</button>
         </div>
       </div>
-      <hr>
+      <hr />
 
       <!-- 네번째 div(댓글 목록) -->
       <div ref="commentContainer">
         <CommentItem :comments="comments" />
       </div>
-
     </div>
 
     <q-dialog v-model="modal" persistent>
@@ -86,7 +119,7 @@
             </q-item-section>
           </q-item>
           <q-card-actions align="center">
-            <q-btn label="게시글 수정" color="primary"/>
+            <q-btn label="게시글 수정" color="primary" />
             <q-btn label="게시글 삭제" color="negative" @click="deletePost" />
           </q-card-actions>
         </q-card-section>
@@ -100,14 +133,14 @@ import { ref, nextTick, onMounted, onBeforeMount } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
-import { fetchComment,fetchCommentCount } from "@/js/comment/comment.js";
+import { fetchComment, fetchCommentCount } from "@/js/comment/comment.js";
 import CommentItem from "@/components/CommentItem.vue";
 
-import {fetchHitCount} from "@/js/hit/hit.js";
-import {fetchLikeCount} from "@/js/like/like.js";
-import { fetchFeedList, fetchFeed } from '@/js/feed/feed.js';
-import { fetchSong } from '@/js/song/song.js';
-import { fetchUser } from '@/js/user/user.js';
+import { fetchHitCount } from "@/js/hit/hit.js";
+import { fetchLikeCount } from "@/js/like/like.js";
+import { fetchFeedList, fetchFeed } from "@/js/feed/feed.js";
+import { fetchSong } from "@/js/song/song.js";
+import { fetchUser } from "@/js/user/user.js";
 
 const feed = ref();
 const router = useRouter();
@@ -116,56 +149,49 @@ const newComment = ref("");
 const commentContainer = ref(null);
 const modal = ref(false);
 
-
-
 const goBack = function () {
   router.go(-1);
 };
 
-
 const getUserProfile = (user_pk) => {
   // 사용자 프로필 이미지 가져오기 로직..
-  return '@/assets/img/capture3.png';
-}
+  return "@/assets/img/capture3.png";
+};
 
 const getNickName = (user_pk) => {
   // 닉네임 가져오기 로직...
-  return '닉네임1';
-}
+  return "닉네임1";
+};
 
 const getSongId = (feed_id) => {
   // FEED_ID를 사용하여 SONG_ID를 가져오기...
   // 예를 들어 빅뱅 거짓말 SONG_ID 10번이라 할 때
   return 10;
-}
+};
 
 const getSongTitle = (feed_id) => {
   // FEED_ID를 사용하여 SONG_ID를 가져오기...
   const song_id = getSongId(feed_id);
   // SONG_ID를 사용하여 TITLE을 가져오기...
-  return '거짓말';
-}
+  return "거짓말";
+};
 
 const getSongSinger = (feed_id) => {
   // FEED_ID를 사용하여 SONG_ID를 가져오기...
   const song_id = getSongId(feed_id);
   // SONG_ID를 사용하여 SINGER를 가져오기...
-  return '빅뱅';
-}
-
-
-
+  return "빅뱅";
+};
 
 const toggleModal = () => {
   modal.value = !modal.value;
-}
-
+};
 
 // 게시글 삭제 함수
 const deletePost = () => {
   // 여기에 게시글 삭제 로직 추가
   toggleModal();
-}
+};
 
 // const scrollToBottom = () => {
 //   nextTick(() => {
@@ -173,11 +199,9 @@ const deletePost = () => {
 //   });
 // }
 
-
-
 onBeforeMount(async () => {
   console.log(this);
-  let feedId = window.location.href.split('/').pop();
+  let feedId = window.location.href.split("/").pop();
   feedId = isNaN(feedId) ? 0 : parseInt(feedId);
   let elem = await fetchFeed(feedId);
   elem.song = await fetchSong(elem.songId);
@@ -204,16 +228,14 @@ async function fetchAndRenderComments(feedId) {
     comments.value = commentTree;
 
     // 콘솔에 댓글 출력
-    console.log('Comments:', comments.value);
+    console.log("Comments:", comments.value);
   } catch (error) {
-    console.error('댓글 가져오기 및 렌더링 중 오류 발생:', error);
+    console.error("댓글 가져오기 및 렌더링 중 오류 발생:", error);
   }
 }
-
-
 </script>
 <style scoped>
-.display-flex{
+.display-flex {
   display: flex;
 }
 .profile-img-container {
@@ -255,7 +277,6 @@ async function fetchAndRenderComments(feedId) {
   align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
 }
 
-
 /* .profile-img {
   width: 100%;
   height: 100%;
@@ -275,20 +296,19 @@ async function fetchAndRenderComments(feedId) {
 }
 
 .my-feed {
-    /* padding: 20px; */
+  /* padding: 20px; */
   padding-left: 200px;
   padding-right: 200px;
-  }
+}
 .profile {
   display: flex;
   justify-content: start;
   align-items: center;
   margin: 20px 0;
-
 }
 
 .width-100 {
-  width:100%;
+  width: 100%;
   padding-left: 5%;
 }
 /* .justify-content-start {
@@ -346,7 +366,7 @@ async function fetchAndRenderComments(feedId) {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-left :10px;
+  margin-left: 10px;
   margin-right: 10px;
 }
 

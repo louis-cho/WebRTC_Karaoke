@@ -65,14 +65,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @SuppressWarnings("unchecked")
-    @Override
-    public List<Comment> getCommentsByFeedIdWithPagination(int feedId, int startIndex, int pageSize) {
-        return (List<Comment>) entityManager.createNamedStoredProcedureQuery("GetCommentsByFeedIdWithPagination")
-                .setParameter("feedIdParam", feedId)
-                .setParameter("startIndexParam", startIndex)
-                .setParameter("pageSizeParam", pageSize)
-                .getResultList();
-    }
+        @Override
+        public List<Comment> getCommentsByFeedIdWithPagination(int feedId, int startIndex, int pageSize) {
+            return (List<Comment>) entityManager.createNamedStoredProcedureQuery("GetCommentsByFeedIdWithPagination")
+                    .setParameter("feedIdParam", feedId)
+                    .setParameter("startIndexParam", startIndex)
+                    .setParameter("pageSizeParam", pageSize)
+                    .getResultList();
+        }
 
     @Override
     public int getCommentCount(int feedId) {
