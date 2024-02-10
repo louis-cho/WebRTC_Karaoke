@@ -34,11 +34,10 @@
         <div class="profile">
           <div
             class="profile-img-container"
-            v-if="feed && feed.user && feed.user.profileImgUrl"
             :style="{
-              backgroundImage: `url(${
-                feed.user.profileImgUrl || 'https://picsum.photos/200​'
-              })`,
+              backgroundImage: `url(${(
+                feed.user.profileImgUrl || 'https://picsum.photos/200'
+              ).trim()})`,
             }"
           ></div>
 
