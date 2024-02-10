@@ -9,7 +9,7 @@
           <q-btn
             type="submit"
             color="negative"
-            label="강퇴"
+            :label="pref.app.kor.karaoke.session.kick"
             @click="kickUser"
           />
         </div>
@@ -23,6 +23,7 @@ import { computed } from "vue";
 import OvVideo from "@/components/karaoke/video/OvVideo.vue";
 import axios from "axios";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
+import pref from "@/js/config/preference.js";
 
 const store = useKaraokeStore();
 

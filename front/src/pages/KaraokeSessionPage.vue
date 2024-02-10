@@ -12,19 +12,19 @@
         "
       >
         <q-toolbar-title style="font-size: 40px"
-          >{{ pref.app.kor.karaokePage.sessionId }} :
+          >{{ pref.app.kor.karaoke.list.sessionId }} :
           {{ store.sessionName }}</q-toolbar-title
         >
         <div style="display: flex">
           <q-btn
             @click="openModal"
             color="positive"
-            :label="pref.app.kor.karaokePage.updateSession"
+            :label="pref.app.kor.karaoke.session.setting"
           />
           <q-btn
             @click="leaveSession"
             color="negative"
-            :label="pref.app.kor.karaokePage.leaveSession"
+            :label="pref.app.kor.karaoke.session.leave"
           />
         </div>
       </div>
@@ -38,6 +38,19 @@
         style="display: flex; flex-direction: row; overflow-x: auto"
       >
         <UserVideo :stream-manager="mainStreamManagerComputed" />
+        <div style="display: flex; flex-direction: column">
+          <q-btn
+            @click="startSong()"
+            color="positive"
+            :label="pref.app.kor.karaoke.session.start"
+          />
+          <q-btn
+            @click="stopSong()"
+            color="negative"
+            :label="pref.app.kor.karaoke.session.stop"
+          />
+          <q-btn @click="finishSong()" color="primary" label="종료" />
+        </div>
         <normal-mode v-if="!songMode" />
         <perfect-score v-if="songMode" />
       </div>
@@ -63,54 +76,34 @@
     <q-footer>
       <q-tabs align="justify" active-color="positive" indicator-color="primary">
         <q-tab
-          name="audio-filter"
-          label="Audio Filter"
-          @click="toggleModal('audio-filter')"
-        />
-
-        <q-tab
           name="karaoke-chat"
-          label="Karaoke Chat"
+          :label="pref.app.kor.karaoke.session.chatting"
           @click="toggleModal('karaoke-chat')"
         />
 
         <q-tab
           name="input-controller"
-          label="Input Controller"
+          :label="pref.app.kor.karaoke.session.input"
           @click="toggleModal('input-controller')"
         />
 
         <q-tab
-          name="input-selector"
-          label="Input Selector"
-          @click="toggleModal('input-selector')"
-        />
-
-        <q-tab
-          name="recording-video"
-          label="Recording Video"
-          @click="toggleModal('recording-video')"
-        />
-
-        <q-tab
           name="reserve-song"
-          label="예약하기"
+          :label="pref.app.kor.karaoke.session.reserve"
           @click="toggleModal('reserve-song')"
         />
 
         <q-tab
           name="reserve-list"
-          label="예약목록"
+          :label="pref.app.kor.karaoke.session.reserveList"
           @click="toggleModal('reserve-list')"
         />
       </q-tabs>
     </q-footer>
   </q-layout>
 
-  <audio-filter />
   <karaoke-chat />
   <input-controller />
-  <input-selector />
   <recording-video />
   <reserve-modal />
   <reserve-list />
@@ -121,29 +114,26 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
-
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import pref from "@/js/config/preference.js";
+import axios from "axios";
 
 import UserVideo from "@/components/karaoke/video/UserVideo.vue";
-import AudioFilter from "@/components/karaoke/session/AudioFilter.vue";
 import KaraokeChat from "@/components/karaoke/session/KaraokeChat.vue";
 import InputController from "@/components/karaoke/session/InputController.vue";
-import InputSelector from "@/components/karaoke/session/InputSelector.vue";
-import RecordingVideo from "@/components/karaoke/session/RecordingVideo.vue";
 import UpdateModal from "@/components/karaoke/session/UpdateModal.vue";
 import ReserveModal from "@/components/karaoke/song/ReserveModal.vue";
 import ReserveList from "@/components/karaoke/song/ReserveList.vue";
 import NormalMode from "@/components/karaoke/NormalMode.vue";
 import PerfectScore from "@/components/karaoke/PerfectScore.vue";
 
-axios.defaults.headers.post["Content-Type"] = "application/json";
-
 // store 사용
 const store = useKaraokeStore();
 const router = useRouter();
 const songMode = ref(true);
+
+const fileUrl = ref(undefined);
+const recordingId = ref(undefined);
 
 // 다시그려내기 위해 computed 작성
 const mainStreamManagerComputed = computed(() => store.mainStreamManager);
@@ -168,6 +158,118 @@ function updateMainVideoStreamManager(stream) {
 const toggleModal = (modalName) => {
   store.toggleModals[modalName] = true;
 };
+
+function startSong() {
+  removeReserve()
+    .then(() => {
+      startRecording();
+    })
+    .catch((error) => {
+      console.log("removeReserve 실패", error);
+    });
+}
+
+function stopSong() {
+  stopRecording()
+    .then(() => {
+      removeRecording();
+    })
+    .catch((error) => {
+      console.log("stopRecording 실패", error);
+    });
+}
+
+function finishSong() {
+  stopRecording()
+    .then(() => {
+      uploadRecording();
+    })
+    .catch((error) => {
+      console.log("stopRecording 실패", error);
+    });
+}
+
+function removeReserve() {
+  return axios
+    .post(
+      store.APPLICATION_SERVER_URL + "/song/start",
+      {
+        sessionName: store.sessionName,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+    .then((res) => {
+      console.log(res.data);
+    });
+}
+
+function startRecording() {
+  axios
+    .post(
+      store.APPLICATION_SERVER_URL + "/karaoke/recording/start",
+      {
+        sessionName: store.sessionName,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+    .then((res) => {
+      console.log(res.data);
+      recordingId.value = res.data.id;
+    });
+}
+
+function stopRecording() {
+  return axios
+    .post(
+      store.APPLICATION_SERVER_URL + "/karaoke/recording/stop",
+      {
+        recordingId: recordingId.value,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+    .then((res) => {
+      console.log(res.data);
+      fileUrl.value = res.data.url;
+    });
+}
+
+function removeRecording() {
+  axios
+    .post(
+      store.APPLICATION_SERVER_URL + "/karaoke/recording/delete",
+      {
+        recordingId: recordingId.value,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+    .then(() => {
+      fileUrl.value = undefined;
+      recordingId.value = undefined;
+    });
+}
+
+function uploadRecording() {
+  console.log(fileUrl.value);
+  axios
+    .post(store.APPLICATION_SERVER_URL + "/karaoke/file/upload", {
+      fileUrl: fileUrl.value,
+    })
+    .then((res) => {
+      console.log(res.data);
+      removeRecording();
+    })
+    .catch((error) => {
+      console.error("uploadRecording 실패", error);
+    });
+}
 </script>
 
 <style scoped>

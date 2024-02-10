@@ -29,20 +29,20 @@ public class RecordingController {
     // 녹화를 시작하는 엔드포인트
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     public ResponseEntity<?> startRecording(@RequestBody Map<String, Object> params) {
-        String sessionId = (String) params.get("sessionId");
-        Recording.OutputMode outputMode = Recording.OutputMode.valueOf((String) params.get("outputMode"));
-        boolean hasAudio = (boolean) params.get("hasAudio");
-        boolean hasVideo = (boolean) params.get("hasVideo");
+        String sessionName = (String) params.get("sessionName");
+        Recording.OutputMode outputMode = Recording.OutputMode.valueOf("COMPOSED");
+        boolean hasAudio = true;
+        boolean hasVideo = true;
 
         // RecordingProperties 객체를 빌드하여 녹화 설정을 생성함
         RecordingProperties properties = new RecordingProperties.Builder().outputMode(outputMode).hasAudio(hasAudio).hasVideo(hasVideo).build();
 
-        System.out.println("Starting recording for session " + sessionId + " with properties {outputMode=" + outputMode + ", hasAudio=" + hasAudio + ", hasVideo=" + hasVideo + "}");
+        System.out.println("Starting recording for session " + sessionName + " with properties {outputMode=" + outputMode + ", hasAudio=" + hasAudio + ", hasVideo=" + hasVideo + "}");
 
         try {
             // OpenVidu 서버에서 녹화 시작
-            Recording recording = openViduModel.getOpenvidu().startRecording(sessionId, properties);
-            openViduModel.getSessionRecordings().put(sessionId, true);
+            Recording recording = openViduModel.getOpenvidu().startRecording(sessionName, properties);
+            openViduModel.getSessionRecordings().put(sessionName, true);
             return new ResponseEntity<>(recording, HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
