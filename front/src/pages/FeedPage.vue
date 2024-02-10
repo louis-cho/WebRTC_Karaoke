@@ -50,14 +50,14 @@
             </div>
             <div class="space-start">
               <div v-if="feed && feed.song">
-                <div>
+                <span>
                   {{
                     feed.song.title ? feed.song.title + "-" : "Default Title-"
                   }}
-                </div>
-                <div>
+                </span>
+                <span>
                   {{ feed.song.singer ? feed.song.singer : "Default Singer" }}
-                </div>
+                </span>
               </div>
               <q-btn
                 :color="getButtonColor(feed.status)"

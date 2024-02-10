@@ -3,11 +3,11 @@ let app = {};
 app.api = {};
 
 app.api.prefix = "/api/v1";
-app.api.protocol = "https:";
-app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
+// app.api.protocol = "https:";
+// app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
 app.api.socket = "ws:";
-// app.api.protocol =    "http:";
-// app.api.host = "//localhost:8081" + app.api.prefix;
+app.api.protocol = "http:";
+app.api.host = "//localhost:8081" + app.api.prefix;
 
 app.api.user = {};
 app.api.user.login = "/user/login";
@@ -18,6 +18,7 @@ app.api.user.update = "/user/update";
 app.api.comment = {};
 app.api.comment.fetch = "/comment/feed/";
 app.api.comment.count = "/comment/get/count/";
+app.api.comment.add = "/comment/create";
 
 app.api.feed = {};
 app.api.feed.fetchAll = "/feed/get/all";

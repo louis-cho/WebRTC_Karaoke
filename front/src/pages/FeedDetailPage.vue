@@ -16,11 +16,10 @@
       <div class="profile">
         <div
           class="profile-img-container"
-          v-if="feed && feed.user && feed.user.profileImgUrl"
           :style="{
-            backgroundImage: `url(${
-              feed.user.profileImgUrl || 'https://picsum.photos/200​'
-            })`,
+            backgroundImage: `url(${(
+              feed.user.profileImgUrl || 'https://picsum.photos/200'
+            ).trim()})`,
           }"
         ></div>
 
@@ -35,12 +34,12 @@
           </div>
           <div class="space-start">
             <div v-if="feed && feed.song">
-              <div>
+              <span>
                 {{ feed.song.title ? feed.song.title + "-" : "Default Title-" }}
-              </div>
-              <div>
+              </span>
+              <span>
                 {{ feed.song.singer ? feed.song.singer : "Default Singer" }}
-              </div>
+              </span>
             </div>
 
             <q-btn
@@ -103,7 +102,9 @@
             placeholder="댓글을 입력하세요..."
             class="comment-input"
           />
-          <button class="comment-button bg-blue-7">등록</button>
+          <button class="comment-button bg-blue-7" @click="registComment">
+            등록
+          </button>
         </div>
       </div>
       <hr />
@@ -140,7 +141,11 @@ import { ref, nextTick, onMounted, onBeforeMount } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
-import { fetchComment, fetchCommentCount } from "@/js/comment/comment.js";
+import {
+  fetchComment,
+  fetchCommentCount,
+  addComment,
+} from "@/js/comment/comment.js";
 import CommentItem from "@/components/CommentItem.vue";
 
 import { fetchHitCount } from "@/js/hit/hit.js";
@@ -205,6 +210,18 @@ const toggleModal = () => {
 const deletePost = () => {
   // 여기에 게시글 삭제 로직 추가
   toggleModal();
+};
+
+const registComment = () => {
+  let comment = {};
+  comment.userPk = 1;
+  comment.parentCommentId = -1;
+  comment.rootCommentId = -1;
+  comment.content = newComment.value;
+  comment.feedId = feed.value.feedId;
+  comment.isDeleted = false;
+
+  addComment(comment);
 };
 
 // const scrollToBottom = () => {
