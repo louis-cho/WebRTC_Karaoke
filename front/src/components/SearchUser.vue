@@ -5,7 +5,7 @@
     <q-dialog v-model="icon">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6" >유저검색</div>
+          <div class="text-h6">유저검색</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
