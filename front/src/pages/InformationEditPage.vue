@@ -16,8 +16,18 @@
 
       <div>
         <div class="center2">
-          <div>프로필 이미지</div>
-          <p class="hover-black">프로필 이미지 변경하기</p>
+          <div for="profileImage" class="profile-img-container" :style="profileImageStyle">
+            <input
+              type="file"
+              id="profileImage"
+              style="display: none"
+              @change="handleProfileImageChange"
+            />
+          </div>
+          <!-- <div class="profile-img-container" :style="{ backgroundImage: `url(${getUserProfile()})` }" > -->
+            <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
+          <!-- </div> -->
+          <p class="hover-black" @click="triggerProfileImageInput">프로필 이미지 변경하기</p>
         </div>
         <div class="flex-row center input-group">
           <label class="input-group-label" for="nickname">닉네임</label>
@@ -50,16 +60,78 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue'
 import NavBar from '@/layouts/NavBar.vue';
 import TabItem from '@/layouts/TabItem.vue';
 import { useRouter, useRoute } from "vue-router";
+import { updateUser } from '@/js/user/user.js';
+
 
 const router = useRouter();
 
 
 const goBack = function () {
-  router.go(-1);
+  router.go(-1)
+}
+
+const getUserProfile = function() {
+  // 유저 프로필 이미지 가져오기 로직...
+  return 'https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg'
+}
+
+const selectedProfileImage = ref('')
+
+const handleProfileImageChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      selectedProfileImage.value = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
 };
+
+const triggerProfileImageInput = () => {
+  // Trigger the file input when the text is clicked
+  const profileImageInput = document.getElementById('profileImage');
+  if (profileImageInput) {
+    profileImageInput.click();
+  }
+}
+
+const profileImageStyle = computed(() => ({
+  backgroundImage: `url(${selectedProfileImage.value || getUserProfile()})`
+}))
+
+// ---------------------------
+// onMounted(async () => {
+//   await updateUser();
+// });
+const userKey = ref(1);
+const nickname = ref('dd');
+const profileImgUrlNode = ref('');
+const introductionNode = ref('하하소개글');
+
+const handleUpdate = async () => {
+  try {
+    // updateUser 함수 호출
+    const result = await updateUser(userKey.value, nickname.value, profileImgUrlNode.value, introductionNode.value);
+
+    // 결과에 따른 처리
+    if (result) {
+      console.log('개인정보 수정 성공');
+    } else {
+      console.error('개인정보 수정 실패');
+    }
+  } catch (error) {
+    console.error('개인정보 수정 중 오류 발생:', error);
+  }
+};
+onMounted(() => {
+  handleUpdate();
+});
+
 </script>
 
 <style scoped>

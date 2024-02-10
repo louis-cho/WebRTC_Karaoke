@@ -4,8 +4,14 @@
       <q-page>
         <q-header>
           <q-toolbar>
-            <q-toolbar-title>노래방 목록</q-toolbar-title>
-            <q-btn @click="openModal" label="방 만들기" color="secondary" />
+            <q-toolbar-title>
+              {{ pref.app.kor.karaoke.list.sessionList }}
+            </q-toolbar-title>
+            <q-btn
+              @click="openModal"
+              :label="pref.app.kor.karaoke.list.createSession"
+              color="secondary"
+            />
           </q-toolbar>
         </q-header>
 
@@ -13,25 +19,40 @@
           <q-list bordered separator>
             <q-item v-for="session in pages" :key="session.sessionId">
               <q-item-section>
-                <q-item-label>방 제목 : {{ session.sessionId }}</q-item-label>
+                <q-item-label
+                  >{{ pref.app.kor.karaoke.list.sessionId }} :
+                  {{ session.sessionId }}</q-item-label
+                >
                 <q-item-label caption>
-                  인원 : {{ session.connections.numberOfElements }} /
+                  {{ pref.app.kor.karaoke.list.numberOfParticipants }} :
+                  {{ session.connections.numberOfElements }} /
                   {{ session.numberOfParticipants }}
                 </q-item-label>
                 <q-item-label caption>
-                  상태: {{ session.isPrivate ? "비공개" : "공개" }}
+                  {{ pref.app.kor.karaoke.list.status }} :
+                  {{
+                    session.isPrivate
+                      ? pref.app.kor.karaoke.list.private
+                      : pref.app.kor.karaoke.list.public
+                  }}
                 </q-item-label>
               </q-item-section>
 
-              <q-btn
-                @click="joinSession(session.sessionId)"
-                label="입장하기"
-                color="primary"
-              />
+              <q-item-section side>
+                <q-btn
+                  @click="joinSession(session.sessionId)"
+                  :label="pref.app.kor.karaoke.list.joinSession"
+                  color="primary"
+                />
+              </q-item-section>
 
               <q-item-section side>
                 <q-item-label caption>
-                  {{ session.recording ? "녹화 중" : "대기 중" }}
+                  {{
+                    session.recording
+                      ? pref.app.kor.karaoke.list.recording
+                      : pref.app.kor.karaoke.list.waiting
+                  }}
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -44,6 +65,7 @@
 
 <script setup>
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
+import pref from "@/js/config/preference.js";
 
 // store 사용
 const store = useKaraokeStore();

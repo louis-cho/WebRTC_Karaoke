@@ -2,6 +2,56 @@
   <q-dialog v-model="store.toggleModals['input-controller']">
     <q-card>
       <q-card-section>
+        <!-- 필터 버튼 목록 -->
+        <div class="q-mb-md">
+          <q-select
+            v-model="selectedFilter"
+            :options="filterOptions"
+            :label="pref.app.kor.karaokePage.filterList"
+            filled
+          />
+
+          <!-- 선택된 필터에 따라 동적으로 보여지는 슬라이더 목록 -->
+          <div
+            class="q-mb-md"
+            v-for="(slider, index) in filteredSliders"
+            :key="index"
+          >
+            <label style="white-space: nowrap">
+              {{ slider.label }}:
+              <!-- 슬라이더의 현재 값 표시 -->
+              {{ slider.value }}
+              <!-- 슬라이더 컴포넌트 -->
+              <q-slider
+                v-model="slider.value"
+                :min="slider.min"
+                :max="slider.max"
+                :step="slider.step"
+                style="width: 50%"
+              />
+            </label>
+          </div>
+        </div>
+      </q-card-section>
+
+      <q-card-section>
+        <q-btn
+          v-if="!filterApplied"
+          @click="applyFilter"
+          color="primary"
+          class="q-mt-md"
+          :label="pref.app.kor.karaokePage.applyFilter"
+        />
+        <q-btn
+          v-if="filterApplied"
+          @click="removeFilter"
+          color="negative"
+          class="q-mt-md"
+          :label="pref.app.kor.karaokePage.removeFilter"
+        />
+      </q-card-section>
+
+      <q-card-section>
         <!-- 캠활성화, 음소거 버튼 -->
         <q-btn
           id="camera-activate"
@@ -25,9 +75,71 @@
 </template>
 
 <script setup>
+import { ref, computed } from "vue";
+import pref from "@/js/config/preference.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 
 const store = useKaraokeStore();
+
+// 필터를 위한 변수
+const selectedFilter = ref({ label: "에코", value: "Audioecho" });
+const filterApplied = ref(false);
+const filterOptions = [
+  { label: "에코", value: "Audioecho" },
+  { label: "증폭", value: "Amplify" },
+];
+
+// 에코 관련 변수
+const sliders = ref([
+  { label: "딜레이", value: 300, min: 100, max: 500, step: 10 },
+  { label: "강도", value: 0.5, min: 0.1, max: 1, step: 0.1 },
+  { label: "피드백", value: 0.2, min: 0, max: 0.5, step: 0.01 },
+  { label: "증폭", value: 1.0, min: 0.5, max: 1.5, step: 0.1 },
+]);
+
+// 필터를 적용해주는 함수
+function applyFilter() {
+  const filter = { type: "GStreamerFilter", options: {} };
+
+  switch (selectedFilter.value.value) {
+    case "Audioecho":
+      filter.type = "GStreamerFilter";
+      filter.options = {
+        command: `audioecho delay=${sliders.value[0].value} intensity=${sliders.value[1].value} feedback=${sliders.value[2].value}`,
+      };
+      break;
+    case "Amplify":
+      filter.type = "GStreamerFilter";
+      filter.options = {
+        command: `audioamplify amplification=${sliders.value[3].value}`,
+      };
+      break;
+  }
+
+  // 필터를 적용해주는 부분
+  store.publisher.stream.applyFilter(filter.type, filter.options);
+  filterApplied.value = true;
+}
+
+// 필터를 지우는 함수
+const removeFilter = () => {
+  store.publisher.stream.removeFilter();
+  filterApplied.value = false;
+};
+
+// 선택된 라디오 버튼에 따라 동적으로 보여지는 슬라이더 목록
+const filteredSliders = computed(() => {
+  if (selectedFilter.value.value === "Audioecho") {
+    return sliders.value.filter((slider) =>
+      ["딜레이", "강도", "피드백"].includes(slider.label)
+    );
+  } else if (selectedFilter.value.value === "Amplify") {
+    return sliders.value.filter((slider) => ["증폭"].includes(slider.label));
+  } else {
+    return null;
+  }
+});
+// 필터 함수 종료
 
 // 음소거, 캠 활성화 버튼 작동
 function handleCameraBtn() {
@@ -69,64 +181,4 @@ function closeModal() {
 }
 </script>
 
-<style scoped>
-.outer-border {
-  border: 2px solid #3498db; /* 테두리 색상을 변경하세요 */
-  border-radius: 10px; /* 라운드 코너를 적용하세요 */
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과를 추가하세요 */
-}
-.chat-window {
-  background-color: #2c3e50; /* 어두운 배경색 */
-  border-radius: 8px;
-  color: #ecf0f1; /* 전체 텍스트 색상 */
-}
-/* 제목 스타일링을 위한 CSS */
-.chat-title {
-  text-align: left;
-  margin-bottom: 20px;
-}
-/* 제목 폰트 크기 조절을 위한 CSS */
-.title-font-size {
-  font-size: 2rem; /* 원하는 크기로 조절하세요 */
-}
-/* 제목 밑에 줄을 추가하는 CSS */
-.section-divider {
-  border-bottom: 1px solid #ccc; /* 줄의 스타일 및 색상을 원하는대로 조절하세요 */
-  margin-bottom: 10px; /* 원하는 간격으로 조절하세요 */
-}
-.dark-bg {
-  background-color: #2c3e50 !important; /* !important로 우선순위 부여 */
-}
-
-.chat-history {
-  list-style-type: none;
-  padding: 0;
-}
-
-.message-item {
-  background-color: #34495e; /* 어두운 메시지 배경색 */
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 12px;
-  margin-bottom: 10px;
-}
-
-.dark-item-bg {
-  background-color: #34495e !important; /* !important로 우선순위 부여 */
-}
-
-.message-username {
-  font-weight: bold;
-  color: #3498db; /* 사용자 이름 색상 */
-}
-
-.dark-text {
-  color: #3498db !important; /* !important로 우선순위 부여 */
-}
-.inline-input {
-  display: inline-block;
-  width: calc(100% - 80px); /* 적절한 너비를 조절하세요 */
-  margin-right: 10px; /* 필요한 간격을 조절하세요 */
-}
-</style>
+<style scoped></style>

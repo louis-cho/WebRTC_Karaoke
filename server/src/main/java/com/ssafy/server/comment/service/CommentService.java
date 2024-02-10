@@ -17,4 +17,6 @@ public interface CommentService {
     boolean deleteComment(int commentId);
 
     List<Comment> getCommentsByFeedIdWithPagination(int feedId, int startIndex, int pageSize);
+
+    int getCommentCount(int feedId);
 }

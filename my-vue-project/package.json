@@ -1,0 +1,47 @@
+{
+    "name": "my-vue-project",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+        "format": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",
+        "test": "echo \"No test specified\" && exit 0",
+        "build": "vite build && quasar build",
+        "dev": "vite && quasar dev",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@quasar/extras": "^1.0.0",
+        "@quasar/vite-plugin": "^1.6.0",
+        "@babel/eslint-parser": "7.19.1",
+        "@quasar/app-vite": "^1.0.0",
+        "@vue/cli-plugin-babel": "5.0.8",
+        "@vue/cli-plugin-eslint": "5.0.8",
+        "@vue/cli-service": "^5.0.8",
+        "axios": "^1.6.5",
+        "core-js": "3.9.1",
+        "crypto-js": "^4.2.0",
+        "jquery": "3.7.1",
+        "js-cookie": "^3.0.5",
+        "openvidu-browser": "^2.29.0",
+        "pinia": "^2.1.7",
+        "pinia-plugin-persistedstate": "^3.2.1",
+        "quasar": "^2.6.0",
+        "routes": "^2.1.0",
+        "vue": "^3.4.15",
+        "vue-router": "^4.2.5"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^4.5.2",
+        "autoprefixer": "^10.4.2",
+        "eslint": "^8.11.0",
+        "eslint-config-prettier": "^8.1.0",
+        "eslint-plugin-vue": "^9.0.0",
+        "postcss": "^8.4.14",
+        "prettier": "^2.5.1",
+        "vite": "^5.0.8",
+        "vue-cli-plugin-quasar": "~5.0.2",
+        "webpack-bundle-analyzer": "^4.10.1"
+    },
+    "type": "module"
+}

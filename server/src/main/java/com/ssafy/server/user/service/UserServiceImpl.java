@@ -7,7 +7,6 @@ import com.ssafy.server.user.secure.RSA_2048;
 import com.ssafy.server.user.util.RSAKeyManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -167,6 +166,26 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    /**
+     * 시간 없어서 hard delete
+     * @param userPk
+     */
+    @Override
+    public void deleteUser(int userPk) {
+        userRepository.deleteById(userPk);
+        userAuthRepository.deleteById(userPk);
+    }
+
+    @Override
+    public void updateUser(User user) {
+        User fetchedUser = userRepository.getReferenceById(user.getUserPk());
+        if(user.getNickname() != null)
+            fetchedUser.setNickname(user.getNickname());
+        if(user.getIntroduction() != null)
+            fetchedUser.setIntroduction(user.getIntroduction());
+        if(user.getProfileImgUrl() != null)
+            fetchedUser.setProfileImgUrl(user.getProfileImgUrl());
+    }
 
     /**
      * 유저 UUID로부터 user primary key를 반환한다.
@@ -208,5 +227,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDocument> searchUsersByNickname(String nickname) {
         return userElasticsearchRepository.findByNickname(nickname);
+    }
+
+    @Override
+    public String getUserNickname(int userPk) throws Exception {
+        return getUser(userPk).getNickname();
     }
 }

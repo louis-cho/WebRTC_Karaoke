@@ -5,9 +5,11 @@
         <!-- 방에 들어갔을 때 같이 보이게 될 채팅창 -->
         <div id="chat-container" class="outer-border q-pa-md">
           <q-card class="q-mb-md chat-window">
-            <q-card-section class="q-pa-md dark-bg">
+            <q-card-section class="q-pa-md dark-bg" style="min-width: 512px">
               <div class="chat-title q-mb-md">
-                <h2 class="q-mb-none title-font-size">채팅</h2>
+                <h2 class="q-mb-none title-font-size">
+                  {{ pref.app.kor.karaoke.session.chatting }}
+                </h2>
                 <div class="section-divider"></div>
               </div>
               <ul class="chat-history q-mb-md">
@@ -28,19 +30,27 @@
           <form id="chat-write" class="q-mt-md" @submit.prevent="sendMessage">
             <q-input
               type="text"
-              placeholder="전달할 내용을 입력하세요."
+              :placeholder="pref.app.kor.karaoke.session.message"
               v-model="store.inputMessage"
               outlined
               dense
               class="inline-input"
               @keydown.enter="sendMessage"
             />
-            <q-btn @click="sendMessage" color="primary" label="전송" />
+            <q-btn
+              @click="sendMessage"
+              color="primary"
+              :label="pref.app.kor.karaoke.session.send"
+            />
           </form>
         </div>
 
         <q-card-section class="q-mt-sm q-mb-sm float-right">
-          <q-btn @click="closeModal" color="negative" label="닫기" />
+          <q-btn
+            @click="closeModal"
+            color="negative"
+            :label="pref.app.kor.karaoke.list.close"
+          />
         </q-card-section>
       </q-card-section>
     </q-card>
@@ -49,6 +59,7 @@
 
 <script setup>
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
+import pref from "@/js/config/preference.js";
 
 const store = useKaraokeStore();
 

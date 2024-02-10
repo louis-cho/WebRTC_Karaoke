@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>암호화</title>
+</head>
+<body>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+<script type="module">
+  /*
+  회원 가입 비밀 번호 암호화 예제
+  */
+  import {getPublicKey, register, login} from "./authRequest.js";
+
+  await getPublicKey();
+  await register("c1", "hello myfriend");
+  await login("c1", "hello myfriend");
+
+  /*
+  회원가입 버튼에 encrypt.js의 handleRegister() 함수를 연결하면 비밀번호 암호화 기능을 사용할 수 있음
+  */
+
+
+</script>
+</html>
