@@ -16,8 +16,12 @@
       <div class="profile">
         <div
           class="profile-img-container"
-          v-if="feed && feed.user"
-          :style="{ backgroundImage: `url(${feed.user.profileImgUrl})` }"
+          v-if="feed && feed.user && feed.user.profileImgUrl"
+          :style="{
+            backgroundImage: `url(${
+              feed.user.profileImgUrl || 'https://picsum.photos/200​'
+            })`,
+          }"
         ></div>
 
         <div class="width-100">
@@ -30,22 +34,25 @@
             </div>
           </div>
           <div class="space-start">
-            <div v-if="feed && feed.song">{{ feed.song.title }}-</div>
-            <div v-if="feed && feed.song">{{ feed.song.singer }}</div>
+            <div v-if="feed && feed.song">
+              <div>
+                {{ feed.song.title ? feed.song.title + "-" : "Default Title-" }}
+              </div>
+              <div>
+                {{ feed.song.singer ? feed.song.singer : "Default Singer" }}
+              </div>
+            </div>
+
             <q-btn
               :color="
-                feed.status === '0'
-                  ? 'primary'
-                  : feed.status === '1'
-                  ? 'secondary'
-                  : 'black'
+                feed && feed.status
+                  ? getButtonColor(feed.status)
+                  : getButtonColor(null)
               "
               :label="
-                feed.status === '0'
-                  ? '전체 공개'
-                  : feed.status === '1'
-                  ? '친구 공개'
-                  : '비공개'
+                feed && feed.status
+                  ? getButtonLabel(feed.status)
+                  : getButtonLabel(null)
               "
               size="sm"
             />
@@ -156,6 +163,13 @@ const goBack = function () {
 const getUserProfile = (user_pk) => {
   // 사용자 프로필 이미지 가져오기 로직..
   return "@/assets/img/capture3.png";
+};
+
+const getButtonColor = (status) => {
+  return status === "0" ? "primary" : status === "1" ? "secondary" : "black";
+};
+const getButtonLabel = (status) => {
+  return status === "0" ? "전체 공개" : status === "1" ? "친구 공개" : "비공개";
 };
 
 const getNickName = (user_pk) => {
