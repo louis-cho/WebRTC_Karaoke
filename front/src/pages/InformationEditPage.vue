@@ -60,10 +60,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import NavBar from '@/layouts/NavBar.vue';
 import TabItem from '@/layouts/TabItem.vue';
 import { useRouter, useRoute } from "vue-router";
+import { updateUser } from '@/js/user/user.js';
 
 
 const router = useRouter();
@@ -102,6 +103,35 @@ const triggerProfileImageInput = () => {
 const profileImageStyle = computed(() => ({
   backgroundImage: `url(${selectedProfileImage.value || getUserProfile()})`
 }))
+
+// ---------------------------
+// onMounted(async () => {
+//   await updateUser();
+// });
+const userKey = ref(1);
+const nickname = ref('dd');
+const profileImgUrlNode = ref('');
+const introductionNode = ref('하하소개글');
+
+const handleUpdate = async () => {
+  try {
+    // updateUser 함수 호출
+    const result = await updateUser(userKey.value, nickname.value, profileImgUrlNode.value, introductionNode.value);
+
+    // 결과에 따른 처리
+    if (result) {
+      console.log('개인정보 수정 성공');
+    } else {
+      console.error('개인정보 수정 실패');
+    }
+  } catch (error) {
+    console.error('개인정보 수정 중 오류 발생:', error);
+  }
+};
+onMounted(() => {
+  handleUpdate();
+});
+
 </script>
 
 <style scoped>
