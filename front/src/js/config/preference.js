@@ -92,11 +92,12 @@ app.kor.karaoke.session.send = "전송";
 app.kor.karaoke.session.kick = "강퇴";
 app.kor.karaoke.session.start = "시작";
 app.kor.karaoke.session.stop = "취소";
-
-app.kor.karaokePage = {};
-app.kor.karaokePage.applyFilter = "필터 적용하기";
-app.kor.karaokePage.removeFilter = "필터 해제하기";
-app.kor.karaokePage.filterList = "적용할 필터를 고르세요";
+app.kor.karaoke.session.cameraOn = "카메라 켜기";
+app.kor.karaoke.session.cameraOff = "카메라 끄기";
+app.kor.karaoke.session.mute = "음소거";
+app.kor.karaoke.session.unmute = "음소거 해제";
+app.kor.karaoke.session.applyEcho = "에코 적용하기";
+app.kor.karaoke.session.removeEcho = "에코 해제하기";
 
 app.eng = {};
 
