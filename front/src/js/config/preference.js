@@ -13,7 +13,7 @@ app.api.user = {};
 app.api.user.login = "/user/login";
 app.api.user.register = "/user/register";
 app.api.user.fetch = "/user/get/";
-app.api.user.update = "/user/update/";
+app.api.user.update = "/user/update";
 
 app.api.comment = {};
 app.api.comment.fetch = "/comment/feed/";
