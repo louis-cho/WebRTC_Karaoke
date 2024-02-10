@@ -3,11 +3,11 @@ let app = {};
 app.api = {};
 
 app.api.prefix = "/api/v1";
-// app.api.protocol = "https:";
-// app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
+app.api.protocol = "https:";
+app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
 app.api.socket = "ws:";
-app.api.protocol = "http:";
-app.api.host = "//localhost:8081" + app.api.prefix;
+// app.api.protocol = "http:";
+// app.api.host = "//localhost:8081" + app.api.prefix;
 
 app.api.user = {};
 app.api.user.login = "/user/login";
@@ -84,6 +84,7 @@ app.kor.karaoke.session.update = "변경하기";
 app.kor.karaoke.session.chatting = "채팅";
 app.kor.karaoke.session.input = "입력 설정";
 app.kor.karaoke.session.reserve = "예약하기";
+app.kor.karaoke.session.search = "검색어를 입력하세요";
 app.kor.karaoke.session.reserveList = "예약목록";
 app.kor.karaoke.session.message = "전달할 내용을 입력하세요";
 app.kor.karaoke.session.send = "전송";
