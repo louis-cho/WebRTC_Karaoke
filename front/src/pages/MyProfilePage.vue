@@ -60,14 +60,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref,onMounted } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
-
+import { getFeedsByUser } from '@/js/feed/feed.js';
 
 const router = useRouter();
-const feeds = ref([]);
+// const feeds = ref([]);
 
 const goBack = function () {
   router.go(-1)
@@ -100,6 +100,17 @@ const goBack = function () {
 //   }
 // ])
 
+// const userId = 1; // 실제 사용자 ID로 교체
+// try {
+//   const userFeeds = await getFeedsByUser(userId);
+//   console.log('사용자 피드:', userFeeds);
+// } catch (error) {
+//   console.error('사용자 피드를 가져오는 중 오류 발생:', error);
+// }
+onMounted(() => {
+  const userId = 1; // 실제 사용자 ID로 교체
+  getFeedsByUser(userId); // 자바스크립트 파일에서 가져온 함수 호출
+});
 
 
 </script>

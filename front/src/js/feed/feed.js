@@ -45,7 +45,7 @@ export async function getFeedsByUser(userId) {
     })
     .then(response => response.json())
     .then(result => {
-      console.log('유저아이디별로 피드?',result)
+      console.log('유저아이디별로 피드 가져오기',result)
       // return result
     });
 }
