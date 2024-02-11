@@ -18,6 +18,7 @@ app.api.user.update = "/user/update";
 app.api.comment = {};
 app.api.comment.fetch = "/comment/feed/";
 app.api.comment.count = "/comment/get/count/";
+app.api.comment.add = "/comment/create";
 
 app.api.feed = {};
 app.api.feed.fetchAll = "/feed/get/all";
@@ -39,7 +40,6 @@ app.api.hit.count = "/hit/get/";
 
 app.api.like = {};
 app.api.like.count = "/like/get/";
-
 
 app.api.friends = {};
 app.api.friends.get = "/friends/";
@@ -85,17 +85,19 @@ app.kor.karaoke.session.update = "변경하기";
 app.kor.karaoke.session.chatting = "채팅";
 app.kor.karaoke.session.input = "입력 설정";
 app.kor.karaoke.session.reserve = "예약하기";
+app.kor.karaoke.session.search = "검색어를 입력하세요";
 app.kor.karaoke.session.reserveList = "예약목록";
 app.kor.karaoke.session.message = "전달할 내용을 입력하세요";
 app.kor.karaoke.session.send = "전송";
 app.kor.karaoke.session.kick = "강퇴";
 app.kor.karaoke.session.start = "시작";
 app.kor.karaoke.session.stop = "취소";
-
-app.kor.karaokePage = {};
-app.kor.karaokePage.applyFilter = "필터 적용하기";
-app.kor.karaokePage.removeFilter = "필터 해제하기";
-app.kor.karaokePage.filterList = "적용할 필터를 고르세요";
+app.kor.karaoke.session.cameraOn = "카메라 켜기";
+app.kor.karaoke.session.cameraOff = "카메라 끄기";
+app.kor.karaoke.session.mute = "음소거";
+app.kor.karaoke.session.unmute = "음소거 해제";
+app.kor.karaoke.session.applyEcho = "에코 적용하기";
+app.kor.karaoke.session.removeEcho = "에코 해제하기";
 
 app.eng = {};
 

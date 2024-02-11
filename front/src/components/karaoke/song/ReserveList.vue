@@ -16,7 +16,7 @@
           </q-header>
 
           <q-page-container>
-            <q-page class="flex flex-center">
+            <q-page class="flex flex-start">
               <q-list>
                 <q-item v-for="list in lists" :key="list.id">
                   <q-item-section class="q-mb-md" style="min-width: 400px">

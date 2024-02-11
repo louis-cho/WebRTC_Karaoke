@@ -33,21 +33,21 @@ async function fetchAndRenderFriends() {
   }
 }
 
-onMounted(async () => {
-  await fetchAndRequestFriends();
-});
+// onMounted(async () => {
+//   await fetchAndRequestFriends();
+// });
 
-async function fetchAndRequestFriends() {
-  try {
-    const fromUser = 1;
-    const toUser = 2;
-    const friendRequest = await fetchFriendRequest(fromUser, toUser)
+// async function fetchAndRequestFriends() {
+//   try {
+//     const fromUser = 1;
+//     const toUser = 2;
+//     const friendRequest = await fetchFriendRequest(fromUser, toUser)
 
-    console.log('친구요청:', friendRequest);
-  } catch (error) {
-    console.error('친구요청 오류 발생:', error);
-  }
-}
+//     console.log('친구요청:', friendRequest);
+//   } catch (error) {
+//     console.error('친구요청 오류 발생:', error);
+//   }
+// }
 
 </script>
 
