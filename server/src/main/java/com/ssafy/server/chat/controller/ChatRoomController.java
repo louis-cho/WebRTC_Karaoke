@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -28,6 +29,9 @@ public class ChatRoomController {
         System.out.println(chatRoomService.findAllRoomByUserId(userId, pageable));
         return chatRoomService.findAllRoomByUserId(userId, pageable);
     }
+
+    @GetMapping("/info/{roomId}")
+    public Optional<ChatRoom> getRoomInfo(@PathVariable long roomId) {return chatRoomService.getRoomInfo(roomId);}
 
     // 채팅방 생성
     @PostMapping("/create")

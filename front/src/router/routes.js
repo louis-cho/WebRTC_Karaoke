@@ -24,7 +24,7 @@ const routes = [
     component: () => import("@/pages/FeedPage.vue"),
   },
   {
-    path: "/message",
+    path: "/message/:userPk",
     component: () => import("@/pages/MessagePage.vue"),
   },
   {
@@ -32,10 +32,9 @@ const routes = [
     component: () => import("@/pages/MyProfilePage.vue"),
   },
   {
-    path: "/chat",
+    path: "/chat/:roomPk",
     component: () => import("@/pages/ChatPage.vue"),
   },
-  // path 추후 수정 필요
   {
     path: '/feed_detail/:feedId',
     name: 'feed_detail',
@@ -79,19 +78,6 @@ const routes = [
         next();
       }
     },
-  },
-
-  {
-    path: "/message",
-    component: () => import("@/pages/MessagePage.vue"),
-  },
-  {
-    path: "/my_profile",
-    component: () => import("@/pages/MyProfilePage.vue"),
-  },
-  {
-    path: "/chat",
-    component: () => import("@/pages/ChatPage.vue"),
   },
   {
     path: "/:catchAll(.*)*",

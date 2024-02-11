@@ -78,4 +78,9 @@ public class ChatRoomService {
     public List<UsersChats> getUserList(long roomId){
         return usersChatsRepository.findByRoomPkAndStatus(roomId, '1');
     }
+
+    //roomId로 방 정보 찾기
+    public Optional<ChatRoom> getRoomInfo(long roomId) {
+        return chatRoomRepository.findById(roomId);
+    }
 }
