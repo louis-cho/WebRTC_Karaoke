@@ -57,9 +57,16 @@ public class LikeController {
         return new ResponseEntity<>(ApiResponse.success(true), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/delete/{userPk}/{feedId}")
-    public ResponseEntity<ApiResponse<Boolean>> delete(@PathVariable int userPk, @PathVariable int feedId) {
+    @PostMapping("/delete")
+    public ResponseEntity<ApiResponse<Boolean>> delete(@RequestBody JsonNode jsonNode) {
+        int feedId = -1, userPk = -1;
+        UUID userUUID = null;
         try {
+            feedId = Integer.parseInt(jsonNode.get("feedId").asText());
+            if(jsonNode.get("uuid") != null) {
+                userUUID = UUID.fromString(jsonNode.get("uuid").asText());
+                userPk = userService.getUserPk(userUUID);
+            }
             likeService.delete(userPk, feedId);
         } catch(Exception e) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(LikeExceptionEnum.LIKE_DELETE_FAILED));

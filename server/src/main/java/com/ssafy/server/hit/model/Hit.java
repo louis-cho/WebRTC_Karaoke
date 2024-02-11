@@ -13,6 +13,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Objects;
 
 
@@ -43,6 +44,13 @@ public class Hit implements Serializable{
     Hit(int hitId, int userPk) {
         this.hitId = hitId;
         this.userPk = userPk;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (this.timestamp == null) {
+            this.timestamp = Timestamp.from(Instant.now());
+        }
     }
 
     @Override

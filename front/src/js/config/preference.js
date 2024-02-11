@@ -37,9 +37,12 @@ app.api.song.fetch = "/song/";
 
 app.api.hit = {};
 app.api.hit.count = "/hit/get/";
+app.api.hit.create = "/hit/create";
 
 app.api.like = {};
 app.api.like.count = "/like/get/";
+app.api.like.create = "/like/create";
+app.api.like.delete = "/like/delete";
 
 app.api.friends = {};
 app.api.friends.get = "/friends/";
