@@ -32,3 +32,20 @@ export async function fetchFeed(feedId) {
       return result;
     });
 }
+
+//-----------------------------------------
+export async function getFeedsByUser(userId) {
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.getByUser+ userId;
+
+  return await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log('유저아이디별로 피드 가져오기',result)
+      // return result
+    });
+}
