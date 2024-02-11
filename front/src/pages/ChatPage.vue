@@ -83,7 +83,6 @@ function loadOldMessages() {
   return axios.get(`http://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/oldMsg?page=${page}&size=50`)
     .then(response => {
       const oldMessages = response.data;
-      console.log(oldMessages);
       if (oldMessages.length === 0) {
          // 빈 배열을 받으면 페이지 끝을 알리는 alert 표시
          alert("마지막 페이지입니다.");
