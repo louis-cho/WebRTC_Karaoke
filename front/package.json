@@ -16,11 +16,11 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^1.6.5",
+    "openvidu-browser": "^2.29.0",
     "core-js": "3.9.1",
     "crypto-js": "^4.2.0",
     "jquery": "3.7.1",
     "js-cookie": "^3.0.5",
-    "openvidu-browser": "^2.29.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "quasar": "^2.6.0",
@@ -62,10 +62,6 @@
     "last 2 versions",
     "not dead"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:OpenVidu/openvidu.git"
-  },
   "engines": {
     "node": "^20 || ^18 || ^16",
     "npm": ">= 6.13.4",

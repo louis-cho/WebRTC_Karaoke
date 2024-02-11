@@ -34,7 +34,7 @@
           <q-toggle
             v-model="store.isPrivate"
             :label="
-              isPrivate
+              store.isPrivate
                 ? pref.app.kor.karaoke.list.private
                 : pref.app.kor.karaoke.list.public
             "

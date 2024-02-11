@@ -1,11 +1,12 @@
 <template>
   <div @scroll="handleScroll">
     <!-- <TabItem/> -->
-    <NavBar/>
+    <NavBar />
     <!-- <h3>전체 피드 페이지</h3> -->
     <div class="my-feed">
       <!-- 첫번째 div -->
-      <!-- 검색창 --> <!-- 닉네임/노래제목 검색 가능 -->
+      <!-- 검색창 -->
+      <!-- 닉네임/노래제목 검색 가능 -->
       <div class="search-container">
         <q-input
           v-model="searchQuery"
@@ -18,62 +19,96 @@
             <q-icon name="search" class="search-icon" />
           </template>
         </q-input>
-        <q-btn @click="search" class="search-button" color="primary" label="검색" dense />
+        <q-btn
+          @click="search"
+          class="search-button"
+          color="primary"
+          label="검색"
+          dense
+        />
       </div>
-
 
       <!-- 두번째 div -->
 
-      <div v-for="feed in feeds" :key="feed.feedId" >
+      <div v-for="feed in feeds" :key="feed.feedId">
         <div class="profile">
-          <div class="profile-img-container" v-if="feed.user" :style="{ backgroundImage: `url(${feed.user.profileImgUrl})` }">
-            <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
-          </div>
+          <div
+            class="profile-img-container"
+            :style="{
+              backgroundImage: `url(${(
+                feed.user.profileImgUrl || 'https://picsum.photos/200'
+              ).trim()})`,
+            }"
+          ></div>
 
           <div class="width-100">
-            <div class="space-between" >
+            <div class="space-between">
               <div>
                 <!-- 닉네임 -->
-                <p v-if="feed.user">{{ feed.user.nickname }}</p>
+                <p v-if="feed && feed.user">{{ feed.user.nickname }}</p>
               </div>
-
             </div>
             <div class="space-start">
-              <!-- 노래제목 -->
-              <div v-if="feed.song">{{ feed.song.title }}-</div>
-              <!-- 가수 -->
-              <div v-if="feed.song">{{ feed.song.singer }}</div>
-              <q-btn :color="feed.STATUS === '0' ? 'primary' : (feed.status === '1' ? 'secondary' : 'black')" :label="feed.status === '0' ? '전체 공개' : (feed.status === '1' ? '친구 공개' : '비공개')" size="sm" />
+              <div v-if="feed && feed.song">
+                <span>
+                  {{
+                    feed.song.title ? feed.song.title + "-" : "Default Title-"
+                  }}
+                </span>
+                <span>
+                  {{ feed.song.singer ? feed.song.singer : "Default Singer" }}
+                </span>
+              </div>
+              <q-btn
+                :color="getButtonColor(feed.status)"
+                :label="getButtonLabel(feed.status)"
+                size="sm"
+              />
             </div>
           </div>
         </div>
 
-        <p>{{ feed.content }}</p>
+        <p v-if="feed">{{ feed.content }}</p>
         <video controls width="100%" ref="videoPlayer">
-          <source :src="feed.VIDEO_URL" type="video/mp4">
+          <source :src="feed.VIDEO_URL" type="video/mp4" />
         </video>
 
         <div class="flex-row">
-        <div class="margin-right-20"  @click="goFeedDetail(feed.feedId)">
-          <img class="margin-right-10" src="@/assets/icon/chat.png" alt="댓글">
-          <span>{{feed.commentCount}}</span>
+          <div class="margin-right-20" @click="goFeedDetail(feed.feedId)">
+            <img
+              class="margin-right-10"
+              src="@/assets/icon/chat.png"
+              alt="댓글"
+            />
+            <span v-if="feed">{{ feed.commentCount }}</span>
+          </div>
+          <div class="margin-right-20" @click="toggleLike(feed.feedId)">
+            <img
+              class="margin-right-10"
+              src="@/assets/icon/love.png"
+              alt="좋아요"
+            />
+            <span v-if="feed">{{ feed.likeCount }}</span>
+          </div>
+          <div class="margin-right-20">
+            <img
+              class="margin-right-10"
+              src="@/assets/icon/show.png"
+              alt="조회수"
+            />
+            <span v-if="feed">{{ feed.viewCount }}</span>
+          </div>
+          <div class="margin-right-20">
+            <img
+              class="margin-right-10"
+              src="@/assets/icon/dollar.png"
+              alt="후원"
+            />
+            <span v-if="feed">{{ feed.TOTAL_POINT }}</span>
+          </div>
+          <q-btn @click="goFeedDetail(feed.feedId)">피드 디테일 페이지로</q-btn>
         </div>
-        <div class="margin-right-20" @click="toggleLike(feed.feedId)">
-          <img class="margin-right-10" src="@/assets/icon/love.png" alt="좋아요">
-          <span>{{ feed.likeCount }}</span>
-        </div>
-        <div class="margin-right-20">
-          <img class="margin-right-10" src="@/assets/icon/show.png" alt="조회수">
-          <span>{{ feed.viewCount }}</span>
-        </div>
-        <div class="margin-right-20">
-          <img class="margin-right-10" src="@/assets/icon/dollar.png" alt="후원">
-          <span>{{ feed.TOTAL_POINT }}</span>
-        </div>
-      <q-btn @click="goFeedDetail(feed.feedId)">피드 디테일 페이지로</q-btn>
-        </div>
-        <hr>
-
+        <hr />
       </div>
     </div>
 
@@ -82,34 +117,41 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed, onBeforeMount, nextTick } from 'vue'
-import TabItem from "@/layouts/TabItem.vue"
-import NavBar from '@/layouts/NavBar.vue'
-import { useRouter } from 'vue-router';
+import {
+  ref,
+  onMounted,
+  onUnmounted,
+  computed,
+  onBeforeMount,
+  nextTick,
+} from "vue";
+import TabItem from "@/layouts/TabItem.vue";
+import NavBar from "@/layouts/NavBar.vue";
+import { useRouter } from "vue-router";
 import app from "@/js/config/preference.js";
-import {fetchHitCount} from "@/js/hit/hit.js";
-import {fetchLikeCount} from "@/js/like/like.js";
-import { fetchFeedList } from '@/js/feed/feed.js';
-import { fetchSong } from '@/js/song/song.js';
-import { fetchUser } from '@/js/user/user.js';
-import {fetchCommentCount} from '@/js/comment/comment.js';
+import { fetchHitCount } from "@/js/hit/hit.js";
+import { fetchLikeCount } from "@/js/like/like.js";
+import { fetchFeedList } from "@/js/feed/feed.js";
+import { fetchSong } from "@/js/song/song.js";
+import { fetchUser } from "@/js/user/user.js";
+import { fetchCommentCount } from "@/js/comment/comment.js";
 
 let pref = app;
 const feeds = ref([]);
 const router = useRouter();
 
-  let page = 0;
-  const amount = 3;
+let page = 0;
+const amount = 3;
 
 const goFeedDetail = (feedId) => {
-  router.push({ name: 'feed_detail', params: { feedId } });
+  router.push({ name: "feed_detail", params: { feedId } });
 };
 
 onBeforeMount(async () => {
-   await fetchFeedData();
+  await fetchFeedData();
 });
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
-const loading = ref(false)
+const loading = ref(false);
 
 //가상 피드 데이터
 const fetchFeedData = async () => {
@@ -128,15 +170,20 @@ const fetchFeedData = async () => {
 
   // nextTick을 사용하여 Vue에게 DOM 업데이트를 기다리도록 함
   await nextTick();
-  console.log('Feeds:', feeds.value);
+  console.log("Feeds:", feeds.value);
+};
+
+const getButtonColor = (status) => {
+  return status === "0" ? "primary" : status === "1" ? "secondary" : "black";
+};
+const getButtonLabel = (status) => {
+  return status === "0" ? "전체 공개" : status === "1" ? "친구 공개" : "비공개";
 };
 
 const getUser = async (userPk) => {
   let user = await fetchUser(userPk);
   return user;
-}
-
-
+};
 
 // 스크롤 이벤트 핸들러
 const handleScroll = async () => {
@@ -149,13 +196,12 @@ const handleScroll = async () => {
     try {
       await fetchFeedData();
     } catch (error) {
-      console.error('Error fetching new feeds:', error);
+      console.error("Error fetching new feeds:", error);
     } finally {
       loading.value = false;
     }
   }
 };
-
 
 // 컴포넌트가 마운트된 후에 스크롤 이벤트를 추가
 onMounted(() => {
@@ -168,7 +214,7 @@ onUnmounted(() => {
 });
 
 // 검색 기능을 위한 변수와 메소드 추가
-const searchQuery = ref('');
+const searchQuery = ref("");
 
 // const filteredFeeds = computed(() => {
 //   return feeds.value.filter(feed => {
@@ -196,12 +242,7 @@ const searchQuery = ref('');
 //   });
 // }
 
-
-
-const toggleLike = async (feedId) => {
-
-};
-
+const toggleLike = async (feedId) => {};
 
 // const playVideo = (videoUrl) => {
 //   const videoPlayer = document.getElementById('video-player');
@@ -214,15 +255,14 @@ const toggleLike = async (feedId) => {
 .my-feed {
   padding-left: 200px;
   padding-right: 200px;
-  }
+}
 
-.display-flex{
+.display-flex {
   display: flex;
 }
 .profile-img-container {
   width: 70px;
   height: 70px;
-  background-image: url("@/assets/img/capture.png");
   /* object-fit : contain; */
   border-radius: 25px;
   background-size: cover;
@@ -258,7 +298,6 @@ const toggleLike = async (feedId) => {
   align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
 }
 
-
 .comment-img {
   width: 100%;
   height: 100%;
@@ -268,20 +307,19 @@ const toggleLike = async (feedId) => {
 }
 
 .my-feed {
-    /* padding: 20px; */
+  /* padding: 20px; */
   padding-left: 200px;
   padding-right: 200px;
-  }
+}
 .profile {
   display: flex;
   justify-content: start;
   align-items: center;
   margin: 20px 0;
-
 }
 
 .width-100 {
-  width:100%;
+  width: 100%;
   padding-left: 5%;
 }
 
@@ -333,7 +371,6 @@ const toggleLike = async (feedId) => {
   position: relative;
   cursor: pointer;
 } */
-
 
 .search-container {
   display: flex;

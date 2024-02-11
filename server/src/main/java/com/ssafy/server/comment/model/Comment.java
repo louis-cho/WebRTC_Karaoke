@@ -48,4 +48,5 @@ public class Comment extends Auditable {
 
     @Column(name = "is_deleted", columnDefinition = "boolean default false")
     private boolean isDeleted;
+
 }
