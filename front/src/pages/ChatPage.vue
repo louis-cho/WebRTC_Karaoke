@@ -99,9 +99,9 @@ const sendMessage = function() {
     newMessage.value = "";
 
     // 스크롤 항상 아래로 내리기
-    nextTick(() => {
-      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-    });
+    // nextTick(() => {
+    //   messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+    // });
   }
 }
 
@@ -143,6 +143,9 @@ function handleMessage(msg) {
 
 function setMessage(sender, type, message, time) {
   messages.value.push({sender, type, message, time}); // messages 배열에 새로운 채팅 메시지 추가
+  nextTick(() => {
+      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+    });
 }
 
 function setOldMessage(sender, type, message, time){
