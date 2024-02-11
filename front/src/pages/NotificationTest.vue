@@ -1,41 +1,53 @@
 <template>
   <div>
-
-    <TabItem/>
-
-    여기 접속하는 순간.. 바로 구독요청 날라가유
-    
-    {{ notificationMessages }}
   </div>
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue';
-import TabItem from "@/layouts/TabItem.vue";
-import Home from "@/pages/HomePage.vue";
-const notificationMessages = ref("");
+//친구일때 알림 생성 body 예시
+const friendNotification = {
+  toUser : userKey, //받는사람.
+    info : "",//친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
+    type : "friend", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
+    status : '0'
+}
 
-onMounted( ()=>{
+//노래방일때 알림 생성 body 예시
+const karaokeNotification = {
+  toUser : userKey, //받는사람 uuid.
+    info : `i10a705.p.ssafy.io/karaoke${sessionId}`,//친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
+    type : "karaoke", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
+    status : '0'
+}
+
+//댓글일때 알림 생성 body 예시
+const commentNotification = {
+  toUser : userKey, //받는사람 uuid.
+    info : `${feedId}`,//친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
+    type : "comment", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
+    status : '0'
+}
+
+//게시글일떄 알림 생성 body 예시
+const feedNotification = {
+    toUser : userKey, //받는사람 uuid.
+    info : `${feedId}`,//친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
+    type : "like", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
+    status : '0'
+}
 
 
-  const sse = new EventSource("http://localhost:8081/api/v1/notifications/subscribe");
-
-  console.log(sse);
-
-
-   sse.addEventListener('connect', (response) => {
-  	console.log('event data: ',response.data);  // "connected!"
-  });
-
-  axios.post(`/notification/sedNotification${param}`,)
-
-  sse.addEventListener('notification', (e) => {
-  	// const { data: receivedConnectData } = e;
-   notificationMessages.value = notificationMessages.value + e.data;
-  	console.log(' \'notification\' event data: ',e.data);  // "connected!"
-  });
-})
-
+// axios.post(serverUrl, JSON.stringify(myObject), {
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+// })
+//   .then(response => {
+//     console.log('서버 응답:', response.data);
+//   })
+//   .catch(error => {
+//     console.error('오류 발생:', error);
+//   });
 </script>
 
 <style>

@@ -71,7 +71,8 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { getPublicKey, register, login } from "@/js/encrypt/authRequest.js";
 import { isLoggedIn } from "@/js/encrypt/authRequest";
-
+import { useNotificationStore } from "@/stores/notificationStore.js";
+const notificationStore = useNotificationStore();
 // const router = useRouter()
 
 export default {
@@ -100,8 +101,8 @@ export default {
     closeLoginModal() {
       this.loginModal = false;
     },
-    subNotification(){
-      console.log("구독요청실행.");
+    async subNotification(){
+      await notificationStore.setSse();
     },
     async login() {
       console.log("로그인:", this.loginForm);
@@ -111,6 +112,7 @@ export default {
 
       await login(username, password);
       await this.subNotification();
+
       this.closeLoginModal();
       // console.log(isLoggedIn)
     },

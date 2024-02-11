@@ -23,6 +23,7 @@
         <q-tabs>
           <q-tab name="person" icon="person" @click="goToPage('/my_profile')"/>
           <q-tab name="notifications" icon="notifications" @click="toggleDropdown1"/>
+          {{ notificationStore.bellCount }}
           <q-tab name="menu" icon="menu" @click="toggleDropdown2"/>
         </q-tabs>
 
@@ -34,7 +35,7 @@
           </q-tabs>
         </div> -->
 
-        <q-card  v-if="isDropdownOpen1" class="dropdown-content my-card">
+        <!-- <q-card  v-if="isDropdownOpen1" class="dropdown-content my-card">
           <q-card-actions vertical>
             <q-btn flat>노래방에 초대되었습니다</q-btn>
             <q-btn flat>친구 요청</q-btn>
@@ -43,7 +44,28 @@
             <q-btn flat>모두 읽음 처리</q-btn>
             <q-btn flat>닫기</q-btn>
           </q-card-actions>
+        </q-card> -->
+        <q-card v-if="isDropdownOpen1" class="dropdown-content my-card" bordered separator>
+          <q-card-actions vertical>
+          <q-btn flat
+          v-for="notification in notificationStore.notificationList"
+          :key="notification.notificationId"
+          clickable
+          @click="handleNotificationClick(notification)"
+          >
+            <q-item-section>
+              <q-item-label >
+                {{ notification.message }}
+              </q-item-label>
+            </q-item-section>
+          </q-btn>
+        </q-card-actions>
+        <q-card-actions class="justify-center">
+            <q-btn flat @click= readAllNotification>모두 읽음 처리</q-btn>
+            <q-btn flat @click="isDropdownOpen1 = false" >닫기</q-btn>
+          </q-card-actions>
         </q-card>
+
 
         <!-- Dropdown 내용 -->
         <div v-if="isDropdownOpen2" class="dropdown-content">
@@ -63,7 +85,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
+import {useNotificationStore} from '@/stores/notificationStore.js'
+import pref from "@/js/config/preference.js";
+import axios from 'axios'
+const notificationStore = useNotificationStore();
 // const tab = ref('feed')
 const router = useRouter()
 const isDropdownOpen1 = ref(false)
@@ -77,6 +102,17 @@ const goToPage = (path) => {
 }
 
 const toggleDropdown1 = () => {
+
+  if(isDropdownOpen1.value == false){ //드랍다운이 닫혀있었다면
+    axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications`)
+    .then((response) =>{
+      notificationStore.notificationList = response.data;
+      console.log("알림관련 데이터잘받아와쓰요.");
+    })
+    .catch((err)=>{
+      console.log(err.message);
+    })
+  }
   isDropdownOpen1.value = !isDropdownOpen1.value
 }
 
@@ -88,6 +124,52 @@ const handleDropdownItemClick = (itemPath) => {
   // Dropdown 내 아이템을 클릭했을 때 수행할 로직 추가
   goToPage(itemPath)
   toggleDropdown2()
+}
+
+const handleNotificationClick = (notification) => {
+  console.log("notification", notification.notificationId);
+  //알림 읽음으로변경 요청
+  axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications/read/${notification.notificationId}`)
+    .then((response) =>{
+      console.log("알림상태 잘 수정됐음.");
+      //읽음으로 변경됐으면 알림삭제
+      notificationStore.notificationList = notificationStore.notificationList.filter(item => item != notification);
+      console.log("알림잘삭제됨!  리스트 :", notificationStore.notificationList);
+      //종소리 카운트 줄이기
+      notificationStore.bellCount--;
+
+      //링크로보내버리기.
+      if(notification.type == 'karaoke'){
+        goToPage(notificationPath);
+      }
+      else if(notification.type == 'comment'){
+        goToPage(notificationPath);
+      }
+      else if(notification.type == 'like'){
+        goToPage(notificationPath);
+      }
+      else if(notification.type == 'friend'){
+        goToPage(notificationPath);
+      }
+
+    })
+    .catch((err)=>{
+      console.log(err.message);
+    })
+
+}
+
+const readAllNotification = () => {
+  console.log("모두읽기가 눌렸어잉");
+  axios.post(`${pref.app.api.protocol}${pref.app.api.host}/notifications/readAll`,notificationStore.notificationList)
+  .then((response)=> {
+    console.log("모두읽기처리완료");
+    notificationStore.notificationList = [];
+    notificationStore.bellCount = 0;
+  })
+  .catch((err)=>{
+    console.log("모두읽기중 에러발생.");
+  })
 }
 </script>
 
