@@ -18,7 +18,8 @@
           class="profile-img-container"
           :style="{
             backgroundImage: `url(${(
-              feed.user.profileImgUrl || 'https://picsum.photos/200'
+              (feed && feed.user && feed.user.profileImgUrl) ||
+              'https://picsum.photos/200'
             ).trim()})`,
           }"
         ></div>
@@ -72,7 +73,7 @@
           />
           <span v-if="feed">{{ feed.commentCount }}</span>
         </div>
-        <div class="margin-right-20">
+        <div class="margin-right-20" @click="handleLikeClick">
           <img
             class="margin-right-10"
             src="@/assets/icon/love.png"
@@ -148,8 +149,8 @@ import {
 } from "@/js/comment/comment.js";
 import CommentItem from "@/components/CommentItem.vue";
 
-import { fetchHitCount } from "@/js/hit/hit.js";
-import { fetchLikeCount } from "@/js/like/like.js";
+import { fetchHitCount, createHit } from "@/js/hit/hit.js";
+import { fetchLikeCount, createLike, deleteLike } from "@/js/like/like.js";
 import { fetchFeedList, fetchFeed } from "@/js/feed/feed.js";
 import { fetchSong } from "@/js/song/song.js";
 import { fetchUser } from "@/js/user/user.js";
@@ -160,9 +161,22 @@ const comments = ref([]);
 const newComment = ref("");
 const commentContainer = ref(null);
 const modal = ref(false);
+const isLiked = ref(false);
+const uuid = ref(1);
+const feedId = ref();
 
 const goBack = function () {
   router.go(-1);
+};
+
+const handleLikeClick = async () => {
+  if (!isLiked.value) {
+    await createLike(feedId.value, uuid.value);
+  } else {
+    await deleteLike(feedId.value, uuid.value);
+  }
+
+  isLiked.value = !isLiked.value;
 };
 
 const getUserProfile = (user_pk) => {
@@ -222,6 +236,8 @@ const registComment = () => {
   comment.isDeleted = false;
 
   addComment(comment);
+
+  location.reload();
 };
 
 // const scrollToBottom = () => {
@@ -232,9 +248,15 @@ const registComment = () => {
 
 onBeforeMount(async () => {
   console.log(this);
-  let feedId = window.location.href.split("/").pop();
-  feedId = isNaN(feedId) ? 0 : parseInt(feedId);
-  let elem = await fetchFeed(feedId);
+
+  uuid.value = 1;
+  feedId.value = window.location.href.split("/").pop();
+
+  feedId.value = isNaN(feedId.value) ? 0 : parseInt(feedId.value);
+
+  await increaseHitCount(feedId.value, uuid.value);
+
+  let elem = await fetchFeed(feedId.value);
   elem.song = await fetchSong(elem.songId);
   elem.user = await fetchUser(elem.userPk);
   elem.commentCount = await fetchCommentCount(elem.feedId);
@@ -243,8 +265,16 @@ onBeforeMount(async () => {
 
   feed.value = elem;
 
-  await fetchAndRenderComments(feedId);
+  await fetchAndRenderComments(feedId.value);
 });
+
+const increaseHitCount = async (feedId, uuid) => {
+  try {
+    await createHit(feedId, uuid);
+  } catch (error) {
+    console.error("조회수 증가 중 오류 발생:", error);
+  }
+};
 
 // fetchAndRenderComments 함수 내부에 추가
 async function fetchAndRenderComments(feedId) {

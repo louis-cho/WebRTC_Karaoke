@@ -13,6 +13,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Objects;
 
 
@@ -23,6 +24,8 @@ import java.util.Objects;
 @Entity(name = "likes")
 @Table(name = "likes")
 public class Like implements Serializable {
+    private static final long serialVersionUID = 7283781432465243784L;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,6 +57,13 @@ public class Like implements Serializable {
         if (obj == null || getClass() != obj.getClass()) return false;
         Like that = (Like) obj;
         return Objects.equals(userPk, that.userPk) && Objects.equals(feedId, that.feedId);
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (this.timestamp == null) {
+            this.timestamp = Timestamp.from(Instant.now());
+        }
     }
 
     // 객체를 JSON 문자열로 직렬화하여 반환하는 메서드

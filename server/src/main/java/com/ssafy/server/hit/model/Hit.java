@@ -13,6 +13,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Objects;
 
 
@@ -23,6 +24,7 @@ import java.util.Objects;
 @Entity(name = "hits")
 @Table(name = "hits")
 public class Hit implements Serializable{
+    private static final long serialVersionUID = -3880195957854871236L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +45,13 @@ public class Hit implements Serializable{
     Hit(int hitId, int userPk) {
         this.hitId = hitId;
         this.userPk = userPk;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (this.timestamp == null) {
+            this.timestamp = Timestamp.from(Instant.now());
+        }
     }
 
     @Override
