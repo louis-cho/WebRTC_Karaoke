@@ -48,7 +48,7 @@ onMounted(async () => {
   userPk.value = route.query.userPk;
   roomId.value = route.params.roomPk;
 
-  const socket = new WebSocket('ws://localhost:8081/api/ws');
+  const socket = new WebSocket('ws://i10a705.p.ssafy.io/api/ws');
   stompClient.value = Stomp.over(socket);
 
   stompClient.value.connect({}, () => {
