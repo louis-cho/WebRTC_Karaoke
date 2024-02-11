@@ -8,8 +8,8 @@
           <div v-if="message.type === 'TALK'">
             {{ message.message }}
           </div>
-          <div v-else-if="message.type === 'image'">
-            <img :src="message.message" alt="Image">
+          <div v-else-if="message.type === 'MEDIA'">
+            <img :src="message.message" alt="MEDIA">
           </div>
           <div v-else>
             Unknown message type: {{ message.type }}
@@ -52,9 +52,11 @@ onMounted(async () => {
       });
       loadOldMessages().then(() => {
         loadNewMessages().then(() => {
-          nextTick(() => {
-            messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-          });
+          setTimeout(() => {
+            nextTick(() => {
+              messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+            });
+          }, 100);
         });
       });
   });
@@ -65,9 +67,11 @@ function handleIncomingMessage(message) {
   if (message) {
     console.log(message.type);
     setMessage(message.sender, message.type, message.message, message.time);
-    nextTick(() => {
-      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-    });
+    setTimeout(() => {
+      nextTick(() => {
+        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+      });
+    }, 100);
   }
 }
 
@@ -87,6 +91,14 @@ function loadOldMessages() {
           setMessage(message.sender, message.type, message.message, message.time);
         });
         page++; // 다음 페이지로 이동
+        if(oldMessages.length <= 25){
+          loading = false;
+          loadOldMessages().then(()=>{
+            nextTick(() => {
+              messagesContainer.value.scrollTop += messagesContainer.value.scrollHeight;
+            });
+          });
+        }
       } else {
         oldMessages.reverse().forEach(message => {
           message = JSON.parse(message);
@@ -117,9 +129,9 @@ function loadNewMessages() {
   return axios.get(`https://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/newMsg`)
     .then(response => {
       const newMessages = response.data;
-      newMessages.forEach(message => {
+      newMessages.reverse().forEach(message => {
         message = JSON.parse(message);
-        setNewMessage(message.sender, message.type, message.message, message.time);
+        setMessage(message.sender, message.type, message.message, message.time);
       });
     })
     .catch(error => {
@@ -170,10 +182,11 @@ function handleMessage(msg) {
           // setMessage(result.sender, result.type, result.message, result.time);
           stompClient.value.send(`/pub/chat.message.${roomId.value}`, {}, JSON.stringify(result));
           break;
-        case "image":
+        case "MEDIA":
           console.log('이미지')
-          // image 메시지의 경우 화면에 이미지로 출력
-          setMessage(result.type, result.message);
+          // MEDIA 메시지의 경우 화면에 이미지로 출력
+          stompClient.value.send(`/pub/chat.message.${roomId.value}`, {}, JSON.stringify(result));
+          // setMessage(result.type, result.message);
           break;
         default:
           console.log('알수없음')
@@ -197,26 +210,37 @@ function setNewMessage(sender, type, message, time) {
   messages.value.unshift({ sender, type, message, time });
 }
 
-function handleFileUpload(event) {
+async function handleFileUpload(event) {
   const file = event.target.files[0];
   if (file) {
-    // 선택한 파일을 이미지로 표시
-    const reader = new FileReader();
-    reader.onload = () => {
-      const imageMessageString = `{"type": "image", "message": "${reader.result}"}`;
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Axios를 사용하여 파일 업로드 엔드포인트에 POST 요청 보내기
+      const response = await axios.post(`https://i10a705.p.ssafy.io/api/v1/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      // 파일 업로드가 성공하면 파일 URL을 받아옴
+      const fileUrl = response.data;
+
+      // 받아온 파일 URL을 이용하여 처리 (예: 이미지 메시지 전송 등)
+      const imageMessageString = `{"type": "MEDIA", "roomId" : ${roomId.value}, "sender" : ${userPk.value}, "message": "${fileUrl}", "time" : ""}`;
       handleMessage(imageMessageString);
 
       // 이미지 업로드 시 스크롤을 항상 아래로 내림
       nextTick(() => {
         messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
       });
-    };
-    reader.readAsDataURL(file);
-
-    // 선택한 파일을 저장
-    selectedFile.value = file;
+    } catch (error) {
+      console.error('파일 업로드 실패:', error);
+    }
   }
 }
+
 </script>
 
 <style scoped>
