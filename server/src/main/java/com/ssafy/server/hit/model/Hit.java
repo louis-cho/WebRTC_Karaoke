@@ -24,6 +24,7 @@ import java.util.Objects;
 @Entity(name = "hits")
 @Table(name = "hits")
 public class Hit implements Serializable{
+    private static final long serialVersionUID = -3880195957854871236L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

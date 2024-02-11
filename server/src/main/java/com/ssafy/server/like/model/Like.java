@@ -26,6 +26,7 @@ import java.util.Objects;
 public class Like implements Serializable {
     private static final long serialVersionUID = 7283781432465243784L;
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")
