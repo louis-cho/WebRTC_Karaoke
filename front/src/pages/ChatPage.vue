@@ -4,26 +4,21 @@
     <!-- 채팅창 내역 -->
     <div class="dm-messages" ref="messagesContainer" @scroll="handleScroll">
       <div v-for="(message, index) in messages" :key="index">
-
-        <div v-if="message.type === 'TALK'">
-          {{ message.sender }}
-          {{ message.message }}
-        </div>
-        <div v-else-if="message.type === 'image'">
-          <img :src="message.message" alt="Image">
-        </div>
-        <div v-else>
-          Unknown message type: {{ message.type }}
+        <div :class="['message', message.sender === userPk ? 'my-message' : 'other-message']">
+          <div v-if="message.type === 'TALK'">
+            {{ message.message }}
+          </div>
+          <div v-else-if="message.type === 'image'">
+            <img :src="message.message" alt="Image">
+          </div>
+          <div v-else>
+            Unknown message type: {{ message.type }}
+          </div>
         </div>
       </div>
     </div>
 
     <!-- 메시지 입력창 -->
-    <!-- <div class="input_class">
-      <textarea v-model="newMessage" @keydown.enter.prevent="sendMessage" placeholder="메시지를 입력하세요..."></textarea>
-      <input type="file" ref="fileInput" @change="handleFileUpload">
-    </div> -->
-
     <div class="img_class1">
       <textarea v-model="newMessage" @keydown.enter.prevent="sendMessage" placeholder="메시지를 입력하세요..."></textarea>
       <label for="fileInput" class="img_label">
@@ -67,14 +62,14 @@ onMounted(async () => {
 
 
 function handleIncomingMessage(message) {
-        if (message) {
-          console.log(message.type);
-            setMessage(message.sender, message.type, message.message, message.time);
-            nextTick(() => {
-              messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-            });
-        }
-    }
+  if (message) {
+    console.log(message.type);
+    setMessage(message.sender, message.type, message.message, message.time);
+    nextTick(() => {
+      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+    });
+  }
+}
 
 function loadOldMessages() {
   // 로딩 중이면 중복 요청 방지
@@ -84,20 +79,21 @@ function loadOldMessages() {
     .then(response => {
       const oldMessages = response.data;
       if (oldMessages.length === 0) {
-         // 빈 배열을 받으면 페이지 끝을 알리는 alert 표시
-         alert("마지막 페이지입니다.");
-      }
-      else if (page === 1){
+        // 빈 배열을 받으면 페이지 끝을 알리는 alert 표시
+        alert("마지막 페이지입니다.");
+      } else if (page === 1) {
         oldMessages.forEach(message => {
-         message = JSON.parse(message);
-         setMessage(message.sender, message.type, message.message, message.time);
+          message = JSON.parse(message);
+          setMessage(message.sender, message.type, message.message, message.time);
         });
         page++; // 다음 페이지로 이동
-      }
-      else {
-       oldMessages.reverse().forEach(message => {
-         message = JSON.parse(message);
-         setNewMessage(message.sender, message.type, message.message, message.time);
+      } else {
+        oldMessages.reverse().forEach(message => {
+          message = JSON.parse(message);
+          setNewMessage(message.sender, message.type, message.message, message.time);
+        });
+        nextTick(() => {
+          messagesContainer.value.scrollTop += 1;
         });
         page++; // 다음 페이지로 이동
       }
@@ -194,11 +190,11 @@ function handleMessage(msg) {
 }
 
 function setMessage(sender, type, message, time) {
-  messages.value.push({sender, type, message, time}); // messages 배열에 새로운 채팅 메시지 추가
+  messages.value.push({ sender, type, message, time }); // messages 배열에 새로운 채팅 메시지 추가
 }
 
-function setNewMessage(sender, type, message, time){
-  messages.value.unshift({sender, type, message, time});
+function setNewMessage(sender, type, message, time) {
+  messages.value.unshift({ sender, type, message, time });
 }
 
 function handleFileUpload(event) {
@@ -221,17 +217,6 @@ function handleFileUpload(event) {
     selectedFile.value = file;
   }
 }
-
-
-// const textMessageString = '{"type": "text", "content": "Hello, World!"}';
-// const imageMessageString = `{"type": "image", "content": "${logoImage}"}`
-// const invalidMessageString = '{"type": "text"}'; // content 필드가 누락된 메시지
-
-// handleMessage 함수 호출
-// handleMessage(textMessageString);
-// handleMessage(imageMessageString);
-// handleMessage(invalidMessageString);
-
 </script>
 
 <style scoped>
@@ -245,12 +230,19 @@ function handleFileUpload(event) {
 .dm-messages {
   flex: 1;
   overflow-y: auto;
-  /* padding: 10px; */
   transition: scrollTop 0.3s ease;
 }
 
+.message {
+  padding: 10px;
+}
+
 .my-message {
-  color: black;
+  text-align: right;
+}
+
+.other-message {
+  text-align: left;
 }
 
 textarea {
@@ -260,10 +252,6 @@ textarea {
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: 10px;
-}
-
-.input_class{
-  display:flex;
 }
 
 .img_class1 {
