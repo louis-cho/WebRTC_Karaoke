@@ -2,7 +2,7 @@
   <div class="dm-container">
     <NavBar />
     <!-- 채팅창 내역 -->
-    <div class="dm-messages" ref="messagesContainer">
+    <div class="dm-messages" ref="messagesContainer" @scroll="handleScroll">
       <div v-for="(message, index) in messages" :key="index">
 
         <div v-if="message.type === 'TALK'">
@@ -55,8 +55,9 @@ onMounted(async () => {
       stompClient.value.subscribe(`/exchange/chat.exchange/room.${roomId.value}`, (message) => {
           handleIncomingMessage(JSON.parse(message.body));
       });
-
-      loadOldMessages();
+      loadOldMessages().then(() => {
+        loadNewMessages(); // loadOldMessages()가 완료된 후에 loadNewMessages() 호출
+      });
   });
 });
 
@@ -68,16 +69,50 @@ function handleIncomingMessage(message) {
     }
 
 function loadOldMessages() {
-  axios.get(`http://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/oldMsg?page=1&size=100`)
+  // 로딩 중이면 중복 요청 방지
+  if (loading) return;
+  loading = true;
+  return axios.get(`http://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/oldMsg?page=${page}&size=50`)
     .then(response => {
       const oldMessages = response.data;
-      oldMessages.forEach(message => {
-        message = JSON.parse(message);
-        setMessage(message.sender, message.type, message.message, message.time);
-      });
+      if (oldMessages.length === 0) {
+         // 빈 배열을 받으면 페이지 끝을 알리는 alert 표시
+         alert("마지막 페이지입니다.");
+      }
+      else {
+       oldMessages.forEach(message => {
+         message = JSON.parse(message);
+         setMessage(message.sender, message.type, message.message, message.time);
+        });
+        page++; // 다음 페이지로 이동
+      }
     })
     .catch(error => {
       console.error('이전 메시지 불러오기 실패:', error);
+    })
+    .finally(() => {
+      loading = false;
+    });
+}
+
+function handleScroll() {
+  // 스크롤이 맨 위에 도달하면 새로운 페이지 로드
+  if (messagesContainer.value.scrollTop === 0 && !loading) {
+    loadOldMessages();
+  }
+}
+
+function loadNewMessages() {
+  axios.get(`http://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/newMsg?page=1&size=100`)
+    .then(response => {
+      const newMessages = response.data;
+      newMessages.forEach(message => {
+        message = JSON.parse(message);
+        setNewMessage(message.sender, message.type, message.message, message.time);
+      });
+    })
+    .catch(error => {
+      console.error('최근 메시지 불러오기 실패:', error);
     });
 }
 
@@ -90,6 +125,9 @@ const userPk = ref('');
 const roomId = ref('');
 const route = useRoute();
 const stompClient = ref(null);
+
+let page = 1; // 초기 페이지 설정
+let loading = false; // 페이지 로딩 상태
 
 const sendMessage = function() {
   if (newMessage.value.trim() !== "") {
@@ -143,12 +181,9 @@ function handleMessage(msg) {
 
 function setMessage(sender, type, message, time) {
   messages.value.push({sender, type, message, time}); // messages 배열에 새로운 채팅 메시지 추가
-  nextTick(() => {
-      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-    });
 }
 
-function setOldMessage(sender, type, message, time){
+function setNewMessage(sender, type, message, time){
   messages.value.unshift({sender, type, message, time});
 }
 
