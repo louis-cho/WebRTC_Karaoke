@@ -96,6 +96,16 @@ module.exports = configure(function (ctx) {
       open: true, // opens browser window automatically
     },
 
+    chainWebpack(config) {
+      config.plugin('html').tap((args) => {
+        args[0].meta = {
+          'http-equiv': 'Content-Security-Policy',
+          'content': 'upgrade-insecure-requests',
+        };
+        return args;
+      });
+    },
+
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
       config: {},
