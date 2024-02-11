@@ -80,7 +80,7 @@ function loadOldMessages() {
   // 로딩 중이면 중복 요청 방지
   if (loading) return;
   loading = true;
-  return axios.get(`http://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/oldMsg?page=${page}&size=50`)
+  return axios.get(`https://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/oldMsg?page=${page}&size=50`)
     .then(response => {
       const oldMessages = response.data;
       if (oldMessages.length === 0) {
@@ -118,7 +118,7 @@ function handleScroll() {
 }
 
 function loadNewMessages() {
-  return axios.get(`http://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/newMsg`)
+  return axios.get(`https://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/newMsg`)
     .then(response => {
       const newMessages = response.data;
       newMessages.forEach(message => {
