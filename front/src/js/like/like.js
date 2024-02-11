@@ -35,18 +35,15 @@ export async function createLike(feedId, uuid) {
     userPk: String(uuid),
   };
 
-  return await fetch(serverUrl, {
+  await fetch(serverUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      if (!isNaN(result.data)) return result.data;
-      return 0;
-    });
+  });
+
+  return fetchLikeCount(feedId);
 }
 
 export async function deleteLike(feedId, uuid) {
@@ -58,16 +55,13 @@ export async function deleteLike(feedId, uuid) {
     userPk: String(uuid),
   };
 
-  return await fetch(serverUrl, {
+  await fetch(serverUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      if (!isNaN(result.data)) return result.data;
-      return 0;
-    });
+  });
+
+  return await fetchLikeCount(feedId);
 }
