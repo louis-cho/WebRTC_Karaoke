@@ -48,7 +48,7 @@ onMounted(async () => {
   userPk.value = route.query.userPk;
   roomId.value = route.params.roomPk;
 
-  const socket = new WebSocket('ws://i10a705.p.ssafy.io/api/ws');
+  const socket = new WebSocket('wss://i10a705.p.ssafy.io/api/ws');
   stompClient.value = Stomp.over(socket);
 
   stompClient.value.connect({}, () => {
@@ -56,15 +56,23 @@ onMounted(async () => {
           handleIncomingMessage(JSON.parse(message.body));
       });
       loadOldMessages().then(() => {
-        loadNewMessages(); // loadOldMessages()가 완료된 후에 loadNewMessages() 호출
+        loadNewMessages().then(() => {
+          nextTick(() => {
+            messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+          });
+        });
       });
   });
 });
+
 
 function handleIncomingMessage(message) {
         if (message) {
           console.log(message.type);
             setMessage(message.sender, message.type, message.message, message.time);
+            nextTick(() => {
+              messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+            });
         }
     }
 
@@ -75,14 +83,22 @@ function loadOldMessages() {
   return axios.get(`http://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/oldMsg?page=${page}&size=50`)
     .then(response => {
       const oldMessages = response.data;
+      console.log(oldMessages);
       if (oldMessages.length === 0) {
          // 빈 배열을 받으면 페이지 끝을 알리는 alert 표시
          alert("마지막 페이지입니다.");
       }
-      else {
-       oldMessages.forEach(message => {
+      else if (page === 1){
+        oldMessages.forEach(message => {
          message = JSON.parse(message);
          setMessage(message.sender, message.type, message.message, message.time);
+        });
+        page++; // 다음 페이지로 이동
+      }
+      else {
+       oldMessages.reverse().forEach(message => {
+         message = JSON.parse(message);
+         setNewMessage(message.sender, message.type, message.message, message.time);
         });
         page++; // 다음 페이지로 이동
       }
@@ -103,7 +119,7 @@ function handleScroll() {
 }
 
 function loadNewMessages() {
-  axios.get(`http://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/newMsg?page=1&size=100`)
+  return axios.get(`http://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/newMsg`)
     .then(response => {
       const newMessages = response.data;
       newMessages.forEach(message => {
@@ -148,7 +164,6 @@ function handleMessage(msg) {
   try {
     // 문자열을 객체로 변환
     const result = JSON.parse(msg);
-    console.log(result);
 
     // result 객체에 type 및 content 필드가 있는지 확인
     if (result.type != null && result.message != null) {
