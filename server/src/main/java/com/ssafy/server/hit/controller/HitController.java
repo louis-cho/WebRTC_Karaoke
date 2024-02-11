@@ -6,6 +6,7 @@ import com.ssafy.server.common.error.ApiException;
 import com.ssafy.server.common.error.ApiExceptionFactory;
 import com.ssafy.server.hit.error.HitExceptionEnum;
 import com.ssafy.server.hit.model.Hit;
+import com.ssafy.server.hit.repository.HitRepository;
 import com.ssafy.server.hit.service.HitService;
 import com.ssafy.server.like.error.LikeExceptionEnum;
 import com.ssafy.server.user.service.UserService;
@@ -23,12 +24,17 @@ public class HitController {
 
     @Autowired
     private final HitService hitService;
+
+    @Autowired
+    private final HitRepository hitRepository;
+
     @Autowired
     private final UserService userService;
 
     @Autowired
-    HitController(HitService hitService, UserService userService) {
+    HitController(HitService hitService, HitRepository hitRepository, UserService userService) {
         this.hitService = hitService;
+        this.hitRepository = hitRepository;
         this.userService = userService;
     }
 
@@ -45,8 +51,11 @@ public class HitController {
             else {
                 userPk = Integer.parseInt(jsonNode.get("userPk").asText());
             }
-
-            hitService.save(feedId, userPk);
+//            if (hitRepository.findByUserPkAndFeedId(userPk, feedId).isEmpty()) {
+//                hitService.save(feedId, userPk);
+//            }
+            if(hitRepository.findByUserPkAndFeedId(userPk, feedId).isEmpty())
+                hitService.save(feedId, userPk);
         } catch(Exception e) {
             return;
         }

@@ -171,9 +171,9 @@ const goBack = function () {
 
 const handleLikeClick = async () => {
   if (!isLiked.value) {
-    await createLike(feedId.value, uuid.value);
+    feed.value.likeCount = await createLike(feedId.value, uuid.value);
   } else {
-    await deleteLike(feedId.value, uuid.value);
+    feed.value.likeCount = await deleteLike(feedId.value, uuid.value);
   }
 
   isLiked.value = !isLiked.value;

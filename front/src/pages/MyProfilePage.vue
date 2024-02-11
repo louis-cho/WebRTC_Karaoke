@@ -60,13 +60,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref,onMounted } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
-
+import { getFeedsByUser } from '@/js/feed/feed.js';
 
 const router = useRouter();
+// const feeds = ref([]);
 
 const goBack = function () {
   router.go(-1)
@@ -74,31 +75,42 @@ const goBack = function () {
 
 
 // 가상의 피드 데이터 예시
-const feeds = ref([
-  {
-    FEED_ID: 1,
-    USER_PK: 1,
-    SONG_ID: 3,
-    CONTENT: "오랜만에 빅뱅 노래 불러봄",
-    THUMBNAIL_URL: "src/assets/icon/logo.png",
-    VIDEO_URL: "your_video_url.mp4",
-    VIDEO_LENGTH: "190",
-    STATUS: "2",
-    TOTAL_POINT: "20000"
-  },
-  {
-    FEED_ID: 2,
-    USER_PK: 1,
-    SONG_ID: 7,
-    CONTENT: "평가 좀 해주세요",
-    THUMBNAIL_URL: "src/assets/icon/web_light_sq_ctn@1x.png",
-    VIDEO_URL: "your_video_url2.mp4",
-    VIDEO_LENGTH: "170",
-    STATUS: "0",
-    TOTAL_POINT: "5000"
-  }
-])
+// const feeds = ref([
+//   {
+//     FEED_ID: 1,
+//     USER_PK: 1,
+//     SONG_ID: 3,
+//     CONTENT: "오랜만에 빅뱅 노래 불러봄",
+//     THUMBNAIL_URL: "src/assets/icon/logo.png",
+//     VIDEO_URL: "your_video_url.mp4",
+//     VIDEO_LENGTH: "190",
+//     STATUS: "2",
+//     TOTAL_POINT: "20000"
+//   },
+//   {
+//     FEED_ID: 2,
+//     USER_PK: 1,
+//     SONG_ID: 7,
+//     CONTENT: "평가 좀 해주세요",
+//     THUMBNAIL_URL: "src/assets/icon/web_light_sq_ctn@1x.png",
+//     VIDEO_URL: "your_video_url2.mp4",
+//     VIDEO_LENGTH: "170",
+//     STATUS: "0",
+//     TOTAL_POINT: "5000"
+//   }
+// ])
 
+// const userId = 1; // 실제 사용자 ID로 교체
+// try {
+//   const userFeeds = await getFeedsByUser(userId);
+//   console.log('사용자 피드:', userFeeds);
+// } catch (error) {
+//   console.error('사용자 피드를 가져오는 중 오류 발생:', error);
+// }
+onMounted(() => {
+  const userId = 1; // 실제 사용자 ID로 교체
+  getFeedsByUser(userId); // 자바스크립트 파일에서 가져온 함수 호출
+});
 
 
 </script>

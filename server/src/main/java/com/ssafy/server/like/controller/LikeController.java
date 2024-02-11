@@ -67,6 +67,9 @@ public class LikeController {
                 userUUID = UUID.fromString(jsonNode.get("uuid").asText());
                 userPk = userService.getUserPk(userUUID);
             }
+            else {
+                userPk = Integer.parseInt(jsonNode.get("userPk").asText());
+            }
             likeService.delete(userPk, feedId);
         } catch(Exception e) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(LikeExceptionEnum.LIKE_DELETE_FAILED));

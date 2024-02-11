@@ -34,7 +34,7 @@ public class Like implements Serializable {
 
     @Column(name = "user_pk")
     private Integer userPk;
-    @Column(name = "feed_id", insertable = false, updatable = false)
+    @Column(name = "feed_id", nullable = false)
     private Integer feedId;
     @Column(name = "status")
     private boolean status;

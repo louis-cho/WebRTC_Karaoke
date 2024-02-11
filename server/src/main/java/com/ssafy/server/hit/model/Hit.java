@@ -30,9 +30,9 @@ public class Hit implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hit_id")
     private Integer hitId;
-    @Column(name = "user_pk")
+    @Column(name = "user_pk", nullable = false)
     private Integer userPk;
-    @Column(name = "feed_id", insertable = false, updatable = false)
+    @Column(name = "feed_id", nullable = false)
     private Integer feedId;
     @Column(name = "timestamp", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false)
     private Timestamp timestamp;
