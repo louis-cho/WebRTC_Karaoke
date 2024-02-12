@@ -7,16 +7,19 @@ export class ScoreDrawer {
     this._oct = 0; // 현재 옥타브
     this._elapsed = 0; // 경과 시간
     this._lastTime = 0; // 마지막 시간
-    this._screenWidth = 600; // 캔버스 너비
+    this._screenWidth = 1000; // 캔버스 너비
     this._screenTime = 600 * (1000 / 60); // 캔버스 시간
     this._playScore = []; // 재생되는 음표
     this._inited = false; // 초기화 여부
     this._currentNote = null; // 현재 음표
+    this.lyricUpper = ""; // 위에 띄울 가사
+    this.lyricLower = ""; // 아래 띄울 가사
+    this.eval = "";
 
     // 캔버스 생성 및 설정
     this._canvas = document.createElement("canvas");
     this._canvas.width = this._screenWidth;
-    this._canvas.height = 250;
+    this._canvas.height = 350;
     this._canvas.style.width = "100%";
 
     // 음표 배열 생성 및 리사이즈 콜백 등록
@@ -68,8 +71,8 @@ export class ScoreDrawer {
   // 재생 시작
   start(notes) {
     this._playScore = notes.slice();
-    // this._elapsed = -1000;
-    this._elapsed = 0;
+    this._elapsed = -13200;
+    // this._elapsed = 0;
   }
 
   // 재생 중지
@@ -116,7 +119,7 @@ export class ScoreDrawer {
         current = note;
         ctx.fillStyle = "orange";
       } else {
-        ctx.fillStyle = "blue";
+        ctx.fillStyle = "skyblue";
       }
       ctx.fillRect(x + latency, y, width, 5);
       if (note.lylic) {
@@ -154,16 +157,14 @@ export class ScoreDrawer {
     ctx.save();
     ctx.font = "14px monospace";
     ctx.textBaseline = "top";
-    ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
-    const colors = ["#eee", "#ddd"];
+    ctx.fillStyle = "black"; // 배경
+    ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
     ctx.scale(1, -1);
     ctx.translate(0, -300);
 
-    // this._renderLines(ctx);
-
     ctx.globalAlpha = 0.5;
-    ctx.fillStyle = "blue";
-    this._renderNotes(ctx);
+    ctx.fillStyle = "skyblue";
+    this._renderNotes(ctx); // 음
 
     this._renderVoice(ctx);
 
@@ -174,8 +175,24 @@ export class ScoreDrawer {
     ctx.stroke();
 
     ctx.restore();
-    ctx.font = "30px monospace";
-    ctx.fillText(this._oct.toString(), 0, 20);
+
+    // 가사 렌더링
+    ctx.fillStyle = 'white';
+    ctx.font = '15px Arial Rounded MT Bold';
+    // ctx.fillText(this._oct.toString(), 0, 20); // 옥타브 렌더링
+    ctx.fillText( this.lyricUpper, this._screenWidth/2-50, this._canvas.height-50);
+    ctx.fillText(this.lyricLower, this._screenWidth/2-50, this._canvas.height-20);
+
+    // score 렌더링
+    if(this.eval === "PERFECT!") {
+      ctx.fillStyle = 'cyan';
+    } else if(this.eval === "GOOD!") {
+      ctx.fillStyle = 'lime';
+    } else {
+      ctx.fillStyle = 'Tomato';
+    }
+    ctx.font = '20px Arial Rounded MT Bold';
+    ctx.fillText(this.eval, this._screenWidth/2-50, 50);
   }
 
   // 음성 렌더링
@@ -193,30 +210,41 @@ export class ScoreDrawer {
         );
       }
     });
+    const latestNote = this._notes[this._notes.length - 1];
+    const octav = Math.floor(latestNote / 12) - 4;
+    const n = latestNote % 12;
+    if(this._currentNote != null && latestNote !== -1) {
+      // console.log("현재: "+ (noteTop[this._currentNote.note] * 5 +
+      // (this._currentNote.octav - 3) * 35 +
+      // 150 +
+      // this._oct * 5 -
+      // 2.5))
+      // console.log("입력: " + (noteTop[n] * 5 + 150 + octav * 35 - 2.5))
+
+      const voice = noteTop[this._currentNote.note] * 5 +
+        (this._currentNote.octav - 3) * 35 +
+        150 +
+        this._oct * 5 -
+        2.5;
+      const score = noteTop[n] * 5 + 150 + octav * 35 - 2.5;
+      const abs = Math.abs(voice-score);
+
+      if(abs <= 2) {
+        this.eval = "PERFECT!";
+      } else if(abs <= 6){
+        this.eval = "GOOD!"
+      } else {
+        this.eval = "BAD"
+      }
+    } else {
+      this.eval = "";
+    }
+
+
   }
 
   // 초기화 완료
   inited() {
     this._inited = true;
-  }
-
-  // 라인 렌더링
-  _renderLines(ctx) {
-    ctx.strokeStyle = "black";
-    ctx.beginPath();
-    for (let i = 0; i < 5; i++) {
-      ctx.moveTo(0, i * 10 + 160);
-      ctx.lineTo(this._screenWidth, i * 10 + 160);
-    }
-    ctx.stroke();
-    ctx.strokeStyle = "#ddd";
-    ctx.beginPath();
-    for (let i = 0; i < 5; i++) {
-      ctx.moveTo(0, i * 10 + 210);
-      ctx.lineTo(this._screenWidth, i * 10 + 210);
-      ctx.moveTo(0, i * 10 + 110);
-      ctx.lineTo(this._screenWidth, i * 10 + 110);
-    }
-    ctx.stroke();
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas ref="canvas" width="1000" height="200"></canvas>
+    <canvas ref="canvas" width="1000" height="350"></canvas>
     <button @click="play">Play</button>
     <button @click="stop">Stop</button>
     <button @click="playNextSong" :disabled="!isPlaying">다음 곡 재생</button>

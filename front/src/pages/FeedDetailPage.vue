@@ -166,6 +166,7 @@ import { fetchFeedList, fetchFeed, fetchFeedDelete,fetchFeedUpdate  } from "@/js
 import { fetchSong } from "@/js/song/song.js";
 import { fetchUser, getUserPk  } from "@/js/user/user.js";
 // import { login } from '@/js/encrypt/authRequest.js';
+import { useNotificationStore } from "@/stores/notificationStore.js";
 
 const feed = ref();
 const router = useRouter();
@@ -176,7 +177,9 @@ const modal = ref(false);
 const isLiked = ref(false);
 const uuid = ref(1);
 const feedId = ref();
+
 const LoggedUserPK = ref();
+const notificationStore = useNotificationStore();
 
 const goBack = function () {
   router.go(-1);
@@ -184,7 +187,16 @@ const goBack = function () {
 
 const handleLikeClick = async () => {
   if (!isLiked.value) {
-    feed.value.likeCount = await createLike(feedId.value, uuid.value);
+    await createLike(feedId.value, uuid.value);
+    //좋아요알림 발송. 자기자신 제외.
+    //if(feed.value.user.userKey != 현재로그인한유저.)
+    const body = {
+    toUser : feed.value.user.userPk, //받는사람 userPk.
+    info : `${feed.value.feedId}`,
+    type : "like",
+    status : '0'
+    }
+    notificationStore.sendNotification(body);
   } else {
     feed.value.likeCount = await deleteLike(feedId.value, uuid.value);
   }
@@ -221,7 +233,15 @@ const registComment = () => {
   comment.isDeleted = false;
 
   addComment(comment);
-
+  //여기 댓글알림 보내기 자기자신게시글일경우 제외.
+  // if(feed.value.user.userKey != 현재로그인정보) 인 경우에만 알림보내기
+  const body = {
+    toUser : feed.value.user.userPk, //받는사람 userPk.
+    info : `${feed.value.feedId}`,//친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
+    type : "comment", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
+    status : '0'
+  }
+  notificationStore.sendNotification(body);
   location.reload();
 };
 
