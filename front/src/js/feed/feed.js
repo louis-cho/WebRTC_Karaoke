@@ -51,19 +51,35 @@ export async function getFeedsByUser(userPk) {
     });
 }
 
-// ---------------------------------------
-// export async function fetchFeedDelete(feedId) {
-//   const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.delete + feedId;
+// ----------------------에러--------
+export async function fetchFeedDelete(feedId) {
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.delete + feedId;
 
-//   return await fetch(serverUrl, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     })
-//     // .then(response => response.json())
-//     .then(response => {
-//       console.log('피드삭제하기!',response)
-//       // return result.data
-//     });
-// }
+  return await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log('피드삭제하기',result)
+      // return result
+    });
+}
+
+export async function fetchFeedUpdate(feedId) {
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.update + feedId;
+
+  return await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log('피드수정 완료!',result)
+      // return result.data
+    });
+}

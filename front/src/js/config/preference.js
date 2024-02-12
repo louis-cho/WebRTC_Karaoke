@@ -27,6 +27,7 @@ app.api.feed.fetchAll = "/feed/get/all";
 app.api.feed.fetchOne = "/feed/get/";
 app.api.feed.getByUser = "/feed/getUser/";
 app.api.feed.delete = "/feed/delete/";
+app.api.feed.update = "/feed/update/";
 
 app.api.chat = {};
 app.api.chat.room = {};
