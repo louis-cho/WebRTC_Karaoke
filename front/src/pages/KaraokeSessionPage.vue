@@ -51,8 +51,8 @@
           />
           <q-btn @click="finishSong()" color="primary" label="종료" />
         </div>
-        <normal-mode v-if="!songMode" />
-        <perfect-score v-if="songMode" />
+        <normal-mode ref="normalModeRef" v-if="!songMode" />
+        <perfect-score ref="perfectScoreRef" v-if="songMode" />
       </div>
 
       <!-- 모든 캠 -->
@@ -134,6 +134,8 @@ const songMode = ref(true);
 
 const fileUrl = ref(undefined);
 const recordingId = ref(undefined);
+const perfectScoreRef = ref(null);
+const normalModeRef = ref(null);
 
 // 다시그려내기 위해 computed 작성
 const mainStreamManagerComputed = computed(() => store.mainStreamManager);
@@ -160,6 +162,13 @@ const toggleModal = (modalName) => {
 };
 
 function startSong() {
+  if(songMode.value) {
+    perfectScoreRef.value.choose();
+    perfectScoreRef.value.play();
+  } else {
+    normalModeRef.value.play();
+  }
+  
   removeReserve()
     .then(() => {
       startRecording();
@@ -170,6 +179,12 @@ function startSong() {
 }
 
 function stopSong() {
+  if(songMode.value) {
+    perfectScoreRef.value.stop();
+  } else {
+    normalModeRef.value.stop();
+  }
+  
   stopRecording()
     .then(() => {
       removeRecording();
