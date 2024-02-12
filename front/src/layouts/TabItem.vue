@@ -202,16 +202,16 @@ const handleNotificationClick = (notification) => {
 
       //링크로보내버리기.
       if(notification.type == 'karaoke'){
-        goToPage(notificationPath);
+        router.push(`/karaoke/${notification.info}`);
       }
       else if(notification.type == 'comment'){
-        goToPage(notificationPath);
+        router.push(`/feed_detail/${notification.info}`);
       }
       else if(notification.type == 'like'){
-        goToPage(notificationPath);
+        router.push(`/feed_detail/${notification.info}`);
       }
       else if(notification.type == 'friend'){
-        goToPage(notificationPath);
+        router.push("/friend_list");
       }
 
     })

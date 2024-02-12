@@ -74,7 +74,6 @@
 
 <script setup>
 import Stomp from "stompjs";
-import { useCounterStore } from '@/stores/counter'
 import pref from "@/js/config/preference.js";
 import { ref, nextTick, onMounted } from "vue";
 import { useRoute } from 'vue-router';
@@ -185,7 +184,6 @@ function loadNewMessages() {
     });
 }
 
-// const store = useCounterStore()
 const messages = ref([]);
 const newMessage = ref('');
 const selectedFile = ref(null);

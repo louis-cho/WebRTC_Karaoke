@@ -49,11 +49,9 @@ public class NotificationController {
     //알림메시지 생성 및 전송.
     @PostMapping("/sendNotification")
     public ResponseEntity<Void> sendNotification(@RequestBody NotificationRequestDto notificationRequestDto) {
-        int fromUser = 1; //추후 헤더에서 가져온다. 보낼 유저 아이디
+        int fromUser = 1;
         notificationRequestDto.setFromUser(fromUser);
-//        notificationRequestDto.setTo(notificationRequestDto.getTo().keyToPk);
         Notification notification = notificationService.makeNotification(notificationRequestDto);
-
         SseEmitter emitter = sseEmitters.getSseEmitter(notification.getToUser()); //메시지 보낼 유저의 emitter객체찾기.
         if (emitter != null  && notification.getToUser() != null ) {
             System.out.println("메시지 보낼 emitter : "+emitter);
