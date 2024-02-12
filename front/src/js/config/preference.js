@@ -84,6 +84,7 @@ app.kor.karaoke.list.maxNumber = "(최대 6명)";
 app.kor.karaoke.list.password = "비밀번호";
 app.kor.karaoke.list.close = "닫기";
 app.kor.karaoke.session = {};
+app.kor.karaoke.session.invite = "초대";
 app.kor.karaoke.session.setting = "설정";
 app.kor.karaoke.session.leave = "나가기";
 app.kor.karaoke.session.update = "변경하기";
