@@ -105,7 +105,7 @@ public class FeedController {
         return new ResponseEntity<>(ApiResponse.success(createdPost), HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/update")
+    @PostMapping("/update/{feedId}")
     public ResponseEntity<ApiResponse<?>> updatePost(@PathVariable int feedId, @RequestBody Feed updatedPost) {
         Feed post;
         try {
@@ -116,7 +116,7 @@ public class FeedController {
         return new ResponseEntity<>(ApiResponse.success(post), HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/delete/{feedId}")
     public ResponseEntity<Boolean> deletePost(@PathVariable int feedId) {
         boolean result;
         try {

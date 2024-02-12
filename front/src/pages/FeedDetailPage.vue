@@ -29,7 +29,8 @@
             <div>
               <p v-if="feed && feed.user">{{ feed.user.nickname }}</p>
             </div>
-            <div @click="toggleModal">
+            <!-- 게시글 작성자가 로그인되어 있는 사람이라면 -->
+            <div v-if="feed.user.userPk === LoggedUserPK" @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정" />
             </div>
           </div>
@@ -60,11 +61,13 @@
         </div>
       </div>
 
-      <p>{{ feed }}</p>
-      ------
+      <!-- <p>{{ feed }}</p>
+      -----------------------
       <p>{{feed.user}}</p>
-      ---------------
-      {{ feed.user.userPk }}
+      --------------------------- -->
+      <!-- {{ feed.user.userPk }}
+      ----------------------------------------
+      {{ LoggedUserPK }} -->
 
 
       <p v-if="feed">{{ feed.content }}</p>
@@ -136,7 +139,7 @@
           </q-item>
           <q-card-actions align="center">
             <q-btn label="게시글 수정" color="primary" />
-            <q-btn label="게시글 삭제" color="negative" @click="deletePost" />
+            <q-btn label="게시글 삭제" color="negative" @click="deleteFeed" />
           </q-card-actions>
         </q-card-section>
       </q-card>
@@ -158,9 +161,11 @@ import CommentItem from "@/components/CommentItem.vue";
 
 import { fetchHitCount, createHit } from "@/js/hit/hit.js";
 import { fetchLikeCount, createLike, deleteLike } from "@/js/like/like.js";
-import { fetchFeedList, fetchFeed } from "@/js/feed/feed.js";
+import { fetchFeedList, fetchFeed,  } from "@/js/feed/feed.js";
+// fetchFeedDelete
 import { fetchSong } from "@/js/song/song.js";
-import { fetchUser } from "@/js/user/user.js";
+import { fetchUser, getUserPk  } from "@/js/user/user.js";
+// import { login } from '@/js/encrypt/authRequest.js';
 
 const feed = ref();
 const router = useRouter();
@@ -171,6 +176,7 @@ const modal = ref(false);
 const isLiked = ref(false);
 const uuid = ref(1);
 const feedId = ref();
+const LoggedUserPK = ref();
 
 const goBack = function () {
   router.go(-1);
@@ -201,10 +207,9 @@ const toggleModal = () => {
 };
 
 // 게시글 삭제 함수
-const deletePost = () => {
-  // 여기에 게시글 삭제 로직 추가
-  toggleModal();
-};
+// const deletePost = () => {
+//   toggleModal();
+// };
 
 const registComment = () => {
   let comment = {};
@@ -227,6 +232,7 @@ const registComment = () => {
 // }
 
 onBeforeMount(async () => {
+
   console.log(this);
 
   uuid.value = 1;
@@ -246,6 +252,8 @@ onBeforeMount(async () => {
   feed.value = elem;
 
   await fetchAndRenderComments(feedId.value);
+  await getLoggedUserPk();
+  await deleteFeed(feedId.value);
 });
 
 const increaseHitCount = async (feedId, uuid) => {
@@ -274,6 +282,29 @@ async function fetchAndRenderComments(feedId) {
     console.error("댓글 가져오기 및 렌더링 중 오류 발생:", error);
   }
 }
+
+const getLoggedUserPk = async () => {
+  try {
+    const uuid = '4a5fc76c-03d3-4234-ae2c-4c67019cdd5d';  // 실제 UUID 값으로 교체
+    const getCurrentUserPk = await getUserPk(uuid);
+    console.log(getCurrentUserPk);
+    LoggedUserPK.value = getCurrentUserPk
+  } catch (error) {
+    console.error("오류 발생!!!:", error);
+  }
+};
+
+const deleteFeed = async(feedId) => {
+  try {
+    const feedDelete = await fetchFeedDelete(feedId);
+    console.log(feedDelete);
+    // LoggedUserPK.value = getCurrentUserPk
+  } catch (error) {
+    console.error("오류 deleteFeed!!!:", error);
+  }
+}
+
+
 </script>
 <style scoped>
 .display-flex {

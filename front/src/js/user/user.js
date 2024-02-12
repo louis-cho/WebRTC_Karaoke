@@ -74,3 +74,22 @@ export async function searchUser(nickname) {
       return result;
     });
 }
+
+export async function getUserPk(uuid) {
+  const serverUrl =
+    pref.app.api.protocol +
+    pref.app.api.host +
+    pref.app.api.user.getUserPK;
+
+  return await fetch(`${serverUrl}?uuid=${uuid}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      // console.log('로그인유저피케이가져오기',result)
+      return result;
+    });
+}
