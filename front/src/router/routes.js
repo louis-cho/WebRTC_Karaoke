@@ -30,7 +30,7 @@ const routes = [
   {
     // path: "/my_profile",
     path: "/feed/:userPk",
-    component: () => import("@/pages/MyProfilePage.vue"),
+    component: () => import("@/pages/UserFeedPage.vue"),
   },
   {
     path: "/chat/:roomPk",
@@ -45,11 +45,11 @@ const routes = [
     path: "/info_edit",
     component: () => import("@/pages/InformationEditPage.vue"),
   },
-  {
-    // 임시 추가
-    path: "/item1",
-    component: () => import("@/components/SearchUser.vue"),
-  },
+  // {
+  //   임시 추가
+  //   path: "/item1",
+  //   component: () => import("@/components/SearchUser.vue"),
+  // },
   {
     path: "/friend_list",
     component: () => import("@/pages/MyFriendList.vue"),
