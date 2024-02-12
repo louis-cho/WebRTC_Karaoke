@@ -3,6 +3,7 @@ import pref from "@/js/config/preference.js";
 import axios from "axios";
 export const useNotificationStore = defineStore("notification", {
   state: () => ({
+    inviteModal : false,
     sse : undefined,
     bellCount : 0,
     notificationList : [
@@ -48,12 +49,14 @@ export const useNotificationStore = defineStore("notification", {
       });
     },
     sendNotification(body){
-      axios.post(`${pref.app.api.protocol}${pref.app.api.host}/notifications/sendNotification`,JSON.stringify(body))
+      axios.post(`${pref.app.api.protocol}${pref.app.api.host}/notifications/sendNotification`,JSON.stringify(body),{
+        headers: { "Content-Type": "application/json" },
+      })
       .then((response) => {
           console.log("알림 전송 완료.");
       })
       .catch((error) => {
-        console.log("메시지 보내는데 문제 생김")
+        console.log("메시지 보내는데 문제 생김:",error.message)
       })
     }
   }
