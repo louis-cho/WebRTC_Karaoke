@@ -184,6 +184,7 @@ function loadNewMessages() {
     });
 }
 
+// const store = useCounterStore()
 const messages = ref([]);
 const newMessage = ref('');
 const selectedFile = ref(null);
