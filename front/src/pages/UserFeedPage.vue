@@ -30,10 +30,11 @@
         </div>
         <div class="info">
           <div class="stats">
-            <div><p>게시글</p><span>{{ feedLength }}</span></div>
+            <div v-if="feedLength"><p>게시글</p><span>{{ feedLength }}</span></div>
+            <div v-else><p>게시글</p><span>0</span></div>
             <div><p>댓글</p><span>{{ totalCommentCount }}</span></div>
             <div><p>좋아요</p><span>{{ totalLikeCount }}</span></div>
-            <div><p>친구</p><span>0</span></div>
+            <div><p>친구</p><span>{{ FriendCount }}</span></div>
           </div>
           <div class="bio">
             <p>{{ user.introduction }}</p>
@@ -67,6 +68,7 @@ import { getFeedsByUser } from '@/js/feed/feed.js';
 import { fetchUser } from "@/js/user/user.js";
 import { fetchLikeCount } from "src/js/like/like";
 import { fetchCommentCount } from "@/js/comment/comment.js";
+import { fetchFriendCount } from "@/js/friends/friends.js";
 
 const router = useRouter();
 const route = useRoute()
@@ -83,10 +85,14 @@ const goFeedDetail = (feedId) => {
 
 const personalFeeds = ref([]);
 const user = ref(null);
+const FriendCount = ref('');
+let page = 0;
+const amount = 10;
 
 onBeforeMount(async () => {
   await fetchPersonalFeedData();
   await fetchUserData();
+  await getFriendCount();
 });
 
 
@@ -95,7 +101,7 @@ const fetchUserData = async () => {
   try {
     const fetchedUser = await fetchUser(userPk.value);
     user.value = fetchedUser;
-    console.log(user.value);
+    // console.log(user.value);
   } catch (error) {
     console.error("Error fetching user data:", error.message);
   }
@@ -111,7 +117,17 @@ const fetchPersonalFeedData = async() => {
     }
 
     personalFeeds.value = feeds;
-    console.log(personalFeeds.value);
+    // console.log(personalFeeds.value);
+  } catch (error) {
+    console.error("Error fetching personal feeds:", error.message);
+  }
+}
+
+const getFriendCount = async() => {
+  try {
+    const FriendCounts = await fetchFriendCount(userPk.value, page++, amount);
+    FriendCount.value = FriendCounts;
+    // console.log(FriendCount.value);
   } catch (error) {
     console.error("Error fetching personal feeds:", error.message);
   }
