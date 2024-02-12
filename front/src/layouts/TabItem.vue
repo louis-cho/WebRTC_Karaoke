@@ -140,7 +140,7 @@ const handleNotificationClick = (notification) => {
 
       //링크로보내버리기.
       if(notification.type == 'karaoke'){
-        router.push(`/karaoke/${sessionName.value}`);
+        router.push(`/karaoke/${notification.info}`);
       }
       else if(notification.type == 'comment'){
         router.push(`/feed_detail/${notification.info}`);
