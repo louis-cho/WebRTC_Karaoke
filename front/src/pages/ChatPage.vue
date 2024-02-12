@@ -37,7 +37,6 @@
 
 <script setup>
 import Stomp from "stompjs";
-import { useCounterStore } from '@/stores/counter'
 import { ref, nextTick, onMounted } from "vue";
 import { useRoute } from 'vue-router';
 import axios from 'axios';
@@ -81,7 +80,6 @@ function loadOldMessages() {
     });
 }
 
-// const store = useCounterStore()
 const messages = ref([]);
 const newMessage = ref('');
 const selectedFile = ref(null);
