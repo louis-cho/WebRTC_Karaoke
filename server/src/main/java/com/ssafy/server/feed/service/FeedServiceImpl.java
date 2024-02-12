@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -80,5 +81,10 @@ public class FeedServiceImpl implements FeedService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Feed> getFeedByUserPk(int userPk) {
+         return feedRepository.findByUserPk(userPk);
     }
 }

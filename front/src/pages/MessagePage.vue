@@ -4,12 +4,18 @@
       <NavBar />
       <q-page class="flex flex-center">
         <div>
-          <h3 class="text-h6">DM List</h3>
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="text-h6">DM List</h3>
+            </div>
+            <div>
+              <q-btn @click="openModal" color="primary" label="Create" />
+            </div>
+          </div>
           <!-- Chat room list -->
           <ul v-if="paginatedChatRooms.length > 0" class="q-mt-md">
             <ChatRoom v-for="chatRoom in paginatedChatRooms" :key="chatRoom.roomPk" :chatRoom="chatRoom" />
           </ul>
-
           <!-- No chat rooms message -->
           <p v-else class="text-caption text-center q-mt-md">
             No chat rooms found.
@@ -24,6 +30,21 @@
         </div>
       </q-page>
     </q-page-container>
+
+    <!-- Modal -->
+    <q-dialog v-model="modalOpen" persistent>
+      <q-card>
+        <q-card-section>
+          <q-input v-model="newRoomName" label="Room Name" />
+          <q-input v-model="newGuests" label="Guests (comma separated)" />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn label="Cancel" color="primary" @click="closeModal" />
+          <q-btn label="Create" color="primary" @click="handleCreateChatRoom" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
   </q-layout>
 </template>
 
@@ -43,6 +64,17 @@ const pageSize = 10; // 페이지당 표시할 아이템 수
 let totalPages = 1; // 전체 페이지 수
 
 const paginatedChatRooms = ref([]);
+const modalOpen = ref(false); // 모달을 열기 위한 변수
+const newRoomName = ref(''); // roomName 변수 정의
+const newGuests = ref(''); // guests 변수 정의
+
+const openModal = () => {
+  modalOpen.value = true;
+};
+
+const closeModal = () => {
+  modalOpen.value = false;
+};
 
 const fetchData = async () => {
   try {
@@ -76,6 +108,19 @@ const prevPage = () => {
     fetchData();
   }
 };
+
+const handleCreateChatRoom = async () => {
+  try {
+    const response = await axios.post(`${pref.app.api.host}/chatroom/create?name=${newRoomName.value}&host=${userPk}&guests=${newGuests.value.split(',').map(guest => guest.trim())}`);
+    console.log("Chat room created successfully");
+    closeModal();
+    fetchData();
+  } catch (error) {
+    console.error("Failed to create chat room:", error);
+  }
+};
+
+
 </script>
 
 <style scoped>
@@ -83,4 +128,3 @@ const prevPage = () => {
   margin-right: 10px;
 }
 </style>
-

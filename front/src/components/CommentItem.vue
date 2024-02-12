@@ -11,12 +11,14 @@
           <div>
             {{ elem.comment.content }}
           </div>
+          <p>답글달기</p>
           <div>
             {{ elem.comment.createdAt }}
           </div>
         </div>
       </div>
       <hr>
+
       <!-- 재귀적으로 CommentItem 컴포넌트 호출하여 자식 댓글 렌더링 -->
       <div class="child-comments">
         <CommentItem v-if="elem.children && elem.children.length > 0" :comments="elem.children" />

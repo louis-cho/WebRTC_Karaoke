@@ -14,6 +14,7 @@ app.api.user.login = "/user/login";
 app.api.user.register = "/user/register";
 app.api.user.fetch = "/user/get/";
 app.api.user.update = "/user/update";
+app.api.user.search = "/user/search/";
 
 app.api.comment = {};
 app.api.comment.fetch = "/comment/feed/";
@@ -23,6 +24,7 @@ app.api.comment.add = "/comment/create";
 app.api.feed = {};
 app.api.feed.fetchAll = "/feed/get/all";
 app.api.feed.fetchOne = "/feed/get/";
+app.api.feed.getByUser = "/feed/getUser/"
 
 app.api.chat = {};
 app.api.chat.room = {};
@@ -37,9 +39,12 @@ app.api.song.fetch = "/song/";
 
 app.api.hit = {};
 app.api.hit.count = "/hit/get/";
+app.api.hit.create = "/hit/create";
 
 app.api.like = {};
 app.api.like.count = "/like/get/";
+app.api.like.create = "/like/create";
+app.api.like.delete = "/like/delete";
 
 app.api.friends = {};
 app.api.friends.get = "/friends/";

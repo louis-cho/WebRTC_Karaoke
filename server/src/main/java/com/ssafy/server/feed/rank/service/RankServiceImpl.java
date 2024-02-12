@@ -134,11 +134,15 @@ public class RankServiceImpl implements RankService {
         List<LikesDocument> likesDocuments = likesData.stream()
                 .map(hit -> {
                     Map<String, Object> source = hit.getSourceAsMap();
-
-                    // 필드 값 가져오기
-                    int likeId = (int) source.get("like_id");
-                    int feedId = (int) source.get("feed_id");
-                    int userPk = (int) source.get("user_pk");
+                    int likeId, feedId, userPk;
+                    try {
+                        // 필드 값 가져오기
+                        likeId = (int) source.get("like_id");
+                        feedId = (int) source.get("feed_id");
+                        userPk = (int) source.get("user_pk");
+                    } catch(NullPointerException e) {
+                        return null;
+                    }
                     boolean status = Boolean.TRUE.equals(source.get("status"));
 
                     // LikesDocument 객체 생성
@@ -150,18 +154,23 @@ public class RankServiceImpl implements RankService {
 
                     return likesDocument;
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
 
         List<HitDocument> hitDocuments = hitsData.stream()
                 .map(hit -> {
                     Map<String, Object> source = hit.getSourceAsMap();
+                    int hitId, feedId, userPk;
 
-                    // 필드 값 가져오기
-                    int hitId = (int) source.get("hit_id");
-                    int feedId = (int) source.get("feed_id");
-                    int userPk = (int) source.get("user_pk");
-
+                    try {
+                        // 필드 값 가져오기
+                         hitId = (int) source.get("hit_id");
+                         feedId = (int) source.get("feed_id");
+                         userPk = (int) source.get("user_pk");
+                    } catch(NullPointerException e) {
+                        return null;
+                    }
                     // LikesDocument 객체 생성
                     HitDocument hitDocument = new HitDocument();
                     hitDocument.setHitId(hitId);
@@ -170,6 +179,7 @@ public class RankServiceImpl implements RankService {
 
                     return hitDocument;
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         // feedId 별로 likes와 hit를 묶어줌

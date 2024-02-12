@@ -72,6 +72,17 @@ public class FeedController {
         return ResponseEntity.ok(topList);
     }
 
+    @GetMapping("/getUser/{userPk}")
+    public ResponseEntity<ApiResponse<List<Feed>>> getFeedByUser(@PathVariable int userPk) {
+        List<Feed> feeds = null;
+        try {
+            feeds = feedService.getFeedByUserPk(userPk);
+        } catch (Exception e){
+            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_NOT_FOUND));
+        }
+        return new ResponseEntity<>(ApiResponse.success(feeds), HttpStatus.ACCEPTED);
+    }
+
     @GetMapping("/get/{feedId}")
     public ResponseEntity<Feed> getPostById(@PathVariable int feedId) {
         Feed post;

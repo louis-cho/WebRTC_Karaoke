@@ -105,6 +105,7 @@ async function login(id, pw) {
     .then((response) => response.json())
     .then((result) => {
       // Handle the result from the server as needed
+      console.log(result)
       console.log("서버에서 넘어온 ACCESS_TOKEN ==> " + result.Authorization);
       console.log("서버에서 넘어온 REFRESH_TOKEN ==> " + result.refreshToken);
       console.log("서버에서 넘어온 UUID ==> " + result.uuid);
