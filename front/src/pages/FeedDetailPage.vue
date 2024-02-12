@@ -179,10 +179,6 @@ const handleLikeClick = async () => {
   isLiked.value = !isLiked.value;
 };
 
-const getUserProfile = (user_pk) => {
-  // 사용자 프로필 이미지 가져오기 로직..
-  return "@/assets/img/capture3.png";
-};
 
 const getButtonColor = (status) => {
   return status === "0" ? "primary" : status === "1" ? "secondary" : "black";
@@ -191,30 +187,7 @@ const getButtonLabel = (status) => {
   return status === "0" ? "전체 공개" : status === "1" ? "친구 공개" : "비공개";
 };
 
-const getNickName = (user_pk) => {
-  // 닉네임 가져오기 로직...
-  return "닉네임1";
-};
 
-const getSongId = (feed_id) => {
-  // FEED_ID를 사용하여 SONG_ID를 가져오기...
-  // 예를 들어 빅뱅 거짓말 SONG_ID 10번이라 할 때
-  return 10;
-};
-
-const getSongTitle = (feed_id) => {
-  // FEED_ID를 사용하여 SONG_ID를 가져오기...
-  const song_id = getSongId(feed_id);
-  // SONG_ID를 사용하여 TITLE을 가져오기...
-  return "거짓말";
-};
-
-const getSongSinger = (feed_id) => {
-  // FEED_ID를 사용하여 SONG_ID를 가져오기...
-  const song_id = getSongId(feed_id);
-  // SONG_ID를 사용하여 SINGER를 가져오기...
-  return "빅뱅";
-};
 
 const toggleModal = () => {
   modal.value = !modal.value;

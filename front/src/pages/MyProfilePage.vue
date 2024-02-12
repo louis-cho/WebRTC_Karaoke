@@ -2,7 +2,7 @@
   <div>
     <NavBar/>
     <!-- <TabItem /> -->
-    <!-- 내 피드 페이지(마이페이지)-->
+    <!-- 내 피드 페이지(마이페이지/혹은 타인 페이지)-->
     <div class="my-feed">
       <!-- style="padding-left:100px; padding-right:100px" -->
 
@@ -12,8 +12,7 @@
           <img src="@/assets/icon/back.png" alt="뒤로가기">
         </div>
         <div>
-          <!-- <h3>{{ getUserName(feed.USER_PK) }}</h3> -->
-          <h3>닉네임</h3>
+          <h3 v-if="user">{{ user.nickname }}</h3>
         </div>
         <div class="icons">
           <div><img src="@/assets/icon/send.png" alt="dm"></div>
@@ -26,18 +25,18 @@
       <!-- 두번째 div -->
       <div class="profile">
         <!-- 프로필 이미지 가져오기 -->
-        <div class="profile-img-container">
+        <div class="profile-img-container" :style="{ backgroundImage: `url('${user.profileImgUrl}')` }">
           <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
         </div>
         <div class="info">
           <div class="stats">
-            <div><p>게시글</p><span>0</span></div>
-            <div><p>댓글</p><span>0</span></div>
-            <div><p>좋아요</p><span>0</span></div>
+            <div><p>게시글</p><span>{{ feedLength }}</span></div>
+            <div><p>댓글</p><span>{{ totalCommentCount }}</span></div>
+            <div><p>좋아요</p><span>{{ totalLikeCount }}</span></div>
             <div><p>친구</p><span>0</span></div>
           </div>
           <div class="bio">
-            <p>For athletes, high altitude produces two contradictory effects on performance. For explosive events.</p>
+            <p>{{ user.introduction }}</p>
           </div>
           <div class="actions">
             <q-btn color="primary" label="좋아요 관리" />
@@ -50,9 +49,9 @@
       <!-- 세번째 div -->
       <div class="feed-list">
         <!-- 각 피드 항목을 감싸는 그리드 레이아웃 부모 요소 -->
-        <div v-for="feed in feeds" :key="feed.FEED_ID" class="feed-item">
+        <div v-for="feed in personalFeeds" :key="feed.feedId" class="feed-item" @click="goFeedDetail(feed.feedId)">
           <!-- 피드 내용 및 요소들을 표시 -->
-          <img :src="feed.THUMBNAIL_URL" alt="피드 이미지(썸네일)" class="feed-image">
+          <img v-if="feed" :src="feed.thumbnailUrl" alt="피드 이미지(썸네일)" class="feed-image">
         </div>
       </div>
     </div>
@@ -60,56 +59,72 @@
 </template>
 
 <script setup>
-import { ref,onMounted } from "vue";
+import { ref,onMounted,onBeforeMount,computed } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
 import { getFeedsByUser } from '@/js/feed/feed.js';
+import { fetchUser } from "@/js/user/user.js";
+import { fetchLikeCount } from "src/js/like/like";
+import { fetchCommentCount } from "@/js/comment/comment.js";
 
 const router = useRouter();
-// const feeds = ref([]);
+const route = useRoute()
+
+const userPk = ref(route.params.userPk); // 동적인 userPk를 사용
 
 const goBack = function () {
   router.go(-1)
 }
 
+const goFeedDetail = (feedId) => {
+  router.push({ name: "feed_detail", params: { feedId } });
+};
 
-// 가상의 피드 데이터 예시
-// const feeds = ref([
-//   {
-//     FEED_ID: 1,
-//     USER_PK: 1,
-//     SONG_ID: 3,
-//     CONTENT: "오랜만에 빅뱅 노래 불러봄",
-//     THUMBNAIL_URL: "src/assets/icon/logo.png",
-//     VIDEO_URL: "your_video_url.mp4",
-//     VIDEO_LENGTH: "190",
-//     STATUS: "2",
-//     TOTAL_POINT: "20000"
-//   },
-//   {
-//     FEED_ID: 2,
-//     USER_PK: 1,
-//     SONG_ID: 7,
-//     CONTENT: "평가 좀 해주세요",
-//     THUMBNAIL_URL: "src/assets/icon/web_light_sq_ctn@1x.png",
-//     VIDEO_URL: "your_video_url2.mp4",
-//     VIDEO_LENGTH: "170",
-//     STATUS: "0",
-//     TOTAL_POINT: "5000"
-//   }
-// ])
+const personalFeeds = ref([]);
+const user = ref(null);
 
-// const userId = 1; // 실제 사용자 ID로 교체
-// try {
-//   const userFeeds = await getFeedsByUser(userId);
-//   console.log('사용자 피드:', userFeeds);
-// } catch (error) {
-//   console.error('사용자 피드를 가져오는 중 오류 발생:', error);
-// }
-onMounted(() => {
-  const userId = 1; // 실제 사용자 ID로 교체
-  getFeedsByUser(userId); // 자바스크립트 파일에서 가져온 함수 호출
+onBeforeMount(async () => {
+  await fetchPersonalFeedData();
+  await fetchUserData();
+});
+
+
+//유저 정보 가져오기
+const fetchUserData = async () => {
+  try {
+    const fetchedUser = await fetchUser(userPk.value);
+    user.value = fetchedUser;
+    console.log(user.value);
+  } catch (error) {
+    console.error("Error fetching user data:", error.message);
+  }
+}
+
+
+const fetchPersonalFeedData = async() => {
+  try {
+    const feeds = await getFeedsByUser(userPk.value);
+    for (let elem of feeds) {
+      elem.likeCount = await fetchLikeCount(elem.feedId)
+      elem.commentCount = await fetchCommentCount(elem.feedId);
+    }
+
+    personalFeeds.value = feeds;
+    console.log(personalFeeds.value);
+  } catch (error) {
+    console.error("Error fetching personal feeds:", error.message);
+  }
+}
+
+const feedLength = computed(() => personalFeeds.value.length);
+
+const totalLikeCount = computed(() => {
+  return personalFeeds.value.reduce((total, feed) => total + feed.likeCount, 0);
+});
+
+const totalCommentCount = computed(() => {
+  return personalFeeds.value.reduce((total, feed) => total + feed.commentCount, 0);
 });
 
 
