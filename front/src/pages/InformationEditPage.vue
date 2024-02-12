@@ -74,10 +74,10 @@ const goBack = function () {
   router.go(-1)
 }
 
-const getUserProfile = function() {
-  // 유저 프로필 이미지 가져오기 로직...
-  return 'https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg'
-}
+// const getUserProfile = function() {
+//   // 유저 프로필 이미지 가져오기 로직...
+//   return 'https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg'
+// }
 
 const selectedProfileImage = ref('')
 
@@ -104,26 +104,17 @@ const profileImageStyle = computed(() => ({
   backgroundImage: `url(${selectedProfileImage.value || getUserProfile()})`
 }))
 
-// ---------------------------
-// onMounted(async () => {
-//   await updateUser();
-// });
-const userKey = ref(1);
+
+const userKey = ref('d25f0071-8bc7-427a-9163-93ed2a6cf4b2');
 const nickname = ref('dd');
-const profileImgUrlNode = ref('');
-const introductionNode = ref('하하소개글');
+const profileImg = ref('https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg');
+const introduction = ref('소개글임');
 
 const handleUpdate = async () => {
   try {
     // updateUser 함수 호출
-    const result = await updateUser(userKey.value, nickname.value, profileImgUrlNode.value, introductionNode.value);
-
-    // 결과에 따른 처리
-    if (result) {
-      console.log('개인정보 수정 성공');
-    } else {
-      console.error('개인정보 수정 실패');
-    }
+    const result = await updateUser(userKey.value, nickname.value, profileImg.value, introduction.value);
+    console.log('이거',result);
   } catch (error) {
     console.error('개인정보 수정 중 오류 발생:', error);
   }
