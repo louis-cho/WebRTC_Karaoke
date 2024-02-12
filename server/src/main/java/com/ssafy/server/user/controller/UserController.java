@@ -41,6 +41,11 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @GetMapping("/getPk") //@RequestBody JsonNode jsonNode 원래라면 이걸로 받아야 할 것 같지만 Test용으로 ...
+    public int pkTest(@RequestParam UUID uuid){
+        return userService.getUserPk(uuid);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<String> login(HttpServletRequest servletRequest,  @RequestBody JsonNode request) throws Exception{
 
@@ -117,6 +122,8 @@ public class UserController {
         }
         return null;
     }
+
+
     // register
     @PostMapping("/register")
     public ResponseEntity<String> register(HttpServletRequest servletRequest,  @RequestBody JsonNode request) throws Exception{

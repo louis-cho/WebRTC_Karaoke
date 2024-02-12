@@ -17,13 +17,40 @@ export async function fetchFriendList(userId, pageNo, sizeNo) {
   })
   .then(response => response.json())
   .then(result => {
-      console.log(result.content)
+      // console.log(result.content)
       return result.content;
     });
 }
 
+/**
+ * @param {Integer} userId
+ * @param {Integer} pageNo
+ * @param {Integer} sizeNo
+ */
+export async function fetchFriendCount(userId,pageNo,sizeNo) {
+  const serverUrl =
+    pref.app.api.protocol +
+    pref.app.api.host +
+    pref.app.api.friends.get + userId +
+    pref.app.api.friends.list;
 
+  return await fetch(`${serverUrl}?page=${pageNo}&size=${sizeNo}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      // console.log('친구카운트',result.totalElements)
+      return result.totalElements;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
 
+// ------------------------------------------
 /**
  * @param {Integer} fromUser
  * @param {Integer} toUser

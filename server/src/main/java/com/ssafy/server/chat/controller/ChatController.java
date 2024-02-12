@@ -64,10 +64,23 @@ public class ChatController {
             res = chatService.loadFromRedis(chatRoomId, true, false);
         }
 
-        // Redis에 데이터가 있으면, 해당 페이지의 데이터만 가져와서 반환
-        res = paginate(res, page, size);
+        // 최대 페이지 개수 계산
+        int maxPage = (res.size() + size - 1) / size;
 
-        return ResponseEntity.ok(res);
+        // 요청된 페이지 번호가 최대 페이지 개수를 넘어가면 빈 리스트 반환
+        if (page > maxPage) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
+        // 요청된 페이지 번호를 최대 페이지 개수로 조정하여 최신 데이터를 가져오도록 설정
+        page = Math.min(page, maxPage);
+
+        // 현재 페이지에서 이전 페이지까지의 데이터만 가져오기
+        int startIndex = (maxPage - page) * size;
+        int endIndex = Math.min(startIndex + size, res.size());
+        List<Object> paginatedRes = res.subList(startIndex, endIndex);
+        System.out.println(paginatedRes.size()+"gd");
+        return ResponseEntity.ok(paginatedRes);
     }
 
     @MessageMapping("chat.message.{chatRoomId}")

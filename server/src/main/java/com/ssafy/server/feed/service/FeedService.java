@@ -20,4 +20,6 @@ public interface FeedService {
     Feed updateFeed(int feedId, Feed updatedFeed);
 
     boolean deleteFeed(int feedId);
+
+    List<Feed> getFeedByUserPk(int userPk);
 }

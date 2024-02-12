@@ -28,22 +28,28 @@ const routes = [
     component: () => import("@/pages/MessagePage.vue"),
   },
   {
-    path: "/my_profile",
-    component: () => import("@/pages/MyProfilePage.vue"),
+    // path: "/my_profile",
+    path: "/feed/:userPk",
+    component: () => import("@/pages/UserFeedPage.vue"),
   },
   {
     path: "/chat/:roomPk",
     component: () => import("@/pages/ChatPage.vue"),
   },
   {
-    path: '/feed_detail/:feedId',
-    name: 'feed_detail',
-    component: () => import('@/pages/FeedDetailPage.vue'),
+    path: "/feed_detail/:feedId",
+    name: "feed_detail",
+    component: () => import("@/pages/FeedDetailPage.vue"),
   },
   {
     path: "/info_edit",
     component: () => import("@/pages/InformationEditPage.vue"),
   },
+  // {
+  //   임시 추가
+  //   path: "/item1",
+  //   component: () => import("@/components/SearchUser.vue"),
+  // },
   {
     path: "/friend_list",
     component: () => import("@/pages/MyFriendList.vue"),
