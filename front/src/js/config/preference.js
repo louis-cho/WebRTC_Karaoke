@@ -24,7 +24,7 @@ app.api.comment.add = "/comment/create";
 app.api.feed = {};
 app.api.feed.fetchAll = "/feed/get/all";
 app.api.feed.fetchOne = "/feed/get/";
-// app.api.feed.getByUser = "/feed/get/"
+app.api.feed.getByUser = "/feed/getUser/"
 
 app.api.chat = {};
 app.api.chat.room = {};

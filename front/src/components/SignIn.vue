@@ -94,6 +94,9 @@ export default {
     };
   },
   methods: {
+    goToPage(path) {
+      this.$router.push(path);
+    },
     async openLoginModal() {
       await getPublicKey();
       this.loginModal = true;
