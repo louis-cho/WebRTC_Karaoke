@@ -32,10 +32,10 @@ export async function updateUser(
     pref.app.api.protocol + pref.app.api.host + pref.app.api.user.update;
 
   const data = {
-    userKey: userKey,
+    userKey: userKey, // UUID 형태의 userKey 전달
     nickname: nickname,
-    profileImgUrlNode: profileImgUrl,
-    introductionNode: introduction,
+    profileImgUrl: profileImgUrl,
+    introduction: introduction,
   };
 
   return await fetch(serverUrl, {
@@ -54,6 +54,7 @@ export async function updateUser(
       console.error("개인정보수정", error);
     });
 }
+// -----------------------------------
 
 export async function searchUser(nickname) {
   const serverUrl =

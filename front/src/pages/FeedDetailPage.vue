@@ -60,6 +60,13 @@
         </div>
       </div>
 
+      <p>{{ feed }}</p>
+      ------
+      <p>{{feed.user}}</p>
+      ---------------
+      {{ feed.user.userPk }}
+
+
       <p v-if="feed">{{ feed.content }}</p>
       <video controls width="100%">
         <source src="your_video_url.mp4" type="video/mp4" />

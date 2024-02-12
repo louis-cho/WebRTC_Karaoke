@@ -26,7 +26,7 @@
 
         <q-scroll-area style="height: 300px; max-width: 300px">
           <div>
-            <!-- 친구들 목록 뜨게 -->
+            <!-- 유저 목록 뜨게 -->
             <q-list v-if="users && users.length && filteredUsers.length">
               <q-item v-for="user in filteredUsers" :key="user.userPk">
                 <q-item-section>
@@ -66,6 +66,7 @@ import { searchUser, fetchUser } from "@/js/user/user.js";
 const icon = ref(false);
 const search = ref("");
 
+//친구인지 아닌지 여부
 const ex = ref(false);
 // 예시 데이터
 const users = ref([
@@ -99,6 +100,7 @@ const users = ref([
     introduction: "하이",
   },
 ]);
+
 
 const filteredUsers = computed(() => {
   const query = search.value.toLowerCase();
