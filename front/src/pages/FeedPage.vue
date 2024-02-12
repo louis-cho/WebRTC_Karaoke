@@ -244,11 +244,7 @@ const searchQuery = ref("");
 
 const toggleLike = async (feedId) => {};
 
-// const playVideo = (videoUrl) => {
-//   const videoPlayer = document.getElementById('video-player');
-//   videoPlayer.src = videoUrl;
-//   videoPlayer.play();
-// }
+
 </script>
 
 <style scoped>

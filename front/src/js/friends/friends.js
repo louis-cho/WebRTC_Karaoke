@@ -22,6 +22,27 @@ export async function fetchFriendList(userId, pageNo, sizeNo) {
     });
 }
 
+export async function fetchFriendCount(feedId) {
+  const serverUrl =
+    pref.app.api.protocol +
+    pref.app.api.host +
+    pref.app.api.comment.count +
+    feedId;
+
+  return await fetch(serverUrl, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      return result.data;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
 
 
 /**
