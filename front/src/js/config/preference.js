@@ -4,12 +4,12 @@ app.api = {};
 
 app.api.prefix = "/api/v1";
 app.api.protocol = "https:";
-app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
+// app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
 app.api.socket = "ws:";
-// app.api.protocol = "http:";
-// app.api.host = "//localhost:8081" + app.api.prefix;
-// app.api.websocket = "//localhost:8081"
-app.api.websocket = "//i10a705.p.ssafy.io"
+app.api.protocol = "http:";
+app.api.host = "//localhost:8081" + app.api.prefix;
+app.api.websocket = "//localhost:8081"
+// app.api.websocket = "//i10a705.p.ssafy.io"
 
 app.api.user = {};
 app.api.user.login = "/user/login";

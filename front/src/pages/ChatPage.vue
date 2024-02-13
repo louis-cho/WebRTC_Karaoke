@@ -32,7 +32,7 @@
                   <template v-if="message.sender !== userPk">
                     {{ getNickname(message.sender) }}
                   </template>
-                  <div v-if="message.type === 'TALK'">
+                  <div v-if="message.type === 'TALK' || message.type === 'TYPE'">
                     {{ message.message }}
                   </div>
                   <div v-else-if="message.type === 'MEDIA'">
@@ -84,7 +84,7 @@ import logoImage from "@/assets/icon/logo1-removebg-preview.png"
 onMounted(async () => {
   userPk.value = route.query.userPk;
   roomId.value = route.params.roomPk;
-  const socket = new WebSocket(`wss:${pref.app.api.host}/api/ws`);
+  const socket = new WebSocket(`ws:${pref.app.api.websocket}/api/ws`);
   stompClient.value = Stomp.over(socket);
 
   stompClient.value.connect({}, () => {
@@ -123,6 +123,11 @@ function handleIncomingMessage(message) {
     // Handle TYPE message
     if (message.type === 'TYPE') {
       setTemporaryMessage(message.sender, 'TYPE', '...', message.time);
+      setTimeout(() => {
+        nextTick(() => {
+          messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+        });
+      }, 300);
       setTimeout(() => {
         removeTemporaryMessage(message.sender, 'TYPE');
       }, 5000); // Adjust the time as needed (e.g., 5000 milliseconds for 5 seconds)
