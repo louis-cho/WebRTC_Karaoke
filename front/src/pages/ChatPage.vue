@@ -7,6 +7,7 @@
         <div class="content-container">
           <!-- 채팅방 정보 표시 -->
           <div class="chatroom-info">
+            <img src="@/assets/icon/back.png" alt="뒤로가기" class="back-icon" @click="goBack" />
             <!-- 채팅방 정보 내용 -->
             <h5 :title="roomName">{{ roomName }}</h5>
             <q-btn @click="openModal" color="primary" label="Invite" />
@@ -60,13 +61,58 @@
     <!-- Modal -->
     <q-dialog v-model="modalOpen" persistent>
       <q-card>
-        <q-card-section>
-          <q-input v-model="newGuests" label="Guests (comma separated)" />
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">유저검색</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
-        <q-card-actions align="right">
-          <q-btn label="Cancel" color="primary" @click="closeModal" />
-          <q-btn label="Create" color="primary" @click="handleInviteUsers" />
-        </q-card-actions>
+
+        <q-card-section class="q-pt-none">
+          <q-input
+            rounded
+            outlined
+            v-model="search"
+            label="Search User"
+            @keydown.enter.stop
+            @change="searchNickname"
+          >
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </q-card-section>
+
+        <q-scroll-area style="height: 300px; max-width: 300px">
+          <div>
+            <!-- 유저 목록 뜨게 -->
+            <q-list v-if="searchUsers && searchUsers.length && filteredUsers.length">
+              <q-item v-for="user in filteredUsers" :key="user.userPk">
+                <q-item-section>
+                  <q-img class="img-container" :src="user.profileImgUrl" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>{{ user.nickname }}</q-item-label>
+                  <q-item-label caption>{{ user.introduction }}</q-item-label>
+                  <!-- 친구 아니라면 -->
+                  <div v-if="checkInvited(user.userPk)">
+                    <q-btn color="primary" label="참가중" :disable="true"></q-btn>
+                  </div>
+                  <div v-else>
+                    <q-btn color="red" label="초대하기" @click="inviteUser(user.userPk)" v-if="!checkInvited(user.userPk)" />
+                  </div>
+                </q-item-section>
+              </q-item>
+            </q-list>
+            <!-- Display a message if no users match the search -->
+            <q-item v-else>
+              <q-item-section>
+                <q-item-label align="center"
+                  >일치하는 유저가 없습니다</q-item-label
+                >
+              </q-item-section>
+            </q-item>
+          </div>
+        </q-scroll-area>
       </q-card>
     </q-dialog>
 </q-layout>
@@ -75,15 +121,67 @@
 <script setup>
 import Stomp from "stompjs";
 import pref from "@/js/config/preference.js";
-import { ref, nextTick, onMounted, watchEffect } from "vue";
-import { useRoute } from 'vue-router';
+import { ref, nextTick, onMounted, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import axios from 'axios';
 import NavBar from "@/layouts/NavBar.vue";
 import useCookie from "@/js/cookie.js";
+import { searchUser, fetchUser } from "@/js/user/user.js";
 import logoImage from "@/assets/icon/logo1-removebg-preview.png"
+
+const router = useRouter();
 
 const { getCookie } = useCookie();
 const userUUID = getCookie("uuid");
+
+const search = ref("");
+const searchUsers = ref([])
+
+const filteredUsers = computed(() => {
+  const query = search.value ? search.value.toLowerCase() : ''; // null 체크를 수행하여 null이 아닐 때만 toLowerCase 호출
+  // 검색어가 비어있으면 빈 배열 반환
+  if (!query) return [];
+
+  return searchUsers.value.filter((user) => {
+    const nickname = user.nickname ? user.nickname.toLowerCase() : ''; // null 체크 추가
+    const introduction = user.introduction ? user.introduction.toLowerCase() : ''; // null 체크 추가
+    return nickname.includes(query) || introduction.includes(query);
+  });
+});
+
+const searchNickname = async function () {
+  try {
+    // 백엔드 서버에서 유저 검색 결과 가져오기
+    const response = await searchUser(search.value);
+    searchUsers.value = response; // 서버 응답에 따라 데이터를 업데이트
+
+    for (let idx in searchUsers.value) {
+      let userPk = searchUsers.value[idx].userPk;
+      searchUsers.value[idx] = await fetchUser(userPk);
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+};
+
+const inviteUser = async (userPk) => {
+  // 이미 초대된 사용자인지 확인
+  if (!checkInvited(userPk)) {
+    // 초대할 사용자의 userPk를 newGuests 배열에 추가
+    newGuests.value = userPk;
+    await handleInviteUsers();
+  }
+};
+
+// chatroomUsers에 대한 유저 초대 여부 확인 함수
+const checkInvited = (userPk) => {
+  for (const user of chatroomUsers.value) {
+    if (String(user.userPk) === String(userPk)) {
+      return true; // 초대된 경우 true 반환
+    }
+  }
+  return false; // 초대되지 않은 경우 false 반환
+};
 
 async function fetchUserPk() {
   try {
@@ -215,7 +313,7 @@ function loadOldMessages() {
       const oldMessages = response.data;
       if (oldMessages.length === 0) {
         // 빈 배열을 받으면 페이지 끝을 알리는 alert 표시
-        alert("마지막 페이지입니다.");
+        // alert("마지막 페이지입니다.");
       } else if (page === 1) {
         oldMessages.forEach(message => {
           message = JSON.parse(message);
@@ -417,7 +515,7 @@ const closeModal = () => {
 
 const handleInviteUsers = async () => {
   try {
-    await axios.post(`${pref.app.api.host}/chatroom/invite/${roomId.value}?guests=${newGuests.value.split(',').map(guest => guest.trim())}`,null,{
+    await axios.post(`${pref.app.api.host}/chatroom/invite/${roomId.value}?guests=${newGuests.value}`,null,{
       headers: {
       Authorization: getCookie("Authorization"),
       refreshToken: getCookie("refreshToken"),
@@ -425,7 +523,6 @@ const handleInviteUsers = async () => {
     },
     });
     console.log("Users invited successfully");
-    closeModal();
     fetchData();
   } catch (error) {
     console.error("Failed to invite chat room:", error);
@@ -472,6 +569,9 @@ const getNickname = (userPk) => {
   return '(알수없음)';
 };
 
+const goBack = function () {
+  router.go(-1);
+};
 
 </script>
 
@@ -585,5 +685,9 @@ textarea {
   display: block;
 }
 
+.back-icon {
+  cursor: pointer;
+  float: left;
+}
 
 </style>
