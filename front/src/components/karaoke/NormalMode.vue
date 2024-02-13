@@ -1,7 +1,6 @@
 <template>
   <div>
     <canvas ref="canvas" width="1000" height="350"></canvas>
-    <button @click="playNextSong" :disabled="!isPlaying">다음 곡 재생</button>
   </div>
 </template>
 
@@ -37,6 +36,7 @@ const eraserHeight = 34;  // 지우개 높이, 가사 font-size에 따라 달라
 let moveX = 100;       // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
 const fontsize = 24   // 가사가 채워질 때 이동하는 x좌표 간격. 모험을 통해 알아가야 함. 24pt Arial 기준 24
 const blankSize = 6.7 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 모험을 통해 알아가야 함. 24pt Arial 기준 6.7
+const countDown = ref("");
 
 const choose = () => {  // props로 내려온 songData 주입
   console.log("노래 예약");
@@ -86,6 +86,22 @@ const drawLyrics = () => {
   startTimeRef.value = Date.now()   // 노래 시작 시간 저장.
   const renderFrame = (timestamp) => {
     if(!playMusic.value) return ;
+    const beforeStart = (bundles.value[0].start + song.value.prelude) - (Date.now() - startTimeRef.value);
+    console.log(beforeStart)
+    if(beforeStart <= 3000 && beforeStart > 2000) {
+      countDown.value = 3;
+    } else if(beforeStart <= 2000 && beforeStart > 1000) {
+      countDown.value = 2;
+    } else if(beforeStart <= 1000 && beforeStart > 0) {
+      countDown.value = 1;
+    } else {
+      countDown.value = 0;
+    }
+
+    if(countDown.value != 0) {
+
+    }
+
     if((Date.now() - startTimeRef.value) >= bundles.value[bundleIndex.value-1].start + song.value.prelude) { // 가사 묶음 렌더링 부분
       // 렌더링할 index-1이 시작되면 렌더링
       // 현재 bundleIndex가 가리키는 이전 묶음이 시작되면, 새로운 묶음 렌더링
@@ -148,10 +164,6 @@ const drawLyrics = () => {
   requestAnimationFrame(renderFrame);
 }
 
-const playNextSong = () => {
-  // 다음 곡 재생 로직 구현
-};
-
 const sampleMML = `t68 o3 l4
   d'동'g.'해'f+8'물'e'과\t'g'백'd'두'c-'산'd'이\n' g'마'a8'르'b8'고\t'b+.'닳'b8'도' a2'록\n'.r
   >d.'하'c8'느'<b'님'a'이\t' g'보'f+8'우'e8d'하'c-'사\n' d'우'g'리'a8'나'a8'라\t'b'만' g2.'세\n'r
@@ -171,5 +183,7 @@ defineExpose({
 </script>
 
 <style scoped>
-
+  canvas {
+    width: 70%;
+  }
 </style>

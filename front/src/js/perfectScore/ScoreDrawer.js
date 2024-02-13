@@ -24,8 +24,8 @@ export class ScoreDrawer {
 
     // 음표 배열 생성 및 리사이즈 콜백 등록
     this._notes = new Array(300).fill(-1);
-    const resizeObserver = new ResizeObserver(this._resizeCallback.bind(this));
-    resizeObserver.observe(this._canvas);
+    // const resizeObserver = new ResizeObserver(this._resizeCallback.bind(this));
+    // resizeObserver.observe(this._canvas);
   }
 
   // 옥타브 getter/setter
