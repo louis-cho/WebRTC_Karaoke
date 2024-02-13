@@ -20,6 +20,7 @@ export class App {
     this.startTimeRef = 0;  // 노래 시작 시간(가사 렌더링에 필요)
     this.lyricFlag = true;   // 윗가사를 update할지, 아랫가사를 update할지.
     this.songLength = 0;
+    this.prelude = 0;
 
     // 앱 UI 생성
     this.createElements();
@@ -56,7 +57,7 @@ export class App {
     await this.detector.start(); // 톤 디텍터 시작
     this.drawer.start([]); // 악보 그리기 시작
   }
-  
+
   // 악보 재생
   playSong() {
     this.startTimeRef = Date.now()
@@ -65,6 +66,7 @@ export class App {
     this.lyricFlag = true;
     this.drawer.lyricUpper = this.lyrics[0].lyric;
     this.drawer.lyricLower = this.lyrics[1].lyric;
+    this.drawer._elapsed = -1 * this.prelude;
     this.drawer.start(this.score); // 악보 그리기 시작
   }
 
@@ -85,7 +87,7 @@ export class App {
   // 애니메이션 루프
   loop(time) {
     if(this.playMusic) {
-      if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+13200) {
+      if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this.prelude) {
         if(this.lyricFlag) {  // 윗가사 업데이트
           this.drawer.lyricUpper = this.lyrics[this.lyricIndex].lyric;
           this.lyricFlag = !this.lyricFlag

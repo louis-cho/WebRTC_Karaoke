@@ -1,8 +1,6 @@
 <template>
   <div>
     <canvas ref="canvas" width="1000" height="350"></canvas>
-    <button @click="play">Play</button>
-    <button @click="stop">Stop</button>
     <button @click="playNextSong" :disabled="!isPlaying">다음 곡 재생</button>
   </div>
 </template>
@@ -11,8 +9,15 @@
 import { ref, reactive, watch, computed, onMounted } from 'vue';
 import { parseLyric, parseBundle, parseScore } from '@/js/karaoke/karaokeParser.js'
 
+const props = defineProps({
+  songData: Object
+});
+
+const audio = ref(null);
+const song = ref(null)
+const playMusic = ref(false)
+
 const canvas = ref(null);
-const songLength = ref(0);  //  노래 재생 시간, 추후에 사용
 const bundles = ref([]);
 const lyrics = ref([]);
 const startTimeRef = ref(0) // 노래 시작시간
@@ -32,20 +37,31 @@ const eraserHeight = 34;  // 지우개 높이, 가사 font-size에 따라 달라
 let moveX = 100;       // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
 const fontsize = 24   // 가사가 채워질 때 이동하는 x좌표 간격. 모험을 통해 알아가야 함. 24pt Arial 기준 24
 const blankSize = 6.7 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 모험을 통해 알아가야 함. 24pt Arial 기준 6.7
-const prelude = ref(0)  // 전주 시간
+
+const choose = () => {  // props로 내려온 songData 주입
+  console.log("노래 예약");
+  song.value = props.songData;
+  audio.value = new Audio(song.value.url); // mp3 url 연결
+}
 
 const play = () => {
-  lyrics.value = parseLyric(parseScore(sampleMML));
+  playMusic.value = true;
+  lyrics.value = parseLyric(parseScore(song.value.score));
   bundles.value = parseBundle(lyrics.value)
-  // 노래 재생 로직 추가
   drawLyrics()
+  audio.value.play(); // mp3 재생
+  console.log(song.value.prelude);
+  console.log(song.value.score)
 }
-const stop = () => {
-  // 노래 정지 로직 추가
-  const canvas = lyricsCanvas.value;
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+const stop = () => {
+  playMusic.value = false;
+  audio.value.currentTime = 0;
+  audio.value.pause();
+
+  // const canvas = lyricsCanvas.value;
+  const ctx = canvas.value.getContext('2d');
+  ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);
 }
 /*
 fontSize = 24pt면, 32~36px정도
@@ -69,7 +85,8 @@ const drawLyrics = () => {
 
   startTimeRef.value = Date.now()   // 노래 시작 시간 저장.
   const renderFrame = (timestamp) => {
-    if((Date.now() - startTimeRef.value) >= bundles.value[bundleIndex.value-1].start) { // 가사 묶음 렌더링 부분
+    if(!playMusic.value) return ;
+    if((Date.now() - startTimeRef.value) >= bundles.value[bundleIndex.value-1].start + song.value.prelude) { // 가사 묶음 렌더링 부분
       // 렌더링할 index-1이 시작되면 렌더링
       // 현재 bundleIndex가 가리키는 이전 묶음이 시작되면, 새로운 묶음 렌더링
       if(bundleFlag.value) { // 위에거 업데이트
@@ -94,7 +111,7 @@ const drawLyrics = () => {
       }
     }
 
-    if((Date.now() - startTimeRef.value - prelude.value) >= lyrics.value[lyricBundleIndex.value][lyricIndex.value].start) { // 가사 채우는 렌더링 부분
+    if((Date.now() - startTimeRef.value) >= lyrics.value[lyricBundleIndex.value][lyricIndex.value].start + song.value.prelude) { // 가사 채우는 렌더링 부분
       lyric.value = lyrics.value[lyricBundleIndex.value][lyricIndex.value].lyric
       if(lyric.value === ' ') { // 띄어쓰기
         lyricIndex.value++;
@@ -119,9 +136,12 @@ const drawLyrics = () => {
         moveX = lyricPosX;
         lyricFlag.value = !lyricFlag.value
       }
+
+      if((Date.now() - startTimeRef.value) >= (song.value.length*1000)) {
+        stop();
+      }
     }
 
-    // 다음 프레임 요청
     requestAnimationFrame(renderFrame);
   }
 
@@ -140,6 +160,12 @@ const sampleMML = `t68 o3 l4
 
 onMounted(() => {
 
+});
+
+defineExpose({
+  play,
+  stop,
+  choose,
 });
 
 </script>
