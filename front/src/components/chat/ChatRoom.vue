@@ -14,6 +14,8 @@
 import pref from "@/js/config/preference.js";
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 
 const props = defineProps({
   chatRoom: Object
@@ -23,7 +25,13 @@ const roomName = ref('');
 
 onMounted(async () => {
   try {
-    const response = await axios.get(`${pref.app.api.host}/chatroom/info/${props.chatRoom.roomPk}`);
+    const response = await axios.get(`${pref.app.api.host}/chatroom/info/${props.chatRoom.roomPk}`,{
+      headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },
+    });
     roomName.value = response.data.roomName;
   } catch (error) {
     console.error("Failed to fetch room name:", error);

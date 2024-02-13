@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import pref from "@/js/config/preference.js";
 import axios from "axios";
+import useCookie from "@/js/cookie.js";
+
 export const useNotificationStore = defineStore("notification", {
   state: () => ({
     inviteModal : false,
@@ -19,12 +21,19 @@ export const useNotificationStore = defineStore("notification", {
   }),
   actions: {
     async setSse() {
+      const { setCookie, getCookie, removeCookie } = useCookie();
       this.sse = new EventSource(pref.app.api.protocol + pref.app.api.host + "/notifications/subscribe");
       this.sse.addEventListener('connect', (response) => {
         console.log('event data: ',response.data);  // "connected!"
       });
 
-      this.bellCount = await axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications/count`)
+      this.bellCount = await axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications/count`,{
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        }
+      })
       .then((response) => response.data)
       .catch((err) => {
         console.log(err)
@@ -40,7 +49,13 @@ export const useNotificationStore = defineStore("notification", {
         this.bellCount++;
         //알림 모달 열려있을경우
         //추가로 api 날려서 알림객체리스트에 추가. 요청은 e.data로 날라온 알림아이디이다.
-        axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications/${message.data}`)
+        axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications/${message.data}`,{
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          }
+        })
         .then((response)=>{
           const notification = response.data;
           this.notificationList.splice(0,0,notification); //알림객체 맨앞에 추가.
@@ -49,8 +64,13 @@ export const useNotificationStore = defineStore("notification", {
       });
     },
     sendNotification(body){
+      const { setCookie, getCookie, removeCookie } = useCookie();
       axios.post(`${pref.app.api.protocol}${pref.app.api.host}/notifications/sendNotification`,JSON.stringify(body),{
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
       })
       .then((response) => {
           console.log("알림 전송 완료.");

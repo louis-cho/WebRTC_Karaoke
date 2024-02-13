@@ -52,7 +52,8 @@ import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import pref from "@/js/config/preference.js";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 const store = useKaraokeStore();
 
 const songs = ref([]);
@@ -61,7 +62,13 @@ const searchQuery = ref("");
 onMounted(() => {
   // API 호출을 통해 노래 데이터 가져오기
   axios
-    .get(store.APPLICATION_SERVER_URL + "/song/list")
+    .get(store.APPLICATION_SERVER_URL + "/song/list",{
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          }
+        })
     .then((response) => {
       songs.value = response.data;
     })
@@ -76,7 +83,13 @@ function reserveSong(songId) {
       sessionName: store.sessionName,
       userName: store.userName,
       songId: songId,
-    })
+    },{
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          }
+        })
     .then((response) => {
       console.log(response.data);
       closeModal();
