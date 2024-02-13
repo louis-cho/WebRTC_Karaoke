@@ -135,7 +135,7 @@ const { getCookie } = useCookie();
 const userUUID = getCookie("uuid");
 
 const search = ref("");
-const searchUsers = ref([])
+const searchUsers = ref([]);
 
 const filteredUsers = computed(() => {
   const query = search.value ? search.value.toLowerCase() : ''; // null 체크를 수행하여 null이 아닐 때만 toLowerCase 호출
