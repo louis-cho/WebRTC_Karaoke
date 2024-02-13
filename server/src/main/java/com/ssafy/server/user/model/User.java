@@ -1,11 +1,14 @@
 package com.ssafy.server.user.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ssafy.server.auth.model.entity.RefreshToken;
 import com.ssafy.server.song.model.entity.SingLog;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.Type;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -45,6 +48,7 @@ public class User {
     @Column(name = "introduction")
     private String introduction;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "user")
     private List<RefreshToken> refreshToken;
 
@@ -58,8 +62,4 @@ public class User {
         this.nickname = nickname;
     }
 
-    @Override
-    public String toString() {
-        return "[User] >> " + this.userPk + "," + this.userKey + "," + this.nickname +"\n";
-    }
-}
+ }

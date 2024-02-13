@@ -39,7 +39,8 @@ public class HitController {
     }
 
     @PostMapping("/create")
-    public void create(@CookieValue(name = "uuid") String uuid, @RequestBody JsonNode jsonNode) {
+    public void create(@RequestHeader(name = "uuid") String uuid, @RequestBody JsonNode jsonNode) {
+
         int feedId = -1, userPk = -1;
         UUID userUUID = null;
         try {

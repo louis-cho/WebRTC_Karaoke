@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,23 @@ public class FeedController {
 
             response = recentPageList.getContent()
                     .stream()
-                    .map(feed -> FeedResponseFactory.createFeedResponseFromFeed(feed, userService.getUUID(String.valueOf(feed.getUserPk()))))
+                    .map(feed -> {
+                        int userPk = -1;
+                        if(feed.getUserPk() == null)
+                            return null;
+                        userPk = feed.getUserPk();
+                        UUID uuid = null;
+                        try {
+                            uuid = userService.getUser(userPk).getUserKey();
+                        } catch (Exception e) {
+                            return null;
+                        }
+                        if(uuid == null) {
+                            return null; // 또는 원하는 다른 값으로 대체
+                        }
+                        return FeedResponseFactory.createFeedResponseFromFeed(feed, uuid);
+                    })
+                    .filter(Objects::nonNull) // null 값 필터링
                     .collect(Collectors.toList());
 
         } catch (Exception e){
@@ -106,14 +123,16 @@ public class FeedController {
     }
 
     @GetMapping("/get/{feedId}")
-    public ResponseEntity<Feed> getPostById(@PathVariable int feedId) {
+    public ResponseEntity<FeedResponse> getPostById(@PathVariable int feedId) {
         Feed post;
+        FeedResponse response = null;
         try {
             post = feedService.getFeedById(feedId);
+            response = FeedResponseFactory.createFeedResponseFromFeed(post, userService.getUser(post.getUserPk()).getUserKey());
         } catch (Exception e){
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_NOT_FOUND));
         }
-        return ResponseEntity.ok(post);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/create")

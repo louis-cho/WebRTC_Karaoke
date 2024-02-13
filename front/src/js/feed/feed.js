@@ -18,7 +18,7 @@ export async function fetchFeedList(pageNo, pageSize) {
   })
   .then(response => response.json())
   .then(result => {
-      return result.content;
+      return result;
     });
 }
 

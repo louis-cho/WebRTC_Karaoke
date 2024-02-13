@@ -157,9 +157,13 @@ const loading = ref(false);
 const fetchFeedData = async () => {
   const newFeeds = await fetchFeedList(page++, amount);
 
+  if(newFeeds == null) {
+    return;
+  }
+
   for (let elem of newFeeds) {
     elem.song = await fetchSong(elem.songId);
-    elem.user = await fetchUser(elem.userPk);
+    elem.user = await fetchUser(elem.userUUID);
     elem.commentCount = await fetchCommentCount(elem.feedId);
     elem.viewCount = await fetchHitCount(elem.feedId);
     elem.likeCount = await fetchLikeCount(elem.feedId);

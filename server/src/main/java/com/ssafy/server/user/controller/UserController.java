@@ -177,9 +177,15 @@ public class UserController {
     }
 
     @PostMapping("/get/{uuid}")
-    public ResponseEntity<User> getUser(@RequestParam String uuid) {
-       try {
-           return new ResponseEntity<>(userService.getUser(userService.getUserPk(UUID.fromString(uuid))), HttpStatus.OK);
+    public ResponseEntity<User> getUser(@PathVariable String uuid) {
+        User user = null;
+
+        try {
+           int userPk = userService.getUserPk(UUID.fromString(uuid));
+           user = userService.getUser(userPk);
+           ResponseEntity responseEntity = new ResponseEntity<>(user, HttpStatus.OK);
+            System.out.println(user);
+            return responseEntity;
        }
        catch(Exception e) {
            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(UserExceptionEnum.USER_NOT_FOUND));

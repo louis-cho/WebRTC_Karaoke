@@ -1,10 +1,8 @@
-import useCookie from "../cookie.js";
-import app from "../config/preference.js";
+import app from "@/js/config/preference.js";
 import useCookie from "@/js/cookie.js";
 let pref = app;
 const { setCookie, getCookie, removeCookie } = useCookie();
 
-const { setCookie, getCookie, removeCookie } = useCookie();
 
 export async function fetchUser(uuid) {
   const serverUrl =
@@ -13,7 +11,7 @@ export async function fetchUser(uuid) {
     pref.app.api.user.fetch + uuid;
 
   return await fetch(serverUrl, {
-    method: "GET",
+    method: "POST",
     headers: {
       "Authorization" : getCookie("Authorization"),
       "refreshToken" : getCookie("refreshToken"),
