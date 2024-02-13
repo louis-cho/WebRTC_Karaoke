@@ -6,6 +6,7 @@ import com.ssafy.server.common.error.ApiExceptionFactory;
 import com.ssafy.server.feed.error.FeedExceptionEnum;
 import com.ssafy.server.feed.model.Feed;
 import com.ssafy.server.feed.model.FeedResponse;
+import com.ssafy.server.feed.model.FeedResponseFactory;
 import com.ssafy.server.feed.rank.document.FeedStatsDocument;
 import com.ssafy.server.feed.rank.service.RankService;
 import com.ssafy.server.feed.service.FeedService;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -38,29 +40,43 @@ public class FeedController {
 
     //그냥 전체 Feed 목록 Default를 최신순으로
     @GetMapping("/get/all")
-    public ResponseEntity<Page<Feed>> getAllPost(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<List<FeedResponse>> getAllPost(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "10") int size){
         Page<Feed> recentPageList;
+        List<FeedResponse> response;
         try{
             Pageable pageable = PageRequest.of(page, size);
             recentPageList = feedService.sortRecentFeedList(pageable);
+
+            response = recentPageList.getContent()
+                    .stream()
+                    .map(feed -> FeedResponseFactory.createFeedResponseFromFeed(feed, userService.getUUID(String.valueOf(feed.getUserPk()))))
+                    .collect(Collectors.toList());
+
         } catch (Exception e){
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_SORT_ERROR));
         }
-        return ResponseEntity.ok(recentPageList);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/get/old")
-    public ResponseEntity<Page<Feed>> getOldPost(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<List<FeedResponse>> getOldPost(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "10") int size){
         Page<Feed> oldPageList;
+        List<FeedResponse> response;
         try {
             Pageable pageable = PageRequest.of(page, size);
             oldPageList = feedService.sortOldFeedList(pageable);
+
+            response = oldPageList.getContent()
+                    .stream()
+                    .map(feed -> FeedResponseFactory.createFeedResponseFromFeed(feed, userService.getUUID(String.valueOf(feed.getUserPk()))))
+                    .collect(Collectors.toList());
+
         } catch (Exception e) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_SORT_ERROR));
         }
-        return ResponseEntity.ok(oldPageList);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/get/top100")
@@ -78,9 +94,9 @@ public class FeedController {
         return ResponseEntity.ok(topList);
     }
 
-    @GetMapping("/getUser")
-    public ResponseEntity<ApiResponse<List<Feed>>> getFeedByUser(@CookieValue String uuid) {
-        List<Feed> feeds = null;
+    @GetMapping("/getUser/{uuid}")
+    public ResponseEntity<ApiResponse<List<FeedResponse>>> getFeedByUser(@RequestParam String uuid) {
+        List<FeedResponse> feeds = null;
         try {
             feeds = feedService.getFeedByUserPk(userService.getUserPk(UUID.fromString(uuid)));
         } catch (Exception e){
@@ -101,9 +117,12 @@ public class FeedController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<?>> createPost(@RequestBody Feed feed) {
+    public ResponseEntity<ApiResponse<?>> createPost(@CookieValue(name = "uuid") String uuid, @RequestBody Feed feed) {
         Feed createdPost;
+        int userPk = -1;
         try {
+            userPk = userService.getUserPk(UUID.fromString(uuid));
+            feed.setUserPk(userPk);
             createdPost = feedService.createFeed(feed);
         } catch (Exception e) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_CREATION_FAILED));
