@@ -1,5 +1,6 @@
 import app from "../config/preference.js";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 let pref = app;
 
 /**
@@ -30,6 +31,8 @@ export async function fetchComment(feedId, pageNo) {
   return await fetch(serverUrl, {
     method: "POST",
     headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
@@ -108,6 +111,8 @@ export async function fetchCommentCount(feedId) {
   return await fetch(serverUrl, {
     method: "GET",
     headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
       "Content-Type": "application/json",
     },
   })
@@ -128,6 +133,8 @@ export async function addComment(comment) {
   return await fetch(serverUrl, {
     method: "POST",
     headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(comment),
@@ -149,6 +156,8 @@ export async function addCommentCount(comment) {
   return await fetch(serverUrl, {
     method: "GET",
     headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(comment),

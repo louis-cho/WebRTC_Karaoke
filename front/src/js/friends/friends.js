@@ -1,5 +1,6 @@
 import app from "../config/preference.js";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 let pref = app;
 
 /**
@@ -12,7 +13,10 @@ export async function fetchFriendList(userId, pageNo, sizeNo) {
   return await fetch(`${serverUrl}?page=${pageNo}&size=${sizeNo}`, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
     },
   })
   .then(response => response.json())
@@ -37,7 +41,10 @@ export async function fetchFriendCount(userId,pageNo,sizeNo) {
   return await fetch(`${serverUrl}?page=${pageNo}&size=${sizeNo}`, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
     },
   })
     .then((response) => response.json())
@@ -64,7 +71,10 @@ export async function fetchFriendRequest(fromUser, toUser) {
   return await fetch(serverUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
     },
     body: JSON.stringify(data),
   })

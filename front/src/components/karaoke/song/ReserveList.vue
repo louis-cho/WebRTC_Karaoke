@@ -53,7 +53,8 @@
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import { ref, watchEffect } from "vue";
 import axios from "axios";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 const store = useKaraokeStore();
 
 const lists = ref([]);
@@ -71,7 +72,13 @@ function fetchReserveList() {
   axios
     .post(store.APPLICATION_SERVER_URL + "/song/reserveList", {
       sessionName: store.sessionName,
-    })
+    },{
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      })
     .then((response) => {
       var id = 1;
       response.data.forEach((item) => {
@@ -95,7 +102,13 @@ function cancelReserve(hashString) {
     .post(store.APPLICATION_SERVER_URL + "/song/cancel", {
       sessionName: store.sessionName,
       hashString: hashString,
-    })
+    },{
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      })
     .then((response) => {
       fetchReserveList();
     })

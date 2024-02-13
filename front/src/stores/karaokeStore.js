@@ -2,7 +2,8 @@ import { defineStore } from "pinia";
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import pref from "@/js/config/preference.js";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 export const useKaraokeStore = defineStore("karaoke", {
   state: () => ({
     APPLICATION_SERVER_URL: pref.app.api.protocol + pref.app.api.host,
@@ -73,7 +74,11 @@ export const useKaraokeStore = defineStore("karaoke", {
           password: password,
         },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -130,7 +135,11 @@ export const useKaraokeStore = defineStore("karaoke", {
       const participants = await axios.post(
         this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkNumber",
         { sessionName: sessionName },
-        { headers: { "Content-Type": "application/json" } }
+        {     headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        }, }
       );
       if (!participants.data) {
         alert("인원이 초과했습니다!");
@@ -141,7 +150,11 @@ export const useKaraokeStore = defineStore("karaoke", {
       const isPrivate = await axios.post(
         this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPrivate",
         { sessionName: sessionName },
-        { headers: { "Content-Type": "application/json" } }
+        {    headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        }, }
       );
 
       // 비밀번호 확인
@@ -152,7 +165,11 @@ export const useKaraokeStore = defineStore("karaoke", {
         const response = await axios.post(
           this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPassword",
           { sessionName: sessionName, password: userInput },
-          { headers: { "Content-Type": "application/json" } }
+          {     headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          }, }
         );
 
         if (!response.data) {
@@ -174,7 +191,11 @@ export const useKaraokeStore = defineStore("karaoke", {
           },
         },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -233,7 +254,11 @@ export const useKaraokeStore = defineStore("karaoke", {
             token: this.token,
           },
           {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              Authorization: getCookie("Authorization"),
+              refreshToken: getCookie("refreshToken"),
+              "Content-Type": "application/json",
+            },
           }
         );
       } else {
@@ -244,7 +269,11 @@ export const useKaraokeStore = defineStore("karaoke", {
             token: this.token,
           },
           {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              Authorization: getCookie("Authorization"),
+              refreshToken: getCookie("refreshToken"),
+              "Content-Type": "application/json",
+            },
           }
         );
       }
