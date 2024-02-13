@@ -48,7 +48,7 @@ public class SongController {
         int songId = (Integer) params.get("songId");
 
         Song song = songService.getSongById(songId);
-        String hashString = userName + "&" + song.getTitle() + "&" + song.getSinger();
+        String hashString = userName + "&" + songId + "&" + song.getTitle() + "&" + song.getSinger();
         reserveModel.getMapSongReserveDeq().get(sessionName).add(hashString);
 
         return ResponseEntity.ok(reserveModel.getMapSongReserveDeq().get(sessionName));
