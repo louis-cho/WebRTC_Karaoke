@@ -26,7 +26,6 @@ const lyrics = ref([]);
 const startTimeRef = ref(0) // 노래 시작시간
 const lyricUpper = ref("")  // 위에 띄울 가사
 const lyricLower = ref("")  // 아래 띄울 가사
-const lyric = ref("")
 const bundleFlag = ref(true)    // true면 위에거 업데이트, false면 아래거 업데이트
 const lyricFlag = ref(true)    // true면 위에거 업데이트, false면 아래거 업데이트
 const bundleIndex = ref(0)
@@ -35,18 +34,16 @@ const lyricIndex = ref(0)
 const lyricPosX = 45;  // 가사 렌더링 시작 위치 x좌표, css에 따라 수정
 const lyricPosY = 70;  // 가사 렌더링 시작 위치 y좌표, css에 따라 수정
 const lyricInterval = 50; // 가사 윗묶음&아랫묶음 y좌표 간격
-const eraserWidth = 210;  // 지우개 넓이, 가사 가사 길이에 따라 달라질 수도.
-const eraserHeight = 34;  // 지우개 높이, 가사 font-size에 따라 달라짐
 const moveX = ref(0);       // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
 const fontSize = "24px ";
-const fontInterval = 24;    // 가사가 채워질 때 이동하는 x좌표 간격. 모험을 통해 알아가야 함. 24pt Arial 기준 24
+const fontInterval = 24;    // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
 const fontStyle = "Arial";
 const fontColor = "black"
-const filledFont = ref("");
-const extraFont = ref("");
+const filledFont = ref(""); // 부르고 있는 가사
+const extraFont = ref("");  // 같은 lyricBundle 내에서 부르고 있는 가사 외 나머지 가사
 const fontFillColor = "orange";
-const backgroundColor = "black";
-const blankSize = 6.7 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 모험을 통해 알아가야 함. 24pt Arial 기준 6.7
+const blankSize = 6.7 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 6.7
+const blanckCount = ref(0);
 const countDown = ref("");
 
 const choose = () => {
@@ -68,11 +65,13 @@ const play = () => {
 
   drawLyrics();
   audio.value.play(); // mp3 재생
-  console.log(song.value.prelude);
-  console.log(song.value.score);
 };
 
 const stop = () => {
+  lyricUpper.value = "";
+  lyricLower.value = "";
+  filledFont.value = "";
+  extraFont.value = "";
   hasNextLyrics.value = false;
   if(audio.value != null) {
     audio.value.currentTime = 0;
@@ -80,8 +79,7 @@ const stop = () => {
   }
 
   const ctx = canvas.value.getContext('2d');
-  ctx.fillStyle = backgroundColor;
-  ctx.fillRect(0, 0, canvas.value.width, canvas.value.height);
+  ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);
 }
 /*
 fontSize = 24pt면, 32~36px정도
@@ -115,14 +113,15 @@ const drawLyrics = () => {
       }
 
       if(bundleIndex.value == 0 && (Math.abs((Date.now() - startTimeRef.value) >= (bundles.value[1].start + song.value.prelude)))) {
+        // 전주 ~ 첫 마디를 벗어나면
         bundleIndex.value = 2;
       }
 
-      if((Date.now() - startTimeRef.value) < bundles.value[1].start + song.value.prelude) {  // 첫 줄 다 부르기 전까지
+      if((Date.now() - startTimeRef.value) < bundles.value[1].start + song.value.prelude) {  // 첫 마디 다 부르기 전까지
         lyricUpper.value = bundles.value[bundleIndex.value].lyric;
         lyricLower.value = bundles.value[bundleIndex.value+1].lyric;
       } else if((Date.now() - startTimeRef.value) >= (bundles.value[bundleIndex.value-1].start + song.value.prelude)) {
-        // 첫 줄 다 부르고 난 이후, bundles.value[2]부터 렌더링 시작.
+        // 첫 줄 다 부르고 난 이후, bundles.value[2]부터 
         if(bundleFlag.value && (bundleIndex.value < bundles.value.length)) {
           lyricUpper.value = bundles.value[bundleIndex.value].lyric
           lyricLower.value = bundles.value[bundleIndex.value-1].lyric
@@ -135,54 +134,100 @@ const drawLyrics = () => {
 
           bundleFlag.value = !bundleFlag.value
           bundleIndex.value++;
+        } else {  // bundleIndex.value > bundles.value.length
+          console.log("checkPoint " + bundleIndex.value + " " + bundles.value.length + " " + bundleFlag.value)
+          console.log(lyricUpper.value)
+          console.log(lyricLower.value)
         }
-      }
-
-      ctx.fillStyle = fontColor;
-      ctx.font = fontSize + fontStyle;
-      // ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
-      // ctx.fillText(lyricLower.value, lyricPosX, lyricPosY + lyricInterval); // 렌더링
+      } 
 
       if((Date.now() - startTimeRef.value) >= lyrics.value[lyricBundleIndex.value][lyricIndex.value].start + song.value.prelude) {
         filledFont.value = "";
         extraFont.value = "";
-        // 가사 채우는 렌더링 부분
+        blanckCount.value = 0;  // 띄어쓰기 개수
         for(let i = 0; i < lyrics.value[lyricBundleIndex.value].length; i++) {
           if(i <= lyricIndex.value) {
             filledFont.value += lyrics.value[lyricBundleIndex.value][i].lyric;
+            if(lyrics.value[lyricBundleIndex.value][i].lyric == ' ') blanckCount.value++;
           } else {
             extraFont.value += lyrics.value[lyricBundleIndex.value][i].lyric;
           }
         }
-        console.log(filledFont.value)
-        console.log(extraFont.value);
-        console.log(extraFont.value.length)
+        
         lyricIndex.value++;
+
         if(lyricIndex.value >= lyrics.value[lyricBundleIndex.value].length) {  // 줄바꿈
           lyricBundleIndex.value++;
           lyricIndex.value = 0;
-          filledFont.value = "";
           lyricFlag.value = !lyricFlag.value
         }
 
         if(lyricBundleIndex.value == lyrics.value.length) {
+          // 마지막 가사까지 다 저장했으면 업데이트 그만
           hasNextLyrics.value = false;
         }
       }
-
-      if(lyricFlag.value) {
-        ctx.fillStyle = fontFillColor;
-        ctx.fillText(filledFont.value, lyricPosX, lyricPosY);
-        ctx.fillStyle = fontColor;
-        ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * filledFont.value.length)), lyricPosY);
-      } else {
-        ctx.fillText(filledFont.value, lyricPosX, lyricPosY + lyricInterval);
+    }
+    
+    // 렌더링
+    ctx.font = fontSize + fontStyle;
+    if(bundleIndex.value == bundles.value.length) {  // 노래 마지막 부분
+      if(bundleFlag.value) {  // lyricLower가 마지막 마디인 경우
+        if((Date.now() - startTimeRef.value) < (bundles.value[bundles.value.length-1].start + song.value.prelude)) {  // 마지막 직전 마디 부르는 중 . . .
+          ctx.fillStyle = fontFillColor;
+          ctx.fillText(filledFont.value, lyricPosX, lyricPosY);
+          ctx.fillStyle = fontColor;
+          ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY);
+          ctx.fillText(lyricLower.value, lyricPosX, lyricPosY + lyricInterval);
+        } else {    // // 마지막 마디 부르는 중 . . .
+          ctx.fillStyle = fontFillColor;
+          ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
+          ctx.fillText(filledFont.value, lyricPosX, lyricPosY + lyricInterval);
+          ctx.fillStyle = fontColor;
+          ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY + lyricInterval);
+        }
+      } else {  // lyricUpper가 마지막 마디인 경우
+        if((Date.now() - startTimeRef.value) < (bundles.value[bundles.value.length-1].start + song.value.prelude)) {
+          ctx.fillStyle = fontFillColor;
+          ctx.fillText(filledFont.value, lyricPosX, lyricPosY + lyricInterval);
+          ctx.fillStyle = fontColor;
+          ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY + lyricInterval);
+          ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
+        } else {
+          ctx.fillStyle = fontFillColor;
+          ctx.fillText(lyricLower.value, lyricPosX, lyricPosY + lyricInterval);
+          ctx.fillText(filledFont.value, lyricPosX, lyricPosY);
+          ctx.fillStyle = fontColor;
+          ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY);
+        }
       }
-
+    } else {  // 처음 ~ 마지막 부분 전
+      if(bundleFlag.value) {
+        if(filledFont.value == "" && extraFont.value == "") { // 간주 중 . . .
+          ctx.fillStyle = fontColor;
+          ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
+          ctx.fillText(lyricLower.value, lyricPosX, lyricPosY + lyricInterval);
+        } else {  // 윗 가사 부르는 중
+          ctx.fillStyle = fontFillColor;
+          ctx.fillText(filledFont.value, lyricPosX, lyricPosY);
+          ctx.fillStyle = fontColor;
+          ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY);
+          ctx.fillText(lyricLower.value, lyricPosX, lyricPosY + lyricInterval);
+        }
+      } else {  // 아랫 가사 부르는 중
+        ctx.fillStyle = fontFillColor;
+        ctx.fillText(filledFont.value, lyricPosX, lyricPosY + lyricInterval);
+        ctx.fillStyle = fontColor;
+        ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY + lyricInterval);
+        ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
+      }
     }
 
+    
     if((Date.now() - startTimeRef.value) >= (song.value.length*1000)) {
+      // 노래 재생 시간 >= 노래 시간
       stop();
+      return ;
     }
 
     requestAnimationFrame(renderFrame);
