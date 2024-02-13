@@ -31,11 +31,11 @@ public class ChatController {
     private final static String CHAT_QUEUE_NAME = "chat.queue";
     // /pub/chat.message.{roomId} 로 요청하면 브로커를 통해 처리
     // /exchange/chat.exchange/room.{roomId} 를 구독한 클라이언트에 메시지가 전송된다.
-    @MessageMapping("chat.enter.{chatRoomId}")
+    @MessageMapping("chat.typing.{chatRoomId}")
     public void enterUser(@Payload Chat chat, @DestinationVariable String chatRoomId) throws IOException {
-        chat.setTime(String.valueOf(LocalDateTime.now()));
-        chat.setMessage(chat.getSender() + " 님 " + chat.getRoomId()  +"방 입장!!");
-        chatService.saveToRedis(chat, false);
+//        chat.setTime(String.valueOf(LocalDateTime.now()));
+//        chat.setMessage(chat.getSender() + " 님 " + chat.getRoomId()  +"방 입장!!");
+//        chatService.saveToRedis(chat, false);
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
     }
 
@@ -87,7 +87,12 @@ public class ChatController {
     public void sendMessage(@Payload Chat chat, @DestinationVariable String chatRoomId) throws JsonProcessingException {
         chat.setTime(String.valueOf(LocalDateTime.now()));
         chat.setMessage(chat.getMessage());
-        chatService.saveToRedis(chat, false);
+        if(!chat.getType().toString().equals("TYPING")) {
+            chatService.saveToRedis(chat, false);
+        }
+        else{
+            System.out.println("gdgdgdgdgdg");
+        }
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chatRoomId, chat);
     }
 
