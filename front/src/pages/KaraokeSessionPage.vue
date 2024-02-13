@@ -56,8 +56,10 @@
           />
           <q-btn @click="finishSong()" color="primary" label="종료" />
         </div>
-        <normal-mode ref="normalModeRef" v-if="!songMode" :songData="song"/>
-        <perfect-score ref="perfectScoreRef" v-if="songMode" :songData="song"/>
+        <div>
+          <normal-mode ref="normalModeRef" v-if="!songMode" :songData="song"/>
+          <perfect-score ref="perfectScoreRef" v-if="songMode" :songData="song"/>
+        </div>
       </div>
 
       <!-- 모든 캠 -->
