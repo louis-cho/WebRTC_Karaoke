@@ -47,7 +47,7 @@
 
             <!-- 메시지 입력창 -->
             <div class="img_class1">
-              <textarea v-model="newMessage" @keydown.enter.prevent="sendMessage" placeholder="메시지를 입력하세요..."></textarea>
+              <textarea v-model="newMessage" @keydown.enter.prevent="sendMessage" @change="sendTyping" placeholder="메시지를 입력하세요..."></textarea>
               <label for="fileInput" class="img_label">
                 <img src="@/assets/icon/image.png" alt="File Icon" class="img_class2">
               </label>
@@ -108,17 +108,51 @@ onMounted(async () => {
 });
 
 
+// Inside the handleIncomingMessage function
 function handleIncomingMessage(message) {
   if (message) {
     console.log(message.type);
-    setMessage(message.sender, message.type, message.message, message.time);
-    setTimeout(() => {
-      nextTick(() => {
-        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-      });
-    }, 300);
+
+    // Remove existing TYPE messages
+    const existingTypeMessages = messages.value.filter(msg => msg.type === 'TYPE');
+    existingTypeMessages.forEach(msg => {
+      const index = messages.value.indexOf(msg);
+      messages.value.splice(index, 1);
+    });
+
+    // Handle TYPE message
+    if (message.type === 'TYPE') {
+      setTemporaryMessage(message.sender, 'TYPE', '...', message.time);
+      setTimeout(() => {
+        removeTemporaryMessage(message.sender, 'TYPE');
+      }, 5000); // Adjust the time as needed (e.g., 5000 milliseconds for 5 seconds)
+    }
+
+    // Handle TALK message
+    else if (message.type === 'TALK') {
+      setMessage(message.sender, message.type, message.message, message.time);
+      setTimeout(() => {
+        nextTick(() => {
+          messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+        });
+      }, 300);
+    }
   }
 }
+
+// Add these functions to handle temporary messages
+function setTemporaryMessage(sender, type, message, time) {
+  messages.value.push({ sender, type, message, time, temporary: true });
+}
+
+function removeTemporaryMessage(sender, type) {
+  const temporaryMessages = messages.value.filter(msg => msg.temporary && msg.sender === sender && msg.type === type);
+  temporaryMessages.forEach(msg => {
+    const index = messages.value.indexOf(msg);
+    messages.value.splice(index, 1);
+  });
+}
+
 
 function loadOldMessages() {
   // 로딩 중이면 중복 요청 방지
@@ -215,6 +249,13 @@ const sendMessage = function() {
   }
 }
 
+const sendTyping = function() {
+  console.log("sendTyping");
+    const textMessageString = `{"type": "TYPE", "roomId" : ${roomId.value}, "sender" : ${userPk.value}, "message": "...", "time" : ""}`;
+    // const textMessageString = newMessage.value
+    handleMessage(textMessageString);
+}
+
 
 function handleMessage(msg) {
   try {
@@ -242,6 +283,9 @@ function handleMessage(msg) {
           }, 300);
           // setMessage(result.type, result.message);
           break;
+        case "TYPE":
+             stompClient.value.send(`/pub/chat.typing.${roomId.value}`, {}, JSON.stringify(result));
+              break;
         default:
           console.log('알수없음')
           setMessage('unknown', result.type);
