@@ -66,7 +66,7 @@
             <q-tab name="친구목록" label="친구목록" @click="handleDropdownItemClick('/friend_list')" />
             <q-tab name="포인트" label="포인트" @click="handleDropdownItemClick('/item3')" />
             <q-tab name="프로필 수정" label="프로필 수정" @click="handleDropdownItemClick('/info_edit')" />
-            <q-tab name="로그아웃" label="로그아웃" @click="handleDropdownItemClick('/item5')" />
+            <q-tab name="로그아웃" label="로그아웃" @click="logout()" />
           </q-tabs>
         </div>
 
@@ -139,8 +139,9 @@ import {useNotificationStore} from '@/stores/notificationStore.js';
 import pref from "@/js/config/preference.js";
 import axios from 'axios';
 import { searchUser, fetchUser } from "@/js/user/user.js";
+import useCookie from "../js/cookie.js";
 
-
+const { setCookie, getCookie, removeCookie } = useCookie();
 const notificationStore = useNotificationStore();
 const router = useRouter()
 const isDropdownOpen1 = ref(false)
@@ -180,10 +181,17 @@ const toggleDropdown2 = () => {
   isDropdownOpen2.value = !isDropdownOpen2.value
 }
 
-const handleDropdownItemClick = (itemPath) => {
-  // Dropdown 내 아이템을 클릭했을 때 수행할 로직 추가
-  goToPage(itemPath)
-  toggleDropdown2()
+// 로그아웃
+const logout = () => {
+  if(getCookie("Authorization") != null && getCookie("refreshToken") != null && getCookie("uuid")) {
+    removeCookie("Authorization");
+    removeCookie("refreshToken");
+    removeCookie("uuid");
+    window.location.replace("/")
+  } else {
+    alert("로그인도 안했는데 로그아웃을?")
+
+  }
 }
 
 
