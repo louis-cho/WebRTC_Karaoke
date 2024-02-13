@@ -4,31 +4,53 @@
 
 <script setup>
 // 아래처럼 ref를 사용하여 index.js를 가져오는 부분을 지연시킵니다.
-import { ref, onMounted } from "vue";
-import { parseLyric, parseBundle, parseScore } from '@/js/karaoke/karaokeParser.js'
+import { ref, onMounted, watch } from "vue";
+import {
+  parseLyric,
+  parseBundle,
+  parseScore,
+} from "@/js/karaoke/karaokeParser.js";
+import { useKaraokeStore } from "@/stores/karaokeStore.js";
+
+const store = useKaraokeStore();
 
 const appInstance = ref(null);
 const audio = ref(null);
 
 onMounted(() => {
+  console.log("온마운트");
   import("@/js/perfectScore/index.js").then((module) => {
+    console.log("임포트");
     appInstance.value = module.app;
   });
 });
 
+watch(
+  () => store.songMode,
+  async (newSongMode) => {
+    console.log(newSongMode);
+    if (newSongMode) {
+      const module = await import("@/js/perfectScore/index.js");
+      appInstance.value = module.app;
+    }
+  }
+);
+
 const props = defineProps({
-  songData: Object
+  songData: Object,
 });
 
-const song = ref(null)
+const song = ref(null);
 
 const choose = () => {
   song.value = props.songData;
   appInstance.value.score = parseScore(song.value.score); // 퍼펙트스코어 데이터주입
   appInstance.value.songLength = song.value.length;
   appInstance.value.prelude = song.value.prelude;
-  console.log((parseScore(song.value.score)));
-  appInstance.value.lyrics = parseBundle(parseLyric(parseScore(song.value.score)));  // 가사 연결
+  console.log(parseScore(song.value.score));
+  appInstance.value.lyrics = parseBundle(
+    parseLyric(parseScore(song.value.score))
+  ); // 가사 연결
   audio.value = new Audio(song.value.url); // mp3 url 연결
 };
 
@@ -48,7 +70,6 @@ defineExpose({
   stop,
   choose,
 });
-
 </script>
 
 <style scoped>

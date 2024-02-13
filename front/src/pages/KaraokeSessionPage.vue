@@ -43,23 +43,8 @@
         style="display: flex; flex-direction: row; overflow-x: auto"
       >
         <UserVideo :stream-manager="mainStreamManagerComputed" />
-        <div style="display: flex; flex-direction: column">
-          <q-btn
-            @click="startSong()"
-            color="positive"
-            :label="pref.app.kor.karaoke.session.start"
-          />
-          <q-btn
-            @click="stopSong()"
-            color="negative"
-            :label="pref.app.kor.karaoke.session.stop"
-          />
-          <q-btn @click="finishSong()" color="primary" label="종료" />
-        </div>
-        <div>
-          <normal-mode ref="normalModeRef" v-if="!songMode" :songData="song"/>
-          <perfect-score ref="perfectScoreRef" v-if="songMode" :songData="song"/>
-        </div>
+
+        <song-controller />
       </div>
 
       <!-- 모든 캠 -->
@@ -116,7 +101,7 @@
   <reserve-list />
 
   <update-modal />
-  <invite-modal  :sessionName="store.sessionName"/>
+  <invite-modal :sessionName="store.sessionName" />
 </template>
 
 <script setup>
@@ -125,7 +110,6 @@ import { useRouter } from "vue-router";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import { useNotificationStore } from "@/stores/notificationStore.js";
 import pref from "@/js/config/preference.js";
-import axios from "axios";
 
 import UserVideo from "@/components/karaoke/video/UserVideo.vue";
 import KaraokeChat from "@/components/karaoke/session/KaraokeChat.vue";
@@ -134,19 +118,15 @@ import UpdateModal from "@/components/karaoke/session/UpdateModal.vue";
 import InviteModal from "@/components/karaoke/session/InviteModal.vue";
 import ReserveModal from "@/components/karaoke/song/ReserveModal.vue";
 import ReserveList from "@/components/karaoke/song/ReserveList.vue";
+import SongController from "@/components/karaoke/song/SongController.vue";
 import NormalMode from "@/components/karaoke/NormalMode.vue";
 import PerfectScore from "@/components/karaoke/PerfectScore.vue";
 import useCookie from "@/js/cookie.js";
 const { setCookie, getCookie, removeCookie } = useCookie();
+
 // store 사용
 const store = useKaraokeStore();
 const router = useRouter();
-const songMode = ref(false);
-
-const fileUrl = ref(undefined);
-const recordingId = ref(undefined);
-const perfectScoreRef = ref(null);
-const normalModeRef = ref(null);
 
 // 다시그려내기 위해 computed 작성
 const mainStreamManagerComputed = computed(() => store.mainStreamManager);
@@ -162,8 +142,11 @@ const openModal = () => {
 
 const openInviteModal = () => {
   notificationStore.inviteModal = true;
-  console.log("click : notificationStore.inviteModal : ", notificationStore.inviteModal)
-}
+  console.log(
+    "click : notificationStore.inviteModal : ",
+    notificationStore.inviteModal
+  );
+};
 
 async function leaveSession() {
   await store.leaveSession();
