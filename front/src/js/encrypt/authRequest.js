@@ -84,6 +84,7 @@ async function login(id, pw) {
   // Add your logic here or leave it empty
   // const serverUrl = "http://localhost:8081/api/v1/user/login"; // Update the URL accordingly
   // const serverUrl = "https://i10a705.p.ssafy.io/user/login"; // Update the URL accordingly
+
   const serverUrl =
     pref.app.api.protocol + pref.app.api.host + pref.app.api.user.login;
 
