@@ -185,7 +185,7 @@ const checkInvited = (userPk) => {
 
 async function fetchUserPk() {
   try {
-    const response = await fetch(`http://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${userUUID}`);
+    const response = await fetch(`https://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${userUUID}`);
     const data = await response.json();
     console.log(data)
     return data;
