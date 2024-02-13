@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import pref from "@/js/config/preference.js";
 import axios from "axios";
 import useCookie from "@/js/cookie.js";
+import { EventSourcePolyfill } from 'event-source-polyfill';
 
 export const useNotificationStore = defineStore("notification", {
   state: () => ({
@@ -22,7 +23,14 @@ export const useNotificationStore = defineStore("notification", {
   actions: {
     async setSse() {
       const { setCookie, getCookie, removeCookie } = useCookie();
-      this.sse = new EventSource(pref.app.api.protocol + pref.app.api.host + "/notifications/subscribe");
+      this.sse = new EventSourcePolyfill(pref.app.api.protocol + pref.app.api.host + "/notifications/subscribe",{
+        headers: {
+          Authorization : getCookie("Authorization"),
+          refreshToken : getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      });
+
       this.sse.addEventListener('connect', (response) => {
         console.log('event data: ',response.data);  // "connected!"
       });
