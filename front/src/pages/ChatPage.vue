@@ -122,12 +122,24 @@ function handleIncomingMessage(message) {
 
     // Handle TYPE message
     if (message.type === 'TYPE') {
-      setTemporaryMessage(message.sender, 'TYPE', '...', message.time);
+      // Check if there is an existing TYPE message from the same sender
+      const existingTypeMessage = messages.value.find(msg => msg.sender === message.sender && msg.type === 'TYPE');
+
+      if (existingTypeMessage) {
+        // Update the existing TYPE message with the new content and reset the timer
+        existingTypeMessage.message = '...';
+        clearTimeout(existingTypeMessage.timer);
+      } else {
+        // Add a new TYPE message if no existing one is found
+        setTemporaryMessage(message.sender, 'TYPE', '...', message.time);
+      }
+
       setTimeout(() => {
         nextTick(() => {
           messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
         });
       }, 300);
+
       setTimeout(() => {
         removeTemporaryMessage(message.sender, 'TYPE');
       }, 5000); // Adjust the time as needed (e.g., 5000 milliseconds for 5 seconds)
@@ -145,17 +157,25 @@ function handleIncomingMessage(message) {
   }
 }
 
-// Add these functions to handle temporary messages
-function setTemporaryMessage(sender, type, message, time) {
-  messages.value.push({ sender, type, message, time, temporary: true });
-}
-
 function removeTemporaryMessage(sender, type) {
   const temporaryMessages = messages.value.filter(msg => msg.temporary && msg.sender === sender && msg.type === type);
   temporaryMessages.forEach(msg => {
     const index = messages.value.indexOf(msg);
     messages.value.splice(index, 1);
   });
+}
+
+// Add these functions to handle temporary messages
+function setTemporaryMessage(sender, type, message, time) {
+  const temporaryMessage = { sender, type, message, time, temporary: true };
+
+  // Add the new TYPE message to the messages array
+  messages.value.push(temporaryMessage);
+
+  // Set the timer for the TYPE message
+  temporaryMessage.timer = setTimeout(() => {
+    removeTemporaryMessage(sender, type);
+  }, 5000); // Adjust the time as needed (e.g., 5000 milliseconds for 5 seconds)
 }
 
 
