@@ -19,6 +19,8 @@ export const useKaraokeStore = defineStore("karaoke", {
     chatModal: false,
     inputControllerModal: false,
     inputSelectorModal: false,
+    singing: false,
+    songMode: true,
 
     sessionName: undefined,
     userName: "사용자" + Math.round(Math.random() * 100),
@@ -101,7 +103,7 @@ export const useKaraokeStore = defineStore("karaoke", {
         }
       });
 
-      this.session.on("sessionDisconnected", (event) => {
+      this.session.on("sessionDisconnected", () => {
         if (this.kicked == true) {
           alert("추방당했습니다.");
           window.location.href = "/#/karaoke/";
@@ -118,6 +120,12 @@ export const useKaraokeStore = defineStore("karaoke", {
           messageData["username"] = "나";
         }
         this.messages.push(messageData);
+      });
+
+      this.session.on("signal:sing", (event) => {
+        const singData = JSON.parse(event.data);
+        this.singing = singData.singing;
+        this.songMode = singData.songMode;
       });
     },
 
