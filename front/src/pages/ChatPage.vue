@@ -84,7 +84,7 @@ import logoImage from "@/assets/icon/logo1-removebg-preview.png"
 onMounted(async () => {
   userPk.value = route.query.userPk;
   roomId.value = route.params.roomPk;
-  const socket = new WebSocket('wss://i10a705.p.ssafy.io/api/ws');
+  const socket = new WebSocket(`wss:${pref.app.api.host}/api/ws`);
   stompClient.value = Stomp.over(socket);
 
   stompClient.value.connect({}, () => {
