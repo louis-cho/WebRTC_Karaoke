@@ -178,6 +178,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User user) {
+        System.out.println("업데이트요청들어옴!!");
         User fetchedUser = userRepository.getReferenceById(user.getUserPk());
         if(user.getNickname() != null)
             fetchedUser.setNickname(user.getNickname());

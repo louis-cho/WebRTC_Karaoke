@@ -29,7 +29,7 @@
             <div>
               <p v-if="feed && feed.user">{{ feed.user.nickname }}</p>
             </div>
-            <!-- 게시글 작성자가 로그인되어 있는 사람이라면 -->
+            <!-- 게시글 작성자가 로그인되어 있는 사람이라면, 나라면 -->
             <div v-if="feed.user.userPk === LoggedUserPK" @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정" />
             </div>
@@ -157,7 +157,13 @@
         <q-card-section class="modal-header">
           <div class="user-info">
             <!-- 프로필 이미지 가져오기... -->
-            <!-- <q-avatar class="img-container" /> -->
+            <q-avatar class="img-container"
+            :style="{
+            backgroundImage: `url(${(
+              (feed && feed.user && feed.user.profileImgUrl) ||
+              'https://picsum.photos/200'
+            ).trim()})`,
+          }"/>
             <q-item-section>
               <!-- 닉네임 가져오기 -->
               <!-- <q-item-label>닉네임</q-item-label> -->
@@ -221,10 +227,10 @@ import { fetchLikeCount, createLike, deleteLike } from "@/js/like/like.js";
 import { fetchFeedList, fetchFeed, fetchFeedDelete, fetchFeedUpdate} from "@/js/feed/feed.js";
 import { fetchSong } from "@/js/song/song.js";
 import { fetchUser, getUserPk  } from "@/js/user/user.js";
-// import { login } from '@/js/encrypt/authRequest.js';
 import { useNotificationStore } from "@/stores/notificationStore.js";
 
 const { setCookie, getCookie, removeCookie } = useCookie();
+
 const feed = ref();
 const router = useRouter();
 const comments = ref([]);
@@ -402,14 +408,13 @@ const updateFeed = async(feedId) => {
     console.log('이거거거',feedUpdateStatus.value)
     modalOpen.value = false;
     modal.value=false;
-    // location.reload();
-    // await nextTick();
     router.replace({ name: "feed_detail", params: { feedId: feedUpdate.feedId  } });
     location.reload();
   } catch (error) {
     console.error("피드 수정 에러", error);
   }
 }
+
 // ---------------------------수정모달---------------------------
 const modalOpen = ref(false);
 const selectedOption = ref('공개범위');

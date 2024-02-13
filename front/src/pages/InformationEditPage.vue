@@ -16,7 +16,8 @@
 
       <div>
         <div class="center2">
-          <div for="profileImage" class="profile-img-container" :style="profileImageStyle">
+          <div for="profileImage" class="profile-img-container" >
+            <!-- :style="profileImageStyle" -->
             <input
               type="file"
               id="profileImage"
@@ -31,24 +32,24 @@
         </div>
         <div class="flex-row center input-group">
           <label class="input-group-label" for="nickname">닉네임</label>
-          <input class="input-group-input margin-right-10" type="text">
-          <span>변경</span>
+          <input v-model="newNickname" class="input-group-input margin-right-10" type="text">
+          <!-- <span>변경</span> -->
         </div>
         <div class="flex-row center input-group" >
           <label class="input-group-label" for="nickname">소개 </label>
-          <input class="introduce-padding margin-right-10" type="text">
-          <span>변경</span>
+          <input v-model="newContent" class="introduce-padding margin-right-10" type="text">
+          <!-- <span>변경</span> -->
         </div>
-        <div class="flex-row center input-group">
+        <!-- <div class="flex-row center input-group">
           <label class="input-group-label" for="nickname">비밀번호</label>
           <input class="input-group-input margin-right-10" type="password">
           <span>변경</span>
-        </div>
+        </div> -->
       </div>
 
       <div class="center">
         <div>
-          <q-btn class="button-style1 bg-blue-7 margin-right-10">수정 완료</q-btn>
+          <q-btn @click="updatedUser" class="button-style1 bg-blue-7 margin-right-10">수정 완료</q-btn>
         </div>
         <div>
           <q-btn class="button-style2 bg-red-6">회원 탈퇴</q-btn>
@@ -60,24 +61,81 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeMount } from 'vue'
 import NavBar from '@/layouts/NavBar.vue';
 import TabItem from '@/layouts/TabItem.vue';
 import { useRouter, useRoute } from "vue-router";
-import { updateUser } from '@/js/user/user.js';
-
+import { fetchUser, updateUser, getUserPk } from '@/js/user/user.js';
+import useCookie from "@/js/cookie.js";
 
 const router = useRouter();
+const newNickname = ref();
+const newContent = ref();
+const newprofileImgUrl = ref(null);
+const uuid = ref();
+const LoggedUserPK = ref();
+const userKey = ref();
+const { setCookie, getCookie, removeCookie } = useCookie();
 
+onBeforeMount(async () => {
+  await getLoggedUserPk();
+  await getUser();
+  // 주석처리...!
+  // await updatedUser(userKey);
+});
+
+
+//로그인한 유저 pk 가져오기
+const getLoggedUserPk = async () => {
+  try {
+    uuid.value = getCookie("uuid")
+    const getCurrentUserPk = await getUserPk(uuid.value);
+    // console.log(getCurrentUserPk);
+    LoggedUserPK.value = getCurrentUserPk;
+    // console.log(LoggedUserPK.value)
+  } catch (error) {
+    console.error("오류 발생!!!:", error);
+  }
+};
+
+//유저 정보 가져오기
+const getUser = async () => {
+  try {
+    const user = await fetchUser(LoggedUserPK.value);
+    console.log(user)
+    // console.log(user.userKey)
+    userKey.value = user.userKey
+    console.log(userKey.value)
+    // console.log(user.introduction)
+    // console.log(user.nickname)
+    // console.log(user.profileImgUrl)
+  } catch (error) {
+    console.error("user정보 가져오기 오류 발생:", error);
+  }
+};
 
 const goBack = function () {
   router.go(-1)
 }
 
-// const getUserProfile = function() {
-//   // 유저 프로필 이미지 가져오기 로직...
-//   return 'https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg'
-// }
+
+//user 정보 수정
+const updatedUser = async() => {
+  try {
+    const userUpdate = await updateUser(
+    userKey.value,
+    newNickname.value,
+    newprofileImgUrl.value,
+    newContent.value
+    // LoggedUserPK.value,
+    )
+    console.log('-------2222222222222222------------------')
+    console.log('유저 update 실행 완료',userUpdate);
+
+  } catch (error) {
+    console.error("유저 수정 에러", error);
+  }
+}
 
 const selectedProfileImage = ref('')
 
@@ -100,28 +158,17 @@ const triggerProfileImageInput = () => {
   }
 }
 
-const profileImageStyle = computed(() => ({
-  backgroundImage: `url(${selectedProfileImage.value || getUserProfile()})`
-}))
+// const profileImageStyle = computed(() => ({
+//   backgroundImage: `url(${selectedProfileImage.value || getUserProfile()})`
+// }))
 
 
-const userKey = ref('d25f0071-8bc7-427a-9163-93ed2a6cf4b2');
-const nickname = ref('dd');
-const profileImg = ref('https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg');
-const introduction = ref('소개글임');
+// const userKey = ref('d25f0071-8bc7-427a-9163-93ed2a6cf4b2');
+// const nickname = ref('dd');
+// const profileImg = ref('https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg');
+// const introduction = ref('소개글임');
 
-const handleUpdate = async () => {
-  try {
-    // updateUser 함수 호출
-    const result = await updateUser(userKey.value, nickname.value, profileImg.value, introduction.value);
-    console.log('이거',result);
-  } catch (error) {
-    console.error('개인정보 수정 중 오류 발생:', error);
-  }
-};
-onMounted(() => {
-  handleUpdate();
-});
+
 
 </script>
 
