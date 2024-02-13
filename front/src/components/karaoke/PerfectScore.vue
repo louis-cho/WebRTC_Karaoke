@@ -11,30 +11,19 @@ import {
   parseScore,
 } from "@/js/karaoke/karaokeParser.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
+import { initializeApp, getAppInstance } from "@/js/perfectScore/index.js";
 
 const store = useKaraokeStore();
 
 const appInstance = ref(null);
 const audio = ref(null);
 
-onMounted(() => {
-  console.log("온마운트");
-  import("@/js/perfectScore/index.js").then((module) => {
-    console.log("임포트");
-    appInstance.value = module.app;
-  });
-});
+onMounted(async () => {
+  const appContainer = document.getElementById("app1");
+  initializeApp(appContainer);
 
-watch(
-  () => store.songMode,
-  async (newSongMode) => {
-    console.log(newSongMode);
-    if (newSongMode) {
-      const module = await import("@/js/perfectScore/index.js");
-      appInstance.value = module.app;
-    }
-  }
-);
+  appInstance.value = getAppInstance();
+});
 
 const props = defineProps({
   songData: Object,
