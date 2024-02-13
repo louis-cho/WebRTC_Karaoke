@@ -187,6 +187,7 @@ const logout = () => {
     removeCookie("Authorization");
     removeCookie("refreshToken");
     removeCookie("uuid");
+    alert("로그아웃되었습니다.")
     window.location.replace("/")
   } else {
     alert("로그인도 안했는데 로그아웃을?")

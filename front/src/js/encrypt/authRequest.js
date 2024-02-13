@@ -128,6 +128,7 @@ async function login(id, pw) {
           sameSite: "none",
         });
         isLoggedIn = true;
+        console.log("로그인 성공")
         console.log("서버로부터 받은 결과 >> " + result.nickname);
         store.userName = result.nickname;
       } else {
