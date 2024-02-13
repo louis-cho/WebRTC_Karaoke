@@ -1,18 +1,22 @@
-import app from "../config/preference.js";
-
+import app from "@/js/config/preference.js";
+import useCookie from "@/js/cookie.js";
 let pref = app;
+const { setCookie, getCookie, removeCookie } = useCookie();
 
-export async function fetchUser(userPk) {
+
+export async function fetchUser(uuid) {
   const serverUrl =
     pref.app.api.protocol +
     pref.app.api.host +
-    pref.app.api.user.fetch +
-    userPk;
+    pref.app.api.user.fetch + uuid;
 
   return await fetch(serverUrl, {
-    method: "GET",
+    method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
     },
   })
     .then((response) => response.json())
@@ -23,7 +27,7 @@ export async function fetchUser(userPk) {
 
 // ----------------
 export async function updateUser(
-  userKey,
+  uuid,
   nickname,
   profileImgUrl,
   introduction
@@ -37,7 +41,7 @@ export async function updateUser(
   // const existingUser = await fetchUser(userPk);
   // console.log(existingUser)
   const data = {
-    userKey: userKey, // UUID 형태의 userKey 전달
+    uuid: uuid,
     nickname: nickname,
     profileImgUrl: profileImgUrl,
     introduction: introduction
@@ -46,7 +50,10 @@ export async function updateUser(
   return await fetch(serverUrl, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
     },
     body: JSON.stringify(data),
   })
@@ -72,7 +79,10 @@ export async function searchUser(nickname) {
   return await fetch(serverUrl, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
     },
   })
     .then((response) => response.json())
@@ -90,7 +100,10 @@ export async function getUserPk(uuid) {
   return await fetch(`${serverUrl}?uuid=${uuid}`, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
     },
   })
     .then((response) => response.json())

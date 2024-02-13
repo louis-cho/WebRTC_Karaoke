@@ -29,8 +29,8 @@
             <div>
               <p v-if="feed && feed.user">{{ feed.user.nickname }}</p>
             </div>
-            <!-- 게시글 작성자가 로그인되어 있는 사람이라면, 나라면 -->
-            <div v-if="feed.user.userPk === LoggedUserPK" @click="toggleModal">
+            <!-- 게시글 작성자가 로그인되어 있는 사람이라면 -->
+            <div v-if="feed && feed.user && feed.user.userUUID === uuid.value" @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정" />
             </div>
           </div>
@@ -238,12 +238,10 @@ const newComment = ref("");
 const commentContainer = ref(null);
 const modal = ref(false);
 const isLiked = ref(false);
-const uuid = ref(1);
-// const uuid = ref('')
 const feedId = ref();
 const newContent = ref();
 // const newStatus = ref();
-const LoggedUserPK = ref();
+const uuid = ref(getCookie("uuid"));
 const notificationStore = useNotificationStore();
 
 const goBack = function () {
@@ -256,7 +254,7 @@ const handleLikeClick = async () => {
     //좋아요알림 발송. 자기자신 제외.
     //if(feed.value.user.userKey != 현재로그인한유저.)
     const body = {
-    toUser : feed.value.user.userPk, //받는사람 userPk.
+    toUser : feed.value.user.userUUID, //받는사람 userPk.
     info : `${feed.value.feedId}`,
     type : "like",
     status : '0'
@@ -285,7 +283,7 @@ const toggleModal = () => {
 
 const registComment = () => {
   let comment = {};
-  comment.userPk = 1;
+  comment.userUUID = getCookie("uuid");
   comment.parentCommentId = -1;
   comment.rootCommentId = -1;
   comment.content = newComment.value;
@@ -296,7 +294,7 @@ const registComment = () => {
   //여기 댓글알림 보내기 자기자신게시글일경우 제외.
   // if(feed.value.user.userKey != 현재로그인정보) 인 경우에만 알림보내기
   const body = {
-    toUser : feed.value.user.userPk, //받는사람 userPk.
+    toUser : feed.value.user.userUUID, //받는사람 userPk.
     info : `${feed.value.feedId}`,//친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
     type : "comment", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
     status : '0'
@@ -315,7 +313,7 @@ onBeforeMount(async () => {
 
   console.log(this);
 
-  uuid.value = 1;
+  uuid.value = getCookie("uuid");
   feedId.value = window.location.href.split("/").pop();
 
   feedId.value = isNaN(feedId.value) ? 0 : parseInt(feedId.value);
@@ -324,7 +322,7 @@ onBeforeMount(async () => {
 
   let elem = await fetchFeed(feedId.value);
   elem.song = await fetchSong(elem.songId);
-  elem.user = await fetchUser(elem.userPk);
+  elem.user = await fetchUser(elem.userUUID);
   elem.commentCount = await fetchCommentCount(elem.feedId);
   elem.viewCount = await fetchHitCount(elem.feedId);
   elem.likeCount = await fetchLikeCount(elem.feedId);
@@ -332,13 +330,12 @@ onBeforeMount(async () => {
   feed.value = elem;
 
   await fetchAndRenderComments(feedId.value);
-  await getLoggedUserPk();
   // await updateFeed(feedId.value)
 });
 
-const increaseHitCount = async (feedId, uuid) => {
+const increaseHitCount = async (feedId) => {
   try {
-    await createHit(feedId, uuid);
+    await createHit(feedId);
   } catch (error) {
     console.error("조회수 증가 중 오류 발생:", error);
   }
@@ -363,18 +360,6 @@ async function fetchAndRenderComments(feedId) {
   }
 }
 
-const getLoggedUserPk = async () => {
-  try {
-    // const uuid = '4a5fc76c-03d3-4234-ae2c-4c67019cdd5d';
-    // 실제 UUID 값으로 교체
-    const uuid = getCookie("uuid")
-    const getCurrentUserPk = await getUserPk(uuid);
-    console.log(getCurrentUserPk);
-    LoggedUserPK.value = getCurrentUserPk
-  } catch (error) {
-    console.error("오류 발생!!!:", error);
-  }
-};
 
 
 const deleteFeed = async(feedId) => {
@@ -383,7 +368,7 @@ const deleteFeed = async(feedId) => {
     const feedDelete = await fetchFeedDelete(feedId);
     // console.log('피드 delete',feedDelete);
     modal.value = false;
-    router.push({ name: "feed", params: { userPk: LoggedUserPK.value }});
+    router.push({ name: "feed", params: { userUUID: uuid.value }});
   } catch (error) {
     console.error("피드 삭제 에러", error);
   }

@@ -53,7 +53,8 @@
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import { ref, watchEffect } from "vue";
 import axios from "axios";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 const store = useKaraokeStore();
 
 const lists = ref([]);
@@ -69,16 +70,26 @@ function fetchReserveList() {
 
   // API 호출을 통해 노래 데이터 가져오기
   axios
-    .post(store.APPLICATION_SERVER_URL + "/song/reserveList", {
-      sessionName: store.sessionName,
-    })
+    .post(
+      store.APPLICATION_SERVER_URL + "/song/reserveList",
+      {
+        sessionName: store.sessionName,
+      },
+      {
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
     .then((response) => {
       var id = 1;
       response.data.forEach((item) => {
         const parts = item.split("&");
 
-        if (parts.length === 3) {
-          const [userName, title, singer] = parts;
+        if (parts.length === 4) {
+          const [userName, songId, title, singer] = parts;
           lists.value.push({ id, userName, title, singer });
           id++;
         }
@@ -92,10 +103,20 @@ function fetchReserveList() {
 
 function cancelReserve(hashString) {
   axios
-    .post(store.APPLICATION_SERVER_URL + "/song/cancel", {
-      sessionName: store.sessionName,
-      hashString: hashString,
-    })
+    .post(
+      store.APPLICATION_SERVER_URL + "/song/cancel",
+      {
+        sessionName: store.sessionName,
+        hashString: hashString,
+      },
+      {
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
     .then((response) => {
       fetchReserveList();
     })

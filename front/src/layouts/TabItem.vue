@@ -189,7 +189,13 @@ const goToFeedPage = (param) => {
 const toggleDropdown1 = () => {
 
   if(isDropdownOpen1.value == false){ //드랍다운이 닫혀있었다면
-    axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications`)
+    axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications`,{
+      headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },
+    })
     .then((response) =>{
       notificationStore.notificationList = response.data;
       console.log("알림관련 데이터잘받아와쓰요.");
@@ -224,7 +230,13 @@ const logout = () => {
 const handleNotificationClick = (notification) => {
   console.log("notification", notification.notificationId);
   //알림 읽음으로변경 요청
-  axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications/read/${notification.notificationId}`)
+  axios.get(`${pref.app.api.protocol}${pref.app.api.host}/notifications/read/${notification.notificationId}`,{
+    headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },
+  })
     .then((response) =>{
       console.log("알림상태 잘 수정됐음.");
       //읽음으로 변경됐으면 알림삭제
@@ -256,7 +268,13 @@ const handleNotificationClick = (notification) => {
 
 const readAllNotification = () => {
   console.log("모두읽기가 눌렸어잉");
-  axios.post(`${pref.app.api.protocol}${pref.app.api.host}/notifications/readAll`,notificationStore.notificationList)
+  axios.post(`${pref.app.api.protocol}${pref.app.api.host}/notifications/readAll`,notificationStore.notificationList,{
+    headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },
+  })
   .then((response)=> {
     console.log("모두읽기처리완료");
     notificationStore.notificationList = [];

@@ -1,5 +1,6 @@
 import app from "../config/preference.js";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 let pref = app;
 
 /**
@@ -13,6 +14,8 @@ export async function fetchHitCount(feedId) {
   return await fetch(serverUrl, {
     method: "POST",
     headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
       "Content-Type": "application/json",
     },
   })
@@ -23,18 +26,20 @@ export async function fetchHitCount(feedId) {
     });
 }
 
-export async function createHit(feedId, uuid) {
+export async function createHit(feedId) {
   const serverUrl =
     pref.app.api.protocol + pref.app.api.host + pref.app.api.hit.create;
 
   const data = {
     feedId: String(feedId),
-    userPk: String(uuid),
   };
 
   return await fetch(serverUrl, {
     method: "POST",
     headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      uuid: getCookie("uuid"),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),

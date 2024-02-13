@@ -6,7 +6,7 @@
         <q-form>
           <!-- 세션 ID 입력 -->
           <q-input
-            v-model="store.sessionName"
+            v-model="decodeBase64"
             :label="pref.app.kor.karaoke.list.sessionId"
             outlined
             dense
@@ -80,8 +80,10 @@
 import pref from "@/js/config/preference.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import axios from "axios";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 const store = useKaraokeStore();
+const decodeBase64 = decodeURIComponent(escape(atob(store.sessionName)));
 
 function closeModal() {
   store.updateModal = false;
@@ -100,7 +102,11 @@ function updateSession() {
         password: store.password,
       },
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
       }
     )
     .then((response) => {

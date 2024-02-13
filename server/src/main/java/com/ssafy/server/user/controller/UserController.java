@@ -176,10 +176,16 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/get/{userPk}")
-    public ResponseEntity<User> getUser(@PathVariable int userPk) {
-       try {
-           return new ResponseEntity<>(userService.getUser(userPk), HttpStatus.OK);
+    @PostMapping("/get/{uuid}")
+    public ResponseEntity<User> getUser(@PathVariable String uuid) {
+        User user = null;
+
+        try {
+           int userPk = userService.getUserPk(UUID.fromString(uuid));
+           user = userService.getUser(userPk);
+           ResponseEntity responseEntity = new ResponseEntity<>(user, HttpStatus.OK);
+            System.out.println(user);
+            return responseEntity;
        }
        catch(Exception e) {
            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(UserExceptionEnum.USER_NOT_FOUND));
@@ -189,15 +195,14 @@ public class UserController {
     @PostMapping("/delete")
     public ResponseEntity<Boolean> delete(@RequestBody JsonNode jsonNode) {
         JsonNode uuidNode = jsonNode.get("uuid");
-        JsonNode userPkNode = jsonNode.get("userPk");
 
         int userPk = -1;
 
         try {
-            if (uuidNode == null) {
+            if (uuidNode != null) {
                 userPk = userService.getUserPk(UUID.fromString(uuidNode.asText()));
             } else {
-                userPk = Integer.parseInt(userPkNode.asText());
+                return null;
             }
             userService.deleteUser(userPk);
         } catch(Exception e) {
@@ -208,8 +213,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<Boolean> update(@RequestBody JsonNode jsonNode) {
-        JsonNode userKey = jsonNode.get("userKey");
+    public ResponseEntity<Boolean> update(@CookieValue(name = "uuid") String uuid, @RequestBody JsonNode jsonNode) {
         JsonNode nicknameNode = jsonNode.get("nickname");
         JsonNode profileImgUrlNode = jsonNode.get("profileImgUrl");
         JsonNode introductionNode = jsonNode.get("introduction");
@@ -222,7 +226,7 @@ public class UserController {
         if(profileImgUrlNode != null)
             user.setProfileImgUrl(profileImgUrlNode.asText());
         try {
-            int userPk = userService.getUserPk(UUID.fromString(userKey.asText()));
+            int userPk = userService.getUserPk(UUID.fromString(uuid));
             user.setUserPk(userPk);
             userService.updateUser(user);
         } catch(Exception e ) {

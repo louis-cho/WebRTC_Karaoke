@@ -6,7 +6,13 @@ import com.ssafy.server.user.repository.*;
 import com.ssafy.server.user.secure.RSA_2048;
 import com.ssafy.server.user.util.RSAKeyManager;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.common.unit.Fuzziness;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +20,16 @@ import java.security.spec.RSAPublicKeySpec;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+    @Autowired
+    private ElasticsearchRestTemplate elasticsearchRestTemplate;
     @Autowired
     private UserElasticsearchRepository userElasticsearchRepository;
     private RSAKeyManager keyManager = RSAKeyManager.getInstnace();
@@ -118,6 +129,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(int userPk) throws Exception {
        return userRepository.findByUserPk(userPk);
+    }
+
+    @Override
+    public User getUserfromUUID(String uuid) throws Exception {
+        return userRepository.findByUserPk(getUserPk(UUID.fromString(uuid)));
     }
 
     @Override
@@ -228,7 +244,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDocument> searchUsersByNickname(String nickname) {
-        return userElasticsearchRepository.findByNickname(nickname);
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(fuzzyQuery("nickname", nickname).fuzziness(Fuzziness.AUTO)) // 조절 가능한 fuzziness 값
+                .build();
+
+        SearchHits<UserDocument> searchHits = elasticsearchRestTemplate.search(searchQuery, UserDocument.class);
+        return searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
     }
 
     @Override

@@ -50,7 +50,8 @@ public class RankServiceImpl implements RankService {
         this.elasticsearchClient = elasticsearchClient;
         this.elasticsearchRestTemplate = elasticsearchRestTemplate;
     }
-    @Scheduled(fixedDelay = 10000) // 24시간마다 실행
+
+    @Scheduled(cron = "0 */15 * * * *") // 15분마다 실행
     public void calculateRank() {
         String likesIndexName = "likes"; // like 인덱스
         String hitIndexName = "hits"; // hit 인덱스
