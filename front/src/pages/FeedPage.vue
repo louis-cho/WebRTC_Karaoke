@@ -52,7 +52,7 @@
               <div v-if="feed && feed.song">
                 <span>
                   {{
-                    feed.song.title ? feed.song.title + "-" : "Default Title-"
+                    feed.song.title ? feed.song.txtle + "-" : "Default Title-"
                   }}
                 </span>
                 <span>
@@ -70,7 +70,7 @@
 
         <p v-if="feed">{{ feed.content }}</p>
         <video controls width="100%" ref="videoPlayer">
-          <source :src="feed.VIDEO_URL" type="video/mp4" />
+          <source :src="feed.videoUrl" type="video/mp4" />
         </video>
 
         <div class="flex-row">
@@ -247,8 +247,6 @@ const searchQuery = ref("");
 // }
 
 const toggleLike = async (feedId) => {};
-
-
 </script>
 
 <style scoped>

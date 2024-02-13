@@ -59,7 +59,7 @@ import useCookie from "@/js/cookie.js";
 // UUID를 이용하여 userPk를 가져오는 HTTP 요청 함수
 async function fetchUserPk() {
   try {
-    const response = await fetch(`http://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${userUUID}`);
+    const response = await fetch(`https://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${userUUID}`);
     const data = await response.json();
     return data;
   } catch (error) {

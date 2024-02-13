@@ -41,8 +41,10 @@ const moveX = ref(0);       // 가사가 채워질 때 이동하는 x좌표, 초
 const fontSize = "24px ";
 const fontInterval = 24;    // 가사가 채워질 때 이동하는 x좌표 간격. 모험을 통해 알아가야 함. 24pt Arial 기준 24
 const fontStyle = "Arial";
-const fontColor = "white"
-const fontFillColor = "yellow";
+const fontColor = "black"
+const filledFont = ref("");
+const extraFont = ref("");
+const fontFillColor = "orange";
 const backgroundColor = "black";
 const blankSize = 6.7 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 모험을 통해 알아가야 함. 24pt Arial 기준 6.7
 const countDown = ref("");
@@ -87,23 +89,14 @@ fillText(text, x, y)는 xy 좌표 기준으로 1사분면에 렌더링
 fillRect(x, y, width, height)는 xy좌표 기준 4사분면에 렌더링
 */
 const drawLyrics = () => {
-  const ctx = canvas.value.getContext("2d");
-
-  ctx.fillStyle = backgroundColor;
-  ctx.fillRect(0, 0, canvas.value.width, canvas.value.height);
-
-  lyricUpper.value = bundles.value[0].lyric;
-  lyricLower.value = bundles.value[1].lyric;
-
-  ctx.fillStyle = fontColor;
-  ctx.font = fontSize + fontStyle;
-  ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
-  ctx.fillText(lyricLower.value, lyricPosX, lyricPosY + lyricInterval); // 맨 처음 가사묶음 두개는 노래 시작과 동시에 렌더링
-  bundleIndex.value = 2; // index 0과 1은 미리 rendering하기 때문에 2부터 시작.
 
   startTimeRef.value = Date.now(); // 노래 시작 시간 저장.
   const renderFrame = (timestamp) => {
-    if(hasNextLyrics.value) {
+    const ctx = canvas.value.getContext("2d");
+    ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);   // 초기화
+
+    if(hasNextLyrics.value) { // 렌더링할 가사가 있으면,
+
       // 카운트다운
       const beforeStart = (bundles.value[0].start + song.value.prelude) - (Date.now() - startTimeRef.value);
       if(beforeStart <= 3000 && beforeStart > 2000) {
@@ -115,67 +108,60 @@ const drawLyrics = () => {
       } else {
         countDown.value = "";
       }
-
       if(countDown.value != "") {
-        ctx.fillStyle = backgroundColor;
-        ctx.fillRect(lyricPosX-30, lyricPosY-65, eraserHeight, eraserHeight);
-
         ctx.fillStyle = fontColor;
         ctx.font = fontSize + fontStyle;
         ctx.fillText(countDown.value, lyricPosX-30, lyricPosY-40);
-      } else {
-        ctx.fillStyle = backgroundColor;
-        ctx.fillRect(lyricPosX-30, lyricPosY-70, eraserHeight, eraserHeight);
       }
 
-      if((Date.now() - startTimeRef.value) >= bundles.value[bundleIndex.value-1].start + song.value.prelude) { // 가사 묶음 렌더링 부분
-        // 렌더링할 index-1이 시작되면 렌더링
-        // 현재 bundleIndex가 가리키는 이전 묶음이 시작되면, 새로운 묶음 렌더링
+      if(bundleIndex.value == 0 && (Math.abs((Date.now() - startTimeRef.value) >= (bundles.value[1].start + song.value.prelude)))) {
+        bundleIndex.value = 2;
+      }
 
-        if(bundleFlag.value && bundleIndex.value < bundles.value.length) { // 위에거 업데이트
+      if((Date.now() - startTimeRef.value) < bundles.value[1].start + song.value.prelude) {  // 첫 줄 다 부르기 전까지
+        lyricUpper.value = bundles.value[bundleIndex.value].lyric;
+        lyricLower.value = bundles.value[bundleIndex.value+1].lyric;
+      } else if((Date.now() - startTimeRef.value) >= (bundles.value[bundleIndex.value-1].start + song.value.prelude)) {
+        // 첫 줄 다 부르고 난 이후, bundles.value[2]부터 렌더링 시작.
+        if(bundleFlag.value && (bundleIndex.value < bundles.value.length)) {
           lyricUpper.value = bundles.value[bundleIndex.value].lyric
-          ctx.fillStyle = backgroundColor;
-          ctx.fillRect(lyricPosX, lyricPosY-30, eraserWidth, eraserHeight); // 덮어씌우는 Rect의 시작 y좌표는 css하면서 수정
-          ctx.fillStyle = fontColor;
-          ctx.font = fontSize + fontStyle;
-          ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
+          lyricLower.value = bundles.value[bundleIndex.value-1].lyric
+
           bundleFlag.value = !bundleFlag.value
           bundleIndex.value++;
-        } else if(!bundleFlag.value && bundleIndex.value < bundles.value.length){
+          } else if(!bundleFlag.value && (bundleIndex.value < bundles.value.length)){
+          lyricUpper.value = bundles.value[bundleIndex.value-1].lyric
           lyricLower.value = bundles.value[bundleIndex.value].lyric
-          ctx.fillStyle = backgroundColor;
-          ctx.fillRect(lyricPosX, lyricPosY-30+lyricInterval, eraserWidth, eraserHeight);  // 덮어씌우는 Rect의 시작 y좌표는 css하면서 수정
-          ctx.fillStyle = fontColor;
-          ctx.font = fontSize + fontStyle;
-          ctx.fillText(lyricLower.value, lyricPosX, lyricPosY+lyricInterval);
+
           bundleFlag.value = !bundleFlag.value
           bundleIndex.value++;
         }
       }
 
-      if((Date.now() - startTimeRef.value) >= lyrics.value[lyricBundleIndex.value][lyricIndex.value].start + song.value.prelude) { // 가사 채우는 렌더링 부분
-        lyric.value = lyrics.value[lyricBundleIndex.value][lyricIndex.value].lyric
-        if(lyric.value === ' ') { // 띄어쓰기
-          lyricIndex.value++;
-          moveX.value += blankSize;  // x축을 띄어쓰기 크기만큼 이동
-        } else {
-          // 채우기
-          ctx.fillStyle = fontFillColor;
-          if(lyricFlag.value) {  // 위
-            ctx.fillText(lyric.value, moveX.value, lyricPosY);
-          } else {  // 아래
-            ctx.fillText(lyric.value, moveX.value, lyricPosY+lyricInterval);
+      ctx.fillStyle = fontColor;
+      ctx.font = fontSize + fontStyle;
+      // ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
+      // ctx.fillText(lyricLower.value, lyricPosX, lyricPosY + lyricInterval); // 렌더링
+
+      if((Date.now() - startTimeRef.value) >= lyrics.value[lyricBundleIndex.value][lyricIndex.value].start + song.value.prelude) {
+        filledFont.value = "";
+        extraFont.value = "";
+        // 가사 채우는 렌더링 부분
+        for(let i = 0; i < lyrics.value[lyricBundleIndex.value].length; i++) {
+          if(i <= lyricIndex.value) {
+            filledFont.value += lyrics.value[lyricBundleIndex.value][i].lyric;
+          } else {
+            extraFont.value += lyrics.value[lyricBundleIndex.value][i].lyric;
           }
-
-          // 다음 글자로 인덱스 이동, 렌더링될 위치 이동.
-          lyricIndex.value++;
-          moveX.value += fontInterval; // x축 옮기기.
         }
-
+        console.log(filledFont.value)
+        console.log(extraFont.value);
+        console.log(extraFont.value.length)
+        lyricIndex.value++;
         if(lyricIndex.value >= lyrics.value[lyricBundleIndex.value].length) {  // 줄바꿈
           lyricBundleIndex.value++;
           lyricIndex.value = 0;
-          moveX.value = lyricPosX;
+          filledFont.value = "";
           lyricFlag.value = !lyricFlag.value
         }
 
@@ -183,6 +169,16 @@ const drawLyrics = () => {
           hasNextLyrics.value = false;
         }
       }
+
+      if(lyricFlag.value) {
+        ctx.fillStyle = fontFillColor;
+        ctx.fillText(filledFont.value, lyricPosX, lyricPosY);
+        ctx.fillStyle = fontColor;
+        ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * filledFont.value.length)), lyricPosY);
+      } else {
+        ctx.fillText(filledFont.value, lyricPosX, lyricPosY + lyricInterval);
+      }
+
     }
 
     if((Date.now() - startTimeRef.value) >= (song.value.length*1000)) {
@@ -196,9 +192,6 @@ const drawLyrics = () => {
 };
 
 onMounted(() => {
-  const ctx = canvas.value.getContext('2d');
-  ctx.fillStyle = backgroundColor;
-  ctx.fillRect(0, 0, canvas.value.width, canvas.value.height);
 });
 
 defineExpose({
