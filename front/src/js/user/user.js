@@ -31,15 +31,20 @@ export async function updateUser(
   nickname,
   profileImgUrl,
   introduction
+  // userPk
 ) {
   const serverUrl =
-    pref.app.api.protocol + pref.app.api.host + pref.app.api.user.update;
+    pref.app.api.protocol +
+    pref.app.api.host +
+    pref.app.api.user.update;
 
+  // const existingUser = await fetchUser(userPk);
+  // console.log(existingUser)
   const data = {
     uuid: uuid,
     nickname: nickname,
     profileImgUrl: profileImgUrl,
-    introduction: introduction,
+    introduction: introduction
   };
 
   return await fetch(serverUrl, {
@@ -52,13 +57,14 @@ export async function updateUser(
     },
     body: JSON.stringify(data),
   })
-    .then((response) => response.json())
+    .then(response => response.json())
     .then((result) => {
-      console.log(result);
+      console.log('-------1111111111111111111------------------')
+      console.log('유저정보수정 완료!',result);
       return result;
     })
     .catch((error) => {
-      console.error("개인정보수정", error);
+      console.error("개인정보수정 실패", error);
     });
 }
 // -----------------------------------

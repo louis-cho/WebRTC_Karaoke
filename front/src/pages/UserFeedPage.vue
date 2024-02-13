@@ -14,10 +14,13 @@
         <div>
           <h3 v-if="user">{{ user.nickname }}</h3>
         </div>
-        <div class="icons">
+        <div class="icons" v-if="feedWriterPk !== LoggedUserPK">
           <div><img src="@/assets/icon/send.png" alt="dm"></div>
-          <div><img src="@/assets/icon/wallet.png" alt="지갑"></div>
-          <div><img src="@/assets/icon/setting.png" alt="설정"></div>
+          <!-- <div><img src="@/assets/icon/wallet.png" alt="지갑"></div> -->
+          <!-- <div><img src="@/assets/icon/setting.png" alt="설정"></div> -->
+        </div>
+        <div class="icons" v-else>
+          <div></div>
         </div>
       </div>
       <hr>
@@ -42,6 +45,8 @@
           <div class="actions">
             <q-btn color="primary" label="좋아요 관리" />
             <q-btn color="purple" label="댓글 관리" />
+            <!-- <div></div> -->
+            <!-- <div></div> -->
           </div>
         </div>
       </div>
@@ -69,11 +74,17 @@ import { fetchUser } from "@/js/user/user.js";
 import { fetchLikeCount } from "src/js/like/like";
 import { fetchCommentCount } from "@/js/comment/comment.js";
 import { fetchFriendCount } from "@/js/friends/friends.js";
+import useCookie from "@/js/cookie.js";
+import { getUserPk  } from "@/js/user/user.js";
 
+const { setCookie, getCookie, removeCookie } = useCookie();
 const router = useRouter();
 const route = useRoute()
-
+const LoggedUserPK = ref();
+const uuid = ref(null);
 const userPk = ref(route.params.userPk); // 동적인 userPk를 사용
+const feedWriterPk = ref();
+
 
 const goBack = function () {
   router.go(-1)
@@ -93,8 +104,21 @@ onBeforeMount(async () => {
   await fetchPersonalFeedData();
   await fetchUserData();
   await getFriendCount();
+  await getLoggedUserPk();
 });
 
+//로그인한 유저pk값 가져오기
+const getLoggedUserPk = async () => {
+  try {
+    uuid.value = getCookie("uuid")
+    // console.log("UUID:", uuid.value);
+    const getCurrentUserPk = await getUserPk(uuid.value);
+    console.log(getCurrentUserPk);
+    LoggedUserPK.value = getCurrentUserPk
+  } catch (error) {
+    console.error("오류 발생!!!:", error);
+  }
+};
 
 //유저 정보 가져오기
 const fetchUserData = async () => {
@@ -102,6 +126,9 @@ const fetchUserData = async () => {
     const fetchedUser = await fetchUser(userPk.value);
     user.value = fetchedUser;
     // console.log(user.value);
+    //피드 작성자 pk
+    feedWriterPk.value = user.value.userPk
+    // console.log('피드 작성자 pk',feedWriterPk.value)
   } catch (error) {
     console.error("Error fetching user data:", error.message);
   }
