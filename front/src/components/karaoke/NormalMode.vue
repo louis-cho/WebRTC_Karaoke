@@ -59,8 +59,8 @@ const stop = () => {
   audio.value.currentTime = 0;
   audio.value.pause();
 
-  // const canvas = lyricsCanvas.value;
   const ctx = canvas.value.getContext('2d');
+  ctx.fillStyle = 'black';
   ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);
 }
 /*
@@ -98,7 +98,6 @@ const drawLyrics = () => {
         ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
         bundleFlag.value = !bundleFlag.value
         bundleIndex.value++;
-        // ---------------------------------------------------------------bundleIndex, OUT OF INDEX 처리 필요
       } else {
         lyricLower.value = bundles.value[bundleIndex.value].lyric
         ctx.fillStyle = 'black';
@@ -109,6 +108,7 @@ const drawLyrics = () => {
         bundleFlag.value = !bundleFlag.value
         bundleIndex.value++;
       }
+      if(lyricIndex.value >= bundles.value.length) playMusic.value = false;
     }
 
     if((Date.now() - startTimeRef.value) >= lyrics.value[lyricBundleIndex.value][lyricIndex.value].start + song.value.prelude) { // 가사 채우는 렌더링 부분
