@@ -118,8 +118,11 @@ import UpdateModal from "@/components/karaoke/session/UpdateModal.vue";
 import InviteModal from "@/components/karaoke/session/InviteModal.vue";
 import ReserveModal from "@/components/karaoke/song/ReserveModal.vue";
 import ReserveList from "@/components/karaoke/song/ReserveList.vue";
-
 import SongController from "@/components/karaoke/song/SongController.vue";
+import NormalMode from "@/components/karaoke/NormalMode.vue";
+import PerfectScore from "@/components/karaoke/PerfectScore.vue";
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 
 // store 사용
 const store = useKaraokeStore();

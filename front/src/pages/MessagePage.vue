@@ -95,7 +95,12 @@ const fetchData = async () => {
       params: {
         page: pageNumber.value - 1,
         size: pageSize
-      }
+      },
+      headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },
     });
     paginatedChatRooms.value = response.data.content;
     totalPages.value = response.data.totalPages;
@@ -132,7 +137,13 @@ onMounted(async () => {
 
 const handleCreateChatRoom = async () => {
   try {
-    const response = await axios.post(`${pref.app.api.host}/chatroom/create?name=${newRoomName.value}&host=${userPk}&guests=${newGuests.value.split(',').map(guest => guest.trim())}`);
+    const response = await axios.post(`${pref.app.api.host}/chatroom/create?name=${newRoomName.value}&host=${userPk}&guests=${newGuests.value.split(',').map(guest => guest.trim())}`,null,{
+      headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },
+    });
     console.log("Chat room created successfully");
     closeModal();
     fetchData();

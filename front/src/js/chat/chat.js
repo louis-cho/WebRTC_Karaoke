@@ -1,5 +1,6 @@
 import app from "../config/preference.js";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 let pref = app;
 let stompClient;
 let roomId;
@@ -157,6 +158,11 @@ export async function fetchChatRoomList(userPk) {
   try {
     const response = await fetch(serverUrl, {
       method: 'GET',
+      headers: {
+        Authorization: getCookie("Authorization"),
+        refreshToken: getCookie("refreshToken"),
+        "Content-Type": "application/json",
+      },
     });
 
     const result = await response.json();

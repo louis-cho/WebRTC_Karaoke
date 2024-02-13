@@ -1,6 +1,7 @@
 import app from "../config/preference.js";
-
+import useCookie from "@/js/cookie.js";
 let pref = app;
+const { setCookie, getCookie, removeCookie } = useCookie();
 
 export async function fetchUser(userPk) {
   const serverUrl =
@@ -12,7 +13,10 @@ export async function fetchUser(userPk) {
   return await fetch(serverUrl, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
     },
   })
     .then((response) => response.json())
@@ -41,7 +45,10 @@ export async function updateUser(
   return await fetch(serverUrl, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
     },
     body: JSON.stringify(data),
   })
@@ -66,7 +73,10 @@ export async function searchUser(nickname) {
   return await fetch(serverUrl, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
     },
   })
     .then((response) => response.json())
@@ -84,7 +94,10 @@ export async function getUserPk(uuid) {
   return await fetch(`${serverUrl}?uuid=${uuid}`, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
     },
   })
     .then((response) => response.json())

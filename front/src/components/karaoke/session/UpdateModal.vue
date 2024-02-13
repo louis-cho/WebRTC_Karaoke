@@ -80,7 +80,8 @@
 import pref from "@/js/config/preference.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import axios from "axios";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 const store = useKaraokeStore();
 
 function closeModal() {
@@ -100,7 +101,11 @@ function updateSession() {
         password: store.password,
       },
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },
       }
     )
     .then((response) => {
