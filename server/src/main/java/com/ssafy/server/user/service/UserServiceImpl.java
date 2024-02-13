@@ -185,6 +185,7 @@ public class UserServiceImpl implements UserService {
             fetchedUser.setIntroduction(user.getIntroduction());
         if(user.getProfileImgUrl() != null)
             fetchedUser.setProfileImgUrl(user.getProfileImgUrl());
+        userRepository.save(fetchedUser);
     }
 
     /**
