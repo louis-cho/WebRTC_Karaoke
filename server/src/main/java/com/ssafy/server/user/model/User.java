@@ -29,6 +29,7 @@ public class User {
     private int userPk;
 
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Type(type = "uuid-char")
     @Column(name = "user_key", length = 36)
     private UUID userKey;
 
@@ -44,7 +45,7 @@ public class User {
     @Column(name = "introduction")
     private String introduction;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<RefreshToken> refreshToken;
 
     // Constructors, getters, setters, etc.

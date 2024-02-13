@@ -132,6 +132,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserfromUUID(String uuid) throws Exception {
+        return userRepository.findByUserPk(getUserPk(UUID.fromString(uuid)));
+    }
+
+    @Override
     public User createUser(UserAuth userAuth, String nickname) throws Exception {
 
         int userPk = userAuth.getUserPk();

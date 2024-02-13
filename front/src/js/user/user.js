@@ -1,13 +1,15 @@
+import useCookie from "../cookie.js";
 import app from "../config/preference.js";
 
 let pref = app;
 
-export async function fetchUser(userPk) {
+const { setCookie, getCookie, removeCookie } = useCookie();
+
+export async function fetchUser(uuid) {
   const serverUrl =
     pref.app.api.protocol +
     pref.app.api.host +
-    pref.app.api.user.fetch +
-    userPk;
+    pref.app.api.user.fetch + uuid;
 
   return await fetch(serverUrl, {
     method: "GET",
@@ -23,7 +25,7 @@ export async function fetchUser(userPk) {
 
 // ----------------
 export async function updateUser(
-  userKey,
+  uuid,
   nickname,
   profileImgUrl,
   introduction
@@ -32,7 +34,7 @@ export async function updateUser(
     pref.app.api.protocol + pref.app.api.host + pref.app.api.user.update;
 
   const data = {
-    userKey: userKey, // UUID 형태의 userKey 전달
+    uuid: uuid,
     nickname: nickname,
     profileImgUrl: profileImgUrl,
     introduction: introduction,

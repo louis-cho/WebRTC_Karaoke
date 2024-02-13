@@ -22,6 +22,8 @@ public interface UserService {
 
     UserAuth createUserAuth(String id, String pw, String ip) throws Exception;
 
+    User getUserfromUUID(String uuid) throws Exception;
+
     User getUser(int userPk) throws Exception;
 
     User createUser(UserAuth userAuth,String nickname) throws Exception;

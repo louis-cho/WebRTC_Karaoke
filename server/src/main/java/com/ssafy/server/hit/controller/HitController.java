@@ -39,17 +39,17 @@ public class HitController {
     }
 
     @PostMapping("/create")
-    public void create(@RequestBody JsonNode jsonNode) {
+    public void create(@CookieValue(name = "uuid") String uuid, @RequestBody JsonNode jsonNode) {
         int feedId = -1, userPk = -1;
         UUID userUUID = null;
         try {
             feedId = Integer.parseInt(jsonNode.get("feedId").asText());
-            if(jsonNode.get("uuid") != null) {
-                userUUID = UUID.fromString(jsonNode.get("uuid").asText());
+            if(uuid != null) {
+                userUUID = UUID.fromString(uuid);
                 userPk = userService.getUserPk(userUUID);
             }
             else {
-                userPk = Integer.parseInt(jsonNode.get("userPk").asText());
+                return;
             }
 //            if (hitRepository.findByUserPkAndFeedId(userPk, feedId).isEmpty()) {
 //                hitService.save(feedId, userPk);

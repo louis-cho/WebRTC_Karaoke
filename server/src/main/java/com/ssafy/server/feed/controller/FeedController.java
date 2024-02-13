@@ -8,6 +8,7 @@ import com.ssafy.server.feed.model.Feed;
 import com.ssafy.server.feed.rank.document.FeedStatsDocument;
 import com.ssafy.server.feed.rank.service.RankService;
 import com.ssafy.server.feed.service.FeedService;
+import com.ssafy.server.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,11 +19,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
 @RequestMapping("/api/v1/feed")
 public class FeedController {
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private FeedService feedService;
@@ -72,11 +77,11 @@ public class FeedController {
         return ResponseEntity.ok(topList);
     }
 
-    @GetMapping("/getUser/{userPk}")
-    public ResponseEntity<ApiResponse<List<Feed>>> getFeedByUser(@PathVariable int userPk) {
+    @GetMapping("/getUser")
+    public ResponseEntity<ApiResponse<List<Feed>>> getFeedByUser(@CookieValue String uuid) {
         List<Feed> feeds = null;
         try {
-            feeds = feedService.getFeedByUserPk(userPk);
+            feeds = feedService.getFeedByUserPk(userService.getUserPk(UUID.fromString(uuid)));
         } catch (Exception e){
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_NOT_FOUND));
         }
