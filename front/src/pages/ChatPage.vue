@@ -75,7 +75,7 @@
 <script setup>
 import Stomp from "stompjs";
 import pref from "@/js/config/preference.js";
-import { ref, nextTick, onMounted } from "vue";
+import { ref, nextTick, onMounted, watchEffect } from "vue";
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import NavBar from "@/layouts/NavBar.vue";
@@ -91,20 +91,21 @@ onMounted(async () => {
       stompClient.value.subscribe(`/exchange/chat.exchange/room.${roomId.value}`, (message) => {
           handleIncomingMessage(JSON.parse(message.body));
       });
-      loadOldMessages().then(() => {
-        loadNewMessages().then(() => {
-          setTimeout(() => {
-            nextTick(() => {
-              messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-            });
-          }, 300);
+      fetchData().then(() => {
+        loadOldMessages().then(() => {
+          loadNewMessages().then(() => {
+            setTimeout(() => {
+              nextTick(() => {
+                messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+              });
+            }, 300);
+          });
         });
       });
   });
 
   const response = await axios.get(`${pref.app.api.host}/chatroom/info/${roomId.value}`);
   roomName.value = response.data.roomName;
-  fetchData();
 });
 
 
@@ -389,6 +390,7 @@ const fetchData = async () => {
       const userInfo = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/get/${user.userPk}`);
       chatroomUsers.value.push(userInfo.data);
     }
+    console.log(chatroomUsers)
   } catch (error) {
     console.error("Failed to fetch chat rooms:", error);
   }
@@ -404,7 +406,7 @@ const getNickname = (userPk) => {
       return user.nickname;
     }
   }
-  return 'Unknown';
+  return '(알수없음)';
 };
 
 
