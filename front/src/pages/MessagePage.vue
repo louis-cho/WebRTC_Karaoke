@@ -51,13 +51,10 @@
 <script setup>
 import pref from "@/js/config/preference.js";
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
 import axios from "axios";
 import ChatRoom from "@/components/chat/ChatRoom.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import useCookie from "@/js/cookie.js";
-
-const { params } = useRoute();
 
 // UUID를 이용하여 userPk를 가져오는 HTTP 요청 함수
 async function fetchUserPk() {
@@ -71,7 +68,6 @@ async function fetchUserPk() {
   }
 }
 
-// const userUUID = params.userUUID;
 const { getCookie } = useCookie();
 const userUUID = getCookie("uuid");
 let userPk = null; // userPk 초기화

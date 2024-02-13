@@ -28,7 +28,7 @@
           <div class="chatting-container" style="min-width: 600px; max-width: 600px;">
             <div class="dm-messages" ref="messagesContainer" @scroll="handleScroll">
               <div v-for="(message, index) in messages" :key="index">
-                <div :class="['message', message.sender === userPk ? 'my-message' : 'other-message']">
+                <div :class="['message', message.sender == userPk ? 'my-message' : 'other-message']">
                   <template v-if="message.sender !== userPk">
                     {{ getNickname(message.sender) }}
                   </template>
@@ -79,10 +79,26 @@ import { ref, nextTick, onMounted, watchEffect } from "vue";
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import NavBar from "@/layouts/NavBar.vue";
+import useCookie from "@/js/cookie.js";
 import logoImage from "@/assets/icon/logo1-removebg-preview.png"
 
+const { getCookie } = useCookie();
+const userUUID = getCookie("uuid");
+
+async function fetchUserPk() {
+  try {
+    const response = await fetch(`http://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${userUUID}`);
+    const data = await response.json();
+    console.log(data)
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch userPk:", error);
+    throw error;
+  }
+}
+
 onMounted(async () => {
-  userPk.value = route.query.userPk;
+  userPk.value = await fetchUserPk();
   roomId.value = route.params.roomPk;
   const socket = new WebSocket(`${pref.app.api.websocket}/api/ws`);
   stompClient.value = Stomp.over(socket);
@@ -98,7 +114,7 @@ onMounted(async () => {
               nextTick(() => {
                 messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
               });
-            }, 300);
+            }, 150);
           });
         });
       });
