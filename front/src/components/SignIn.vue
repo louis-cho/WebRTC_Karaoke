@@ -27,6 +27,7 @@
             v-model="loginForm.password"
             label="비밀번호"
             type="password"
+            @keydown.enter="login"
           />
         </q-card-section>
 
