@@ -13,7 +13,7 @@
       >
         <q-toolbar-title style="font-size: 40px"
           >{{ pref.app.kor.karaoke.list.sessionId }} :
-          {{ store.sessionName }}</q-toolbar-title
+          {{ decodeBase64(store.sessionName) }}</q-toolbar-title
         >
         <div style="display: flex">
           <q-btn
@@ -159,6 +159,10 @@ function updateMainVideoStreamManager(stream) {
 const toggleModal = (modalName) => {
   store.toggleModals[modalName] = true;
 };
+
+function decodeBase64(encodedString) {
+  return decodeURIComponent(escape(atob(encodedString)));
+}
 </script>
 
 <style scoped>

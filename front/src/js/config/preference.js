@@ -10,7 +10,7 @@ app.api.socket = "wss:";
 // app.api.protocol = "http:";
 // app.api.host = "//localhost:8081" + app.api.prefix;
 // app.api.websocket = app.api.socket + "//localhost:8081"
-app.api.websocket = app.api.socket + "//i10a705.p.ssafy.io"
+app.api.websocket = app.api.socket + "//i10a705.p.ssafy.io";
 
 app.api.user = {};
 app.api.user.login = "/user/login";
@@ -18,7 +18,7 @@ app.api.user.register = "/user/register";
 app.api.user.fetch = "/user/get/";
 app.api.user.update = "/user/update";
 app.api.user.search = "/user/search/";
-app.api.user.getUserPK = "/user/getPk"
+app.api.user.getUserPK = "/user/getPk";
 
 app.api.comment = {};
 app.api.comment.fetch = "/comment/feed/";

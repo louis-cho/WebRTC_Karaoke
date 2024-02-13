@@ -21,7 +21,7 @@
               <q-item-section>
                 <q-item-label
                   >{{ pref.app.kor.karaoke.list.sessionId }} :
-                  {{ session.sessionId }}</q-item-label
+                  {{ decodeBase64(session.sessionId) }}</q-item-label
                 >
                 <q-item-label caption>
                   {{ pref.app.kor.karaoke.list.numberOfParticipants }} :
@@ -79,6 +79,10 @@ const openModal = () => {
 
 async function joinSession(url) {
   router.push("karaoke/" + url);
+}
+
+function decodeBase64(encodedString) {
+  return decodeURIComponent(escape(atob(encodedString)));
 }
 </script>
 
