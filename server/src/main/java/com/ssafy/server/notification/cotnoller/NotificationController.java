@@ -5,6 +5,7 @@ import com.ssafy.server.notification.dto.NotificationResponseDto;
 import com.ssafy.server.notification.entity.Notification;
 import com.ssafy.server.notification.service.NotificationService;
 import com.ssafy.server.notification.util.SseEmitters;
+import io.lettuce.core.output.ScanOutput;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +29,10 @@ public class NotificationController {
 
     //요청보낸 유저의 구독(연결) 요청
     @GetMapping(value = "/subscribe")
-    public ResponseEntity<SseEmitter> subscribe() throws IOException {
+    public ResponseEntity<SseEmitter> subscribe(HttpServletRequest request) throws IOException {
+        System.out.println("----------subscribe-----------");
+        String test = request.getHeader("Authorization");
+        System.out.println("Subscribe! Authorization : "+test);
         System.out.println("subscribe() 컨트롤러 메소드 호출");
         Integer userPk = 1; //추후 헤더에서 가져온다. 로그인한 유저 아이디
         SseEmitter emitter = new SseEmitter(60 * 60 * 1000L); //새로운 연결 객체 생성. 매개변수로 만료시간 줄 수 있다. 1시간.
@@ -73,8 +78,12 @@ public class NotificationController {
 
     //안읽은 알림개수
     @GetMapping("/count")
-    Integer countUnreadNotifications(){
+    Integer countUnreadNotifications(HttpServletRequest request){
         int toUser = 1; //추후 헤더같은곳에서 가져온 로그인한 유저아이디.
+        System.out.println("----------countNOtification-----------");
+        String test = request.getHeader("Authorization");
+        System.out.println("count! Authorization : "+test);
+        System.out.println("count 컨트롤러 메소드 호출");
         Integer count = notificationService.countUnReadNotifications(toUser);
         if(count == null) count = 0;
         return count;
