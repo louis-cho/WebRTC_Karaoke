@@ -30,7 +30,8 @@
     "vue": "^3.4.15",
     "vue-pdf-embed": "^1.1.4",
     "vue3-lottie": "^2.2.5",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "event-source-polyfill": "1.0.31"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.19.1",
