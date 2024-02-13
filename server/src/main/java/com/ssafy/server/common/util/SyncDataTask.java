@@ -22,8 +22,8 @@ public class SyncDataTask {
 
     @Autowired
     private HitService hitService;
-    
-    @Scheduled(fixedDelay = 10000)
+
+    @Scheduled(fixedRate = 15 * 60 * 1000) // 15분마다 실행
     public void syncDataToDB() {
         syncLikesDataToDB();
         syncHitsDataToDB();
