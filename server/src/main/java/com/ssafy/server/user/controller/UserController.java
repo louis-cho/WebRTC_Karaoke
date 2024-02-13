@@ -46,6 +46,11 @@ public class UserController {
         return userService.getUserPk(uuid);
     }
 
+    @GetMapping("/getUUID")
+    public UUID UUIDTest(@RequestParam int pk){
+        return userService.getUUIDByUserPk(pk);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<String> login(HttpServletRequest servletRequest,  @RequestBody JsonNode request) throws Exception{
 

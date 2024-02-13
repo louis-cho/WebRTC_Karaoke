@@ -541,7 +541,10 @@ const fetchData = async () => {
     chatroomUsers.value = [];
     // chatRoomUsers 배열에 각 사용자의 정보 추가
     for (const user of users) {
-      const userInfo = await axios.post(`https://i10a705.p.ssafy.io/api/v1/user/get/${user.userKey}`,{
+      console.log(user)
+      const a = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${user.userPk}`);
+      console.log(a)
+      const userInfo = await axios.post(`https://i10a705.p.ssafy.io/api/v1/user/getPk/${user.userPk}`,{
         headers: {
       Authorization: getCookie("Authorization"),
       refreshToken: getCookie("refreshToken"),
