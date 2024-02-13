@@ -138,6 +138,7 @@ export async function addComment(comment) {
     headers: {
       Authorization: getCookie("Authorization"),
       refreshToken: getCookie("refreshToken"),
+      uuid: getCookie("uuid"),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(comment),

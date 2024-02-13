@@ -36,7 +36,7 @@ public class LikeController {
      * @return
      */
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<Boolean>> create(@CookieValue(name = "uuid") String uuid, @RequestBody JsonNode jsonNode) {
+    public ResponseEntity<ApiResponse<Boolean>> create(@RequestHeader(name = "uuid") String uuid, @RequestBody JsonNode jsonNode) {
         int feedId = -1, userPk = -1;
         UUID userUUID = null;
         try {
@@ -56,7 +56,7 @@ public class LikeController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<ApiResponse<Boolean>> delete(@CookieValue(name = "uuid") String uuid, @RequestBody JsonNode jsonNode) {
+    public ResponseEntity<ApiResponse<Boolean>> delete(@RequestHeader(name = "uuid") String uuid, @RequestBody JsonNode jsonNode) {
         int feedId = -1, userPk = -1;
         UUID userUUID = null;
         try {
