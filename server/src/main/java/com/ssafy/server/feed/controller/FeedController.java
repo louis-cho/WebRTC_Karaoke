@@ -58,7 +58,7 @@ public class FeedController {
                         userPk = feed.getUserPk();
                         UUID uuid = null;
                         try {
-                            uuid = userService.getUser(userPk).getUserKey();
+                            uuid = userService.getUUIDByUserPk(userPk);
                         } catch (Exception e) {
                             return null;
                         }

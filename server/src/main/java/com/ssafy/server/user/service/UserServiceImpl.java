@@ -256,4 +256,12 @@ public class UserServiceImpl implements UserService {
     public String getUserNickname(int userPk) throws Exception {
         return getUser(userPk).getNickname();
     }
+
+    @Override
+    public UUID getUUIDByUserPk(Integer userPk) {
+        // userPk로부터 UUID를 가져오는 예제 코드
+        UserKeyMapping userKeyMapping = userKeyMappingRepository.findByUserPk(userPk)
+                .orElseThrow(() -> new RuntimeException("UUID not found for userPk: " + userPk));
+        return userKeyMapping.getUuid();
+    }
 }
