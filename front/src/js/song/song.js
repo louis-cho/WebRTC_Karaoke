@@ -15,5 +15,5 @@ export async function fetchSong(songId) {
   .then(response => response.json())
   .then(result => {
     return result;
-    });
+    })
 }

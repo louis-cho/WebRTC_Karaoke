@@ -87,7 +87,7 @@ public class ChatController {
     public void sendMessage(@Payload Chat chat, @DestinationVariable String chatRoomId) throws JsonProcessingException {
         chat.setTime(String.valueOf(LocalDateTime.now()));
         chat.setMessage(chat.getMessage());
-        if(!chat.getType().toString().equals("TYPING")) {
+        if(!chat.getType().toString().equals("TYPE")) {
             chatService.saveToRedis(chat, false);
         }
         else{
