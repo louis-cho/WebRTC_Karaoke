@@ -31,7 +31,7 @@ public class User {
     @Column(name = "user_pk")
     private int userPk;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+
     @Type(type = "uuid-char")
     @Column(name = "user_key", length = 36)
     private UUID userKey;
