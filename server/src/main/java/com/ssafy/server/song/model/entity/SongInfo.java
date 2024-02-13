@@ -16,6 +16,8 @@ public class SongInfo {
     private int songId;
     @Column(name = "length")
     private int length;
+    @Column(name = "prelude")
+    private int prelude;
     @Column(name = "genre")
     private String genre;
     @Column(name = "mml_data")
