@@ -18,7 +18,7 @@ export async function fetchFeedList(pageNo, pageSize) {
   })
   .then(response => response.json())
   .then(result => {
-      return result.content;
+      return result;
     });
 }
 
@@ -96,8 +96,8 @@ export async function fetchFeedUpdate(feedId,newContent,newStatus) {
     userPk: existingFeed.userPk,
     songId: existingFeed.songId,
     title: existingFeed.title,
-    // content: newContent || existingFeed.content,
-    content: newContent,
+    content: newContent || existingFeed.content,
+    // content: newContent,
     thumbnailUrl: existingFeed.thumbnailUrl,
     videoUrl: existingFeed.videoUrl,
     videoLength: existingFeed.videoLength,

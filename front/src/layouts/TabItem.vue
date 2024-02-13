@@ -21,7 +21,7 @@
 
       <div class="container">
         <q-tabs>
-          <q-tab name="person" icon="person" @click="goToPage('/my_profile')"/>
+          <q-tab name="person" icon="person" @click="goToFeedPage(LoggedUserPK)"/>
           <q-tab name="notifications" icon="notifications" @click="toggleDropdown1"/>
           {{ notificationStore.bellCount }}
           <q-tab name="menu" icon="menu" @click="toggleDropdown2"/>
@@ -63,9 +63,9 @@
         <div v-if="isDropdownOpen2" class="dropdown-content">
           <q-tabs vertical>
             <q-tab name="유저검색" label="유저검색" @click="openUserSearchModal" />
-            <q-tab name="친구목록" label="친구목록" @click="handleDropdownItemClick('/friend_list')" />
-            <q-tab name="포인트" label="포인트" @click="handleDropdownItemClick('/item3')" />
-            <q-tab name="프로필 수정" label="프로필 수정" @click="handleDropdownItemClick('/info_edit')" />
+            <q-tab name="친구목록" label="친구목록" @click="goToPage('/friend_list')" />
+            <!-- <q-tab name="포인트" label="포인트" @click="handleDropdownItemClick('/item3')" /> -->
+            <q-tab name="프로필 수정" label="프로필 수정" @click="goToPage('/info_edit')" />
             <q-tab name="로그아웃" label="로그아웃" @click="logout()" />
           </q-tabs>
         </div>
@@ -133,19 +133,22 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import {useNotificationStore} from '@/stores/notificationStore.js';
 import pref from "@/js/config/preference.js";
 import axios from 'axios';
 import { searchUser, fetchUser } from "@/js/user/user.js";
-import useCookie from "../js/cookie.js";
+import useCookie from "@/js/cookie.js";
+import { getUserPk  } from "@/js/user/user.js";
 
 const { setCookie, getCookie, removeCookie } = useCookie();
 const notificationStore = useNotificationStore();
 const router = useRouter()
 const isDropdownOpen1 = ref(false)
 const isDropdownOpen2 = ref(false)
+const LoggedUserPK = ref();
+const uuid = ref(null);
 
 const userSearchModal = ref(false);
 const openUserSearchModal = () => {
@@ -157,9 +160,30 @@ const search = ref('');
 //친구인지 아닌지 판별 변수
 const ex = ref(false);
 
+onBeforeMount(async () => {
+await getLoggedUserPk();
+});
+
 // 이벤트 핸들러 추가
 const goToPage = (path) => {
   router.push(path);
+}
+
+
+const getLoggedUserPk = async () => {
+  try {
+    uuid.value = getCookie("uuid")
+    // console.log("UUID:", uuid.value);
+    const getCurrentUserPk = await getUserPk(uuid.value);
+    console.log(getCurrentUserPk);
+    LoggedUserPK.value = getCurrentUserPk
+  } catch (error) {
+    console.error("오류 발생!!!:", error);
+  }
+};
+
+const goToFeedPage = (param) => {
+  router.push({ name: "feed", params: { userPk: param } });
 }
 
 const toggleDropdown1 = () => {
@@ -320,6 +344,8 @@ const searchNickname = async function () {
     console.error("Error fetching user data:", error);
   }
 };
+
+
 </script>
 
 

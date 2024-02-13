@@ -1,17 +1,17 @@
-import app from "../config/preference.js";
+import app from "@/js/config/preference.js";
 import useCookie from "@/js/cookie.js";
 let pref = app;
 const { setCookie, getCookie, removeCookie } = useCookie();
 
-export async function fetchUser(userPk) {
+
+export async function fetchUser(uuid) {
   const serverUrl =
     pref.app.api.protocol +
     pref.app.api.host +
-    pref.app.api.user.fetch +
-    userPk;
+    pref.app.api.user.fetch + uuid;
 
   return await fetch(serverUrl, {
-    method: "GET",
+    method: "POST",
     headers: {
       "Authorization" : getCookie("Authorization"),
       "refreshToken" : getCookie("refreshToken"),
@@ -27,19 +27,24 @@ export async function fetchUser(userPk) {
 
 // ----------------
 export async function updateUser(
-  userKey,
+  uuid,
   nickname,
   profileImgUrl,
   introduction
+  // userPk
 ) {
   const serverUrl =
-    pref.app.api.protocol + pref.app.api.host + pref.app.api.user.update;
+    pref.app.api.protocol +
+    pref.app.api.host +
+    pref.app.api.user.update;
 
+  // const existingUser = await fetchUser(userPk);
+  // console.log(existingUser)
   const data = {
-    userKey: userKey, // UUID 형태의 userKey 전달
+    uuid: uuid,
     nickname: nickname,
     profileImgUrl: profileImgUrl,
-    introduction: introduction,
+    introduction: introduction
   };
 
   return await fetch(serverUrl, {
@@ -52,13 +57,14 @@ export async function updateUser(
     },
     body: JSON.stringify(data),
   })
-    .then((response) => response.json())
+    .then(response => response.json())
     .then((result) => {
-      console.log(result);
+      console.log('-------1111111111111111111------------------')
+      console.log('유저정보수정 완료!',result);
       return result;
     })
     .catch((error) => {
-      console.error("개인정보수정", error);
+      console.error("개인정보수정 실패", error);
     });
 }
 // -----------------------------------

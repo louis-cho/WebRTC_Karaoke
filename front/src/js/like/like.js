@@ -29,13 +29,12 @@ export async function fetchLikeCount(feedId) {
     });
 }
 
-export async function createLike(feedId, uuid) {
+export async function createLike(feedId) {
   const serverUrl =
     pref.app.api.protocol + pref.app.api.host + pref.app.api.like.create;
 
   const data = {
-    feedId: String(feedId),
-    userPk: String(uuid),
+    feedId: feedId
   };
 
   await fetch(serverUrl, {
@@ -43,6 +42,7 @@ export async function createLike(feedId, uuid) {
     headers: {
       Authorization: getCookie("Authorization"),
       refreshToken: getCookie("refreshToken"),
+      uuid: getCookie("uuid"),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
@@ -51,13 +51,12 @@ export async function createLike(feedId, uuid) {
   return fetchLikeCount(feedId);
 }
 
-export async function deleteLike(feedId, uuid) {
+export async function deleteLike(feedId) {
   const serverUrl =
     pref.app.api.protocol + pref.app.api.host + pref.app.api.like.delete;
 
   const data = {
-    feedId: String(feedId),
-    userPk: String(uuid),
+    feedId: feedId,
   };
 
   await fetch(serverUrl, {
@@ -65,6 +64,7 @@ export async function deleteLike(feedId, uuid) {
     headers: {
       Authorization: getCookie("Authorization"),
       refreshToken: getCookie("refreshToken"),
+      uuid: getCookie("uuid"),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),

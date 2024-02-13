@@ -132,6 +132,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserfromUUID(String uuid) throws Exception {
+        return userRepository.findByUserPk(getUserPk(UUID.fromString(uuid)));
+    }
+
+    @Override
     public User createUser(UserAuth userAuth, String nickname) throws Exception {
 
         int userPk = userAuth.getUserPk();
@@ -189,6 +194,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User user) {
+        System.out.println("업데이트요청들어옴!!");
         User fetchedUser = userRepository.getReferenceById(user.getUserPk());
         if(user.getNickname() != null)
             fetchedUser.setNickname(user.getNickname());
@@ -196,6 +202,7 @@ public class UserServiceImpl implements UserService {
             fetchedUser.setIntroduction(user.getIntroduction());
         if(user.getProfileImgUrl() != null)
             fetchedUser.setProfileImgUrl(user.getProfileImgUrl());
+        userRepository.save(fetchedUser);
     }
 
     /**
@@ -248,5 +255,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getUserNickname(int userPk) throws Exception {
         return getUser(userPk).getNickname();
+    }
+
+    @Override
+    public UUID getUUIDByUserPk(Integer userPk) {
+        // userPk로부터 UUID를 가져오는 예제 코드
+        UserKeyMapping userKeyMapping = userKeyMappingRepository.findByUserPk(userPk)
+                .orElseThrow(() -> new RuntimeException("UUID not found for userPk: " + userPk));
+        return userKeyMapping.getUuid();
     }
 }

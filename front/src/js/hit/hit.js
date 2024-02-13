@@ -26,13 +26,12 @@ export async function fetchHitCount(feedId) {
     });
 }
 
-export async function createHit(feedId, uuid) {
+export async function createHit(feedId) {
   const serverUrl =
     pref.app.api.protocol + pref.app.api.host + pref.app.api.hit.create;
 
   const data = {
     feedId: String(feedId),
-    userPk: String(uuid),
   };
 
   return await fetch(serverUrl, {
@@ -40,6 +39,7 @@ export async function createHit(feedId, uuid) {
     headers: {
       Authorization: getCookie("Authorization"),
       refreshToken: getCookie("refreshToken"),
+      uuid: getCookie("uuid"),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),

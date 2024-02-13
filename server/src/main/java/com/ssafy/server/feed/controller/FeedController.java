@@ -6,9 +6,11 @@ import com.ssafy.server.common.error.ApiExceptionFactory;
 import com.ssafy.server.feed.error.FeedExceptionEnum;
 import com.ssafy.server.feed.model.Feed;
 import com.ssafy.server.feed.model.FeedResponse;
+import com.ssafy.server.feed.model.FeedResponseFactory;
 import com.ssafy.server.feed.rank.document.FeedStatsDocument;
 import com.ssafy.server.feed.rank.service.RankService;
 import com.ssafy.server.feed.service.FeedService;
+import com.ssafy.server.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,11 +21,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("/api/v1/feed")
 public class FeedController {
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private FeedService feedService;
@@ -33,29 +41,59 @@ public class FeedController {
 
     //그냥 전체 Feed 목록 Default를 최신순으로
     @GetMapping("/get/all")
-    public ResponseEntity<Page<Feed>> getAllPost(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<List<FeedResponse>> getAllPost(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "10") int size){
         Page<Feed> recentPageList;
+        List<FeedResponse> response;
         try{
             Pageable pageable = PageRequest.of(page, size);
             recentPageList = feedService.sortRecentFeedList(pageable);
+
+            response = recentPageList.getContent()
+                    .stream()
+                    .map(feed -> {
+                        int userPk = -1;
+                        if(feed.getUserPk() == null)
+                            return null;
+                        userPk = feed.getUserPk();
+                        UUID uuid = null;
+                        try {
+                            uuid = userService.getUUIDByUserPk(userPk);
+                        } catch (Exception e) {
+                            return null;
+                        }
+                        if(uuid == null) {
+                            return null; // 또는 원하는 다른 값으로 대체
+                        }
+                        return FeedResponseFactory.createFeedResponseFromFeed(feed, uuid);
+                    })
+                    .filter(Objects::nonNull) // null 값 필터링
+                    .collect(Collectors.toList());
+
         } catch (Exception e){
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_SORT_ERROR));
         }
-        return ResponseEntity.ok(recentPageList);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/get/old")
-    public ResponseEntity<Page<Feed>> getOldPost(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<List<FeedResponse>> getOldPost(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "10") int size){
         Page<Feed> oldPageList;
+        List<FeedResponse> response;
         try {
             Pageable pageable = PageRequest.of(page, size);
             oldPageList = feedService.sortOldFeedList(pageable);
+
+            response = oldPageList.getContent()
+                    .stream()
+                    .map(feed -> FeedResponseFactory.createFeedResponseFromFeed(feed, userService.getUUID(String.valueOf(feed.getUserPk()))))
+                    .collect(Collectors.toList());
+
         } catch (Exception e) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_SORT_ERROR));
         }
-        return ResponseEntity.ok(oldPageList);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/get/top100")
@@ -73,11 +111,11 @@ public class FeedController {
         return ResponseEntity.ok(topList);
     }
 
-    @GetMapping("/getUser/{userPk}")
-    public ResponseEntity<ApiResponse<List<FeedResponse>>> getFeedByUser(@PathVariable int userPk) {
+    @GetMapping("/getUser/{uuid}")
+    public ResponseEntity<ApiResponse<List<FeedResponse>>> getFeedByUser(@RequestParam String uuid) {
         List<FeedResponse> feeds = null;
         try {
-            feeds = feedService.getFeedByUserPk(userPk);
+            feeds = feedService.getFeedByUserPk(userService.getUserPk(UUID.fromString(uuid)));
         } catch (Exception e){
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_NOT_FOUND));
         }
@@ -85,20 +123,25 @@ public class FeedController {
     }
 
     @GetMapping("/get/{feedId}")
-    public ResponseEntity<Feed> getPostById(@PathVariable int feedId) {
+    public ResponseEntity<FeedResponse> getPostById(@PathVariable int feedId) {
         Feed post;
+        FeedResponse response = null;
         try {
             post = feedService.getFeedById(feedId);
+            response = FeedResponseFactory.createFeedResponseFromFeed(post, userService.getUser(post.getUserPk()).getUserKey());
         } catch (Exception e){
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_NOT_FOUND));
         }
-        return ResponseEntity.ok(post);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<?>> createPost(@RequestBody Feed feed) {
+    public ResponseEntity<ApiResponse<?>> createPost(@CookieValue(name = "uuid") String uuid, @RequestBody Feed feed) {
         Feed createdPost;
+        int userPk = -1;
         try {
+            userPk = userService.getUserPk(UUID.fromString(uuid));
+            feed.setUserPk(userPk);
             createdPost = feedService.createFeed(feed);
         } catch (Exception e) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_CREATION_FAILED));
