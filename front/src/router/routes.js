@@ -24,7 +24,7 @@ const routes = [
     component: () => import("@/pages/FeedPage.vue"),
   },
   {
-    path: "/message/:userPk",
+    path: "/message",
     component: () => import("@/pages/MessagePage.vue"),
   },
   {
