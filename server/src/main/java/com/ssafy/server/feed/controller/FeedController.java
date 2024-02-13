@@ -5,6 +5,7 @@ import com.ssafy.server.common.error.ApiException;
 import com.ssafy.server.common.error.ApiExceptionFactory;
 import com.ssafy.server.feed.error.FeedExceptionEnum;
 import com.ssafy.server.feed.model.Feed;
+import com.ssafy.server.feed.model.FeedResponse;
 import com.ssafy.server.feed.rank.document.FeedStatsDocument;
 import com.ssafy.server.feed.rank.service.RankService;
 import com.ssafy.server.feed.service.FeedService;

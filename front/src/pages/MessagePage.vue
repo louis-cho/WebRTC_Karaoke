@@ -51,13 +51,10 @@
 <script setup>
 import pref from "@/js/config/preference.js";
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
 import axios from "axios";
 import ChatRoom from "@/components/chat/ChatRoom.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import useCookie from "@/js/cookie.js";
-
-const { params } = useRoute();
 
 // UUID를 이용하여 userPk를 가져오는 HTTP 요청 함수
 async function fetchUserPk() {
@@ -71,14 +68,13 @@ async function fetchUserPk() {
   }
 }
 
-// const userUUID = params.userUUID;
 const { getCookie } = useCookie();
 const userUUID = getCookie("uuid");
 let userPk = null; // userPk 초기화
 
-let pageNumber = 1; // 현재 페이지 번호
+let pageNumber = ref(1); // 현재 페이지 번호
 const pageSize = 10; // 페이지당 표시할 아이템 수
-let totalPages = 1; // 전체 페이지 수
+let totalPages = ref(1); // 전체 페이지 수
 
 const paginatedChatRooms = ref([]);
 const modalOpen = ref(false); // 모달을 열기 위한 변수
@@ -97,14 +93,35 @@ const fetchData = async () => {
   try {
     const response = await axios.get(`${pref.app.api.host}/chatroom/list/${userPk}`, {
       params: {
-        page: pageNumber - 1,
+        page: pageNumber.value - 1,
         size: pageSize
-      }
+      },
+      headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },
     });
     paginatedChatRooms.value = response.data.content;
-    totalPages = response.data.totalPages;
+    totalPages.value = response.data.totalPages;
   } catch (error) {
     console.error("Failed to fetch chat rooms:", error);
+  }
+};
+
+// 다음 페이지로 이동
+const nextPage = () => {
+  if (pageNumber.value < totalPages.value) {
+    pageNumber.value++;
+    fetchData();
+  }
+};
+
+// 이전 페이지로 이동
+const prevPage = () => {
+  if (pageNumber.value > 1) {
+    pageNumber.value--;
+    fetchData();
   }
 };
 
@@ -120,7 +137,13 @@ onMounted(async () => {
 
 const handleCreateChatRoom = async () => {
   try {
-    const response = await axios.post(`${pref.app.api.host}/chatroom/create?name=${newRoomName.value}&host=${userPk}&guests=${newGuests.value.split(',').map(guest => guest.trim())}`);
+    const response = await axios.post(`${pref.app.api.host}/chatroom/create?name=${newRoomName.value}&host=${userPk}&guests=${newGuests.value.split(',').map(guest => guest.trim())}`,null,{
+      headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },
+    });
     console.log("Chat room created successfully");
     closeModal();
     fetchData();
