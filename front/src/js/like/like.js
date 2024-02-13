@@ -1,5 +1,6 @@
 import app from "../config/preference.js";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 let pref = app;
 
 /**
@@ -16,6 +17,8 @@ export async function fetchLikeCount(feedId) {
   return await fetch(serverUrl, {
     method: "POST",
     headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
       "Content-Type": "application/json",
     },
   })
@@ -38,6 +41,8 @@ export async function createLike(feedId, uuid) {
   await fetch(serverUrl, {
     method: "POST",
     headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
@@ -58,6 +63,8 @@ export async function deleteLike(feedId, uuid) {
   await fetch(serverUrl, {
     method: "POST",
     headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
