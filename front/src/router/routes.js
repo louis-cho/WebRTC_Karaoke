@@ -30,6 +30,7 @@ const routes = [
   {
     // path: "/my_profile",
     path: "/feed/:userPk",
+    name: "feed",
     component: () => import("@/pages/UserFeedPage.vue"),
   },
   {
