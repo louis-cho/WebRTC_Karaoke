@@ -5,11 +5,15 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, computed, onMounted } from 'vue';
-import { parseLyric, parseBundle, parseScore } from '@/js/karaoke/karaokeParser.js'
+import { ref, reactive, watch, computed, onMounted } from "vue";
+import {
+  parseLyric,
+  parseBundle,
+  parseScore,
+} from "@/js/karaoke/karaokeParser.js";
 
 const props = defineProps({
-  songData: Object
+  songData: Object,
 });
 
 const audio = ref(null);
@@ -43,28 +47,28 @@ const backgroundColor = "black";
 const blankSize = 6.7 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 모험을 통해 알아가야 함. 24pt Arial 기준 6.7
 const countDown = ref("");
 
-const choose = () => {  // props로 내려온 songData 주입
+const choose = () => {
+  // props로 내려온 songData 주입
   console.log("노래 예약");
   song.value = props.songData;
   audio.value = new Audio(song.value.url); // mp3 url 연결
-}
+};
 
 const play = () => {
   hasNextLyrics.value = true;
   lyrics.value = parseLyric(parseScore(song.value.score));
-  bundles.value = parseBundle(lyrics.value)
+  bundles.value = parseBundle(lyrics.value);
 
   bundleIndex.value = 0;
   lyricBundleIndex.value = 0;
   lyricIndex.value = 0;
   moveX.value = lyricPosX;
 
-
-  drawLyrics()
+  drawLyrics();
   audio.value.play(); // mp3 재생
   console.log(song.value.prelude);
-  console.log(song.value.score)
-}
+  console.log(song.value.score);
+};
 
 const stop = () => {
   hasNextLyrics.value = false;
@@ -83,21 +87,21 @@ fillText(text, x, y)는 xy 좌표 기준으로 1사분면에 렌더링
 fillRect(x, y, width, height)는 xy좌표 기준 4사분면에 렌더링
 */
 const drawLyrics = () => {
-  const ctx = canvas.value.getContext('2d');
+  const ctx = canvas.value.getContext("2d");
 
   ctx.fillStyle = backgroundColor;
   ctx.fillRect(0, 0, canvas.value.width, canvas.value.height);
 
-  lyricUpper.value = bundles.value[0].lyric
-  lyricLower.value = bundles.value[1].lyric
+  lyricUpper.value = bundles.value[0].lyric;
+  lyricLower.value = bundles.value[1].lyric;
 
   ctx.fillStyle = fontColor;
   ctx.font = fontSize + fontStyle;
   ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
-  ctx.fillText(lyricLower.value, lyricPosX, lyricPosY+lyricInterval);  // 맨 처음 가사묶음 두개는 노래 시작과 동시에 렌더링
-  bundleIndex.value = 2;  // index 0과 1은 미리 rendering하기 때문에 2부터 시작.
+  ctx.fillText(lyricLower.value, lyricPosX, lyricPosY + lyricInterval); // 맨 처음 가사묶음 두개는 노래 시작과 동시에 렌더링
+  bundleIndex.value = 2; // index 0과 1은 미리 rendering하기 때문에 2부터 시작.
 
-  startTimeRef.value = Date.now()   // 노래 시작 시간 저장.
+  startTimeRef.value = Date.now(); // 노래 시작 시간 저장.
   const renderFrame = (timestamp) => {
     if(hasNextLyrics.value) {
       // 카운트다운
@@ -186,10 +190,10 @@ const drawLyrics = () => {
     }
 
     requestAnimationFrame(renderFrame);
-  }
+  };
 
   requestAnimationFrame(renderFrame);
-}
+};
 
 onMounted(() => {
   const ctx = canvas.value.getContext('2d');
@@ -202,11 +206,10 @@ defineExpose({
   stop,
   choose,
 });
-
 </script>
 
 <style scoped>
-  canvas {
-    width: 100%;
-  }
+canvas {
+  width: 100%;
+}
 </style>

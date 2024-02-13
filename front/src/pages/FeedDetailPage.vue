@@ -30,8 +30,7 @@
               <p v-if="feed && feed.user">{{ feed.user.nickname }}</p>
             </div>
             <!-- 게시글 작성자가 로그인되어 있는 사람이라면 -->
-            <!-- v-if="feed.user.userPk === LoggedUserPK" -->
-            <div @click="toggleModal">
+            <div v-if="feed.user.userPk === LoggedUserPK" @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정" />
             </div>
           </div>
@@ -208,6 +207,7 @@
 import { ref, nextTick, onMounted, onBeforeMount, computed } from "vue";
 import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
+import useCookie from "@/js/cookie.js";
 import { useRouter, useRoute } from "vue-router";
 import {
   fetchComment,
@@ -224,7 +224,7 @@ import { fetchUser, getUserPk  } from "@/js/user/user.js";
 // import { login } from '@/js/encrypt/authRequest.js';
 import { useNotificationStore } from "@/stores/notificationStore.js";
 
-
+const { setCookie, getCookie, removeCookie } = useCookie();
 const feed = ref();
 const router = useRouter();
 const comments = ref([]);
@@ -233,6 +233,7 @@ const commentContainer = ref(null);
 const modal = ref(false);
 const isLiked = ref(false);
 const uuid = ref(1);
+// const uuid = ref('')
 const feedId = ref();
 const newContent = ref();
 // const newStatus = ref();
@@ -358,7 +359,9 @@ async function fetchAndRenderComments(feedId) {
 
 const getLoggedUserPk = async () => {
   try {
-    const uuid = '4a5fc76c-03d3-4234-ae2c-4c67019cdd5d';  // 실제 UUID 값으로 교체
+    // const uuid = '4a5fc76c-03d3-4234-ae2c-4c67019cdd5d';
+    // 실제 UUID 값으로 교체
+    const uuid = getCookie("uuid")
     const getCurrentUserPk = await getUserPk(uuid);
     console.log(getCurrentUserPk);
     LoggedUserPK.value = getCurrentUserPk

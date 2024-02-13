@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="{ path: '/chat/' + chatRoom.roomPk, query: { userPk: chatRoom.userPk } }">
+  <router-link :to="{ path: '/chat/' + chatRoom.roomPk }">
     <li class="chat-room-item">
       <span class="room-id">Room ID: {{ chatRoom.roomPk }}</span>
       <span class="room-name">Room Name : {{ roomName }}</span>

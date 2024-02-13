@@ -28,8 +28,8 @@
           <div class="chatting-container" style="min-width: 600px; max-width: 600px;">
             <div class="dm-messages" ref="messagesContainer" @scroll="handleScroll">
               <div v-for="(message, index) in messages" :key="index">
-                <div :class="['message', message.sender === userPk ? 'my-message' : 'other-message']">
-                  <template v-if="message.sender !== userPk">
+                <div :class="['message', message.sender == userPk ? 'my-message' : 'other-message']">
+                  <template v-if="message.sender != userPk">
                     {{ getNickname(message.sender) }}
                   </template>
                   <div v-if="message.type === 'TALK' || message.type === 'TYPE'">
@@ -47,7 +47,7 @@
 
             <!-- 메시지 입력창 -->
             <div class="img_class1">
-              <textarea v-model="newMessage" @keydown.enter.prevent="sendMessage" @change="sendTyping" placeholder="메시지를 입력하세요..."></textarea>
+              <textarea v-model="newMessage" @keydown.enter.prevent="sendMessage" @input="sendTypingHandler" placeholder="메시지를 입력하세요..."></textarea>
               <label for="fileInput" class="img_label">
                 <img src="@/assets/icon/image.png" alt="File Icon" class="img_class2">
               </label>
@@ -75,14 +75,30 @@
 <script setup>
 import Stomp from "stompjs";
 import pref from "@/js/config/preference.js";
-import { ref, nextTick, onMounted } from "vue";
+import { ref, nextTick, onMounted, watchEffect } from "vue";
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import NavBar from "@/layouts/NavBar.vue";
+import useCookie from "@/js/cookie.js";
 import logoImage from "@/assets/icon/logo1-removebg-preview.png"
 
+const { getCookie } = useCookie();
+const userUUID = getCookie("uuid");
+
+async function fetchUserPk() {
+  try {
+    const response = await fetch(`http://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${userUUID}`);
+    const data = await response.json();
+    console.log(data)
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch userPk:", error);
+    throw error;
+  }
+}
+
 onMounted(async () => {
-  userPk.value = route.query.userPk;
+  userPk.value = await fetchUserPk();
   roomId.value = route.params.roomPk;
   const socket = new WebSocket(`${pref.app.api.websocket}/api/ws`);
   stompClient.value = Stomp.over(socket);
@@ -91,20 +107,21 @@ onMounted(async () => {
       stompClient.value.subscribe(`/exchange/chat.exchange/room.${roomId.value}`, (message) => {
           handleIncomingMessage(JSON.parse(message.body));
       });
-      loadOldMessages().then(() => {
-        loadNewMessages().then(() => {
-          setTimeout(() => {
-            nextTick(() => {
-              messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-            });
-          }, 300);
+      fetchData().then(() => {
+        loadOldMessages().then(() => {
+          loadNewMessages().then(() => {
+            setTimeout(() => {
+              nextTick(() => {
+                messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+              });
+            }, 150);
+          });
         });
       });
   });
 
   const response = await axios.get(`${pref.app.api.host}/chatroom/info/${roomId.value}`);
   roomName.value = response.data.roomName;
-  fetchData();
 });
 
 
@@ -170,12 +187,14 @@ function setTemporaryMessage(sender, type, message, time) {
   const temporaryMessage = { sender, type, message, time, temporary: true };
 
   // Add the new TYPE message to the messages array
-  messages.value.push(temporaryMessage);
+  if(userPk.value != sender){
+    messages.value.push(temporaryMessage);
 
-  // Set the timer for the TYPE message
-  temporaryMessage.timer = setTimeout(() => {
-    removeTemporaryMessage(sender, type);
-  }, 5000); // Adjust the time as needed (e.g., 5000 milliseconds for 5 seconds)
+    // Set the timer for the TYPE message
+    temporaryMessage.timer = setTimeout(() => {
+      removeTemporaryMessage(sender, type);
+    }, 5000); // Adjust the time as needed (e.g., 5000 milliseconds for 5 seconds)
+  }
 }
 
 
@@ -259,6 +278,21 @@ const stompClient = ref(null);
 
 let page = 1; // 초기 페이지 설정
 let loading = false; // 페이지 로딩 상태
+
+let typingTimer = null;
+const throttleTime = 500; // 2초
+
+const throttleSendTyping = function() {
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(() => {
+    sendTyping();
+  }, throttleTime);
+};
+
+const sendTypingHandler = function() {
+  throttleSendTyping();
+};
+
 
 const sendMessage = function() {
   if (newMessage.value.trim() !== "") {
@@ -389,6 +423,7 @@ const fetchData = async () => {
       const userInfo = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/get/${user.userPk}`);
       chatroomUsers.value.push(userInfo.data);
     }
+    console.log(chatroomUsers)
   } catch (error) {
     console.error("Failed to fetch chat rooms:", error);
   }
@@ -404,7 +439,7 @@ const getNickname = (userPk) => {
       return user.nickname;
     }
   }
-  return 'Unknown';
+  return '(알수없음)';
 };
 
 
