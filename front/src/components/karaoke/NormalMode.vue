@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas ref="canvas" width="1000" height="350"></canvas>
+    <canvas ref="canvas" width="360" height="200"></canvas>
   </div>
 </template>
 
@@ -28,12 +28,12 @@ const lyricFlag = ref(true)    // true면 위에거 업데이트, false면 아�
 const bundleIndex = ref(0)
 const lyricBundleIndex = ref(0)
 const lyricIndex = ref(0)
-const lyricPosX = 100;  // 가사 렌더링 시작 위치 x좌표, css에 따라 수정
-const lyricPosY = 100;  // 가사 렌더링 시작 위치 y좌표, css에 따라 수정
+const lyricPosX = 10;  // 가사 렌더링 시작 위치 x좌표, css에 따라 수정
+const lyricPosY = 50;  // 가사 렌더링 시작 위치 y좌표, css에 따라 수정
 const lyricInterval = 50; // 가사 윗묶음&아랫묶음 y좌표 간격
-const eraserWidth = 300;  // 지우개 넓이, 가사 가사 길이에 따라 달라질 수도.
+const eraserWidth = 210;  // 지우개 넓이, 가사 가사 길이에 따라 달라질 수도.
 const eraserHeight = 34;  // 지우개 높이, 가사 font-size에 따라 달라짐
-let moveX = 100;       // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
+const moveX = ref(0);       // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
 const fontsize = 24   // 가사가 채워질 때 이동하는 x좌표 간격. 모험을 통해 알아가야 함. 24pt Arial 기준 24
 const blankSize = 6.7 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 모험을 통해 알아가야 함. 24pt Arial 기준 6.7
 const countDown = ref("");
@@ -48,6 +48,13 @@ const play = () => {
   playMusic.value = true;
   lyrics.value = parseLyric(parseScore(song.value.score));
   bundles.value = parseBundle(lyrics.value)
+
+  bundleIndex.value = 0;
+  lyricBundleIndex.value = 0;
+  lyricIndex.value = 0;
+  moveX.value = lyricPosX;
+
+
   drawLyrics()
   audio.value.play(); // mp3 재생
   console.log(song.value.prelude);
@@ -56,8 +63,10 @@ const play = () => {
 
 const stop = () => {
   playMusic.value = false;
-  audio.value.currentTime = 0;
-  audio.value.pause();
+  if(audio.value != null) {
+    audio.value.currentTime = 0;
+    audio.value.pause();
+  }
 
   const ctx = canvas.value.getContext('2d');
   ctx.fillStyle = 'black';
@@ -86,20 +95,29 @@ const drawLyrics = () => {
   startTimeRef.value = Date.now()   // 노래 시작 시간 저장.
   const renderFrame = (timestamp) => {
     if(!playMusic.value) return ;
+
+    // 카운트다운
     const beforeStart = (bundles.value[0].start + song.value.prelude) - (Date.now() - startTimeRef.value);
-    console.log(beforeStart)
     if(beforeStart <= 3000 && beforeStart > 2000) {
-      countDown.value = 3;
+      countDown.value = "3";
     } else if(beforeStart <= 2000 && beforeStart > 1000) {
-      countDown.value = 2;
+      countDown.value = "2";
     } else if(beforeStart <= 1000 && beforeStart > 0) {
-      countDown.value = 1;
+      countDown.value = "1";
     } else {
-      countDown.value = 0;
+      countDown.value = "";
     }
+    console.log(countDown.value)
+    if(countDown.value != "") {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(lyricPosX-30, lyricPosY-65, eraserHeight, eraserHeight);
 
-    if(countDown.value != 0) {
-
+      ctx.fillStyle = 'white';
+      ctx.font = '24px Arial';
+      ctx.fillText(countDown.value, lyricPosX-30, lyricPosY-40);
+    } else {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(lyricPosX-30, lyricPosY-70, eraserHeight, eraserHeight);
     }
 
     if((Date.now() - startTimeRef.value) >= bundles.value[bundleIndex.value-1].start + song.value.prelude) { // 가사 묶음 렌더링 부분
@@ -108,7 +126,7 @@ const drawLyrics = () => {
       if(bundleFlag.value) { // 위에거 업데이트
         lyricUpper.value = bundles.value[bundleIndex.value].lyric
         ctx.fillStyle = 'black';
-        ctx.fillRect(lyricPosX, 70, eraserWidth, eraserHeight); // 덮어씌우는 Rect의 시작 y좌표는 css하면서 수정
+        ctx.fillRect(lyricPosX, lyricPosY-30, eraserWidth, eraserHeight); // 덮어씌우는 Rect의 시작 y좌표는 css하면서 수정
         ctx.fillStyle = 'white';
         ctx.font = '24px Arial';
         ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
@@ -117,7 +135,7 @@ const drawLyrics = () => {
       } else {
         lyricLower.value = bundles.value[bundleIndex.value].lyric
         ctx.fillStyle = 'black';
-        ctx.fillRect(lyricPosX, 120, eraserWidth, eraserHeight);  // 덮어씌우는 Rect의 시작 y좌표는 css하면서 수정
+        ctx.fillRect(lyricPosX, lyricPosY-30+lyricInterval, eraserWidth, eraserHeight);  // 덮어씌우는 Rect의 시작 y좌표는 css하면서 수정
         ctx.fillStyle = 'white';
         ctx.font = '24px Arial';
         ctx.fillText(lyricLower.value, lyricPosX, lyricPosY+lyricInterval);
@@ -131,25 +149,25 @@ const drawLyrics = () => {
       lyric.value = lyrics.value[lyricBundleIndex.value][lyricIndex.value].lyric
       if(lyric.value === ' ') { // 띄어쓰기
         lyricIndex.value++;
-        moveX += blankSize;  // x축을 띄어쓰기 크기만큼 이동
+        moveX.value += blankSize;  // x축을 띄어쓰기 크기만큼 이동
       } else {
         // 채우기
         ctx.fillStyle = 'yellow';
         if(lyricFlag.value) {  // 위
-          ctx.fillText(lyric.value, moveX, lyricPosY);
+          ctx.fillText(lyric.value, moveX.value, lyricPosY);
         } else {  // 아래
-          ctx.fillText(lyric.value, moveX, lyricPosY+lyricInterval);
+          ctx.fillText(lyric.value, moveX.value, lyricPosY+lyricInterval);
         }
 
         // 다음 글자로 인덱스 이동, 렌더링될 위치 이동.
         lyricIndex.value++;
-        moveX += fontsize; // x축 옮기기.
+        moveX.value += fontsize; // x축 옮기기.
       }
 
       if(lyricIndex.value >= lyrics.value[lyricBundleIndex.value].length) {  // 줄바꿈
         lyricBundleIndex.value++;
         lyricIndex.value = 0;
-        moveX = lyricPosX;
+        moveX.value = lyricPosX;
         lyricFlag.value = !lyricFlag.value
       }
 
@@ -184,6 +202,6 @@ defineExpose({
 
 <style scoped>
   canvas {
-    width: 70%;
+    width: 100%;
   }
 </style>
