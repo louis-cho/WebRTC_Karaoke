@@ -55,9 +55,26 @@ import { useRoute } from "vue-router";
 import axios from "axios";
 import ChatRoom from "@/components/chat/ChatRoom.vue";
 import NavBar from "@/layouts/NavBar.vue";
+import useCookie from "@/js/cookie.js";
 
 const { params } = useRoute();
-const userPk = params.userPk;
+
+// UUID를 이용하여 userPk를 가져오는 HTTP 요청 함수
+async function fetchUserPk() {
+  try {
+    const response = await fetch(`http://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${userUUID}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch userPk:", error);
+    throw error;
+  }
+}
+
+// const userUUID = params.userUUID;
+const { getCookie } = useCookie();
+const userUUID = getCookie("uuid");
+let userPk = null; // userPk 초기화
 
 let pageNumber = 1; // 현재 페이지 번호
 const pageSize = 10; // 페이지당 표시할 아이템 수
@@ -92,22 +109,14 @@ const fetchData = async () => {
 };
 
 onMounted(async () => {
-  fetchData();
+  try {
+    userPk = await fetchUserPk(); // userPk 가져오기
+    console.log(userPk + "gdgdgdg")
+    fetchData(); // 데이터 가져오기
+  } catch (error) {
+    console.error("Failed to initialize:", error);
+  }
 });
-
-const nextPage = () => {
-  if (pageNumber < totalPages) {
-    pageNumber++;
-    fetchData();
-  }
-};
-
-const prevPage = () => {
-  if (pageNumber > 1) {
-    pageNumber--;
-    fetchData();
-  }
-};
 
 const handleCreateChatRoom = async () => {
   try {
@@ -119,8 +128,6 @@ const handleCreateChatRoom = async () => {
     console.error("Failed to create chat room:", error);
   }
 };
-
-
 </script>
 
 <style scoped>
