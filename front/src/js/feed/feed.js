@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import app from "../config/preference.js";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 let pref = app;
 
 
@@ -10,7 +11,9 @@ export async function fetchFeedList(pageNo, pageSize) {
   return await fetch(`${serverUrl}?page=${pageNo}&size=${pageSize}`, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
     },
   })
   .then(response => response.json())
@@ -25,7 +28,9 @@ export async function fetchFeed(feedId) {
   return await fetch(serverUrl, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
     },
   })
   .then(response => response.json())
@@ -41,7 +46,9 @@ export async function getFeedsByUser(userPk) {
   return await fetch(serverUrl, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
+        Authorization: getCookie("Authorization"),
+        refreshToken: getCookie("refreshToken"),
+        "Content-Type": "application/json",
       },
     })
     .then(response => response.json())
@@ -59,7 +66,9 @@ export async function fetchFeedDelete(feedId) {
     const response = await fetch(serverUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        Authorization: getCookie("Authorization"),
+        refreshToken: getCookie("refreshToken"),
+        "Content-Type": "application/json",
       },
     });
 
@@ -101,7 +110,9 @@ export async function fetchFeedUpdate(feedId,newContent,newStatus) {
   return await fetch(serverUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        Authorization: getCookie("Authorization"),
+        refreshToken: getCookie("refreshToken"),
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     })

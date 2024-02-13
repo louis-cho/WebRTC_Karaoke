@@ -120,7 +120,11 @@ onMounted(async () => {
       });
   });
 
-  const response = await axios.get(`${pref.app.api.host}/chatroom/info/${roomId.value}`);
+  const response = await axios.get(`${pref.app.api.host}/chatroom/info/${roomId.value}`,{headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },});
   roomName.value = response.data.roomName;
 });
 
@@ -202,7 +206,11 @@ function loadOldMessages() {
   // 로딩 중이면 중복 요청 방지
   if (loading) return;
   loading = true;
-  return axios.get(`https://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/oldMsg?page=${page}&size=50`)
+  return axios.get(`https://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/oldMsg?page=${page}&size=50`,{headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },})
     .then(response => {
       const oldMessages = response.data;
       if (oldMessages.length === 0) {
@@ -249,7 +257,11 @@ function handleScroll() {
 }
 
 function loadNewMessages() {
-  return axios.get(`https://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/newMsg`)
+  return axios.get(`https://i10a705.p.ssafy.io/api/v1/chat/room/${roomId.value}/newMsg`,{headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },})
     .then(response => {
       const newMessages = response.data;
       newMessages.reverse().forEach(message => {
@@ -377,6 +389,8 @@ async function handleFileUpload(event) {
       // Axios를 사용하여 파일 업로드 엔드포인트에 POST 요청 보내기
       const response = await axios.post(`https://i10a705.p.ssafy.io/api/v1/upload`, formData, {
         headers: {
+          Authorization: getCookie("Authorization"),
+           refreshToken: getCookie("refreshToken"),
           'Content-Type': 'multipart/form-data'
         }
       });
@@ -403,7 +417,13 @@ const closeModal = () => {
 
 const handleInviteUsers = async () => {
   try {
-    await axios.post(`${pref.app.api.host}/chatroom/invite/${roomId.value}?guests=${newGuests.value.split(',').map(guest => guest.trim())}`);
+    await axios.post(`${pref.app.api.host}/chatroom/invite/${roomId.value}?guests=${newGuests.value.split(',').map(guest => guest.trim())}`,null,{
+      headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },
+    });
     console.log("Users invited successfully");
     closeModal();
     fetchData();
@@ -414,13 +434,23 @@ const handleInviteUsers = async () => {
 
 const fetchData = async () => {
   try {
-    const response = await axios.get(`${pref.app.api.host}/chatroom/list/users/${roomId.value}`);
+    const response = await axios.get(`${pref.app.api.host}/chatroom/list/users/${roomId.value}`,{    headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },});
     const users = response.data;
     // chatRoomUsers 배열 초기화
     chatroomUsers.value = [];
     // chatRoomUsers 배열에 각 사용자의 정보 추가
     for (const user of users) {
-      const userInfo = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/get/${user.userPk}`);
+      const userInfo = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/get/${user.userPk}`,{
+        headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      "Content-Type": "application/json",
+    },
+      });
       chatroomUsers.value.push(userInfo.data);
     }
     console.log(chatroomUsers)
