@@ -5,6 +5,8 @@ import com.ssafy.server.notification.dto.NotificationResponseDto;
 import com.ssafy.server.notification.entity.Notification;
 import com.ssafy.server.notification.service.NotificationService;
 import com.ssafy.server.notification.util.SseEmitters;
+import com.ssafy.server.user.model.User;
+import com.ssafy.server.user.service.UserService;
 import io.lettuce.core.output.ScanOutput;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,16 +29,12 @@ public class NotificationController {
 
     private final SseEmitters sseEmitters; //콜백함수 다른 쓰레드에서 실행되므로 thread-safe한 자료구조 사용.
     private final NotificationService notificationService;
-
+    private final UserService userService;
 
     //요청보낸 유저의 구독(연결) 요청
     @GetMapping(value = "/subscribe")
     public ResponseEntity<SseEmitter> subscribe(HttpServletRequest request) throws IOException {
-        System.out.println("----------subscribe-----------");
-        String test = request.getHeader("Authorization");
-        System.out.println("Subscribe! Authorization : "+test);
-        System.out.println("subscribe() 컨트롤러 메소드 호출");
-        Integer userPk = 1; //추후 헤더에서 가져온다. 로그인한 유저 아이디
+        Integer userPk = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserPk();
         SseEmitter emitter = new SseEmitter(60 * 60 * 1000L); //새로운 연결 객체 생성. 매개변수로 만료시간 줄 수 있다. 1시간.
         sseEmitters.add(userPk, emitter); //객체 메모리에 저장.
 
@@ -54,8 +54,12 @@ public class NotificationController {
     //알림메시지 생성 및 전송.
     @PostMapping("/sendNotification")
     public ResponseEntity<Void> sendNotification(@RequestBody NotificationRequestDto notificationRequestDto) {
-        int fromUser = 1;
+
+        //fromUser, toUser 세팅
+        Integer fromUser = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserPk();
         notificationRequestDto.setFromUser(fromUser);
+        notificationRequestDto.setToUser(userService.getUserPk(UUID.fromString(notificationRequestDto.getToUserKey())));
+
         Notification notification = notificationService.makeNotification(notificationRequestDto);
         SseEmitter emitter = sseEmitters.getSseEmitter(notification.getToUser()); //메시지 보낼 유저의 emitter객체찾기.
         if (emitter != null  && notification.getToUser() != null ) {
@@ -64,7 +68,6 @@ public class NotificationController {
                 //메시지보내고
                 emitter.send(SseEmitter.event()
                         .name("message")
-                        /////////////@@@@@@@@@@@@@@@ UUID로 바꿔서보내야하나.
                         .data(notification.getNotificationId().toString(), MediaType.TEXT_PLAIN));
            } catch (IOException e) {
                 sseEmitters.remove(notification.getNotificationId(), emitter);
@@ -79,11 +82,7 @@ public class NotificationController {
     //안읽은 알림개수
     @GetMapping("/count")
     Integer countUnreadNotifications(HttpServletRequest request){
-        int toUser = 1; //추후 헤더같은곳에서 가져온 로그인한 유저아이디.
-        System.out.println("----------countNOtification-----------");
-        String test = request.getHeader("Authorization");
-        System.out.println("count! Authorization : "+test);
-        System.out.println("count 컨트롤러 메소드 호출");
+        int toUser = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserPk();
         Integer count = notificationService.countUnReadNotifications(toUser);
         if(count == null) count = 0;
         return count;
@@ -92,7 +91,7 @@ public class NotificationController {
     //안읽은 알림객체리스트
     @GetMapping
     ResponseEntity<List<NotificationResponseDto>> getNotificationList(){
-        int toUser = 1; //추후 토큰같은데서 가져오는게 아니지.
+        int toUser = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserPk();
         List<NotificationResponseDto> notificationResponseDtoList = notificationService.getNotificationList(toUser);
         return new ResponseEntity<>(notificationResponseDtoList, HttpStatus.OK);
     }
@@ -100,20 +99,12 @@ public class NotificationController {
     @GetMapping("/{notificationId}")
     ResponseEntity<NotificationResponseDto> getNotification(@PathVariable Integer notificationId){
         NotificationResponseDto notificationResponseDto = notificationService.getNotification(notificationId);
-//        System.out.println("알림목록갱신위한 추가 알림받아옴. userPk : "+userPk);
-        NotificationResponseDto dto1 = new NotificationResponseDto();
-        dto1.setNotificationId(3);
-        dto1.setMessage("유저a가 당신을 노래방에 좋아요를 눌렀습니다.");
-        dto1.setInfo("노래방주소.");
-        dto1.setType("karaoke");
-
         return new ResponseEntity<>(notificationResponseDto,HttpStatus.OK);
     }
 
     //알림 하나 읽음 처리
     @GetMapping("/read/{notificationId}")
     ResponseEntity<Void> changeNotificationStatus(@PathVariable Integer notificationId){
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@알림수정요청 날라옴@@@@@@@@@@@@@@@");
         notificationService.readNotification(notificationId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
