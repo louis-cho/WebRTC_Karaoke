@@ -39,7 +39,12 @@ public class FeedController {
     @Autowired
     private RankService rankService;
 
-    //그냥 전체 Feed 목록 Default를 최신순으로
+    /**
+     * feed list를 페이지네이션을 통해 반환한다.
+     * @param page fetch 시작 페이지
+     * @param size fetch 사이즈
+     * @return ResponseEntity<List<FeedResponse>>
+     */
     @GetMapping("/get/all")
     public ResponseEntity<List<FeedResponse>> getAllPost(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "10") int size){
@@ -111,6 +116,11 @@ public class FeedController {
         return ResponseEntity.ok(topList);
     }
 
+    /**
+     * 특정 유저의 작성 피드 목록을 반환한다.
+     * @param uuid 유저 uuid
+     * @return 피드 리스트
+     */
     @GetMapping("/getUser/{uuid}")
     public ResponseEntity<ApiResponse<List<FeedResponse>>> getFeedByUser(@RequestParam String uuid) {
         List<FeedResponse> feeds = null;
@@ -160,6 +170,11 @@ public class FeedController {
         return new ResponseEntity<>(ApiResponse.success(post), HttpStatus.ACCEPTED);
     }
 
+    /**
+     * 피드 아이디에 해당하는 피드를 삭제한다.
+     * @param feedId 삭제할 피드의 아이디
+     * @return 성공 여부
+     */
     @PostMapping("/delete/{feedId}")
     public ResponseEntity<Boolean> deletePost(@PathVariable int feedId) {
         boolean result;
