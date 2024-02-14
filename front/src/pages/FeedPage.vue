@@ -130,7 +130,7 @@ import NavBar from "@/layouts/NavBar.vue";
 import { useRouter } from "vue-router";
 import app from "@/js/config/preference.js";
 import { fetchHitCount } from "@/js/hit/hit.js";
-import { fetchLikeCount } from "@/js/like/like.js";
+import { fetchLikeCount, createLike, deleteLike } from "@/js/like/like.js";
 import { fetchFeedList } from "@/js/feed/feed.js";
 import { fetchSong } from "@/js/song/song.js";
 import { fetchUser } from "@/js/user/user.js";
@@ -248,10 +248,10 @@ const search = () => {
   });
 };
 
-
-
-
-const toggleLike = async (feedId) => {};
+const toggleLike = async (feedId) => {
+  const likeStatus = await createLike
+  console.log('라이크 상태',likeStatus)
+};
 </script>
 
 <style scoped>

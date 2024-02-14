@@ -92,8 +92,9 @@ export async function fetchFeedUpdate(feedId,newContent,newStatus) {
   const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.update + feedId;
 
   const existingFeed = await fetchFeed(feedId);
+  console.log("existingFeed : ",existingFeed);
   const data = {
-    userPk: existingFeed.userPk,
+    userUUID: existingFeed.userUUID,
     songId: existingFeed.songId,
     title: existingFeed.title,
     content: newContent || existingFeed.content,
