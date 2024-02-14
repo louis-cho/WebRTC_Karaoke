@@ -96,7 +96,7 @@
                 class="margin-right-10"
                 src='@/assets/icon/love.png'
                 alt="좋아요"
-                v-show="isLiked"
+                v-show="!isLiked"
               />
             </span>
 
@@ -106,7 +106,7 @@
                 class="margin-right-10"
                 src='@/assets/icon/redheart.png'
                 alt="좋아요"
-                v-show="!isLiked"
+                v-show="isLiked"
               />
             </span>
           <span v-if="feed">{{ feed.likeCount }}</span>
