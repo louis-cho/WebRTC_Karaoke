@@ -60,7 +60,7 @@
           <div>
             <!-- 유저 목록 뜨게 -->
             <q-list v-if="searchUsers && searchUsers.length && filteredUsers.length">
-              <q-item v-for="user in filteredUsers" :key="user.userPk">
+              <q-item v-for="user in filteredUsers" :key="user.userKey">
                 <q-item-section>
                   <q-img class="img-container" :src="user.profileImgUrl" />
                 </q-item-section>
@@ -68,14 +68,14 @@
                   <q-item-label>{{ user.nickname }}</q-item-label>
                   <q-item-label caption>{{ user.introduction }}</q-item-label>
                   <!-- 친구 아니라면 -->
-                  <div v-if="checkInvited(user.userPk)">
+                  <div v-if="user.userKey === userUUID">
+                    <q-btn color="black" label="본인" :disable="true"></q-btn>
+                  </div>
+                  <div v-else-if="checkInvited(user.userKey)">
                     <q-btn color="primary" label="참가중" :disable="true"></q-btn>
                   </div>
-                  <div v-else-if="user.userPk === userPk">
-                    <q-btn color="black" label="당신" :disable="true"></q-btn>
-                  </div>
                   <div v-else>
-                    <q-btn color="red" label="초대하기" @click="inviteUser(user.userPk)" v-if="!checkInvited(user.userPk)" />
+                    <q-btn color="red" label="초대하기" @click="inviteUser(user.userKey)" v-if="!checkInvited(user.userKey)" />
                   </div>
                 </q-item-section>
               </q-item>
@@ -101,7 +101,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
   </q-layout>
 </template>
 
@@ -133,52 +132,41 @@ const filteredUsers = computed(() => {
 const searchNickname = async function () {
   try {
     // 백엔드 서버에서 유저 검색 결과 가져오기
+    console.log(search.value)
     const response = await searchUser(search.value);
+    console.log(response)
     searchUsers.value = response; // 서버 응답에 따라 데이터를 업데이트
 
     for (let idx in searchUsers.value) {
-      let userPk = searchUsers.value[idx].userPk;
-      searchUsers.value[idx] = await fetchUser(userPk);
+      let userUuid = searchUsers.value[idx].userUuid;
+      searchUsers.value[idx] = await fetchUser(userUuid);
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
   }
 };
 
-// chatroomUsers에 대한 유저 초대 여부 확인 함수
-const checkInvited = (userPk) => {
-  for (const user of chatroomUsers.value) {
-    if (String(user.userPk) === String(userPk)) {
-      return true; // 선택된 경우 true 반환
-    }
-  }
-  return false; // 선택되지 않은 경우 false 반환
-};
-
-const inviteUser = async (userPk) => {
+const inviteUser = async (userUuid) => {
   // 이미 초대된 사용자인지 확인
-  if (!checkInvited(userPk)) {
-    // 초대할 사용자의 userPk를 newGuests 배열에 추가
-    chatroomUsers.value += userPk;
+  if (!checkInvited(userUuid)) {
+    // 초대할 사용자의 userUuid를 newGuests 배열에 추가
+    newGuests.value += userUuid;
     await handleInviteUsers();
   }
 };
 
-// UUID를 이용하여 userPk를 가져오는 HTTP 요청 함수
-async function fetchUserPk() {
-  try {
-    const response = await fetch(`https://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${userUUID}`);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Failed to fetch userPk:", error);
-    throw error;
+// chatroomUsers에 대한 유저 초대 여부 확인 함수
+const checkInvited = (userUuid) => {
+  for (const user of chatroomUsers.value) {
+    if (String(user.userKey) === String(userUuid)) {
+      return true; // 초대된 경우 true 반환
+    }
   }
-}
+  return false; // 초대되지 않은 경우 false 반환
+};
 
 const { getCookie } = useCookie();
 const userUUID = getCookie("uuid");
-let userPk = null; // userPk 초기화
 
 let pageNumber = ref(1); // 현재 페이지 번호
 const pageSize = 10; // 페이지당 표시할 아이템 수
@@ -199,7 +187,7 @@ const closeModal = () => {
 
 const fetchData = async () => {
   try {
-    const response = await axios.get(`${pref.app.api.host}/chatroom/list/${userPk}`, {
+    const response = await axios.get(`${pref.app.api.host}/chatroom/list/${userUUID}`, {
       params: {
         page: pageNumber.value - 1,
         size: pageSize
@@ -235,8 +223,6 @@ const prevPage = () => {
 
 onMounted(async () => {
   try {
-    userPk = await fetchUserPk(); // userPk 가져오기
-    console.log(userPk + "gdgdgdg")
     fetchData(); // 데이터 가져오기
   } catch (error) {
     console.error("Failed to initialize:", error);
@@ -245,7 +231,7 @@ onMounted(async () => {
 
 const handleCreateChatRoom = async () => {
   try {
-    const response = await axios.post(`${pref.app.api.host}/chatroom/create?name=${newRoomName.value}&host=${userPk}&guests=${newGuests.value.split(',').map(guest => guest.trim())}`,null,{
+    const response = await axios.post(`${pref.app.api.host}/chatroom/create?name=${newRoomName.value}&host=${userUUID}&guests=${newGuests.value.split(',').map(guest => guest.trim())}`,null,{
       headers: {
       Authorization: getCookie("Authorization"),
       refreshToken: getCookie("refreshToken"),
