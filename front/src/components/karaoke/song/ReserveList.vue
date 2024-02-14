@@ -75,29 +75,6 @@ watch(
   }
 );
 
-watch(
-  () => store.deleteReserve,
-  (newValue) => {
-    if (newValue === true) {
-      for (const list of lists) {
-        if (list.userName == store.userName) {
-          cancelReserve(
-            list.userName +
-              "&" +
-              list.songId +
-              "&" +
-              list.title +
-              "&" +
-              list.singer
-          );
-        }
-      }
-      store.deleteReserve = false;
-      store.session.signal({ type: "reserve" });
-    }
-  }
-);
-
 function fetchReserveList() {
   lists.value = [];
 
@@ -123,7 +100,7 @@ function fetchReserveList() {
 
         if (parts.length === 4) {
           const [userName, songId, title, singer] = parts;
-          lists.value.push({ id, userName, title, singer });
+          lists.value.push({ id, userName, songId, title, singer });
           id++;
         }
       });

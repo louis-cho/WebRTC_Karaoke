@@ -52,7 +52,7 @@
         </div>
 
         <div class="display-flex-column">
-          <div>
+          <div style="width: 300px">
             <!-- <input class="caption-input" type="text" placeholder="문구 입력..."> -->
             <textarea
               v-model="postContent"
@@ -97,7 +97,7 @@ const recordingId = ref(undefined);
 const perfectScoreRef = ref(null);
 const normalModeRef = ref(null);
 
-const selectedOption = ref("공개범위");
+const selectedOption = ref("비공개");
 const videoUrl = ref("");
 const privacyOptions = ["전체공개", "친구공개", "비공개"];
 const modalVisible = ref(false);
@@ -311,12 +311,14 @@ const submitPost = () => {
       {
         content: postContent.value,
         songId: songId.value,
+        status: privacyOptions.indexOf(selectedOption.value),
         videoUrl: videoUrl.value,
       },
       {
         headers: {
           Authorization: getCookie("Authorization"),
           refreshToken: getCookie("refreshToken"),
+          uuid: getCookie("uuid"),
           "Content-Type": "application/json",
         },
       }
@@ -412,7 +414,7 @@ const song = {
 
 <style scoped>
 .modal-card {
-  max-width: 400px;
+  max-width: 768px;
   margin: 20px;
 }
 

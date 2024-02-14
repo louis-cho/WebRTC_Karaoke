@@ -113,7 +113,6 @@ export const useKaraokeStore = defineStore("karaoke", {
 
       this.session.on("sessionDisconnected", () => {
         this.singing = false;
-        this.deleteReserve = true;
 
         if (this.kicked == true) {
           alert("추방당했습니다.");
