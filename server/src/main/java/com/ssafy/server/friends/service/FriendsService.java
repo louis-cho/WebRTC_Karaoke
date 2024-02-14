@@ -26,8 +26,15 @@ public class FriendsService {
             throw new RuntimeException("이미 친구이거나, 친구 요청중인 상태인데요..?");
         }
 
-        Friends friends = new Friends(fromUser, toUser);
+        Friends friends = friendsRepository.findByFromUserPkAndToUserPkAndStatus(fromUser, toUser, '0');
+        if(friends == null){
+            friends = friendsRepository.findByFromUserPkAndToUserPkAndStatus(toUser, fromUser, '0');
+        }
+        if(friends == null){
+            friends = new Friends(fromUser, toUser);
+        }
         friends.setStatus('1'); // 친구 요청 상태
+
         friendsRepository.save(friends);
     }
 
@@ -75,5 +82,15 @@ public class FriendsService {
     private boolean isFriendRequestPending(Integer fromUser, Integer toUser) {
         return friendsRepository.existsByFromUserPkAndToUserPkAndStatus(fromUser, toUser, '1') ||
                 friendsRepository.existsByFromUserPkAndToUserPkAndStatus(toUser, fromUser, '1');
+    }
+
+    // 삭제 한 적 있는 지 확인
+    private boolean isFriendRequestDeleted(Integer fromUser, Integer toUser) {
+        return friendsRepository.existsByFromUserPkAndToUserPkAndStatus(fromUser, toUser, '0') ||
+                friendsRepository.existsByFromUserPkAndToUserPkAndStatus(toUser, fromUser, '0');
+    }
+
+    public Integer getFriendsCount(Integer userPk) {
+        return friendsRepository.countByFromUserOrToUserAndStatusNotZero(userPk);
     }
 }

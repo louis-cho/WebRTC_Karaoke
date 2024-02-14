@@ -8,9 +8,8 @@ let pref = app;
  * @param {Integer} pageNo
  * @param {Integer} sizeNo
  */
-export async function fetchFriendList(pageNo, sizeNo) {
-  console.log("pageNo : ",pageNo)
-  console.log("sizeNo : :",sizeNo)
+export async function fetchFriendList( pageNo, sizeNo) {
+
   const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.friends.get +  pref.app.api.friends.list;
   return await fetch(`${serverUrl}?page=${pageNo}&size=${sizeNo}`, {
     method: 'GET',
@@ -22,7 +21,6 @@ export async function fetchFriendList(pageNo, sizeNo) {
   })
   .then((response) => response.json())
   .then((result) => {
-    console.log('fetchfriendlist콘솔에 찍어봐야징',result)
     return result;
   })
   .catch((err) => {console.log("err : ",err)})
@@ -30,8 +28,6 @@ export async function fetchFriendList(pageNo, sizeNo) {
 
 
 export async function fetchFriendRequestList( pageNo, sizeNo) {
-  console.log("pageNo : ",pageNo)
-  console.log("sizeNo : :",sizeNo)
   const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.friends.incomingRequest;
   return await fetch(`${serverUrl}?page=${pageNo}&size=${sizeNo}`, {
     method: 'GET',
@@ -44,7 +40,6 @@ export async function fetchFriendRequestList( pageNo, sizeNo) {
   })
   .then((response) => response.json())
   .then((result) => {
-    // console.log('친구카운트',result.totalElements)
     return result;
   })
   .catch((err) => {console.log("err : ",err)})
@@ -56,14 +51,14 @@ export async function fetchFriendRequestList( pageNo, sizeNo) {
  * @param {Integer} pageNo
  * @param {Integer} sizeNo
  */
-export async function fetchFriendCount(pageNo,sizeNo) {
+export async function fetchFriendCount() {
   const serverUrl =
     pref.app.api.protocol +
     pref.app.api.host +
     pref.app.api.friends.get +
-    pref.app.api.friends.list;
+    pref.app.api.friends.count;
 
-  return await fetch(`${serverUrl}?page=${pageNo}&size=${sizeNo}`, {
+  return await fetch(`${serverUrl}`, {
     method: "GET",
     headers: {
       "Authorization" : getCookie("Authorization"),
@@ -73,8 +68,8 @@ export async function fetchFriendCount(pageNo,sizeNo) {
   })
     .then((response) => response.json())
     .then((result) => {
-      console.log(result)
-      return result;
+      console.log('친구카운트',result)
+      return result.totalElements;
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -86,25 +81,18 @@ export async function fetchFriendCount(pageNo,sizeNo) {
  * @param {Integer} fromUser
  * @param {Integer} toUser
  */
-export async function fetchFriendRequest(fromUser, toUser) {
-  const data = {
-    fromUser: fromUser,
-    toUser: toUser
-  };
-  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.friends.request ;
+export async function fetchFriendRequest(toUser) {
+
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.friends.request + toUser;
   return await fetch(serverUrl, {
-    method: 'POST',
+    method: 'GET',
     headers: {
       "Authorization" : getCookie("Authorization"),
       "refreshToken" : getCookie("refreshToken"),
       "Content-Type" : "application/json",
 
     },
-    body: JSON.stringify(data),
   })
-  .then(response => response.json())
-  .then(result => {
-      console.log(result)
-      return result;
-    });
+  .then(response => console.log("친구 요청 생성완료"))
+  .catch(err => console.log(err.message));
 }

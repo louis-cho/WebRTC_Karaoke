@@ -239,11 +239,11 @@ public class SessionController {
             Session session = openViduModel.getMapSessions().get(sessionName);
 
             if (session.isBeingRecorded()) {
-                return ResponseEntity.ok(false);
+                return ResponseEntity.ok(true);
             }
-            return ResponseEntity.ok(true);
+            return ResponseEntity.ok(false);
         }
-        return ResponseEntity.ok(false);
+        return ResponseEntity.ok(null);
     }
 
     @RequestMapping(value = "/checkNumber", method = RequestMethod.POST)

@@ -56,11 +56,12 @@ app.api.like.clicked = "/like/clicked/";
 
 app.api.friends = {};
 app.api.friends.get = "/friends";
+app.api.friends.count = "/count";
 app.api.friends.list = "/list";
 app.api.friends.request = "/friends/request/";
-app.api.friends.incomingRequest = "/friends/incoming-requests"
+app.api.friends.incomingRequest = "/friends/incoming-requests";
 app.api.friends.accept = "/friends/accept";
-// app.api.friends.delete = "/friends/delete/";
+app.api.friends.delete = "/friends/delete";
 // app.api.friends.incoming.requests = "/friends/incoming-requests/";
 // app.api.friends.outgoing.requests = "/friends/outgoing-requests/";
 
@@ -68,7 +69,7 @@ app.kor = {};
 
 app.kor.friends = {};
 app.kor.friends.manage = "친구 관리";
-app.kor.friends.search = "친구 검색";
+app.kor.friends.search = "새 친구 찾기";
 (app.kor.friends.request = "친구 삭제"),
   (app.kor.friends.accept = "친구 수락"),
   (app.kor.friends.reject = "친구 거절"),

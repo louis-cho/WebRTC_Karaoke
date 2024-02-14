@@ -19,4 +19,8 @@ public interface FriendsRepository extends JpaRepository<Friends, Integer> {
 
     boolean existsByFromUserPkAndToUserPkAndStatus(Integer fromUser, Integer toUser, char status);
 
+    Friends findByFromUserPkAndToUserPkAndStatus(Integer fromUser, Integer toUser, char status);
+
+    @Query("SELECT COUNT(f) FROM friends f WHERE f.fromUserPk = :inputValue1 OR f.toUserPk = :inputValue1 AND f.status not in ('0')")
+    Integer countByFromUserOrToUserAndStatusNotZero(@Param("inputValue1")Integer inputValue1);;
 }

@@ -16,18 +16,15 @@ export const useKaraokeStore = defineStore("karaoke", {
       "reserve-song": false,
       "reserve-list": false,
     },
-    audioFilter: false,
-    chatModal: false,
-    inputControllerModal: false,
-    inputSelectorModal: false,
     singing: false,
     singUser: undefined,
-    songMode: true,
+    songMode: false,
     newReserve: false,
 
     sessionName: undefined,
     userName: "로그인 하세요",
-    isPrivate: false,
+    isModerator: false,
+    kicked: true,
 
     // OpenVidu 객체
     OV: undefined,
@@ -36,8 +33,6 @@ export const useKaraokeStore = defineStore("karaoke", {
     publisher: undefined,
     subscribers: [],
     token: undefined,
-    isModerator: false,
-    kicked: true,
 
     // 방 설정을 위한 변수
     numberOfParticipants: undefined,
@@ -104,6 +99,11 @@ export const useKaraokeStore = defineStore("karaoke", {
         });
 
         this.subscribers.push(subscriber);
+
+        this.session.signal({
+          data: JSON.stringify({ songMode: this.songMode }),
+          type: "songMode",
+        });
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
@@ -188,12 +188,12 @@ export const useKaraokeStore = defineStore("karaoke", {
         }
       );
 
-      if (isRecording == null) {
-        alert("세션이 존재하지 않습니다.");
+      if (isRecording.data === "") {
+        alert("존재하지 않는 방입니다.");
         return false;
       }
 
-      if (!isRecording.data) {
+      if (isRecording.data) {
         alert("녹화 중에 입장이 불가능합니다.");
         return false;
       }
@@ -278,6 +278,8 @@ export const useKaraokeStore = defineStore("karaoke", {
           // 토근을 저장한다.
           this.token = token.data;
           this.sessionName = sessionName;
+          this.muted = false;
+          this.camerOff = false;
 
           // 원하는 속성으로 초기화된 발행자를 만듭니다.
           let publisher_tmp = this.OV.initPublisher(undefined, {
@@ -352,17 +354,29 @@ export const useKaraokeStore = defineStore("karaoke", {
       }
 
       // 모든 속성 비우기...
+      this.OV = undefined;
       this.session = undefined;
       this.mainStreamManager = undefined;
       this.publisher = undefined;
       this.subscribers = [];
-      this.OV = undefined;
       this.token = undefined;
+
       this.sessionName = undefined;
       this.isModerator = false;
+      this.kicked = true;
       this.inputMessage = "";
       this.messages = [];
-      this.kicked = true;
+      this.createModal = false;
+      this.updateModal = false;
+      this.toggleModals = {
+        "karaoke-chat": false,
+        "input-controller": false,
+        "reserve-song": false,
+        "reserve-list": false,
+      };
+      this.singing = false;
+      this.singUser = undefined;
+      this.newReserve = false;
 
       // beforeunload 리스너 제거
       window.removeEventListener("beforeunload", this.leaveSession);
