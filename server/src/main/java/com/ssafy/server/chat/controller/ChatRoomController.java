@@ -2,7 +2,9 @@ package com.ssafy.server.chat.controller;
 
 import com.ssafy.server.chat.model.ChatRoom;
 import com.ssafy.server.chat.model.UsersChats;
+import com.ssafy.server.chat.model.UsersChatsRes;
 import com.ssafy.server.chat.service.ChatRoomService;
+import com.ssafy.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @Slf4j
@@ -19,15 +22,21 @@ import java.util.Optional;
 @RequestMapping("/api/v1/chatroom")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
+    private final UserService userService;
 
+    @GetMapping("/test")
+    public String test(){
+        return "test";
+    }
     // 채팅 리스트 화면
-    @GetMapping("/list/{userId}")
-    public Page<UsersChats> chatRoomList(@PathVariable long userId,
-                                         @RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "10") int size){
+    @GetMapping("/list/{userUuid}")
+    public Page<UsersChats> chatRoomList(@PathVariable String userUuid,
+                                         @RequestParam(name="page", defaultValue = "0") int page,
+                                         @RequestParam(name="size", defaultValue = "10") int size){
         Pageable pageable = PageRequest.of(page, size);
-        System.out.println(chatRoomService.findAllRoomByUserId(userId, pageable));
-        return chatRoomService.findAllRoomByUserId(userId, pageable);
+        long pk = userService.getUserPk(UUID.fromString(userUuid));
+        System.out.println(chatRoomService.findAllRoomByUserId(pk, pageable));
+        return chatRoomService.findAllRoomByUserId(pk, pageable);
     }
 
     @GetMapping("/info/{roomId}")
@@ -35,19 +44,20 @@ public class ChatRoomController {
 
     // 채팅방 생성
     @PostMapping("/create")
-    public ChatRoom createRoom(@RequestParam String name, @RequestParam long host, @RequestParam List<Long> guests) {
-        return chatRoomService.createChatRoom(name, host, guests);
+    public ChatRoom createRoom(@RequestParam String name, @RequestParam String host, @RequestParam List<String> guests) {
+        int hostPk = userService.getUserPk(UUID.fromString(host));
+        return chatRoomService.createChatRoom(name, hostPk, guests);
     }
 
     // 채팅방 참여 유저 리스트 반환
     @GetMapping("/list/users/{roomId}")
-    public List<UsersChats> userList(@PathVariable long roomId) {
+    public List<UsersChatsRes> userList(@PathVariable long roomId) {
         return chatRoomService.getUserList(roomId);
     }
 
     //유저 초대
     @PostMapping("/invite/{roomId}")
-    public void inviteUser(@PathVariable long roomId, @RequestParam List<Long> guests){
+    public void inviteUser(@PathVariable long roomId, @RequestParam List<String> guests){
         chatRoomService.inviteUser(guests, roomId);
     }
 

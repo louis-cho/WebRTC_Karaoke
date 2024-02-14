@@ -1,26 +1,26 @@
 <template>
   <div>
     <!-- 로그인이 되어있다면 -->
-    <!-- <div v-if="isLoggedIn"> -->
-      <TabItem />
-    <!-- </div> -->
+    <TabItem v-if="isLoggedIn" />
     <!-- 로그인이 안되어있다면 -->
-    <!-- <div v-else> -->
-      <!-- <TabItemStart/> -->
-      <SignIn />
-    </div>
-
-  <!-- </div> -->
+    <SignIn v-else />
+  </div>
 </template>
 
 <script setup>
-// import { isLoggedIn } from "@/js/encrypt/authRequest.js";
-import TabItemStart from "@/layouts/TabItemStart.vue";
 import TabItem from "@/layouts/TabItem.vue";
 import SignIn from "@/components/SignIn.vue";
+import { onMounted, ref } from "vue";
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 
+const isLoggedIn = ref(false);
+
+onMounted(() => {
+  if (getCookie("Authorization")) {
+    isLoggedIn.value = true;
+  }
+});
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

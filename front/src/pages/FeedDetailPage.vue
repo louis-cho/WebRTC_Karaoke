@@ -3,6 +3,7 @@
     <NavBar />
     <!-- <TabItem /> -->
     <!-- <h4>상세 피드 페이지</h4> -->
+
     <div class="my-feed">
       <!-- 첫번째 div -->
       <div class="header">
@@ -75,7 +76,6 @@
       ----------------------------------------
       {{ LoggedUserPK }} -->
 
-
       <p v-if="feed">{{ feed.content }}</p>
       <video controls width="100%" ref="videoPlayer">
         <source :src="feed.videoUrl" type="video/mp4" />
@@ -90,12 +90,24 @@
           <span v-if="feed">{{ feed.commentCount }}</span>
         </div>
         <div class="margin-right-20" @click="handleLikeClick">
-          <img
-            class="margin-right-10"
-            src="@/assets/icon/love.png"
-            alt="좋아요"
-          />
-          <!-- :src="isLiked ? '@/assets/icon/redheart.png' : '@/assets/icon/heart.png'" -->
+            <span>
+              <img
+                class="margin-right-10"
+                src='@/assets/icon/love.png'
+                alt="좋아요"
+                v-show="!isLiked"
+              />
+            </span>
+
+            <!-- Div 2 - love.png -->
+            <span>
+              <img
+                class="margin-right-10"
+                src='@/assets/icon/redheart.png'
+                alt="좋아요"
+                v-show="isLiked"
+              />
+            </span>
           <span v-if="feed">{{ feed.likeCount }}</span>
         </div>
         <div class="margin-right-20">
@@ -183,16 +195,19 @@
         <q-card-section class="display-flex-row">
           <div class="video-container">
             <!-- 영상 가져오기 -->
-            <video controls width="100%" height="100%" v-if="videoUrl">
+            <video controls width="100%" ref="videoPlayer">
+              <source :src="feed.videoUrl" type="video/mp4" />
+            </video>
+            <!-- <video controls width="100%" height="100%" v-if="videoUrl">
               <source :src="videoUrl" type="video/mp4">
             </video>
-            <div v-else>No video available</div>
+            <div v-else>No video available</div> -->
           </div>
 
           <div class="display-flex-column">
             <div>
-              <!-- <input class="caption-input" type="text" placeholder="문구 입력..."> -->
-              <textarea class="caption-input" placeholder="문구 입력..." v-model="newContent"></textarea>
+              <input class="caption-input" type="text" placeholder="문구 입력..." v-model="newContent">
+              <!-- <textarea class="caption-input" placeholder="문구 입력..." v-model="newContent"></textarea> -->
             </div>
             <div>
               <!-- 공개범위 토글 -->
@@ -226,7 +241,7 @@ import {
 import CommentItem from "@/components/CommentItem.vue";
 
 import { fetchHitCount, createHit } from "@/js/hit/hit.js";
-import { fetchLikeCount, createLike, deleteLike } from "@/js/like/like.js";
+import { fetchLikeCount, createLike, deleteLike, fetchLike } from "@/js/like/like.js";
 import { fetchFeedList, fetchFeed, fetchFeedDelete, fetchFeedUpdate} from "@/js/feed/feed.js";
 import { fetchSong } from "@/js/song/song.js";
 import { fetchUser, getUserPk  } from "@/js/user/user.js";
@@ -234,13 +249,13 @@ import { useNotificationStore } from "@/stores/notificationStore.js";
 
 const { setCookie, getCookie, removeCookie } = useCookie();
 
+const isLiked = ref(false);
 const feed = ref();
 const router = useRouter();
 const comments = ref([]);
 const newComment = ref("");
 const commentContainer = ref(null);
 const modal = ref(false);
-const isLiked = ref(false);
 const feedId = ref();
 const newContent = ref();
 // const newStatus = ref();
@@ -266,7 +281,8 @@ const handleLikeClick = async () => {
       notificationStore.sendNotification(body);
     }
   } else {
-    feed.value.likeCount = await deleteLike(feedId.value, uuid.value);
+    await deleteLike(feedId.value, uuid.value);
+    feed.value.likeCount--;
   }
 
   isLiked.value = !isLiked.value;
@@ -316,13 +332,14 @@ const registComment = () => {
 
 onBeforeMount(async () => {
 
-  console.log(this);
+
 
   uuid.value = getCookie("uuid");
   feedId.value = window.location.href.split("/").pop();
 
   feedId.value = isNaN(feedId.value) ? 0 : parseInt(feedId.value);
 
+  isLiked.value = await fetchLike(feedId.value);
   await increaseHitCount(feedId.value, uuid.value);
 
   let elem = await fetchFeed(feedId.value);
@@ -371,7 +388,7 @@ const deleteFeed = async(feedId) => {
   try {
     //게시글 삭제
     const feedDelete = await fetchFeedDelete(feedId);
-    // console.log('피드 delete',feedDelete);
+    console.log('피드 delete',feedDelete);
     modal.value = false;
     router.push({ name: "feed", params: { userUUID: uuid.value }});
   } catch (error) {
@@ -589,7 +606,7 @@ const closeModal = () => {
 
 /* ------------------------------ */
 .modal-card {
-  max-width: 400px;
+  max-width: 800px;
   margin: 20px;
 }
 
@@ -619,19 +636,33 @@ const closeModal = () => {
 }
 
 .video-container {
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  width: 60%;
+  /* border: 1px solid #ddd; */
+  /* border-radius: 8px; */
   overflow: hidden;
   margin-bottom: 0px;
 }
 
 .caption-input {
+  box-sizing: content-box;
   width: 100%;
   padding: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   border: 1px solid #ddd;
   border-radius: 8px;
+  resize: vertical; /* 세로로 길게 조절 가능하도록 함 */
+  min-height: 184px; /* Set the minimum height to 179.4px */
 }
+
+/* .caption-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 0px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 80px;
+} */
 
 .privacy-dropdown {
   padding-left: 0;
@@ -649,14 +680,12 @@ const closeModal = () => {
 }
 
 
-.caption-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 0px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  resize: vertical; /* 세로로 길게 조절 가능하도록 함 */
-  min-height: 80px; /* 최소 높이 설정 */
-}
+
+
+
+
+
+
+
 
 </style>

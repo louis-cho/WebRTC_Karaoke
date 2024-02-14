@@ -7,6 +7,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 
+/**
+ * elasticsearch에서 사용하기 위한 feed 통계 클래스
+ */
 @Document(indexName = "feed_stats", createIndex = true)
 @Getter
 @Setter

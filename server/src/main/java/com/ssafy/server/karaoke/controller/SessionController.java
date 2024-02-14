@@ -35,8 +35,6 @@ public class SessionController {
 
     @RequestMapping(value = "/createSession", method = RequestMethod.POST)
     public ResponseEntity<String> createSession(@RequestBody Map<String, Object> params) {
-        System.out.println("Create Session : " + params);
-
         String sessionName = (String) params.get("sessionName");
 
         if (openViduModel.getMapSessions().containsKey(sessionName)) {
@@ -76,8 +74,6 @@ public class SessionController {
     // 세션에 대한 토큰을 얻는 메소드
     @RequestMapping(value = "/getToken", method = RequestMethod.POST)
     public ResponseEntity<String> getToken(@RequestBody Map<String, Object> params) {
-        System.out.println("Get Token : " + params);
-
         String sessionName = (String) params.remove("sessionName");
         boolean isModerator = false;
 
@@ -97,7 +93,6 @@ public class SessionController {
             Connection connection = openViduModel.getMapSessions().get(sessionName).createConnection(connectionProperties);
             String token = connection.getToken();
             String connectionId = connection.getConnectionId();
-            System.out.println("토큰 생성 완료 : " + token);
 
             // 새로운 토큰을 저장하는 컬렉션을 업데이트함
             openViduModel.getMapSessionNamesTokens().get(sessionName).put(token, isModerator);
@@ -122,9 +117,6 @@ public class SessionController {
     // 세션에서 사용자를 제거하는 엔드포인트
     @RequestMapping(value = "/removeToken", method = RequestMethod.POST)
     public ResponseEntity<String> removeUser(@RequestBody Map<String, Object> params) throws Exception {
-
-        System.out.println("Removing user | {sessionName, token}=" + params);
-
         // BODY에서 파라미터를 검색함
         String sessionName = (String) params.get("sessionName");
         String token = (String) params.get("token");
@@ -158,9 +150,6 @@ public class SessionController {
     // 세션을 강제로 닫는 메소드(방장)
     @RequestMapping(value = "/closeSession", method = RequestMethod.POST)
     public ResponseEntity<String> closeSession(@RequestBody Map<String, Object> params) throws Exception {
-
-        System.out.println("Closing session | {sessionName}=" + params);
-
         // BODY에서 파라미터를 검색함
         String sessionName = (String) params.get("sessionName");
         String token = (String) params.get("token");
@@ -188,8 +177,6 @@ public class SessionController {
     // 세션 정보를 수정하는 메소드(방장)
     @RequestMapping(value = "/updateSession", method = RequestMethod.POST)
     public ResponseEntity<String> updateSession(@RequestBody Map<String, Object> params) {
-        System.out.println("Update Session : " + params);
-
         String sessionName = (String) params.get("sessionName");
 
         if (!openViduModel.getMapSessions().containsKey(sessionName)) {
@@ -221,8 +208,6 @@ public class SessionController {
     // 사용자를 강퇴하는 메소드(방장)
     @RequestMapping(value = "/kickUser", method = RequestMethod.POST)
     public ResponseEntity<String> kickUser(@RequestBody Map<String, Object> params) {
-        System.out.println("Kick User : " + params);
-
         try {
             String sessionName = (String) params.get("sessionName");
             String reqUser = (String) params.get("reqUser");
@@ -246,10 +231,23 @@ public class SessionController {
         }
     }
 
+    @RequestMapping(value = "/checkRecording", method = RequestMethod.POST)
+    public ResponseEntity<Boolean> checkRecording(@RequestBody Map<String, Object> params) {
+        String sessionName = (String) params.get("sessionName");
+
+        if (openViduModel.getMapSessions().containsKey(sessionName)) {
+            Session session = openViduModel.getMapSessions().get(sessionName);
+
+            if (session.isBeingRecorded()) {
+                return ResponseEntity.ok(false);
+            }
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
+    }
+
     @RequestMapping(value = "/checkNumber", method = RequestMethod.POST)
     public ResponseEntity<Boolean> checkNumber(@RequestBody Map<String, Object> params) {
-        System.out.println("Check Number of Participant : " + params);
-
         String sessionName = (String) params.get("sessionName");
 
         if (openViduModel.getMapSessionSettings().containsKey(sessionName)) {
@@ -267,8 +265,6 @@ public class SessionController {
 
     @RequestMapping(value = "/checkPrivate", method = RequestMethod.POST)
     public ResponseEntity<Boolean> checkPrivate(@RequestBody Map<String, Object> params) {
-        System.out.println("Check Private : " + params);
-
         String sessionName = (String) params.get("sessionName");
 
         if (openViduModel.getMapSessionSettings().containsKey(sessionName)) {
@@ -282,8 +278,6 @@ public class SessionController {
 
     @RequestMapping(value = "/checkPassword", method = RequestMethod.POST)
     public ResponseEntity<Boolean> checkPassword(@RequestBody Map<String, Object> params) {
-        System.out.println("Check Password : " + params);
-
         String sessionName = (String) params.get("sessionName");
         String password = (String) params.get("password");
 
@@ -300,7 +294,6 @@ public class SessionController {
     // 백엔드 서버에서 세션 정보 가져오는 메소드로 수정 예정
     @RequestMapping(value = "/sessionList", method = RequestMethod.GET)
     public ResponseEntity<?> fetchAll() {
-        System.out.println("Session List 호출!");
         JsonArray jsonArray = new JsonArray();
         for (Session s : openViduModel.getMapSessions().values()) {
             JsonObject jsonObject = this.sessionToJson(s);

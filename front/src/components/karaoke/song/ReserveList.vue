@@ -57,13 +57,17 @@
 
 <script setup>
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import axios from "axios";
 import useCookie from "@/js/cookie.js";
 const { setCookie, getCookie, removeCookie } = useCookie();
 const store = useKaraokeStore();
 
 const lists = ref([]);
+
+onMounted(() => {
+  fetchReserveList();
+});
 
 watch(
   () => store.newReserve,
@@ -77,6 +81,7 @@ watch(
 
 function fetchReserveList() {
   lists.value = [];
+  store.reservedSongs = [];
 
   // API 호출을 통해 노래 데이터 가져오기
   axios
@@ -101,13 +106,15 @@ function fetchReserveList() {
         if (parts.length === 4) {
           const [userName, songId, title, singer] = parts;
           lists.value.push({ id, userName, songId, title, singer });
+          store.reservedSongs.push({ id, userName, songId, title, singer });
+          store.reservedSongsLength++;
           id++;
         }
       });
-      console.log(response.data);
+      console.log(store.reservedSongs[0]);
     })
     .catch((error) => {
-      console.error("Error fetching songs:", error);
+      alert(error.response.data);
     });
 }
 
@@ -131,7 +138,7 @@ function cancelReserve(hashString) {
       store.session.signal({ type: "reserve" });
     })
     .catch((error) => {
-      console.error("Error fetching songs:", error);
+      alert(error.response.data);
     });
 }
 

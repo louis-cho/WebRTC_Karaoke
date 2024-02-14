@@ -21,15 +21,13 @@ export const useKaraokeStore = defineStore("karaoke", {
     inputControllerModal: false,
     inputSelectorModal: false,
     singing: false,
+    singUser: undefined,
     songMode: true,
     newReserve: false,
-    deleteReserve: false,
 
     sessionName: undefined,
-    userName: "사용자" + Math.round(Math.random() * 100),
+    userName: "로그인 하세요",
     isPrivate: false,
-    isModerator: false,
-    kicked: true,
 
     // OpenVidu 객체
     OV: undefined,
@@ -38,6 +36,8 @@ export const useKaraokeStore = defineStore("karaoke", {
     publisher: undefined,
     subscribers: [],
     token: undefined,
+    isModerator: false,
+    kicked: true,
 
     // 방 설정을 위한 변수
     numberOfParticipants: undefined,
@@ -55,6 +55,8 @@ export const useKaraokeStore = defineStore("karaoke", {
     selectedAudio: "", // 오디오 변경시 사용할 변수
     cameras: [],
     audios: [],
+    reservedSongs: [],
+    reservedSongsLength: 0,
   }),
   actions: {
     async createSession(
@@ -105,6 +107,9 @@ export const useKaraokeStore = defineStore("karaoke", {
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
+        if (JSON.parse(stream.connection.data).clientData == this.singUser)
+          this.mainStreamManager = this.publisher;
+
         const index = this.subscribers.indexOf(stream.streamManager, 0);
         if (index >= 0) {
           this.subscribers.splice(index, 1);
@@ -112,6 +117,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       });
 
       this.session.on("sessionDisconnected", () => {
+        console.log(this.kicked);
         this.singing = false;
 
         if (this.kicked == true) {
@@ -132,10 +138,15 @@ export const useKaraokeStore = defineStore("karaoke", {
         this.messages.push(messageData);
       });
 
+      this.session.on("signal:songMode", (event) => {
+        const songModeData = JSON.parse(event.data);
+        this.songMode = songModeData.songMode;
+      });
+
       this.session.on("signal:sing", (event) => {
         const singData = JSON.parse(event.data);
         this.singing = singData.singing;
-        this.songMode = singData.songMode;
+        this.singUser = singData.singUser;
 
         if (singData.singUser == this.userName) {
           this.muted = false;
@@ -143,7 +154,10 @@ export const useKaraokeStore = defineStore("karaoke", {
         } else {
           this.muted = true;
           for (const subscriber of this.subscribers) {
-            if (singData.singUser == JSON.parse(subscriber.stream.data)) {
+            if (
+              singData.singUser ==
+              JSON.parse(subscriber.stream.connection.data).clientData
+            ) {
               this.mainStreamManager = subscriber;
             }
           }
@@ -151,7 +165,7 @@ export const useKaraokeStore = defineStore("karaoke", {
         this.publisher.publishAudio(!this.muted);
       });
 
-      this.session.on("signal:reserve", (event) => {
+      this.session.on("signal:reserve", () => {
         this.newReserve = true;
       });
     },
@@ -159,6 +173,29 @@ export const useKaraokeStore = defineStore("karaoke", {
     async getToken(sessionName) {
       if (this.session == undefined) {
         this.joinSession();
+      }
+
+      // 녹화 확인
+      const isRecording = await axios.post(
+        this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkRecording",
+        { sessionName: sessionName },
+        {
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (isRecording == null) {
+        alert("세션이 존재하지 않습니다.");
+        return false;
+      }
+
+      if (!isRecording.data) {
+        alert("녹화 중에 입장이 불가능합니다.");
+        return false;
       }
 
       // 인원수 확인
@@ -322,6 +359,10 @@ export const useKaraokeStore = defineStore("karaoke", {
       this.OV = undefined;
       this.token = undefined;
       this.sessionName = undefined;
+      this.isModerator = false;
+      this.inputMessage = "";
+      this.messages = [];
+      this.kicked = true;
 
       // beforeunload 리스너 제거
       window.removeEventListener("beforeunload", this.leaveSession);
@@ -352,4 +393,5 @@ export const useKaraokeStore = defineStore("karaoke", {
       }
     },
   },
+  persist: true,
 });
