@@ -80,7 +80,6 @@ export async function searchUser(nickname) {
       "Authorization" : getCookie("Authorization"),
       "refreshToken" : getCookie("refreshToken"),
       "Content-Type" : "application/json",
-
     },
   })
     .then((response) => response.json())
