@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Feed 엔티티 데이터 액세스 인터페이스
@@ -28,10 +29,14 @@ public interface FeedRepository extends JpaRepository<Feed, Integer> {
      */
     Page<Feed> findAllByOrderByTimeAsc(Pageable pageable);
 
-    /**
-     * 특정 유저가 작성한 모든 피드를 반환한다.
-     * @param userPk 유저 키
-     * @return feed 리스트
-     */
-    List<Feed> findByUserPk(int userPk);
+    List<Feed> findAllByUserPk(int userPk);
+    default Optional<List<Feed>> findByUserPk(int userPk) {
+        if (userPk > 0) {
+            List<Feed> feeds = findAllByUserPk(userPk);
+            return Optional.of(feeds);
+        } else {
+            return Optional.empty();
+        }
+    }
+
 }

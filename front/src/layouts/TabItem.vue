@@ -38,7 +38,7 @@
         <q-tab
           name="person"
           icon="person"
-          @click="goToFeedPage(LoggedUserPK)"
+          @click="goToFeedPage(uuid)"
         />
         <q-tab
           name="notifications"
@@ -187,7 +187,6 @@ const notificationStore = useNotificationStore();
 const router = useRouter();
 const isDropdownOpen1 = ref(false);
 const isDropdownOpen2 = ref(false);
-const LoggedUserPK = ref();
 const uuid = ref(null);
 
 const userSearchModal = ref(false);
@@ -201,7 +200,7 @@ const search = ref("");
 const ex = ref(false);
 
 onBeforeMount(async () => {
-  await getLoggedUserPk();
+  uuid.value = getCookie('uuid');
 });
 
 // 이벤트 핸들러 추가
@@ -209,20 +208,10 @@ const goToPage = (path) => {
   router.push(path);
 };
 
-const getLoggedUserPk = async () => {
-  try {
-    uuid.value = getCookie("uuid");
-    console.log("UUID:", uuid.value);
-    const getCurrentUserPk = await getUserPk(uuid.value);
-    console.log(getCurrentUserPk);
-    LoggedUserPK.value = getCurrentUserPk;
-  } catch (error) {
-    console.error("오류 발생!!!:", error);
-  }
-};
+
 
 const goToFeedPage = (param) => {
-  router.push({ name: "feed", params: { userPk: param } });
+  router.push({ name: "feed", params: { userUUID: param } });
 };
 
 const toggleDropdown1 = () => {

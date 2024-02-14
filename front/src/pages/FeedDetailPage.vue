@@ -76,7 +76,6 @@
       ----------------------------------------
       {{ LoggedUserPK }} -->
 
-
       <p v-if="feed">{{ feed.content }}</p>
       <video controls width="100%" ref="videoPlayer">
         <source :src="feed.videoUrl" type="video/mp4" />
@@ -389,7 +388,7 @@ const deleteFeed = async(feedId) => {
   try {
     //게시글 삭제
     const feedDelete = await fetchFeedDelete(feedId);
-    // console.log('피드 delete',feedDelete);
+    console.log('피드 delete',feedDelete);
     modal.value = false;
     router.push({ name: "feed", params: { userUUID: uuid.value }});
   } catch (error) {
