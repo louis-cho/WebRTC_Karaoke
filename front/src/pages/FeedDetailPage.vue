@@ -90,12 +90,24 @@
           <span v-if="feed">{{ feed.commentCount }}</span>
         </div>
         <div class="margin-right-20" @click="handleLikeClick">
-          <img
-            class="margin-right-10"
-             :src="isLiked ? '@/assets/icon/redheart.png' : '@/assets/icon/love.png'"
-            alt="좋아요"
-          />
-          <!-- :src="isLiked ? '@/assets/icon/redheart.png' : '@/assets/icon/heart.png'" -->
+            <span>
+              <img
+                class="margin-right-10"
+                src='@/assets/icon/love.png'
+                alt="좋아요"
+                v-show="isLiked"
+              />
+            </span>
+
+            <!-- Div 2 - love.png -->
+            <span>
+              <img
+                class="margin-right-10"
+                src='@/assets/icon/redheart.png'
+                alt="좋아요"
+                v-show="!isLiked"
+              />
+            </span>
           <span v-if="feed">{{ feed.likeCount }}</span>
         </div>
         <div class="margin-right-20">
