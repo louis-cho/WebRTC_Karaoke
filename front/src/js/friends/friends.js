@@ -84,24 +84,18 @@ export async function fetchFriendCount() {
  * @param {Integer} fromUser
  * @param {Integer} toUser
  */
-export async function fetchFriendRequest(fromUser, toUser) {
-  const data = {
-    fromUser: fromUser,
-    toUser: toUser
-  };
-  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.friends.request ;
+export async function fetchFriendRequest(toUser) {
+
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.friends.request + toUser;
   return await fetch(serverUrl, {
-    method: 'POST',
+    method: 'GET',
     headers: {
       "Authorization" : getCookie("Authorization"),
       "refreshToken" : getCookie("refreshToken"),
       "Content-Type" : "application/json",
 
     },
-    body: JSON.stringify(data),
   })
-  .then(response => response.json())
-  .then(result => {
-      return result;
-    });
+  .then(response => console.log("친구 요청 생성완료"))
+  .catch(err => console.log(err.message));
 }
