@@ -90,7 +90,6 @@ public class SongController {
         }
 
         String hashString = reserveModel.getMapSongReserveDeq().get(sessionName).pollFirst();
-        reserveModel.getMapSongReserveDeq().get(sessionName).remove(hashString);
 
         return ResponseEntity.ok(hashString);
     }

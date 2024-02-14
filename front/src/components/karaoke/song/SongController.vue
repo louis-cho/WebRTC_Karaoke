@@ -154,6 +154,7 @@ function removeReserve() {
     )
     .then((res) => {
       console.log(res.data);
+      store.session.signal({ type: "reserve" });
       const parts = res.data.split("&");
 
       if (parts.length === 4) {

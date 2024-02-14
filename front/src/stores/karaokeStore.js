@@ -187,6 +187,12 @@ export const useKaraokeStore = defineStore("karaoke", {
           },
         }
       );
+
+      if (isRecording == null) {
+        alert("세션이 존재하지 않습니다.");
+        return false;
+      }
+
       if (!isRecording.data) {
         alert("녹화 중에 입장이 불가능합니다.");
         return false;
