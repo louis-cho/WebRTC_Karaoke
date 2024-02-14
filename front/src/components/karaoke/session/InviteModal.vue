@@ -4,9 +4,10 @@
     <q-card>
     <q-card-section>
       <q-card-actions vertical>
+      <h6 align=center>친구 초대하기</h6>
         <q-btn flat
           v-for="friend in friendIdAndNameList"
-          :key="friend.friendId"
+          :key="friend.userKey"
           clickable
           @click="inviteFriend(friend)"
           >
@@ -28,6 +29,9 @@ import { ref, defineProps, onMounted } from "vue";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { fetchFriendList } from "@/js/friends/friends.js";
 import { fetchUser } from "@/js/user/user.js";
+import useCookie from "@/js/cookie.js";
+
+const { setCookie, getCookie, removeCookie } = useCookie();
 
 const props = defineProps(['sessionName' ]);
 //친구목록
@@ -53,27 +57,26 @@ const inviteFriend = (friend) => {
 }
 
 onMounted(async () => {
-  const userId = 1; //실제 유저Id로 변경해야함
   const pageNo = 0; //실제 page로 변경해야함
   const sizeNo = 10; //실제 size로 변경해야함
-  friendList.value = await fetchFriendList(userId, pageNo, sizeNo)
+  friendList.value = await fetchFriendList(pageNo, sizeNo)
   console.log("FriendList 불러옵니다. ", friendList.value)
 
   // Transform friendList to friendIdAndName
   friendIdAndNameList.value = await Promise.all(
     friendList.value.map(async (friend) => {
-      //// Determine userPk based on conditions
-      // const userKey = friend.fromUserKey === getCookie("uuid") ? friend.toUserKey : friend.fromUserkey;
 
+    const userKey = friend.fromUserKey === getCookie("uuid") ? friend.toUserKey : friend.fromUserkey;
+    console.log("userKey : ",userKey);
       // Fetch the user name using getUserName function
-      // const user = await fetchUser(userKey);
-      // const nickname = user.nickname;
+    const user = await fetchUser(userKey);
+    const nickname = user.nickname;
 
-      const userPk = 3;
-      const nickname = "fetchUser수정,friendapi수정되면다시로직작성InviteModal.vue";
+    console.log("nikname :", nickname)
 
-      // Return the new object with userPk and name
-      return { userPk, nickname };
+
+      // Return the new object with userKey and name
+      return { userKey, nickname };
     })
   );
 
