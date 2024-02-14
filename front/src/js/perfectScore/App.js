@@ -12,6 +12,7 @@ export class App {
     this.inited = false; // 초기화 여부
     this.key = 0; // 음악 키
     this.playMusic = false; // 음악 재생 상태
+    this.hasNextLyric = false;
     // 각각의 앱 구성 요소를 생성
     this.drawer = new ScoreDrawer(); // 악보 그리기 객체
     this.score = "";
@@ -62,6 +63,7 @@ export class App {
   playSong() {
     this.startTimeRef = Date.now()
     this.playMusic = true;
+    this.hasNextLyric = true;
     this.lyricIndex = 2;
     this.lyricFlag = true;
     this.drawer.lyricUpper = this.lyrics[0].lyric;
@@ -75,6 +77,8 @@ export class App {
     this.drawer.start([]); // 악보 그리기 초기화
     this.drawer.lyricUpper = "";
     this.drawer.lyricLower = "";
+    this.drawer.isLastLyric = false;
+    this.drawer.lyricFlag = true;
     this.playMusic = false;
     this.lyricIndex = 0;
   }
@@ -86,18 +90,23 @@ export class App {
 
   // 애니메이션 루프
   loop(time) {
-    if(this.playMusic) {
+    if(this.hasNextLyric) {
       if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this.prelude) {
         if(this.lyricFlag) {  // 윗가사 업데이트
           this.drawer.lyricUpper = this.lyrics[this.lyricIndex].lyric;
           this.lyricFlag = !this.lyricFlag
+          this.drawer.lyricFlag = !this.drawer.lyricFlag
           this.lyricIndex++;
         } else {  // 아랫가사 업데이트
           this.drawer.lyricLower = this.lyrics[this.lyricIndex].lyric;
           this.lyricFlag = !this.lyricFlag
+          this.drawer.lyricFlag = !this.drawer.lyricFlag
           this.lyricIndex++;
         }
-        if(this.lyricIndex >= this.lyrics.length) this.playMusic = false;
+        if(this.lyricIndex >= this.lyrics.length) {
+          this.drawer.isLastLyric = true;
+          this.hasNextLyric = false;
+        }
       }
 
     }
