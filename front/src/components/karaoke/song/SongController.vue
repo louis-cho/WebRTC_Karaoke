@@ -160,9 +160,6 @@ function removeReserve() {
         songId.value = id;
       }
     })
-    .catch((error) => {
-      console.error(error);
-    });
 }
 
 function startRecording() {
