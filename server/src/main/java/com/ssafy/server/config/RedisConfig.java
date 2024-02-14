@@ -1,6 +1,5 @@
 package com.ssafy.server.config;
 
-import com.ssafy.server.feed.rank.model.FeedStats;
 import com.ssafy.server.hit.model.Hit;
 import com.ssafy.server.like.model.Like;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
@@ -47,13 +46,6 @@ public class RedisConfig extends CachingConfigurerSupport {
         RedisTemplate<String, Hit> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         template.setDefaultSerializer(new JdkSerializationRedisSerializer());
-        return template;
-    }
-
-    @Bean
-    public RedisTemplate<String, FeedStats> feedStatsRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, FeedStats> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
         return template;
     }
 

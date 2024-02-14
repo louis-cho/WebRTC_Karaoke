@@ -66,12 +66,12 @@ export default route(function (/* { store, ssrContext } */) {
         const destUrl = "https://i10a705.p.ssafy.io" + to.fullPath;
 
         if (
-          (authStatus == 0 || authStatus == 3 || authStatus == 4) &&
+          (authStatus == 0 || authStatus == 3 || authStatus == 4 || authStatus == null) &&
           pattern.test(destUrl)
         ) {
           alert("로그인 후 이용가능합니다.");
-          // window.location.replace("/")
-          next();
+          window.location.replace("/")
+          // next();
         } else {
           next();
         }
@@ -79,7 +79,7 @@ export default route(function (/* { store, ssrContext } */) {
       .catch((error) => {
         console.error("Error: ", error);
         console.log(
-          "router/index.js ComponentGuard axios 통신 에러, 일단 넘김"
+          "router/index.js ComponentGuard axios 통신 에러"
         );
         next();
       });

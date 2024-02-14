@@ -254,15 +254,17 @@ const goBack = function () {
 const handleLikeClick = async () => {
   if (!isLiked.value) {
     await createLike(feedId.value, uuid.value);
+    feed.value.likeCount++;
     //좋아요알림 발송. 자기자신 제외.
-    //if(feed.value.user.userKey != 현재로그인한유저.)
-    const body = {
-    toUser : feed.value.userUUID, //받는사람 userPk.
-    info : `${feed.value.feedId}`,
-    type : "like",
-    status : '0'
+    if(feed.value.userUUID != uuid.value){
+      const body = {
+      toUserKey : feed.value.userUUID, //받는사람 userUUID, 게시글 작성자.
+      info : `${feed.value.feedId}`,
+      type : "like",
+      status : '0'
+      }
+      notificationStore.sendNotification(body);
     }
-    notificationStore.sendNotification(body);
   } else {
     feed.value.likeCount = await deleteLike(feedId.value, uuid.value);
   }
@@ -294,16 +296,16 @@ const registComment = () => {
   comment.isDeleted = false;
 
   addComment(comment);
-  //여기 댓글알림 보내기 자기자신게시글일경우 제외.
-  // if(feed.value.user.userKey != 현재로그인정보) 인 경우에만 알림보내기
-  const body = {
-    toUser : feed.value.user.userUUID, //받는사람 userPk.
-    info : `${feed.value.feedId}`,//친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
-    type : "comment", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
-    status : '0'
+  if(feed.value.userUUID != uuid.value){
+    const body = {
+      toUser : feed.value.userUUID, //받는사람 userPk.
+      info : `${feed.value.feedId}`,//친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
+      type : "comment", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
+      status : '0'
+    }
+    notificationStore.sendNotification(body);
   }
-  notificationStore.sendNotification(body);
-  location.reload();
+    location.reload();
 };
 
 // const scrollToBottom = () => {
