@@ -72,7 +72,6 @@ export default route(function (/* { store, ssrContext } */) {
             authStatus == null) &&
           pattern.test(destUrl)
         ) {
-          removeCookie("isLoggedIn");
           alert("로그인 후 이용가능합니다.");
           window.location.replace("/");
           // next();`

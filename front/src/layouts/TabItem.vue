@@ -261,8 +261,7 @@ const logout = () => {
     removeCookie("Authorization");
     removeCookie("refreshToken");
     removeCookie("uuid");
-    removeCookie("isLoggedIn");
-    store.isLoggedin = false;
+    store.isLoggedIn = false;
     alert("로그아웃되었습니다.");
     window.location.replace("/");
   } else {
