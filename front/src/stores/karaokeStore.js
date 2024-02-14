@@ -22,12 +22,13 @@ export const useKaraokeStore = defineStore("karaoke", {
     inputControllerModal: false,
     inputSelectorModal: false,
     singing: false,
+    singUser: undefined,
     songMode: true,
     newReserve: false,
     deleteReserve: false,
 
     sessionName: undefined,
-    userName: undefined,
+    userName: "로그인 하세요",
     isPrivate: false,
     isModerator: false,
     kicked: true,
@@ -106,6 +107,9 @@ export const useKaraokeStore = defineStore("karaoke", {
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
+        if (JSON.parse(stream.connection.data).clientData == this.singUser)
+          this.mainStreamManager = this.publisher;
+
         const index = this.subscribers.indexOf(stream.streamManager, 0);
         if (index >= 0) {
           this.subscribers.splice(index, 1);
@@ -141,6 +145,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       this.session.on("signal:sing", (event) => {
         const singData = JSON.parse(event.data);
         this.singing = singData.singing;
+        this.singUser = singData.singUser;
 
         if (singData.singUser == this.userName) {
           this.muted = false;
