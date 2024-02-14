@@ -3,7 +3,7 @@
     <!-- 배경 이미지를 표시할 div 요소 -->
     <div class="background-container">
       <!-- 배경 이미지 -->
-      <img src="@/assets/img/normalmodebackground.jpg" class="background-image" alt="Background Image">
+      <img src="@/assets/img/normalmodebackground2.gif" class="background-image" alt="Background Image">
       <!-- 캔버스 요소 -->
       <canvas ref="canvas" width="1000" height="200"></canvas>
     </div>
@@ -45,13 +45,13 @@ const lyricInterval = 70; // 가사 윗묶음&아랫묶음 y좌표 간격
 const moveX = ref(0);       // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
 const fontSize = "36px ";
 const countDownSize = "38px ";
-const fontInterval = 34.8;    // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
+const fontInterval = 36;    // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
 const fontStyle = "YCloverBold";
-const fontColor = "black"
+const fontColor = "white"
 const filledFont = ref(""); // 부르고 있는 가사
 const extraFont = ref("");  // 같은 lyricBundle 내에서 부르고 있는 가사 외 나머지 가사
-const fontFillColor = "orange";
-const blankSize = 10.9 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 6.7
+const fontFillColor = "yellow";
+const blankSize = 10 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 6.7
 const blanckCount = ref(0);
 const countDown = ref("");
 
