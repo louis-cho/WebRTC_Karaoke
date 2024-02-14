@@ -2,7 +2,21 @@
   <div class="canvas-container">
     <div class="background-container">
       <img src="@/assets/img/normalmodebackground2.gif" class="background-image" alt="Background Image">
-      <canvas ref="canvas" width="1000" height="200"></canvas>
+      <div class="announce">
+        <div>
+          {{ announceString }}
+        </div>
+      </div>
+      <div>
+        <div v-if="showSongInfo" class="song-info-container">
+          <div class="title">{{ song.title }}</div>
+          <div class="details">
+            <span>노래: {{ song.singer }}</span><br>
+            <span>작곡: {{ song.author }}</span>
+          </div>
+        </div>
+        <canvas v-else ref="canvas" width="1000" height="200"></canvas>
+      </div>
     </div>
   </div>
 </template>
@@ -17,11 +31,14 @@ import {
 
 const props = defineProps({
   songData: Object,
-  hasNextSong: Boolean,
 });
 
 const audio = ref(null);
 const song = ref(null)
+
+const announceString = ref("노래를 예약해주세요.")
+const hasReservedSong = ref(false)
+const showSongInfo = ref(false);
 
 const hasNextLyrics = ref(false)
 const canvas = ref(null);
@@ -51,6 +68,8 @@ const fontFillColor = "yellow";
 const blankSize = 10 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 6.7
 const blanckCount = ref(0);
 const countDown = ref("");
+const showSongInfoTime = 5000;
+const showSongInfoTimeOut = 9000;
 
 const choose = () => {
   // props로 내려온 songData 주입
@@ -67,7 +86,7 @@ const initDrawer = () => {
   bundleIndex.value = 0
   lyricBundleIndex.value = 0
   lyricIndex.value = 0
-  startTimeRef.value = 0
+  // startTimeRef.value = 0
   lyricUpper.value = ""
   lyricLower.value = ""
   bundleFlag.value = true
@@ -78,23 +97,50 @@ const initDrawer = () => {
 }
 
 const play = () => {
-  initDrawer();
-  hasNextLyrics.value = true;
-  lyrics.value = parseLyric(parseScore(song.value.score));
-  bundles.value = parseBundle(lyrics.value);
+  announceString.value = "";
+  showSongInfo.value = true;
 
-  bundleIndex.value = 0;
-  lyricBundleIndex.value = 0;
-  lyricIndex.value = 0;
-  moveX.value = lyricPosX;
+  audio.value.play();
+  startTimeRef.value = Date.now();
 
-  drawLyrics();
-  audio.value.play(); // mp3 재생
-  startTimeRef.value = Date.now(); // 노래 시작 시간 저장.
+  if(song.value.prelude >= showSongInfoTimeOut) {
+    new Promise((resolve) => {
+      setTimeout(() => {
+        showSongInfo.value = false;
+        resolve();
+      }, showSongInfoTime);
+    }).then(() => {
+      console.log("checkPoint1")
+      initDrawer();
+      hasNextLyrics.value = true;
+      lyrics.value = parseLyric(parseScore(song.value.score));
+      bundles.value = parseBundle(lyrics.value);
+
+      bundleIndex.value = 0;
+      lyricBundleIndex.value = 0;
+      lyricIndex.value = 0;
+      moveX.value = lyricPosX;
+
+      drawLyrics();
+    });
+  } else {
+    initDrawer();
+    hasNextLyrics.value = true;
+    lyrics.value = parseLyric(parseScore(song.value.score));
+    bundles.value = parseBundle(lyrics.value);
+
+    bundleIndex.value = 0;
+    lyricBundleIndex.value = 0;
+    lyricIndex.value = 0;
+    moveX.value = lyricPosX;
+
+    drawLyrics();
+  }
 };
 
 const stop = () => {
   initDrawer();
+  startTimeRef.value = 0
 
   if(audio.value != null) {
     audio.value.currentTime = 0;
@@ -107,13 +153,15 @@ fillText(text, x, y)는 xy 좌표 기준으로 1사분면에 렌더링
 fillRect(x, y, width, height)는 xy좌표 기준 4사분면에 렌더링
 */
 const drawLyrics = () => {
-
+  console.log("checkPoint2")
   const renderFrame = (timestamp) => {
+    console.log("checkPoint3")
+    console.log(lyricUpper.value)
     const ctx = canvas.value.getContext("2d");
     ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);   // 초기화
 
     if(hasNextLyrics.value) { // 렌더링할 가사가 있으면,
-
+      console.log("checkPoint4")
       // 카운트다운
       const beforeStart = (bundles.value[0].start + song.value.prelude) - (Date.now() - startTimeRef.value);
       if(beforeStart <= 3000 && beforeStart > 2000) {
@@ -132,11 +180,14 @@ const drawLyrics = () => {
       }
 
       if(bundleIndex.value == 0 && (Math.abs((Date.now() - startTimeRef.value) >= (bundles.value[1].start + song.value.prelude)))) {
+        console.log("checkPoint5")
         // 전주 ~ 첫 마디를 벗어나면
         bundleIndex.value = 2;
       }
-
+      console.log(Date.now())
+      console.log(startTimeRef.value);
       if((Date.now() - startTimeRef.value) < bundles.value[1].start + song.value.prelude) {  // 첫 마디 다 부르기 전까지
+        console.log("checkPoint6")
         lyricUpper.value = bundles.value[bundleIndex.value].lyric;
         lyricLower.value = bundles.value[bundleIndex.value+1].lyric;
       } else if((Date.now() - startTimeRef.value) >= (bundles.value[bundleIndex.value-1].start + song.value.prelude)) {
@@ -203,6 +254,7 @@ const drawLyrics = () => {
       }
     } else {  // 처음 ~ 마지막 부분 전
       if(bundleFlag.value) {
+        console.log("checkPoint7")
         if(filledFont.value == "" && extraFont.value == "") { // 간주 중 . . .
           ctx.fillStyle = fontColor;
           ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
@@ -266,5 +318,35 @@ canvas {
   position: absolute;
   top: 150px;
   left: 0;
+}
+
+.announce {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 50px;
+}
+
+.song-info-container {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; /* 가운데 정렬을 위해 추가 */
+}
+
+.title {
+  font-size: 50px;
+}
+
+.details {
+  margin-top: 10px; /* 상단 간격 조절을 위해 추가 */
+  text-align: left; /* 왼쪽 맞춤 설정 */
+}
+
+.details span {
+  font-size: 30px;
+  display: block; /* 각 요소를 새로운 라인에 표시 */
 }
 </style>

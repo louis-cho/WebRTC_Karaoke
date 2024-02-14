@@ -111,7 +111,7 @@ function fetchReserveList() {
       console.log(response.data);
     })
     .catch((error) => {
-      console.error("Error fetching songs:", error);
+      alert(error.response.data);
     });
 }
 
@@ -135,7 +135,7 @@ function cancelReserve(hashString) {
       store.session.signal({ type: "reserve" });
     })
     .catch((error) => {
-      console.error("Error fetching songs:", error);
+      alert(error.response.data);
     });
 }
 
