@@ -12,6 +12,8 @@ import TabItem from "@/layouts/TabItem.vue";
 import SignIn from "@/components/SignIn.vue";
 import { onMounted, ref } from "vue";
 import useCookie from "@/js/cookie.js";
+import { useNotificationStore } from "@/stores/notificationStore.js"
+const notificationStore = useNotificationStore();
 const { setCookie, getCookie, removeCookie } = useCookie();
 
 const isLoggedIn = ref(false);
@@ -19,6 +21,7 @@ const isLoggedIn = ref(false);
 onMounted(() => {
   if (getCookie("Authorization")) {
     isLoggedIn.value = true;
+    notificationStore.setSse();
   }
 });
 </script>

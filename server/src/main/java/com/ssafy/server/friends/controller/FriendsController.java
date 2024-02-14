@@ -60,10 +60,8 @@ public class FriendsController {
                 })
                 .filter(Objects::nonNull) // null 값 필터링
                 .collect(Collectors.toList());
-        System.out.println("반환 친구리스트 수 "+ friendsResponseDtoList.size());
         return new ResponseEntity<>(friendsResponseDtoList, HttpStatus.OK);
     }
-
 
     @GetMapping("/count")
     public ResponseEntity<Integer> getFriendsCount(){
@@ -75,9 +73,9 @@ public class FriendsController {
     }
 
     @Operation(summary = "친구 신청 API", description = "userPK를 기반으로 친구 신청")
-    @PostMapping("/request")
-    public void requestFriend(@RequestParam String fromUserKey, @RequestParam String toUserKey) {
-        Integer fromUser = userService.getUserPk(UUID.fromString(fromUserKey));
+    @GetMapping("/request/{toUserKey}")
+    public void requestFriend(@PathVariable String toUserKey) {
+        Integer fromUser = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserPk();
         Integer toUser = userService.getUserPk(UUID.fromString(toUserKey));
         if (fromUser == toUser)
             throw new RuntimeException("나는 나 자신의 영원한 친구 입니다.");
