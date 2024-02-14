@@ -3,7 +3,6 @@
     <NavBar/>
     <!-- <TabItem /> -->
     <!-- 내 피드 페이지(마이페이지/혹은 타인 페이지)-->
-    <!-- {{ user }} -->
     <div class="my-feed">
       <!-- style="padding-left:100px; padding-right:100px" -->
       <!-- 첫번째 div -->
@@ -39,7 +38,7 @@
             <div v-else><p>게시글</p><span>0</span></div>
             <div><p>댓글</p><span>{{ totalCommentCount }}</span></div>
             <div><p>좋아요</p><span>{{ totalLikeCount }}</span></div>
-            <div><p>친구</p><span> {{ FriendCount }} </span></div>
+            <!-- <div><p>친구</p><span> {{ FriendCount }} </span></div> -->
           </div>
           <div class="bio">
             <p>{{ user.introduction }}</p>
@@ -72,24 +71,23 @@
 
 <script setup>
 import { ref,onMounted,onBeforeMount,computed } from "vue";
-import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
 import { getFeedsByUser } from '@/js/feed/feed.js';
 import { fetchUser } from "@/js/user/user.js";
 import { fetchLikeCount } from "src/js/like/like";
 import { fetchCommentCount } from "@/js/comment/comment.js";
-import { fetchFriendCount } from "@/js/friends/friends.js";
+import { fetchFriendList, fetchFriendCount } from "@/js/friends/friends.js";
 import useCookie from "@/js/cookie.js";
-import { getUserPk  } from "@/js/user/user.js";
+
 
 const { setCookie, getCookie, removeCookie } = useCookie();
 const router = useRouter();
 const route = useRoute()
-const uuid = ref("");
-// const userPk = ref(route.params.userPk); // 동적인 userPk를 사용
+// const uuid = ref("");
+const uuid = ref(route.params.userUUID); // 동적인 userPk를 사용
 
-
+// console.log('이거지금 uuid',uuid.value)
 
 const goBack = function () {
   router.go(-1)
@@ -106,10 +104,10 @@ let page = 0;
 const amount = 10;
 
 onBeforeMount(async () => {
-  uuid.value = getCookie('uuid')
+  // uuid.value = getCookie('uuid')
   await fetchPersonalFeedData();
   await fetchUserData();
-  await getFriendCount();
+  await fetchFriendCount(0,10);
   // console.log("비포마운트끝")
 });
 
