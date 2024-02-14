@@ -1,31 +1,7 @@
 import app from "@/js/config/preference.js";
 import useCookie from "@/js/cookie.js";
 let pref = app;
-const { setCookie, getCookie, removeCookie } = useCookie();
-
-import axios from 'axios';
-
-export async function fetchUser2(pk) {
-  const pkInfoUUID = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/getUUID?pk=${pk}`);
-  const serverUrl =
-    pref.app.api.protocol +
-    pref.app.api.host +
-    pref.app.api.user.fetch + pkInfoUUID.data;
-
-  return await fetch(serverUrl, {
-    method: "POST",
-    headers: {
-      "Authorization" : getCookie("Authorization"),
-      "refreshToken" : getCookie("refreshToken"),
-      "Content-Type" : "application/json",
-
-    },
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      return result;
-    });
-}
+const { getCookie } = useCookie();
 
 export async function fetchUser(uuid) {
   const serverUrl =
@@ -98,7 +74,6 @@ export async function searchUser(nickname) {
     pref.app.api.host +
     pref.app.api.user.search +
     nickname;
-
   return await fetch(serverUrl, {
     method: "GET",
     headers: {

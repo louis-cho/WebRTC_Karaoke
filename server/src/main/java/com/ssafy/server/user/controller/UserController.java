@@ -16,6 +16,8 @@ import com.ssafy.server.user.document.UserDocument;
 import com.ssafy.server.user.error.UserExceptionEnum;
 import com.ssafy.server.user.model.User;
 import com.ssafy.server.user.model.UserAuth;
+import com.ssafy.server.user.model.UserNoPk;
+import com.ssafy.server.user.model.UserUuidNick;
 import com.ssafy.server.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -176,20 +179,27 @@ public class UserController {
 
 
     @GetMapping("/search/{nickname}")
-    public ResponseEntity<List<UserDocument>> searchUsersByNickname(@PathVariable String nickname) {
+    public ResponseEntity<List<UserUuidNick>> searchUsersByNickname(@PathVariable String nickname) {
         List<UserDocument> users = userService.searchUsersByNickname(nickname);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        List<UserUuidNick> resList = new ArrayList<>();
+        for(UserDocument ud : users){
+            UserUuidNick tmp = new UserUuidNick();
+            tmp.setNickname(ud.getNickname());
+            tmp.setUserUuid(userService.getUUIDByUserPk(ud.getUserPk()));
+            resList.add(tmp);
+        }
+        return new ResponseEntity<>(resList, HttpStatus.OK);
     }
 
     @PostMapping("/get/{uuid}")
-    public ResponseEntity<User> getUser(@PathVariable String uuid) {
+    public ResponseEntity<UserNoPk> getUser(@PathVariable String uuid) {
         User user = null;
 
         try {
            int userPk = userService.getUserPk(UUID.fromString(uuid));
            user = userService.getUser(userPk);
-           ResponseEntity responseEntity = new ResponseEntity<>(user, HttpStatus.OK);
-            System.out.println(user);
+           UserNoPk resDto = new UserNoPk(user);
+           ResponseEntity responseEntity = new ResponseEntity<>(resDto, HttpStatus.OK);
             return responseEntity;
        }
        catch(Exception e) {
