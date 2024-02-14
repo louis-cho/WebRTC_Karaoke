@@ -188,12 +188,12 @@ export const useKaraokeStore = defineStore("karaoke", {
         }
       );
 
-      if (isRecording == null) {
-        alert("세션이 존재하지 않습니다.");
+      if (isRecording.data == "") {
+        alert("존재하지 않는 방입니다.");
         return false;
       }
 
-      if (!isRecording.data) {
+      if (isRecording.data) {
         alert("녹화 중에 입장이 불가능합니다.");
         return false;
       }
