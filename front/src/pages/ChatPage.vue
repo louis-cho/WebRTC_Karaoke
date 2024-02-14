@@ -542,9 +542,9 @@ const fetchData = async () => {
     // chatRoomUsers 배열에 각 사용자의 정보 추가
     for (const user of users) {
       console.log(user)
-      const a = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${user.userPk}`);
-      console.log(a)
-      const userInfo = await axios.post(`https://i10a705.p.ssafy.io/api/v1/user/getPk/${user.userPk}`,{
+      const pkInfo = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/getUUID?pk=${user.userPk}`);
+      console.log(pkInfo.data)
+      const userInfo = await axios.post(`https://i10a705.p.ssafy.io/api/v1/user/get/${pkInfo.data}`,{
         headers: {
       Authorization: getCookie("Authorization"),
       refreshToken: getCookie("refreshToken"),
