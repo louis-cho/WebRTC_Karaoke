@@ -7,6 +7,7 @@ const { setCookie, getCookie, removeCookie } = useCookie();
 export const useKaraokeStore = defineStore("karaoke", {
   state: () => ({
     APPLICATION_SERVER_URL: pref.app.api.protocol + pref.app.api.host,
+    isLoggedin: false,
 
     createModal: false,
     updateModal: false,

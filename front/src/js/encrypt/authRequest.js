@@ -9,7 +9,6 @@ let pref = app;
 let modulus = null;
 let exponent = null;
 export let rsa = new RSA.RSAKey();
-export let isLoggedIn = false;
 const { setCookie, getCookie, removeCookie } = useCookie();
 
 // Empty function for the "공개키 받아오기" button
@@ -109,7 +108,11 @@ async function login(id, pw) {
       console.log("서버에서 넘어온 ACCESS_TOKEN ==> " + result.Authorization);
       console.log("서버에서 넘어온 REFRESH_TOKEN ==> " + result.refreshToken);
       console.log("서버에서 넘어온 UUID ==> " + result.uuid);
-      if(result.Authorization != null && result.refreshToken != null && result.uuid != null) {
+      if (
+        result.Authorization != null &&
+        result.refreshToken != null &&
+        result.uuid != null
+      ) {
         const ACCESS_TOKEN = result.Authorization;
         const REFRESH_TOKEN = result.refreshToken;
         const UUID = result.uuid;
@@ -128,19 +131,17 @@ async function login(id, pw) {
           secure: true,
           sameSite: "none",
         });
-        isLoggedIn = true;
-        alert("로그인 성공!")
+        store.isLoggedIn = true;
+        alert("로그인 성공!");
         console.log("서버로부터 받은 결과 >> " + result.nickname);
         store.userName = result.nickname;
       } else {
-        console.log("로그인 실패")
-        alert("아이디 혹은 비밀번호가 올바르지 않습니다.")
+        console.log("로그인 실패");
+        alert("아이디 혹은 비밀번호가 올바르지 않습니다.");
       }
-      // isLoggedIn.value = true;
     })
     .catch((error) => {
       console.error("Error:", error);
-      // isLoggedIn.value = false;
     });
 }
 
