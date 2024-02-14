@@ -92,7 +92,7 @@
         <div class="margin-right-20" @click="handleLikeClick">
           <img
             class="margin-right-10"
-            src="@/assets/icon/love.png"
+            :src="isLiked.value ? '../src/assets/icon/clicked_love.png' : '../src/assets/icon/love.png'"
             alt="좋아요"
           />
           <span v-if="feed">{{ feed.likeCount }}</span>
@@ -224,7 +224,7 @@ import {
 import CommentItem from "@/components/CommentItem.vue";
 
 import { fetchHitCount, createHit } from "@/js/hit/hit.js";
-import { fetchLikeCount, createLike, deleteLike } from "@/js/like/like.js";
+import { fetchLikeCount, createLike, deleteLike, fetchLike } from "@/js/like/like.js";
 import { fetchFeedList, fetchFeed, fetchFeedDelete, fetchFeedUpdate} from "@/js/feed/feed.js";
 import { fetchSong } from "@/js/song/song.js";
 import { fetchUser, getUserPk  } from "@/js/user/user.js";
@@ -232,13 +232,13 @@ import { useNotificationStore } from "@/stores/notificationStore.js";
 
 const { setCookie, getCookie, removeCookie } = useCookie();
 
+  const isLiked = ref(false);
 const feed = ref();
 const router = useRouter();
 const comments = ref([]);
 const newComment = ref("");
 const commentContainer = ref(null);
 const modal = ref(false);
-const isLiked = ref(false);
 const feedId = ref();
 const newContent = ref();
 // const newStatus = ref();
@@ -251,8 +251,8 @@ const goBack = function () {
 
 const handleLikeClick = async () => {
   if (!isLiked.value) {
-    await createLike(feedId.value, uuid.value);
-    feed.value.likeCount++;
+    feed.value.likeCount = await createLike(feedId.value, uuid.value);
+
     //좋아요알림 발송. 자기자신 제외.
     if(feed.value.userUUID != uuid.value){
       const body = {
@@ -314,13 +314,14 @@ const registComment = () => {
 
 onBeforeMount(async () => {
 
-  console.log(this);
+
 
   uuid.value = getCookie("uuid");
   feedId.value = window.location.href.split("/").pop();
 
   feedId.value = isNaN(feedId.value) ? 0 : parseInt(feedId.value);
 
+  isLiked.value = await fetchLike(feedId.value);
   await increaseHitCount(feedId.value, uuid.value);
 
   let elem = await fetchFeed(feedId.value);

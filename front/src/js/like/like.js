@@ -72,3 +72,21 @@ export async function deleteLike(feedId) {
 
   return await fetchLikeCount(feedId);
 }
+
+export async function fetchLike(feedId) {
+  const serverUrl =
+  pref.app.api.protocol + pref.app.api.host + pref.app.api.like.clicked + feedId;
+
+  return await fetch(serverUrl, {
+    method: "POST",
+    headers: {
+      Authorization: getCookie("Authorization"),
+      refreshToken: getCookie("refreshToken"),
+      uuid: getCookie("uuid"),
+      "Content-Type": "application/json",
+    },
+  }).then((response) =>  response.json())
+  .then((result) =>
+  {return result; });
+
+}
