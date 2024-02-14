@@ -92,7 +92,7 @@
         <div class="margin-right-20" @click="handleLikeClick">
           <img
             class="margin-right-10"
-             :src="isLiked ? '../src/assets/icon/redheart.png' : '../src/assets/icon/love.png'"
+             :src="isLiked ? '@/assets/icon/redheart.png' : '@/assets/icon/love.png'"
             alt="좋아요"
           />
           <!-- :src="isLiked ? '@/assets/icon/redheart.png' : '@/assets/icon/heart.png'" -->
