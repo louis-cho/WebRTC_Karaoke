@@ -1,9 +1,13 @@
 package com.ssafy.server.notification.service;
 
+import com.ssafy.server.feed.model.Feed;
+import com.ssafy.server.feed.repository.FeedRepository;
 import com.ssafy.server.notification.dto.NotificationRequestDto;
 import com.ssafy.server.notification.dto.NotificationResponseDto;
 import com.ssafy.server.notification.entity.Notification;
 import com.ssafy.server.notification.repository.NotificationRepository;
+import com.ssafy.server.user.repository.UserPkMappingRepository;
+import com.ssafy.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +18,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService{
 
+    private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
+    private final FeedRepository feedRepository;
 
     @Override
     public Notification makeNotification(NotificationRequestDto notificationDto) {
@@ -25,18 +31,24 @@ public class NotificationServiceImpl implements NotificationService{
         notification.setType(notificationDto.getType());
         notification.setStatus(notificationDto.getStatus());
 
+        String nickName = userRepository.findByUserPk(notificationDto.getFromUser()).getNickname();
+
         StringBuilder sb = new StringBuilder();
         if("friend".equals(notification.getType())){
-            sb.append(notification.getFromUser()).append("님이 친구요청을 보냈습니다.");
+            sb.append(nickName).append("님이 친구요청을 보냈습니다.");
         }
         else if("like".equals(notification.getType())){
-            sb.append(notification.getFromUser()).append("님이 게시글").append(notification.getInfo()).append("번에 좋아요를 눌렀습니다.");
+            Feed feed = feedRepository.findById(Integer.parseInt(notification.getInfo())).orElse(null);
+            if(feed != null) {
+                String feedTitle = feed.getTitle();
+                sb.append(nickName).append("님이 피드\"").append(feedTitle).append("\"에 좋아요를 눌렀습니다.");
+            }
         }
         else if("comment".equals(notification.getType())){
-            sb.append(notification.getFromUser()).append("님이 게시글").append(notification.getInfo()).append("번에 댓글을 달았습니다.");
+            sb.append(nickName).append("님이 게시글").append(notification.getInfo()).append("번에 댓글을 달았습니다.");
         }
         else if("karaoke".equals(notification.getType())){
-            sb.append(notification.getFromUser()).append("님이 노래방으로 초대했습니다.");
+            sb.append(notification.getFromUser()).append("님이 노래방").append(notification.getInfo()).append("으로 초대했습니다.");
         }
         else{
             System.out.println("잘못된 구독 생성 요청입니다.");
