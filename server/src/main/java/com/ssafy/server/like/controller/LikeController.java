@@ -86,4 +86,18 @@ public class LikeController {
         return new ResponseEntity<>(ApiResponse.success(count), HttpStatus.ACCEPTED);
     }
 
+    @PostMapping("/clicked/{feedId}")
+    public boolean isClicked(@RequestHeader(name = "uuid") String uuid, @PathVariable int feedId) {
+        int userPk = -1;
+        UUID userUUID = null;
+        if(uuid != null) {
+            userUUID = UUID.fromString(uuid);
+            userPk = userService.getUserPk(userUUID);
+
+            return likeService.isClicked(feedId, userPk);
+        }
+
+        return false;
+    }
+
 }
