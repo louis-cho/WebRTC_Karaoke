@@ -36,6 +36,7 @@ public class JwtAuthFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        System.out.println("JWT Filter");
         if(((HttpServletRequest)request).getHeader(TokenKey.ACCESS.getKey()) == null) {
             // Header에 token이 없는 경우, 로그인 필요. authStatus = 0
             chain.doFilter(request, response);
@@ -43,6 +44,7 @@ public class JwtAuthFilter extends GenericFilterBean {
         }
         String accessToken = jwtUtil.resolveToken(((HttpServletRequest)request).getHeader(TokenKey.ACCESS.getKey()));
         if (accessToken != null && jwtUtil.validateToken(accessToken) == JwtCode.ACCESS) {
+            System.out.println("authStatus = 1");
             // accessToken이 유효한 경우. authStatus = 1
             int userPk = jwtUtil.getUserPk(accessToken);
             User user = User.builder()
@@ -66,16 +68,19 @@ public class JwtAuthFilter extends GenericFilterBean {
                 String savedRefresh = jwtUtil.getSavedRefresh(user.getUserPk());
 
                 if(refreshToken.equals(savedRefresh)) {
+                    System.out.println("authStatus = 2");
                     String newAccessToken = jwtUtil.generateAccess(user.getUserPk(), Role.USER.getKey());
                     // db에 있는 refreshToken과 같음, accessToken 재발급
                     Authentication auth = getAuthentication(user);
                     SecurityContextHolder.getContext().setAuthentication(auth);
                     log.info("set Authentication to security context for '{}', uri = {}", auth.getName(), ((HttpServletRequest) request).getRequestURI());
                 } else {
+                    System.out.println("authStatus = 3");
                     // header에 있는 refreshToken은 살아있지만, db의 refresh와 다른 경우 --> 재로그인
                     ((HttpServletResponse) response).setHeader("authStatus", "3");
                 }
             } else {    // refresh도 만료된 경우
+                System.out.println("authStatus = 4");
                 ((HttpServletResponse) response).setHeader("authStatus", "4");
             }
         }

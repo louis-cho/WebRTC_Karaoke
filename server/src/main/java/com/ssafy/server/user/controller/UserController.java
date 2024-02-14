@@ -105,11 +105,9 @@ public class UserController {
                         // db에 저장된  refreshToken이 없거나, 있어도 유효하지 않은 경우
                         Token newToken = jwtUtil.generateToken(userPk, Role.USER.getKey());
                         System.out.println("accessToken & refreshToken 둘다 발급.");
-                        System.out.println(newToken.getAccessToken());
-                        System.out.println(newToken.getRefreshToken());
 
-                        jsonResponse.put(TokenKey.ACCESS.getKey(), "Bearer-"+newToken.getAccessToken());
-                        jsonResponse.put(TokenKey.REFRESH.getKey(), "Bearer-"+newToken.getRefreshToken());
+                        jsonResponse.put(TokenKey.ACCESS.getKey(), "Bearer-" + newToken.getAccessToken());
+                        jsonResponse.put(TokenKey.REFRESH.getKey(), "Bearer-" + newToken.getRefreshToken());
                     }
 
                     jsonResponse.put("uuid", uuid.toString());

@@ -90,6 +90,7 @@ const play = () => {
 
   drawLyrics();
   audio.value.play(); // mp3 재생
+  startTimeRef.value = Date.now(); // 노래 시작 시간 저장.
 };
 
 const stop = () => {
@@ -107,7 +108,6 @@ fillRect(x, y, width, height)는 xy좌표 기준 4사분면에 렌더링
 */
 const drawLyrics = () => {
 
-  startTimeRef.value = Date.now(); // 노래 시작 시간 저장.
   const renderFrame = (timestamp) => {
     const ctx = canvas.value.getContext("2d");
     ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);   // 초기화
