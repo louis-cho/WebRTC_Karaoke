@@ -40,8 +40,6 @@ public class SongController {
 
     @PostMapping("/reserve")
     public ResponseEntity<?> reserveSong(@RequestBody Map<String, Object> params) {
-        System.out.println("Reserve Song : " + params);
-
         String sessionName = (String) params.get("sessionName");
         String userName = (String) params.get("userName");
         int songId = (Integer) params.get("songId");
@@ -66,8 +64,6 @@ public class SongController {
 
     @PostMapping("/cancel")
     public ResponseEntity<?> cancelReserve(@RequestBody Map<String, Object> params) {
-        System.out.println("Reserve Song : " + params);
-
         String sessionName = (String) params.get("sessionName");
         String hashString = (String) params.get("hashString");
 
@@ -84,8 +80,6 @@ public class SongController {
 
     @PostMapping("/start")
     public ResponseEntity<?> startSing(@RequestBody Map<String, Object> params) {
-        System.out.println("Start Song : " + params);
-
         String sessionName = (String) params.get("sessionName");
 
         if (!reserveModel.getMapSongReserveDeq().containsKey(sessionName)) {

@@ -57,13 +57,17 @@
 
 <script setup>
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import axios from "axios";
 import useCookie from "@/js/cookie.js";
 const { setCookie, getCookie, removeCookie } = useCookie();
 const store = useKaraokeStore();
 
 const lists = ref([]);
+
+onMounted(() => {
+  fetchReserveList();
+});
 
 watch(
   () => store.newReserve,
