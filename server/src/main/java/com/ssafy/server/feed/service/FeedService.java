@@ -18,7 +18,7 @@ public interface FeedService {
 
     Feed createFeed(Feed feed);
 
-    Feed updateFeed(int feedId, Feed updatedFeed);
+    Feed updateFeed(int feedId, FeedResponse updatedFeed);
 
     boolean deleteFeed(int feedId);
 

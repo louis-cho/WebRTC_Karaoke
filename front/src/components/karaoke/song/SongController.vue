@@ -159,7 +159,7 @@ function removeReserve() {
         singUser.value = userName;
         songId.value = id;
       }
-    })
+    });
 }
 
 function startRecording() {

@@ -57,13 +57,15 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public Feed updateFeed(int feedId, Feed updatedFeed) {
+    public Feed updateFeed(int feedId, FeedResponse updatedFeed) {
         // 데이터베이스에서 기존 피드 조회 후 업데이트
         Optional<Feed> optionalExistingFeed = feedRepository.findById(feedId);
 
+        Integer userPk = userService.getUserPk(updatedFeed.getUserUUID());
+
         if (optionalExistingFeed.isPresent()) {
             Feed existingFeed = optionalExistingFeed.get();
-            existingFeed.setUserPk(updatedFeed.getUserPk());
+            existingFeed.setUserPk(userPk);
             existingFeed.setSongId(updatedFeed.getSongId());
             existingFeed.setTitle(updatedFeed.getTitle());
             existingFeed.setContent(updatedFeed.getContent());
