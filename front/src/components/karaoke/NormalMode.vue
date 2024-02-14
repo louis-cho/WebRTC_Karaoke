@@ -318,6 +318,11 @@ const drawLyrics = () => {
 };
 
 onMounted(() => {
+  if(store.reservedSongs.length == 0) {
+    announceString.value = "노래를 예약해주세요.";
+  } else {
+    announceString.value = store.reservedSongs[0].title;
+  }
 });
 
 defineExpose({
