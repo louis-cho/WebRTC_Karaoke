@@ -65,6 +65,15 @@ public class FriendsController {
     }
 
 
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getFriendsCount(){
+        Integer userPk = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserPk();
+        Integer friendsCount = friendsService.getFriendsCount(userPk);
+        if(friendsCount == null) friendsCount = 0;
+
+        return new ResponseEntity<>(friendsCount, HttpStatus.OK);
+    }
+
     @Operation(summary = "친구 신청 API", description = "userPK를 기반으로 친구 신청")
     @PostMapping("/request")
     public void requestFriend(@RequestParam String fromUserKey, @RequestParam String toUserKey) {
