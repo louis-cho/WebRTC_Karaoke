@@ -38,7 +38,7 @@
             <div v-else><p>게시글</p><span>0</span></div>
             <div><p>댓글</p><span>{{ totalCommentCount }}</span></div>
             <div><p>좋아요</p><span>{{ totalLikeCount }}</span></div>
-            <!-- <div><p>친구</p><span> {{ FriendCount }} </span></div> -->
+            <div><p>친구</p><span> {{ FriendCount }} </span></div>
           </div>
           <div class="bio">
             <p>{{ user.introduction }}</p>
@@ -99,7 +99,7 @@ const goFeedDetail = (feedId) => {
 
 const personalFeeds = ref([]);
 const user = ref(null);
-// const FriendCount = ref('');
+const FriendCount = ref('');
 let page = 0;
 const amount = 10;
 
@@ -107,7 +107,7 @@ onBeforeMount(async () => {
   // uuid.value = getCookie('uuid')
   await fetchPersonalFeedData();
   await fetchUserData();
-  await fetchFriendCount(0,10);
+  await getFriendCount();
   // console.log("비포마운트끝")
 });
 
@@ -140,15 +140,15 @@ const fetchPersonalFeedData = async() => {
   }
 }
 
-// const getFriendCount = async() => {
-//   try {
-//     const FriendCounts = await fetchFriendCount(userPk.value, page++, amount);
-//     FriendCount.value = FriendCounts;
-//     console.log(FriendCount.value);
-//   } catch (error) {
-//     console.error("Error fetching personal feeds:", error.message);
-//   }
-// }
+const getFriendCount = async() => {
+  try {
+    const FriendCounts = await fetchFriendCount();
+    FriendCount.value = FriendCounts;
+    // console.log('이거뽑을래',FriendCount.value);
+  } catch (error) {
+    console.error("Error fetching personal feeds:", error.message);
+  }
+}
 
 //피드 개수
 const feedLength = computed(() => personalFeeds.value.length);
