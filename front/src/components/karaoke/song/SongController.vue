@@ -87,6 +87,8 @@ import pref from "@/js/config/preference.js";
 import axios from "axios";
 import NormalMode from "@/components/karaoke/NormalMode.vue";
 import PerfectScore from "@/components/karaoke/PerfectScore.vue";
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 
 const store = useKaraokeStore();
 
@@ -147,7 +149,11 @@ function removeReserve() {
         sessionName: store.sessionName,
       },
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
       }
     )
     .then((res) => {
@@ -170,7 +176,11 @@ function startRecording() {
         sessionName: store.sessionName,
       },
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
       }
     )
     .then((res) => {
@@ -190,7 +200,11 @@ function stopRecording() {
         recordingId: recordingId.value,
       },
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
       }
     )
     .then((res) => {
@@ -207,7 +221,11 @@ function removeRecording() {
         recordingId: recordingId.value,
       },
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
       }
     )
     .then(() => {
@@ -222,9 +240,19 @@ function removeRecording() {
 function uploadRecording() {
   console.log(fileUrl.value);
   axios
-    .post(store.APPLICATION_SERVER_URL + "/karaoke/file/upload", {
-      fileUrl: fileUrl.value,
-    })
+    .post(
+      store.APPLICATION_SERVER_URL + "/karaoke/file/upload",
+      {
+        fileUrl: fileUrl.value,
+      },
+      {
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
     .then((res) => {
       console.log(res.data);
       videoUrl.value = res.data;
@@ -286,7 +314,11 @@ const submitPost = () => {
         videoUrl: videoUrl.value,
       },
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
       }
     )
     .then((res) => {
