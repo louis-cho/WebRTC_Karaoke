@@ -54,10 +54,11 @@ app.api.like.create = "/like/create";
 app.api.like.delete = "/like/delete";
 
 app.api.friends = {};
-app.api.friends.get = "/friends/";
-app.api.friends.list = "/list/";
+app.api.friends.get = "/friends";
+app.api.friends.list = "/list";
 app.api.friends.request = "/friends/request/";
-// app.api.friends.accept = "/friends/accept/";
+app.api.friends.incomingRequest = "/friends/incoming-requests"
+app.api.friends.accept = "/friends/accept";
 // app.api.friends.delete = "/friends/delete/";
 // app.api.friends.incoming.requests = "/friends/incoming-requests/";
 // app.api.friends.outgoing.requests = "/friends/outgoing-requests/";
