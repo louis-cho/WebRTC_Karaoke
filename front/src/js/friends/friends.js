@@ -8,8 +8,10 @@ let pref = app;
  * @param {Integer} pageNo
  * @param {Integer} sizeNo
  */
-export async function fetchFriendList(userId, pageNo, sizeNo) {
-  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.friends.get  + userId +  pref.app.api.friends.list;
+export async function fetchFriendList( pageNo, sizeNo) {
+  console.log("pageNo : ",pageNo)
+  console.log("sizeNo : :",sizeNo)
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.friends.get +  pref.app.api.friends.list;
   return await fetch(`${serverUrl}?page=${pageNo}&size=${sizeNo}`, {
     method: 'GET',
     headers: {
@@ -19,11 +21,36 @@ export async function fetchFriendList(userId, pageNo, sizeNo) {
 
     },
   })
-  .then(response => response.json())
-  .then(result => {
-      // console.log(result.content)
-      return result.content;
-    });
+  .then((response) => response.json())
+  .then((result) => {
+    console.log(result)
+    return result;
+  })
+  .catch((err) => {console.log("err : ",err)})
+
+}
+
+
+export async function fetchFriendRequestList( pageNo, sizeNo) {
+  console.log("pageNo : ",pageNo)
+  console.log("sizeNo : :",sizeNo)
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.friends.incomingRequest;
+  return await fetch(`${serverUrl}?page=${pageNo}&size=${sizeNo}`, {
+    method: 'GET',
+    headers: {
+      "Authorization" : getCookie("Authorization"),
+      "refreshToken" : getCookie("refreshToken"),
+      "Content-Type" : "application/json",
+
+    },
+  })
+  .then((response) => response.json())
+  .then((result) => {
+    // console.log('친구카운트',result.totalElements)
+    return result;
+  })
+  .catch((err) => {console.log("err : ",err)})
+
 }
 
 /**
@@ -57,7 +84,7 @@ export async function fetchFriendCount(userId,pageNo,sizeNo) {
     });
 }
 
-// ------------------------------------------
+// ------------------------------------------친구요청보내기
 /**
  * @param {Integer} fromUser
  * @param {Integer} toUser

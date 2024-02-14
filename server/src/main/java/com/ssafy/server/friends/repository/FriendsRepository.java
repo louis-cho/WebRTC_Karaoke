@@ -7,16 +7,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface FriendsRepository extends JpaRepository<Friends, Long> {
+public interface FriendsRepository extends JpaRepository<Friends, Integer> {
     @Query("SELECT f FROM friends f WHERE (f.fromUserPk = :userId OR f.toUserPk = :userId) AND f.status = :status")
-    Page<Friends> findFriendsByUserAndStatus(@Param("userId") long userId, @Param("status") char status, Pageable pageable);
+    Page<Friends> findFriendsByUserAndStatus(@Param("userId") Integer userId, @Param("status") char status, Pageable pageable);
 
     @Query("SELECT f FROM friends f WHERE f.toUserPk = :toUser AND f.status = :status")
-    Page<Friends> findFriendsToUserAndStatus(@Param("toUser") long toUser, @Param("status") char status, Pageable pageable);
+    Page<Friends> findFriendsToUserAndStatus(@Param("toUser") Integer toUser, @Param("status") char status, Pageable pageable);
 
     @Query("SELECT f FROM friends f WHERE f.fromUserPk = :fromUser AND f.status = :status")
-    Page<Friends> findFriendsFromUserAndStatus(@Param("fromUser") long fromUser, @Param("status") char status, Pageable pageable);
+    Page<Friends> findFriendsFromUserAndStatus(@Param("fromUser") Integer fromUser, @Param("status") char status, Pageable pageable);
 
-    boolean existsByFromUserPkAndToUserPkAndStatus(long fromUser, long toUser, char status);
+    boolean existsByFromUserPkAndToUserPkAndStatus(Integer fromUser, Integer toUser, char status);
 
 }
