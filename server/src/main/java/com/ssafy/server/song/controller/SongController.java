@@ -8,7 +8,6 @@ import com.ssafy.server.song.model.entity.SongInfo;
 import com.ssafy.server.song.service.SongService;
 import com.ssafy.server.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,16 +40,17 @@ public class SongController {
 
     @PostMapping("/reserve")
     public ResponseEntity<?> reserveSong(@RequestBody Map<String, Object> params) {
-        System.out.println("Reserve Song : " + params);
-
         String sessionName = (String) params.get("sessionName");
         String userName = (String) params.get("userName");
         int songId = (Integer) params.get("songId");
 
         Song song = songService.getSongById(songId);
         String hashString = userName + "&" + songId + "&" + song.getTitle() + "&" + song.getSinger();
-        reserveModel.getMapSongReserveDeq().get(sessionName).add(hashString);
-
+        if (reserveModel.getMapSongReserveDeq().containsKey(sessionName)) {
+            reserveModel.getMapSongReserveDeq().get(sessionName).add(hashString);
+        } else {
+            return ResponseEntity.status(500).body("존재하지 않는 세션입니다.");
+        }
         return ResponseEntity.ok(reserveModel.getMapSongReserveDeq().get(sessionName));
     }
 
@@ -64,14 +64,14 @@ public class SongController {
 
     @PostMapping("/cancel")
     public ResponseEntity<?> cancelReserve(@RequestBody Map<String, Object> params) {
-        System.out.println("Reserve Song : " + params);
-
         String sessionName = (String) params.get("sessionName");
         String hashString = (String) params.get("hashString");
 
+        if (!reserveModel.getMapSongReserveDeq().containsKey(sessionName)) {
+            return ResponseEntity.status(500).body("존재하지 않는 세션입니다.");
+        }
         if (!reserveModel.getMapSongReserveDeq().get(sessionName).contains(hashString)) {
-            System.out.println("존재하지 않는 예약");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(500).body("예약이 존재하지 않습니다.");
         }
         reserveModel.getMapSongReserveDeq().get(sessionName).remove(hashString);
 
@@ -80,21 +80,16 @@ public class SongController {
 
     @PostMapping("/start")
     public ResponseEntity<?> startSing(@RequestBody Map<String, Object> params) {
-        System.out.println("Start Song : " + params);
-
         String sessionName = (String) params.get("sessionName");
 
         if (!reserveModel.getMapSongReserveDeq().containsKey(sessionName)) {
-            System.out.println("존재하지 않는 세션");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(500).body("존재하지 않는 세션입니다.");
         }
         if (reserveModel.getMapSongReserveDeq().get(sessionName).isEmpty()) {
-            System.out.println("예약 없음");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(500).body("예약이 없습니다.");
         }
 
         String hashString = reserveModel.getMapSongReserveDeq().get(sessionName).pollFirst();
-        reserveModel.getMapSongReserveDeq().get(sessionName).remove(hashString);
 
         return ResponseEntity.ok(hashString);
     }

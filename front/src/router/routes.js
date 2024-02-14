@@ -28,8 +28,7 @@ const routes = [
     component: () => import("@/pages/MessagePage.vue"),
   },
   {
-    // path: "/my_profile",
-    path: "/feed/:userPk",
+    path: "/feed/:userUUID",
     name: "feed",
     component: () => import("@/pages/UserFeedPage.vue"),
   },

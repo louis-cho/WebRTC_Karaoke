@@ -11,7 +11,6 @@
         </div>
       </div>
       <hr />
-
       <!-- 두번째 div -->
       <div class="profile">
         <div
@@ -30,7 +29,8 @@
               <p v-if="feed && feed.user">{{ feed.user.nickname }}</p>
             </div>
             <!-- 게시글 작성자가 로그인되어 있는 사람이라면 -->
-            <div v-if="feed && feed.user && feed.user.userUUID === uuid.value" @click="toggleModal">
+
+            <div v-if="feed && feed.user && feed.userUUID === uuid" @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정" />
             </div>
           </div>
@@ -77,8 +77,8 @@
 
 
       <p v-if="feed">{{ feed.content }}</p>
-      <video controls width="100%">
-        <source src="your_video_url.mp4" type="video/mp4" />
+      <video controls width="100%" ref="videoPlayer">
+        <source :src="feed.videoUrl" type="video/mp4" />
       </video>
       <div class="flex-row">
         <div class="margin-right-20">
@@ -92,9 +92,10 @@
         <div class="margin-right-20" @click="handleLikeClick">
           <img
             class="margin-right-10"
-            src="@/assets/icon/love.png"
+             :src="isLiked ? '../src/assets/icon/redheart.png' : '../src/assets/icon/love.png'"
             alt="좋아요"
           />
+          <!-- :src="isLiked ? '@/assets/icon/redheart.png' : '@/assets/icon/heart.png'" -->
           <span v-if="feed">{{ feed.likeCount }}</span>
         </div>
         <div class="margin-right-20">
@@ -110,8 +111,12 @@
 
       <!-- 세번째 div(내 댓글 입력창) -->
       <div class="profile">
-        <div class="comment-img-container">
-          <!-- <img src="@/assets/img/capture3.png" class="comment-img" alt="내 프로필 이미지"> -->
+        <div class="comment-img-container" :style="{
+            backgroundImage: `url(${(
+              (feed && feed.user && feed.user.profileImgUrl) ||
+              'https://picsum.photos/200'
+            ).trim()})`,
+          }">
         </div>
         <div class="comment-input-container">
           <input
@@ -157,7 +162,7 @@
       <q-card class="modal-card">
         <q-card-section class="modal-header">
           <div class="user-info">
-            <!-- 프로필 이미지 가져오기... -->
+            <!-- 내 프로필 이미지 가져오기... -->
             <q-avatar class="img-container"
             :style="{
             backgroundImage: `url(${(
@@ -167,7 +172,7 @@
           }"/>
             <q-item-section>
               <!-- 닉네임 가져오기 -->
-              <!-- <q-item-label>닉네임</q-item-label> -->
+              <q-item-label>{{ feed.user.nickname }}</q-item-label>
             </q-item-section>
           </div>
           <span><strong>게시물 업로드</strong></span>
@@ -202,9 +207,6 @@
           </div>
         </q-card-section>
 
-        <!-- <q-card-actions align="right">
-          <q-btn label="게시" color="primary" @click="closeModal" />
-        </q-card-actions> -->
       </q-card>
     </q-dialog>
   </div>
@@ -224,7 +226,7 @@ import {
 import CommentItem from "@/components/CommentItem.vue";
 
 import { fetchHitCount, createHit } from "@/js/hit/hit.js";
-import { fetchLikeCount, createLike, deleteLike } from "@/js/like/like.js";
+import { fetchLikeCount, createLike, deleteLike, fetchLike } from "@/js/like/like.js";
 import { fetchFeedList, fetchFeed, fetchFeedDelete, fetchFeedUpdate} from "@/js/feed/feed.js";
 import { fetchSong } from "@/js/song/song.js";
 import { fetchUser, getUserPk  } from "@/js/user/user.js";
@@ -232,13 +234,13 @@ import { useNotificationStore } from "@/stores/notificationStore.js";
 
 const { setCookie, getCookie, removeCookie } = useCookie();
 
+  const isLiked = ref(false);
 const feed = ref();
 const router = useRouter();
 const comments = ref([]);
 const newComment = ref("");
 const commentContainer = ref(null);
 const modal = ref(false);
-const isLiked = ref(false);
 const feedId = ref();
 const newContent = ref();
 // const newStatus = ref();
@@ -252,17 +254,20 @@ const goBack = function () {
 const handleLikeClick = async () => {
   if (!isLiked.value) {
     await createLike(feedId.value, uuid.value);
+    feed.value.likeCount++;
     //좋아요알림 발송. 자기자신 제외.
-    //if(feed.value.user.userKey != 현재로그인한유저.)
-    const body = {
-    toUser : feed.value.user.userUUID, //받는사람 userPk.
-    info : `${feed.value.feedId}`,
-    type : "like",
-    status : '0'
+    if(feed.value.userUUID != uuid.value){
+      const body = {
+      toUserKey : feed.value.userUUID, //받는사람 userUUID, 게시글 작성자.
+      info : `${feed.value.feedId}`,
+      type : "like",
+      status : '0'
+      }
+      notificationStore.sendNotification(body);
     }
-    notificationStore.sendNotification(body);
   } else {
-    feed.value.likeCount = await deleteLike(feedId.value, uuid.value);
+    await deleteLike(feedId.value, uuid.value);
+    feed.value.likeCount--;
   }
 
   isLiked.value = !isLiked.value;
@@ -292,16 +297,16 @@ const registComment = () => {
   comment.isDeleted = false;
 
   addComment(comment);
-  //여기 댓글알림 보내기 자기자신게시글일경우 제외.
-  // if(feed.value.user.userKey != 현재로그인정보) 인 경우에만 알림보내기
-  const body = {
-    toUser : feed.value.user.userUUID, //받는사람 userPk.
-    info : `${feed.value.feedId}`,//친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
-    type : "comment", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
-    status : '0'
+  if(feed.value.userUUID != uuid.value){
+    const body = {
+      toUser : feed.value.userUUID, //받는사람 userPk.
+      info : `${feed.value.feedId}`,//친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
+      type : "comment", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
+      status : '0'
+    }
+    notificationStore.sendNotification(body);
   }
-  notificationStore.sendNotification(body);
-  location.reload();
+    location.reload();
 };
 
 // const scrollToBottom = () => {
@@ -312,13 +317,14 @@ const registComment = () => {
 
 onBeforeMount(async () => {
 
-  console.log(this);
+
 
   uuid.value = getCookie("uuid");
   feedId.value = window.location.href.split("/").pop();
 
   feedId.value = isNaN(feedId.value) ? 0 : parseInt(feedId.value);
 
+  isLiked.value = await fetchLike(feedId.value);
   await increaseHitCount(feedId.value, uuid.value);
 
   let elem = await fetchFeed(feedId.value);

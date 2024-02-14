@@ -62,13 +62,13 @@ const searchQuery = ref("");
 onMounted(() => {
   // API 호출을 통해 노래 데이터 가져오기
   axios
-    .get(store.APPLICATION_SERVER_URL + "/song/list",{
-          headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          }
-        })
+    .get(store.APPLICATION_SERVER_URL + "/song/list", {
+      headers: {
+        Authorization: getCookie("Authorization"),
+        refreshToken: getCookie("refreshToken"),
+        "Content-Type": "application/json",
+      },
+    })
     .then((response) => {
       songs.value = response.data;
     })
@@ -79,19 +79,24 @@ onMounted(() => {
 
 function reserveSong(songId) {
   axios
-    .post(store.APPLICATION_SERVER_URL + "/song/reserve", {
-      sessionName: store.sessionName,
-      userName: store.userName,
-      songId: songId,
-    },{
-          headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          }
-        })
+    .post(
+      store.APPLICATION_SERVER_URL + "/song/reserve",
+      {
+        sessionName: store.sessionName,
+        userName: store.userName,
+        songId: songId,
+      },
+      {
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
     .then((response) => {
       console.log(response.data);
+      store.session.signal({ type: "reserve" });
       closeModal();
     })
     .catch((error) => {

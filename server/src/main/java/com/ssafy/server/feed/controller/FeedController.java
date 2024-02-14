@@ -136,7 +136,7 @@ public class FeedController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<?>> createPost(@CookieValue(name = "uuid") String uuid, @RequestBody Feed feed) {
+    public ResponseEntity<ApiResponse<?>> createPost(@RequestHeader(name = "uuid") String uuid, @RequestBody Feed feed) {
         Feed createdPost;
         int userPk = -1;
         try {
@@ -150,7 +150,7 @@ public class FeedController {
     }
 
     @PostMapping("/update/{feedId}")
-    public ResponseEntity<ApiResponse<?>> updatePost(@PathVariable int feedId, @RequestBody Feed updatedPost) {
+    public ResponseEntity<ApiResponse<?>> updatePost(@PathVariable int feedId, @RequestBody FeedResponse updatedPost) {
         Feed post;
         try {
             post = feedService.updateFeed(feedId, updatedPost);

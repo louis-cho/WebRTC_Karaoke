@@ -97,6 +97,7 @@ function updateSession() {
       store.APPLICATION_SERVER_URL + "/karaoke/sessions/updateSession",
       {
         sessionName: store.sessionName,
+        userName: store.userName,
         numberOfParticipants: store.numberOfParticipants,
         isPrivate: store.isPrivate,
         password: store.password,

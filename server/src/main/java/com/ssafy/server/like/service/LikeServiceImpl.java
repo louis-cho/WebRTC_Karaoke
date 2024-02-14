@@ -88,7 +88,25 @@ public class LikeServiceImpl implements LikeService {
         }
     }
 
-        public void update (Like updatedLike){
+    @Override
+    public boolean isClicked(int feedId, int userPk) {
+        try {
+            List<Like> like = likeRepository.findByUserPkAndFeedId(userPk, feedId);
+            if (like.get(0).isStatus() == true) {
+                return true;
+            }
+
+            Like cacheLike = (Like) redisTemplate.opsForHash().get(LIKE_HASH_KEY, getHashKey(feedId, userPk));
+            if (cacheLike.isStatus() == true) {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+    public void update (Like updatedLike){
             // Redis에서 업데이트
             redisTemplate.opsForHash().put(LIKE_HASH_KEY, getHashKey(updatedLike), updatedLike);
         }
