@@ -17,7 +17,6 @@ export async function fetchFriendList( pageNo, sizeNo) {
       "Authorization" : getCookie("Authorization"),
       "refreshToken" : getCookie("refreshToken"),
       "Content-Type" : "application/json",
-
     },
   })
   .then((response) => response.json())
@@ -25,7 +24,6 @@ export async function fetchFriendList( pageNo, sizeNo) {
     return result;
   })
   .catch((err) => {console.log("err : ",err)})
-
 }
 
 
@@ -66,7 +64,6 @@ export async function fetchFriendCount() {
       "Authorization" : getCookie("Authorization"),
       "refreshToken" : getCookie("refreshToken"),
       "Content-Type" : "application/json",
-
     },
   })
     .then((response) => response.json())

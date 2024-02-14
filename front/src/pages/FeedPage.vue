@@ -39,6 +39,7 @@
                 feed.user.profileImgUrl || 'https://picsum.photos/200'
               ).trim()})`,
             }"
+            @click="gotoUserFeed(feed.user.userKey)"
           ></div>
 
           <div class="width-100">
@@ -152,6 +153,10 @@ onBeforeMount(async () => {
 });
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false);
+
+const gotoUserFeed  = (userKey) => {
+  router.push({ name: "feed", params: { userUUID:  userKey }});
+}
 
 //가상 피드 데이터
 const fetchFeedData = async () => {
