@@ -35,7 +35,13 @@
                     label="취소"
                     @click="
                       cancelReserve(
-                        list.userName + '&' + list.title + '&' + list.singer
+                        list.userName +
+                          '&' +
+                          list.songId +
+                          '&' +
+                          list.title +
+                          '&' +
+                          list.singer
                       )
                     "
                   />
@@ -51,7 +57,7 @@
 
 <script setup>
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
-import { ref, watchEffect } from "vue";
+import { ref, watch } from "vue";
 import axios from "axios";
 import useCookie from "@/js/cookie.js";
 const { setCookie, getCookie, removeCookie } = useCookie();
@@ -59,11 +65,15 @@ const store = useKaraokeStore();
 
 const lists = ref([]);
 
-watchEffect(() => {
-  if (store.toggleModals["reserve-list"]) {
-    fetchReserveList();
+watch(
+  () => store.newReserve,
+  (newValue) => {
+    if (newValue === true) {
+      fetchReserveList();
+      store.newReserve = false;
+    }
   }
-});
+);
 
 function fetchReserveList() {
   lists.value = [];
@@ -90,7 +100,7 @@ function fetchReserveList() {
 
         if (parts.length === 4) {
           const [userName, songId, title, singer] = parts;
-          lists.value.push({ id, userName, title, singer });
+          lists.value.push({ id, userName, songId, title, singer });
           id++;
         }
       });
@@ -118,7 +128,7 @@ function cancelReserve(hashString) {
       }
     )
     .then((response) => {
-      fetchReserveList();
+      store.session.signal({ type: "reserve" });
     })
     .catch((error) => {
       console.error("Error fetching songs:", error);

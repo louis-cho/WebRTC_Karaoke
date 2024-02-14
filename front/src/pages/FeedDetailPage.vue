@@ -11,7 +11,6 @@
         </div>
       </div>
       <hr />
-
       <!-- 두번째 div -->
       <div class="profile">
         <div
@@ -30,7 +29,8 @@
               <p v-if="feed && feed.user">{{ feed.user.nickname }}</p>
             </div>
             <!-- 게시글 작성자가 로그인되어 있는 사람이라면 -->
-            <div v-if="feed && feed.user && feed.user.userUUID === uuid.value" @click="toggleModal">
+
+            <div v-if="feed && feed.user && feed.userUUID === uuid" @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정" />
             </div>
           </div>
@@ -77,8 +77,8 @@
 
 
       <p v-if="feed">{{ feed.content }}</p>
-      <video controls width="100%">
-        <source src="your_video_url.mp4" type="video/mp4" />
+      <video controls width="100%" ref="videoPlayer">
+        <source :src="feed.videoUrl" type="video/mp4" />
       </video>
       <div class="flex-row">
         <div class="margin-right-20">
@@ -95,6 +95,7 @@
             :src="isLiked.value ? '../src/assets/icon/clicked_love.png' : '../src/assets/icon/love.png'"
             alt="좋아요"
           />
+          <!-- :src="isLiked ? '@/assets/icon/redheart.png' : '@/assets/icon/heart.png'" -->
           <span v-if="feed">{{ feed.likeCount }}</span>
         </div>
         <div class="margin-right-20">
@@ -110,8 +111,12 @@
 
       <!-- 세번째 div(내 댓글 입력창) -->
       <div class="profile">
-        <div class="comment-img-container">
-          <!-- <img src="@/assets/img/capture3.png" class="comment-img" alt="내 프로필 이미지"> -->
+        <div class="comment-img-container" :style="{
+            backgroundImage: `url(${(
+              (feed && feed.user && feed.user.profileImgUrl) ||
+              'https://picsum.photos/200'
+            ).trim()})`,
+          }">
         </div>
         <div class="comment-input-container">
           <input
@@ -157,7 +162,7 @@
       <q-card class="modal-card">
         <q-card-section class="modal-header">
           <div class="user-info">
-            <!-- 프로필 이미지 가져오기... -->
+            <!-- 내 프로필 이미지 가져오기... -->
             <q-avatar class="img-container"
             :style="{
             backgroundImage: `url(${(
@@ -167,7 +172,7 @@
           }"/>
             <q-item-section>
               <!-- 닉네임 가져오기 -->
-              <!-- <q-item-label>닉네임</q-item-label> -->
+              <q-item-label>{{ feed.user.nickname }}</q-item-label>
             </q-item-section>
           </div>
           <span><strong>게시물 업로드</strong></span>
@@ -202,9 +207,6 @@
           </div>
         </q-card-section>
 
-        <!-- <q-card-actions align="right">
-          <q-btn label="게시" color="primary" @click="closeModal" />
-        </q-card-actions> -->
       </q-card>
     </q-dialog>
   </div>

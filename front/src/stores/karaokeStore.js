@@ -22,6 +22,8 @@ export const useKaraokeStore = defineStore("karaoke", {
     inputSelectorModal: false,
     singing: false,
     songMode: true,
+    newReserve: false,
+    deleteReserve: false,
 
     sessionName: undefined,
     userName: "사용자" + Math.round(Math.random() * 100),
@@ -111,6 +113,7 @@ export const useKaraokeStore = defineStore("karaoke", {
 
       this.session.on("sessionDisconnected", () => {
         this.singing = false;
+
         if (this.kicked == true) {
           alert("추방당했습니다.");
           window.location.href = "/#/karaoke/";
@@ -136,7 +139,7 @@ export const useKaraokeStore = defineStore("karaoke", {
 
         if (singData.singUser == this.userName) {
           this.muted = false;
-          this.mainStreamManager = publisher;
+          this.mainStreamManager = this.publisher;
         } else {
           this.muted = true;
           for (const subscriber of this.subscribers) {
@@ -146,8 +149,10 @@ export const useKaraokeStore = defineStore("karaoke", {
           }
         }
         this.publisher.publishAudio(!this.muted);
+      });
 
-        this.mainStreamManager = singStream;
+      this.session.on("signal:reserve", (event) => {
+        this.newReserve = true;
       });
     },
 
