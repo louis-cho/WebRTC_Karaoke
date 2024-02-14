@@ -173,7 +173,7 @@ const goToPage = (path) => {
 const getLoggedUserPk = async () => {
   try {
     uuid.value = getCookie("uuid")
-    // console.log("UUID:", uuid.value);
+    console.log("UUID:", uuid.value);
     const getCurrentUserPk = await getUserPk(uuid.value);
     console.log(getCurrentUserPk);
     LoggedUserPK.value = getCurrentUserPk
