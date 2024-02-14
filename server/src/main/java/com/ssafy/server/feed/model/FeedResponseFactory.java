@@ -2,6 +2,9 @@ package com.ssafy.server.feed.model;
 
 import java.util.UUID;
 
+/**
+ * 피드 객체로부터 피드 응답 객체를 생성하는 클래스
+ */
 public class FeedResponseFactory {
 
     public static FeedResponse createFeedResponseFromFeed(Feed feed, UUID userUUID) {
