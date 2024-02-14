@@ -159,9 +159,6 @@ function removeReserve() {
         singUser.value = userName;
         songId.value = id;
       }
-    })
-    .catch((error) => {
-      console.error(error);
     });
 }
 
