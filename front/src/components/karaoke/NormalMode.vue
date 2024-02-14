@@ -30,6 +30,8 @@ import {
 } from "@/js/karaoke/karaokeParser.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import axios from "axios";
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 
 const store = useKaraokeStore();
 
@@ -39,7 +41,7 @@ const props = defineProps({
 
 const audio = ref(null);
 const song = ref(null)
-
+let reservedSong = null;
 watch(
   () => store.reservedSongsLength,
   () => {
@@ -49,8 +51,8 @@ watch(
     } else {
       announceString.value = store.reservedSongs[0].title;
       // axios
-      //   .post(
-      //   store.APPLICATION_SERVER_URL + "/songInfo/" + store.reservedSongs[0].songId,
+      //   .get(
+      //   store.APPLICATION_SERVER_URL + "/song/songInfo/" + store.reservedSongs[0].songId,
       //   {
       //     headers: {
       //       Authorization: getCookie("Authorization"),
@@ -61,6 +63,9 @@ watch(
       // )
       // .then((res) => {
       //   console.log(res.data);
+      //   reservedSong = res.data;
+      //   console.log(reservedSong)
+      //   audio.value = new Audio(song.value.url); // mp3 url 연결
       // })
       // .catch((error) => {
       //   console.error("normal모드 노래 정보 불어오기"+error);
@@ -92,7 +97,7 @@ const lyricInterval = 70; // 가사 윗묶음&아랫묶음 y좌표 간격
 const moveX = ref(0);       // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
 const fontSize = "36px ";
 const countDownSize = "38px ";
-const fontInterval = 35;    // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
+const fontInterval = 36;    // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
 const fontStyle = "YCloverBold";
 const fontColor = "white"
 const filledFont = ref(""); // 부르고 있는 가사
@@ -318,6 +323,7 @@ const drawLyrics = () => {
 };
 
 onMounted(() => {
+  console.log("reservedSongs.length",store.reservedSongs.length)
   if(store.reservedSongs.length == 0) {
     announceString.value = "노래를 예약해주세요.";
   } else {
