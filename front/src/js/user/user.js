@@ -2,13 +2,14 @@ import app from "@/js/config/preference.js";
 import useCookie from "@/js/cookie.js";
 let pref = app;
 const { setCookie, getCookie, removeCookie } = useCookie();
+import axios from 'axios';
 
-
-export async function fetchUser(uuid) {
+export async function fetchUser(pk) {
+  const pkInfoUUID = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/getUUID?pk=${pk}`);
   const serverUrl =
     pref.app.api.protocol +
     pref.app.api.host +
-    pref.app.api.user.fetch + uuid;
+    pref.app.api.user.fetch + pkInfoUUID.data;
 
   return await fetch(serverUrl, {
     method: "POST",

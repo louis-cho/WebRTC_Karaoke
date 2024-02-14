@@ -187,7 +187,6 @@ async function fetchUserPk() {
   try {
     const response = await fetch(`https://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${userUUID}`);
     const data = await response.json();
-    console.log(data)
     return data;
   } catch (error) {
     console.error("Failed to fetch userPk:", error);
@@ -541,9 +540,7 @@ const fetchData = async () => {
     chatroomUsers.value = [];
     // chatRoomUsers 배열에 각 사용자의 정보 추가
     for (const user of users) {
-      console.log(user)
       const pkInfo = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/getUUID?pk=${user.userPk}`);
-      console.log(pkInfo.data)
       const userInfo = await axios.post(`https://i10a705.p.ssafy.io/api/v1/user/get/${pkInfo.data}`,{
         headers: {
       Authorization: getCookie("Authorization"),
@@ -553,7 +550,6 @@ const fetchData = async () => {
       });
       chatroomUsers.value.push(userInfo.data);
     }
-    console.log(chatroomUsers)
   } catch (error) {
     console.error("Failed to fetch chat rooms:", error);
   }
