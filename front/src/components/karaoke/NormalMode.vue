@@ -1,10 +1,7 @@
 <template>
   <div class="canvas-container">
-    <!-- 배경 이미지를 표시할 div 요소 -->
     <div class="background-container">
-      <!-- 배경 이미지 -->
       <img src="@/assets/img/normalmodebackground2.gif" class="background-image" alt="Background Image">
-      <!-- 캔버스 요소 -->
       <canvas ref="canvas" width="1000" height="200"></canvas>
     </div>
   </div>
@@ -45,7 +42,7 @@ const lyricInterval = 70; // 가사 윗묶음&아랫묶음 y좌표 간격
 const moveX = ref(0);       // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
 const fontSize = "36px ";
 const countDownSize = "38px ";
-const fontInterval = 36;    // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
+const fontInterval = 35;    // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
 const fontStyle = "YCloverBold";
 const fontColor = "white"
 const filledFont = ref(""); // 부르고 있는 가사
@@ -93,6 +90,7 @@ const play = () => {
 
   drawLyrics();
   audio.value.play(); // mp3 재생
+  startTimeRef.value = Date.now(); // 노래 시작 시간 저장.
 };
 
 const stop = () => {
@@ -110,7 +108,6 @@ fillRect(x, y, width, height)는 xy좌표 기준 4사분면에 렌더링
 */
 const drawLyrics = () => {
 
-  startTimeRef.value = Date.now(); // 노래 시작 시간 저장.
   const renderFrame = (timestamp) => {
     const ctx = canvas.value.getContext("2d");
     ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);   // 초기화
@@ -252,8 +249,8 @@ defineExpose({
 <style scoped>
 .canvas-container {
   position: relative;
-  width: 1000px; /* 배경 이미지와 같은 너비 지정 */
-  height: 350px; /* 배경 이미지와 같은 높이 지정 */
+  width: 1000px;
+  height: 350px;
 }
 
 .background-container {
@@ -261,13 +258,13 @@ defineExpose({
 }
 
 .background-image {
-  width: 100%; /* 배경 이미지를 부모 요소에 맞게 확장 */
-  height: auto; /* 이미지 비율 유지 */
+  width: 100%;
+  height: auto;
 }
 
 canvas {
-  position: absolute; /* 절대 위치 설정 */
-  top: 150px; /* 배경 이미지와 캔버스의 상단 여백 설정 (배경 이미지의 높이 - 캔버스의 높이) / 2 */
+  position: absolute;
+  top: 150px;
   left: 0;
 }
 </style>

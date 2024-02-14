@@ -65,13 +65,14 @@ export default route(function (/* { store, ssrContext } */) {
         const pattern = /^https:\/\/i10a705.p.ssafy.io\/.+/;
         const destUrl = "https://i10a705.p.ssafy.io" + to.fullPath;
 
+        console.log(authStatus)
         if (
-          (authStatus == 0 || authStatus == 3 || authStatus == 4) &&
+          (authStatus == 0 || authStatus == 3 || authStatus == 4 || authStatus == null) &&
           pattern.test(destUrl)
         ) {
           alert("로그인 후 이용가능합니다.");
-          // window.location.replace("/")
-          next();
+          window.location.replace("/")
+          // next();
         } else {
           next();
         }

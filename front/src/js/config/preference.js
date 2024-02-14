@@ -4,14 +4,14 @@ app.api = {};
 
 app.api.prefix = "/api/v1";
 
+app.api.socket = "wss:"; //ec2
 app.api.protocol = "https:";
 app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
-// app.api.socket = "ws:";/
-app.api.socket = "wss:"; //ec2
+app.api.websocket = app.api.socket + "//i10a705.p.ssafy.io";
+// app.api.socket = "ws:";
 // app.api.protocol = "http:";
 // app.api.host = "//localhost:8081" + app.api.prefix;
 // app.api.websocket = app.api.socket + "//localhost:8081"
-app.api.websocket = app.api.socket + "//i10a705.p.ssafy.io";
 
 app.api.user = {};
 app.api.user.login = "/user/login";
@@ -84,7 +84,6 @@ app.kor.karaoke.list.numberOfParticipants = "인원";
 app.kor.karaoke.list.status = "상태";
 app.kor.karaoke.list.private = "비공개";
 app.kor.karaoke.list.public = "공개";
-app.kor.karaoke.list.manager = "방장";
 app.kor.karaoke.list.joinSession = "입장하기";
 app.kor.karaoke.list.recording = "녹화 중";
 app.kor.karaoke.list.waiting = "대기 중";

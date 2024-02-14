@@ -41,7 +41,7 @@ function closeModal() {
 }
 const inviteFriend = (friend) => {
   const body ={
-    toUser : friend.userPk,
+    toUserKey : friend.userKey,
     info : `${props.sessionName}`,
     type : "karaoke",
     status : '0'
@@ -61,18 +61,22 @@ onMounted(async () => {
 
   // Transform friendList to friendIdAndName
   friendIdAndNameList.value = await Promise.all(
-  friendList.value.map(async (friend) => {
-    // Determine userPk based on conditions
-    const userPk = friend.fromUserPk === 2/* 로그인한 유저pk */ ? friend.toUserPk : friend.fromUserPk;
+    friendList.value.map(async (friend) => {
+      //// Determine userPk based on conditions
+      // const userKey = friend.fromUserKey === getCookie("uuid") ? friend.toUserKey : friend.fromUserkey;
 
-    // Fetch the user name using getUserName function
-    const user = await fetchUser(userPk);
-    const nickname = user.nickname;
+      // Fetch the user name using getUserName function
+      // const user = await fetchUser(userKey);
+      // const nickname = user.nickname;
 
-    // Return the new object with userPk and name
-    return { userPk, nickname };
-  })
-);
+      const userPk = 3;
+      const nickname = "fetchUser수정,friendapi수정되면다시로직작성InviteModal.vue";
+
+      // Return the new object with userPk and name
+      return { userPk, nickname };
+    })
+  );
+
 })
 </script>
 
