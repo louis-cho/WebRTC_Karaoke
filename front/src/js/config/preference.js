@@ -84,6 +84,7 @@ app.kor.karaoke.list.numberOfParticipants = "인원";
 app.kor.karaoke.list.status = "상태";
 app.kor.karaoke.list.private = "비공개";
 app.kor.karaoke.list.public = "공개";
+app.kor.karaoke.list.manager = "방장";
 app.kor.karaoke.list.joinSession = "입장하기";
 app.kor.karaoke.list.recording = "녹화 중";
 app.kor.karaoke.list.waiting = "대기 중";

@@ -337,7 +337,7 @@ const closeModal = () => {
 const song = {
   title: "응급실",
   singer: "Izi",
-  author: "nobody",
+  author: "신동우",
   url: "https://a705.s3.ap-northeast-2.amazonaws.com/izif6b7b-3504-4ef4-ae79-3063301967d0.mp3",
   score: `t70 o3 l8
   <b-'후'>

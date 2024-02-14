@@ -99,8 +99,8 @@ public class UserController {
                         String newAccessToken = jwtUtil.generateAccess(userPk, Role.USER.getKey());
                         System.out.println("db에 저장된 refreshToken이 있고, 유효한 경우, AccessToken 재발급: " + " " + newAccessToken);
 
-                        jsonResponse.put(TokenKey.ACCESS.getKey(), newAccessToken);
-                        jsonResponse.put(TokenKey.REFRESH.getKey(), refreshToken);
+                        jsonResponse.put(TokenKey.ACCESS.getKey(), "Bearer-" + newAccessToken);
+                        jsonResponse.put(TokenKey.REFRESH.getKey(), "Bearer-" + refreshToken);
                     } else {
                         // db에 저장된  refreshToken이 없거나, 있어도 유효하지 않은 경우
                         Token newToken = jwtUtil.generateToken(userPk, Role.USER.getKey());
