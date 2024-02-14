@@ -16,12 +16,14 @@
             />
           </q-toolbar>
         </q-header>
+
         <!-- 친구요청 -->
         <q-page-container>
+          <h5>친구 요청 목록</h5>
           <q-list bordered separator>
             <q-item v-for="friend in friendRequestList" :key="friend.userUUID">
               <q-item-section>
-                <q-item-label>
+                <q-item-label align="center">
                   {{friend.friendName}} 님의 친구 요청
                 </q-item-label
                 >
@@ -45,10 +47,11 @@
         </q-page-container>
         <!-- 친구목록 -->
         <q-page-container>
+          <h5>친구 목록</h5>
           <q-list bordered separator>
             <q-item v-for="friend in friendList" :key="friend.userUUID">
               <q-item-section>
-                <q-item-label>
+                <q-item-label align="center">
                   {{friend.friendName}}
                 </q-item-label
                 >
@@ -63,6 +66,7 @@
             </q-item>
           </q-list>
         </q-page-container>
+        <!-- 친구목록 -->
       </q-page>
     </q-page-container>
   </q-layout>
@@ -96,13 +100,14 @@
             <q-list v-if="users && users.length && filteredUsers.length">
               <q-item v-for="user in filteredUsers" :key="user.userUUID">
                 <q-item-section>
-                  <q-img class="img-container" :src="user.profileImgUrl" />
+                  <q-img class="img-container" :src="user.profileImgUrl === null ? `https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg` : user.profileImgUrl" />
                 </q-item-section>
                 <q-item-section>
                   <q-item-label>{{ user.nickname }}</q-item-label>
                   <q-item-label caption>{{ user.introduction }}</q-item-label>
                   <!-- 친구 아닌사람만 보여주기-->
-                    <q-btn @click="requestFriend()" color="primary" label="친구요청"></q-btn>
+                    <q-btn v-if="user.requsetButton" @click="requestFriend(user)" color="primary" label="친구요청"></q-btn>
+                    <div v-else>요청 보냄</div>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -126,14 +131,17 @@ import NavBar from '@/layouts/NavBar.vue';
 import { fetchFriendList, fetchFriendRequest, fetchFriendRequestList, fetchFriendCount } from "@/js/friends/friends.js";
 import { ref, onMounted, computed } from "vue";
 import { searchUser, fetchUser } from "@/js/user/user.js";
+import { useNotificationStore } from "@/stores/notificationStore";
 import pref from "@/js/config/preference.js"
 import useCookie from "@/js/cookie.js";
 import axios from "axios";
+
 const { setCookie, getCookie, removeCookie } = useCookie();
 const icon = ref(false);
 const search = ref("");
 const friendList = ref([])
 const friendRequestList = ref([])
+const notificationStore = useNotificationStore();
 
 onMounted(async () => {
   fetchFriendCount()
@@ -221,10 +229,24 @@ const deleteFriend = async (friend) =>{
 }
 
 //친구요청
-const requestFriend = () =>{
-  console.log("요청 완료")
-    //// fetchFriendRequest(getCookie('uuid'),friend.value)
+const requestFriend = async(user) =>{
+
+  //버튼 비활성화.
+  user.requsetButton = false;
+  //친구 생성요청
+  await fetchFriendRequest(user.userKey);
+  console.log("친구요청 생성완료")
+  //알림 생성요청
+  const body ={
+    toUserKey : user.userKey,
+    info : `infoNotUsed`,
+    type : "friend",
+    status : '0'
+  };
+  await notificationStore.sendNotification(body);
+  console.log("친구 요청 알림보냄!")
   //친구데이터 생성 요청
+  console.log("요청 완료")
 }
 
 // 예시 데이터
@@ -271,16 +293,16 @@ const requestFriend = () =>{
 //   );
 // });
 
-const users = computed(() => {
-  return searchUser(search.value);
-})
+const users = ref([])
 
 const filteredUsers = computed(() => {
-  const query = search.value.toLowerCase();
+
   return users.value.filter(
-    (user) => !isFriend(user.userUuid)
-  );
+    (user) => (!isFriend(user.userKey)) && user.userKey != getCookie('uuid')
+  )
 });
+
+
 
 const isFriend = (userUuid)=> {
   for (let i = 0; i < friendList.value.length; i++) {
@@ -291,21 +313,23 @@ const isFriend = (userUuid)=> {
   return false; // 해당 유저는 친구아니다.
 }
 
-// const searchNickname = async function () {
-//   console.log("searchNickname 호출")
-//   try {
-//     // 백엔드 서버에서 유저 검색 결과 가져오기
-//     const response = await searchUser(search.value);
-//     users.value = response; // 서버 응답에 따라 데이터를 업데이트
+const searchNickname = async function () {
 
-//     for (let idx in users.value) {
-//       let userPk = users.value[idx].userPk;
-//       users.value[idx] = await fetchUser(userPk);
-//     }
-//   } catch (error) {
-//     console.error("Error fetching user data:", error);
-//   }
-// };
+  try {
+    // 백엔드 서버에서 유저 검색 결과 가져오기
+    const response = await searchUser(search.value);
+    users.value = response; // 서버 응답에 따라 데이터를 업데이트
+
+    for (let idx in users.value) {
+      let userUuid = users.value[idx].userUuid;
+      users.value[idx] = await fetchUser(userUuid);
+      users.value[idx].requsetButton = true;
+    }
+
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+};
 </script>
 
 <style scoped>
