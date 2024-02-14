@@ -40,22 +40,22 @@ export async function fetchFeed(feedId) {
 }
 
 
-export async function getFeedsByUser(userPk) {
-  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.getByUser+ userPk;
-
+export async function getFeedsByUser(uuid) {
+  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.getByUser + uuid;
   return await fetch(serverUrl, {
       method: 'GET',
       headers: {
-        Authorization: getCookie("Authorization"),
-        refreshToken: getCookie("refreshToken"),
+        "Authorization": getCookie("Authorization"),
+        "refreshToken": getCookie("refreshToken"),
         "Content-Type": "application/json",
       },
     })
     .then(response => response.json())
     .then(result => {
-      console.log('유저아이디별로 피드 가져오기',result.data)
+      console.log('유저아이디별로 피드 가져오기',result)
       return result.data
-    });
+    })
+    .catch(err => console.log(err.message))
 }
 
 

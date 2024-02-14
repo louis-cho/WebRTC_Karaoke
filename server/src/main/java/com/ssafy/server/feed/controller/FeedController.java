@@ -122,7 +122,7 @@ public class FeedController {
      * @return 피드 리스트
      */
     @GetMapping("/getUser/{uuid}")
-    public ResponseEntity<ApiResponse<List<FeedResponse>>> getFeedByUser(@RequestParam String uuid) {
+    public ResponseEntity<ApiResponse<List<FeedResponse>>> getFeedByUser(@PathVariable String uuid) {
         List<FeedResponse> feeds = null;
         try {
             feeds = feedService.getFeedByUserPk(userService.getUserPk(UUID.fromString(uuid)));
