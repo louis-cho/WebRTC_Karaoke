@@ -49,17 +49,12 @@
 
       <!-- 모든 캠 -->
       <div id="video-container" class="responsive-container">
-        <UserVideo
-          :stream-manager="publisherComputed"
-          class="user-video"
-          @click="updateMainVideoStreamManager(store.publisher)"
-        />
+        <UserVideo :stream-manager="publisherComputed" class="user-video" />
         <UserVideo
           v-for="sub in subscribersComputed"
           :key="sub.stream.connection.connectionId"
           :stream-manager="sub"
           class="user-video"
-          @click="updateMainVideoStreamManager(sub)"
         />
       </div>
     </q-page-container>
@@ -146,12 +141,6 @@ const openInviteModal = () => {
 async function leaveSession() {
   await store.leaveSession();
   router.push("/karaoke");
-}
-
-function updateMainVideoStreamManager(stream) {
-  // 주요 비디오 스트림 매니저 업데이트
-  if (store.mainStreamManager === stream) return;
-  store.mainStreamManager = stream;
 }
 
 const toggleModal = (modalName) => {

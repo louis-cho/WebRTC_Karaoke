@@ -30,7 +30,6 @@ export const useKaraokeStore = defineStore("karaoke", {
     sessionName: undefined,
     userName: "로그인 하세요",
     isPrivate: false,
-    isModerator: false,
     kicked: true,
 
     // OpenVidu 객체
@@ -40,6 +39,7 @@ export const useKaraokeStore = defineStore("karaoke", {
     publisher: undefined,
     subscribers: [],
     token: undefined,
+    isModerator: false,
 
     // 방 설정을 위한 변수
     numberOfParticipants: undefined,
@@ -354,6 +354,9 @@ export const useKaraokeStore = defineStore("karaoke", {
       this.OV = undefined;
       this.token = undefined;
       this.sessionName = undefined;
+      this.isModerator = false;
+      this.inputMessage = "";
+      this.messages = [];
 
       // beforeunload 리스너 제거
       window.removeEventListener("beforeunload", this.leaveSession);
