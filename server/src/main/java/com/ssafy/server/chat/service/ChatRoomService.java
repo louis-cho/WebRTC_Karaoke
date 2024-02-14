@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.ssafy.server.chat.model.ChatRoom;
 import com.ssafy.server.chat.model.UsersChats;
+import com.ssafy.server.chat.model.UsersChatsRes;
 import com.ssafy.server.chat.repository.ChatRoomRepository;
 import com.ssafy.server.chat.repository.UsersChatsRepository;
 import com.ssafy.server.user.service.UserService;
@@ -79,10 +80,14 @@ public class ChatRoomService {
     }
 
     //roomId로 참여자 목록 구하기
-    public List<UsersChats> getUserList(long roomId){
-        List<UsersChats> resList = usersChatsRepository.findByRoomPkAndStatus(roomId, '1');
-        for(UsersChats uc : resList)
+    public List<UsersChatsRes> getUserList(long roomId){
+        List<UsersChats> tmpList = usersChatsRepository.findByRoomPkAndStatus(roomId, '1');
+        List<UsersChatsRes> resList = new ArrayList<>();
+        for(UsersChats uc : tmpList) {
             uc.setUserUuid(userService.getUUIDByUserPk((int) uc.getUserPk()));
+            UsersChatsRes tmp = new UsersChatsRes(uc);
+            resList.add(tmp);
+        }
         return resList;
     }
 

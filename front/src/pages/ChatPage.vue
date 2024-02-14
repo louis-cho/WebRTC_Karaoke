@@ -142,24 +142,20 @@ const search = ref("");
 const searchUsers = ref([]);
 
 const filteredUsers = computed(() => {
-  const query = search.value ? search.value.toLowerCase() : ''; // null 체크를 수행하여 null이 아닐 때만 toLowerCase 호출
-  // 검색어가 비어있으면 빈 배열 반환
+  const query = search.value ? search.value.toLowerCase() : '';
   if (!query) return [];
 
   return searchUsers.value.filter((user) => {
-    const nickname = user.nickname ? user.nickname.toLowerCase() : ''; // null 체크 추가
-    const introduction = user.introduction ? user.introduction.toLowerCase() : ''; // null 체크 추가
+    const nickname = user.nickname ? user.nickname.toLowerCase() : '';
+    const introduction = user.introduction ? user.introduction.toLowerCase() : '';
     return nickname.includes(query) || introduction.includes(query);
   });
 });
 
 const searchNickname = async function () {
   try {
-    // 백엔드 서버에서 유저 검색 결과 가져오기
-    console.log(search.value)
     const response = await searchUser(search.value);
-    console.log(response)
-    searchUsers.value = response; // 서버 응답에 따라 데이터를 업데이트
+    searchUsers.value = response;
 
     for (let idx in searchUsers.value) {
       let userUuid = searchUsers.value[idx].userUuid;
@@ -171,22 +167,19 @@ const searchNickname = async function () {
 };
 
 const inviteUser = async (userUuid) => {
-  // 이미 초대된 사용자인지 확인
   if (!checkInvited(userUuid)) {
-    // 초대할 사용자의 userUuid를 newGuests 배열에 추가
     newGuests.value = userUuid;
     await handleInviteUsers();
   }
 };
 
-// chatroomUsers에 대한 유저 초대 여부 확인 함수
 const checkInvited = (userUuid) => {
   for (const user of chatroomUsers.value) {
     if (String(user.userKey) === String(userUuid)) {
-      return true; // 초대된 경우 true 반환
+      return true;
     }
   }
-  return false; // 초대되지 않은 경우 false 반환
+  return false;
 };
 
 onMounted(async () => {
@@ -203,7 +196,9 @@ onMounted(async () => {
           loadNewMessages().then(() => {
             setTimeout(() => {
               nextTick(() => {
-                messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+                if (messagesContainer.value) {
+                  messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+                }
               });
             }, 150);
           });
@@ -219,30 +214,21 @@ onMounted(async () => {
   roomName.value = response.data.roomName;
 });
 
-
-// Inside the handleIncomingMessage function
 function handleIncomingMessage(message) {
   if (message) {
-    console.log(message.type);
-
-    // Remove existing TYPE messages
     const existingTypeMessages = messages.value.filter(msg => msg.type === 'TYPE');
     existingTypeMessages.forEach(msg => {
       const index = messages.value.indexOf(msg);
       messages.value.splice(index, 1);
     });
 
-    // Handle TYPE message
     if (message.type === 'TYPE') {
-      // Check if there is an existing TYPE message from the same sender
       const existingTypeMessage = messages.value.find(msg => msg.sender === message.sender && msg.type === 'TYPE');
 
       if (existingTypeMessage) {
-        // Update the existing TYPE message with the new content and reset the timer
         existingTypeMessage.message = '...';
         clearTimeout(existingTypeMessage.timer);
       } else {
-        // Add a new TYPE message if no existing one is found
         setTemporaryMessage(message.sender, 'TYPE', '...', message.time);
       }
 
@@ -285,24 +271,20 @@ function removeTemporaryMessage(sender, type) {
   });
 }
 
-// Add these functions to handle temporary messages
 function setTemporaryMessage(sender, type, message, time) {
   const temporaryMessage = { sender, type, message, time, temporary: true };
 
-  // Add the new TYPE message to the messages array
   if(userUUID != sender){
     messages.value.push(temporaryMessage);
 
-    // Set the timer for the TYPE message
     temporaryMessage.timer = setTimeout(() => {
       removeTemporaryMessage(sender, type);
-    }, 5000); // Adjust the time as needed (e.g., 5000 milliseconds for 5 seconds)
+    }, 5000);
   }
 }
 
 
 function loadOldMessages() {
-  // 로딩 중이면 중복 요청 방지
   if (loading) return;
   loading = true;
   return axios.get(`${pref.app.api.host}/chat/room/${roomId.value}/oldMsg?page=${page}&size=50`,{headers: {
@@ -313,14 +295,13 @@ function loadOldMessages() {
     .then(response => {
       const oldMessages = response.data;
       if (oldMessages.length === 0) {
-        // 빈 배열을 받으면 페이지 끝을 알리는 alert 표시
         // alert("마지막 페이지입니다.");
       } else if (page === 1) {
         oldMessages.forEach(message => {
           message = JSON.parse(message);
           setMessage(message.sender, message.type, message.message, message.time);
         });
-        page++; // 다음 페이지로 이동
+        page++;
         if(oldMessages.length <= 25){
           loading = false;
           loadOldMessages().then(()=>{
@@ -337,7 +318,7 @@ function loadOldMessages() {
         nextTick(() => {
           messagesContainer.value.scrollTop += 1;
         });
-        page++; // 다음 페이지로 이동
+        page++;
       }
     })
     .catch(error => {
@@ -349,7 +330,6 @@ function loadOldMessages() {
 }
 
 function handleScroll() {
-  // 스크롤이 맨 위에 도달하면 새로운 페이지 로드
   if (messagesContainer.value.scrollTop === 0 && !loading) {
     loadOldMessages();
   }
@@ -373,10 +353,8 @@ function loadNewMessages() {
     });
 }
 
-// const store = useCounterStore()
 const messages = ref([]);
 const newMessage = ref('');
-const selectedFile = ref(null);
 const messagesContainer = ref(null);
 const roomId = ref('');
 const modalOpen = ref(false);
@@ -386,11 +364,11 @@ const newGuests = ref('');
 const route = useRoute();
 const stompClient = ref(null);
 
-let page = 1; // 초기 페이지 설정
-let loading = false; // 페이지 로딩 상태
+let page = 1;
+let loading = false;
 
 let typingTimer = null;
-const throttleTime = 500; // 2초
+const throttleTime = 500;
 
 const throttleSendTyping = function() {
   clearTimeout(typingTimer);
@@ -407,71 +385,50 @@ const sendTypingHandler = function() {
 const sendMessage = function() {
   if (newMessage.value.trim() !== "") {
     const textMessageString = `{"type": "TALK", "roomId" : ${roomId.value}, "sender" : "${userUUID}", "message": "${newMessage.value}", "time" : ""}`;
-    // const textMessageString = newMessage.value
     handleMessage(textMessageString);
     newMessage.value = "";
-
-    // 스크롤 항상 아래로 내리기
-    // nextTick(() => {
-    //   messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-    // });
   }
 }
 
 const sendTyping = function() {
-  console.log("sendTyping");
-    const textMessageString = `{"type": "TYPE", "roomId" : ${roomId.value}, "sender" : "${userUUID}", "message": "...", "time" : ""}`;
-    // const textMessageString = newMessage.value
-    handleMessage(textMessageString);
+  const textMessageString = `{"type": "TYPE", "roomId" : ${roomId.value}, "sender" : "${userUUID}", "message": "...", "time" : ""}`;
+  handleMessage(textMessageString);
 }
 
 
 function handleMessage(msg) {
-  console.log(JSON.stringify(msg))
   try {
-    // 문자열을 객체로 변환
     const result = JSON.parse(msg);
 
-    // result 객체에 type 및 content 필드가 있는지 확인
     if (result.type != null && result.message != null) {
-      // switch 문을 통한 분기
       switch (result.type) {
         case "TALK":
-          console.log('텍스트')
-          // text 메시지의 경우 화면에 출력
-          // setMessage(result.sender, result.type, result.message, result.time);
           stompClient.value.send(`/pub/chat.message.${roomId.value}`, {}, JSON.stringify(result));
           break;
         case "MEDIA":
-          console.log('이미지')
-          // MEDIA 메시지의 경우 화면에 이미지로 출력
           stompClient.value.send(`/pub/chat.message.${roomId.value}`, {}, JSON.stringify(result));
           setTimeout(() => {
             nextTick(() => {
               messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
             });
           }, 300);
-          // setMessage(result.type, result.message);
           break;
         case "TYPE":
              stompClient.value.send(`/pub/chat.typing.${roomId.value}`, {}, JSON.stringify(result));
               break;
         default:
-          console.log('알수없음')
           setMessage('unknown', result.type);
       }
     } else {
-      console.log('invalid')
       setMessage('invalid', null);
     }
   } catch (error) {
-    console.log('에러')
     setMessage('error', error);
   }
 }
 
 function setMessage(sender, type, message, time) {
-  messages.value.push({ sender, type, message, time }); // messages 배열에 새로운 채팅 메시지 추가
+  messages.value.push({ sender, type, message, time });
 }
 
 function setNewMessage(sender, type, message, time) {
@@ -485,7 +442,6 @@ async function handleFileUpload(event) {
       const formData = new FormData();
       formData.append('file', file);
 
-      // Axios를 사용하여 파일 업로드 엔드포인트에 POST 요청 보내기
       const response = await axios.post(`${pref.app.api.host}/upload`, formData, {
         headers: {
           Authorization: getCookie("Authorization"),
@@ -494,10 +450,8 @@ async function handleFileUpload(event) {
         }
       });
 
-      // 파일 업로드가 성공하면 파일 URL을 받아옴
       const fileUrl = response.data;
 
-      // 받아온 파일 URL을 이용하여 처리 (예: 이미지 메시지 전송 등)
       const imageMessageString = `{"type": "MEDIA", "roomId" : ${roomId.value}, "sender" : "${userUUID}", "message": "${fileUrl}", "time" : ""}`;
       handleMessage(imageMessageString);
     } catch (error) {
@@ -523,7 +477,6 @@ const handleInviteUsers = async () => {
       "Content-Type": "application/json",
     },
     });
-    console.log("Users invited successfully");
     fetchData();
   } catch (error) {
     console.error("Failed to invite chat room:", error);
@@ -538,10 +491,7 @@ const fetchData = async () => {
       "Content-Type": "application/json",
     },});
     const users = response.data;
-    // chatRoomUsers 배열 초기화
     chatroomUsers.value = [];
-    // chatRoomUsers 배열에 각 사용자의 정보 추가
-    console.log(users)
     for (const user of users) {
       const userInfo = await axios.post(`${pref.app.api.host}/user/get/${user.userUuid}`,{
         headers: {
