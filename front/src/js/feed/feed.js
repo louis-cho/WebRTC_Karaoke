@@ -52,7 +52,7 @@ export async function getFeedsByUser(uuid) {
     })
     .then(response => response.json())
     .then(result => {
-      console.log('유저아이디별로 피드 가져오기',result)
+      // console.log('유저아이디별로 피드 가져오기',result.data)
       return result.data
     })
     .catch(err => console.log(err.message))
