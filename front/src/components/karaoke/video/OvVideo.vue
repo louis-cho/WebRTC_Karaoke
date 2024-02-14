@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 const props = defineProps({
   streamManager: Object,
@@ -15,4 +15,12 @@ const videoEl = ref(null);
 onMounted(() => {
   props.streamManager.addVideoElement(videoEl.value);
 });
+
+watch(
+  () => props.streamManager,
+  (newStreamManager) => {
+    newStreamManager.addVideoElement(videoEl.value);
+  },
+  { deep: true }
+);
 </script>

@@ -16,8 +16,18 @@
         </q-header>
 
         <q-page-container>
+          <q-item-section>
+            <q-input
+              type="text"
+              :placeholder="pref.app.kor.karaoke.session.search"
+              v-model="searchQuery"
+              outlined
+              dense
+              class="inline-input"
+            />
+          </q-item-section>
           <q-list bordered separator>
-            <q-item v-for="session in pages" :key="session.sessionId">
+            <q-item v-for="session in filteredSession" :key="session.sessionId">
               <q-item-section>
                 <q-item-label
                   >{{ pref.app.kor.karaoke.list.sessionId }} :
@@ -35,6 +45,13 @@
                       ? pref.app.kor.karaoke.list.private
                       : pref.app.kor.karaoke.list.public
                   }}
+                </q-item-label>
+              </q-item-section>
+
+              <q-item-section side>
+                <q-item-label
+                  >{{ pref.app.kor.karaoke.list.manager }} :
+                  {{ session.manager }}
                 </q-item-label>
               </q-item-section>
 
@@ -64,14 +81,39 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from "vue";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import pref from "@/js/config/preference.js";
+import axios from "axios";
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 
 // store 사용
 const store = useKaraokeStore();
 
-const { pages, changeRoute } = defineProps(["pages", "changeRoute"]);
+const { changeRoute } = defineProps(["changeRoute"]);
 const router = changeRoute;
+const searchQuery = ref("");
+const pages = ref([]);
+
+// 페이지가 마운트된 후에 실행되는 코드
+onMounted(() => {
+  axios
+    .get(store.APPLICATION_SERVER_URL + "/karaoke/sessions/sessionList", {
+      headers: {
+        Authorization: getCookie("Authorization"),
+        refreshToken: getCookie("refreshToken"),
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      pages.value = response.data;
+      console.log(pages.value);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
 
 const openModal = () => {
   store.createModal = true;
@@ -84,6 +126,20 @@ async function joinSession(url) {
 function decodeBase64(encodedString) {
   return decodeURIComponent(escape(atob(encodedString)));
 }
+
+const filteredSession = computed(() => {
+  if (searchQuery.value.trim() == "") {
+    return pages.value;
+  }
+
+  const query = searchQuery.value.trim();
+  return pages.value.filter((page) => {
+    return (
+      decodeBase64(page.sessionId).includes(query) ||
+      page.manager.includes(query)
+    );
+  });
+});
 </script>
 
 <style scoped></style>

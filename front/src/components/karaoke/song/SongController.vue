@@ -100,13 +100,13 @@ const videoUrl = ref("");
 const privacyOptions = ["전체공개", "친구공개", "비공개"];
 const modalVisible = ref(false);
 const postContent = ref("");
+const singUser = ref(undefined);
 const songId = ref(undefined);
 
 function startSong() {
-  singing();
-
   removeReserve()
     .then(() => {
+      singing();
       startRecording();
     })
     .catch((error) => {
@@ -156,8 +156,12 @@ function removeReserve() {
 
       if (parts.length === 4) {
         const [userName, id, title, singer] = parts;
+        singUser.value = userName;
         songId.value = id;
       }
+    })
+    .catch((error) => {
+      console.error(error);
     });
 }
 
@@ -175,6 +179,9 @@ function startRecording() {
     .then((res) => {
       console.log(res.data);
       recordingId.value = res.data.id;
+    })
+    .catch((error) => {
+      console.error(error);
     });
 }
 
@@ -209,6 +216,9 @@ function removeRecording() {
     .then(() => {
       fileUrl.value = undefined;
       recordingId.value = undefined;
+    })
+    .catch((error) => {
+      console.error(error);
     });
 }
 
@@ -231,12 +241,14 @@ function uploadRecording() {
 function singing() {
   store.session.signal({
     data: JSON.stringify({
+      singUser: singUser.value,
       singing: !store.singing,
       songMode: store.songMode,
     }), // 메시지 데이터를 문자열로 변환해서 전송
     type: "sing", // 신호 타입을 'chat'으로 설정
   });
 }
+
 watch(
   () => store.songMode,
   (newSongMode, oldSongMode) => {

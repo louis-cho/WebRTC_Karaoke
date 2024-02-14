@@ -71,6 +71,7 @@ export const useKaraokeStore = defineStore("karaoke", {
         this.APPLICATION_SERVER_URL + "/karaoke/sessions/createSession",
         {
           sessionName: sessionName,
+          userName: this.userName,
           numberOfParticipants: numberOfParticipants,
           isPrivate: isPrivate,
           password: password,
@@ -109,6 +110,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       });
 
       this.session.on("sessionDisconnected", () => {
+        this.singing = false;
         if (this.kicked == true) {
           alert("추방당했습니다.");
           window.location.href = "/#/karaoke/";
@@ -131,6 +133,21 @@ export const useKaraokeStore = defineStore("karaoke", {
         const singData = JSON.parse(event.data);
         this.singing = singData.singing;
         this.songMode = singData.songMode;
+
+        if (singData.singUser == this.userName) {
+          this.muted = false;
+          this.mainStreamManager = publisher;
+        } else {
+          this.muted = true;
+          for (const subscriber of this.subscribers) {
+            if (singData.singUser == JSON.parse(subscriber.stream.data)) {
+              this.mainStreamManager = subscriber;
+            }
+          }
+        }
+        this.publisher.publishAudio(!this.muted);
+
+        this.mainStreamManager = singStream;
       });
     },
 
@@ -143,11 +160,13 @@ export const useKaraokeStore = defineStore("karaoke", {
       const participants = await axios.post(
         this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkNumber",
         { sessionName: sessionName },
-        {     headers: {
-          Authorization: getCookie("Authorization"),
-          refreshToken: getCookie("refreshToken"),
-          "Content-Type": "application/json",
-        }, }
+        {
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (!participants.data) {
         alert("인원이 초과했습니다!");
@@ -158,11 +177,13 @@ export const useKaraokeStore = defineStore("karaoke", {
       const isPrivate = await axios.post(
         this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPrivate",
         { sessionName: sessionName },
-        {    headers: {
-          Authorization: getCookie("Authorization"),
-          refreshToken: getCookie("refreshToken"),
-          "Content-Type": "application/json",
-        }, }
+        {
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       // 비밀번호 확인
@@ -173,11 +194,13 @@ export const useKaraokeStore = defineStore("karaoke", {
         const response = await axios.post(
           this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPassword",
           { sessionName: sessionName, password: userInput },
-          {     headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          }, }
+          {
+            headers: {
+              Authorization: getCookie("Authorization"),
+              refreshToken: getCookie("refreshToken"),
+              "Content-Type": "application/json",
+            },
+          }
         );
 
         if (!response.data) {
