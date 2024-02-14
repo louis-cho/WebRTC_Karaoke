@@ -6,6 +6,9 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
+/**
+ * feed 모델 클래스
+ */
 @Getter
 @Setter
 @ToString

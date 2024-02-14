@@ -142,6 +142,7 @@ async function login(id, pw) {
     })
     .catch((error) => {
       console.error("Error:", error);
+      // isLoggedIn.value = false;
     });
 }
 

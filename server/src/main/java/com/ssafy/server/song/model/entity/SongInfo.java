@@ -20,7 +20,7 @@ public class SongInfo {
     private int prelude;
     @Column(name = "genre")
     private String genre;
-    @Column(name = "mml_data")
+    @Column(name = "mml_data", columnDefinition = "LONGTEXT")
     private String mmlData;
     @Column(name = "song_url")
     private String songUrl;

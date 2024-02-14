@@ -3,6 +3,9 @@ package com.ssafy.server.feed.error;
 import com.ssafy.server.common.error.ExceptionEnum;
 import org.springframework.http.HttpStatus;
 
+/**
+ * 피드 예외를 정의한 enum 클래스
+ */
 public enum FeedExceptionEnum implements ExceptionEnum {
     FEED_NOT_FOUND(HttpStatus.NOT_FOUND, "F00001", "피드를 찾을 수 없습니다."),
     FEED_CREATION_FAILED(HttpStatus.BAD_REQUEST, "F00002", "피드를 생성할 수 없습니다."),

@@ -11,6 +11,7 @@
 import TabItem from "@/layouts/TabItem.vue";
 import SignIn from "@/components/SignIn.vue";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
+
 const store = useKaraokeStore();
 </script>
 
