@@ -1,11 +1,8 @@
 <template>
   <router-link :to="{ path: '/chat/' + chatRoom.roomPk }">
     <li class="chat-room-item">
-      <span class="room-id">Room ID: {{ chatRoom.roomPk }}</span>
-      <span class="room-name">Room Name : {{ roomName }}</span>
-      <span class="user-pk">User PK: {{ chatRoom.userPk }}</span>
-      <span class="status">Status: {{ chatRoom.status }}</span>
-      <span class="time">Time: {{ chatRoom.time }}</span>
+      <span class="room-name">{{ roomName }}</span>
+      <!-- <span class="time">Time: {{ chatRoom.time }}</span> -->
     </li>
   </router-link>
 </template>
@@ -15,7 +12,7 @@ import pref from "@/js/config/preference.js";
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import useCookie from "@/js/cookie.js";
-const { setCookie, getCookie, removeCookie } = useCookie();
+const { getCookie } = useCookie();
 
 const props = defineProps({
   chatRoom: Object
