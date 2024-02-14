@@ -65,7 +65,6 @@ export default route(function (/* { store, ssrContext } */) {
         const pattern = /^https:\/\/i10a705.p.ssafy.io\/.+/;
         const destUrl = "https://i10a705.p.ssafy.io" + to.fullPath;
 
-        console.log(authStatus)
         if (
           (authStatus == 0 || authStatus == 3 || authStatus == 4 || authStatus == null) &&
           pattern.test(destUrl)
@@ -80,7 +79,7 @@ export default route(function (/* { store, ssrContext } */) {
       .catch((error) => {
         console.error("Error: ", error);
         console.log(
-          "router/index.js ComponentGuard axios 통신 에러, 일단 넘김"
+          "router/index.js ComponentGuard axios 통신 에러"
         );
         next();
       });

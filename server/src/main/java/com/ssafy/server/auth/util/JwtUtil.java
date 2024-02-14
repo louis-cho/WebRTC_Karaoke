@@ -122,9 +122,9 @@ public class JwtUtil implements InitializingBean {
 
         String delimiter = tokenKey.getKey();
         if (delimiter.equals(TokenKey.ACCESS.getKey())) {
-            return now.plusMinutes(1);
+            return now.plusMinutes(30);
         } else if (delimiter.equals(TokenKey.REFRESH.getKey())) {
-            return now.plusMinutes(2);
+            return now.plusMinutes(1440);
         } else {
             throw new RuntimeException("Invalid TokenKey");
         }
