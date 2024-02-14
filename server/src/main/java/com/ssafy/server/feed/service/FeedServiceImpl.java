@@ -93,12 +93,12 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     public List<FeedResponse> getFeedByUserPk(int userPk) {
-         List<Feed> list =  feedRepository.findByUserPk(userPk);
+         List<Feed> list =  feedRepository.findByUserPk(userPk).get();
          List<FeedResponse> res = new ArrayList<>();
          for(Feed feed : list){
              FeedResponse tmp = new FeedResponse();
              tmp.setFeedId(feed.getFeedId());
-             tmp.setUserUUID(userService.getUUID(String.valueOf(feed.getUserPk())));
+             tmp.setUserUUID(userService.getUUIDByUserPk(userPk));
              tmp.setTime(feed.getTime());
              tmp.setStatus(feed.getStatus());
              tmp.setTitle(feed.getTitle());
