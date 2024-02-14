@@ -48,23 +48,23 @@ watch(
       announceString.value = "노래를 예약해주세요."
     } else {
       announceString.value = store.reservedSongs[0].title;
-      axios
-        .post(
-        store.APPLICATION_SERVER_URL + "/songInfo/" + store.reservedSongs[0].songId,
-        {
-          headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((error) => {
-        console.error("normal모드 노래 정보 불어오기"+error);
-      });
+      // axios
+      //   .post(
+      //   store.APPLICATION_SERVER_URL + "/songInfo/" + store.reservedSongs[0].songId,
+      //   {
+      //     headers: {
+      //       Authorization: getCookie("Authorization"),
+      //       refreshToken: getCookie("refreshToken"),
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // )
+      // .then((res) => {
+      //   console.log(res.data);
+      // })
+      // .catch((error) => {
+      //   console.error("normal모드 노래 정보 불어오기"+error);
+      // });
     }
 
   }
