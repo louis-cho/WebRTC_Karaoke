@@ -50,12 +50,12 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/filter").permitAll()
                 .antMatchers("/api/v1/user/login").permitAll()
-                .antMatchers("/api/v1/user/regist").permitAll()
+                .antMatchers("/api/v1/user/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .logout().logoutSuccessUrl("/");
 
-        // http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+         http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
