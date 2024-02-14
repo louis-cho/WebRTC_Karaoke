@@ -26,5 +26,7 @@ public class SongInfo {
     private String songUrl;
     @Column(name = "album_cover")
     private String albumCover;
+    @Column(name = "author")
+    private String author;
 
 }

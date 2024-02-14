@@ -9,10 +9,10 @@
       </div>
       <div>
         <div v-if="showSongInfo" class="song-info-container">
-          <div class="title">{{ song.title }}</div>
+          <div class="title">{{ songInfo.title }}</div>
           <div class="details">
-            <span>노래: {{ song.singer }}</span><br>
-            <span>작곡: {{ song.author }}</span>
+            <span>노래: {{ songInfo.singer }}</span><br>
+            <span>작곡: {{ songInfo.author }}</span>
           </div>
         </div>
         <canvas v-else ref="canvas" width="1000" height="200"></canvas>
@@ -41,7 +41,12 @@ const props = defineProps({
 
 const audio = ref(null);
 const song = ref(null)
-let reservedSong = null;
+const songInfo = ref({
+  title: "",
+  singer: "",
+  author: "",
+})
+
 watch(
   () => store.reservedSongsLength,
   () => {
@@ -50,26 +55,8 @@ watch(
       announceString.value = "노래를 예약해주세요."
     } else {
       announceString.value = store.reservedSongs[0].title;
-      // axios
-      //   .get(
-      //   store.APPLICATION_SERVER_URL + "/song/songInfo/" + store.reservedSongs[0].songId,
-      //   {
-      //     headers: {
-      //       Authorization: getCookie("Authorization"),
-      //       refreshToken: getCookie("refreshToken"),
-      //       "Content-Type": "application/json",
-      //     },
-      //   }
-      // )
-      // .then((res) => {
-      //   console.log(res.data);
-      //   reservedSong = res.data;
-      //   console.log(reservedSong)
-      //   audio.value = new Audio(song.value.url); // mp3 url 연결
-      // })
-      // .catch((error) => {
-      //   console.error("normal모드 노래 정보 불어오기"+error);
-      // });
+      songInfo.value.title = store.reservedSongs[0].title;
+      songInfo.value.singer = store.reservedSongs[0].singer;
     }
 
   }
@@ -112,7 +99,9 @@ const showSongInfoTimeOut = 9000;
 const choose = () => {
   // props로 내려온 songData 주입
   song.value = props.songData;
-  audio.value = new Audio(song.value.url); // mp3 url 연결
+  console.log(song.value) // 받은 데이터 확인
+  songInfo.value.author = song.value.author
+  audio.value = new Audio(song.value.songUrl); // mp3 url 연결
 };
 
 const initDrawer = () => {
@@ -150,7 +139,7 @@ const play = () => {
     }).then(() => {
       initDrawer();
       hasNextLyrics.value = true;
-      lyrics.value = parseLyric(parseScore(song.value.score));
+      lyrics.value = parseLyric(parseScore(song.value.mmlData));
       bundles.value = parseBundle(lyrics.value);
 
       bundleIndex.value = 0;
@@ -163,7 +152,7 @@ const play = () => {
   } else {
     initDrawer();
     hasNextLyrics.value = true;
-    lyrics.value = parseLyric(parseScore(song.value.score));
+    lyrics.value = parseLyric(parseScore(song.value.mmlData));
     bundles.value = parseBundle(lyrics.value);
 
     bundleIndex.value = 0;
