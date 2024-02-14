@@ -34,7 +34,7 @@ public class Feed {
     @Column(name = "video_length")
     private Integer videoLength;
     @Column(name = "status")
-    private char status;
+    private Character status;
     @Column(name = "total_point")
     private Integer totalPoint;
     @Column(name = "time")

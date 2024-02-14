@@ -28,7 +28,7 @@
       <!-- 두번째 div -->
       <div class="profile">
         <!-- 프로필 이미지 가져오기 -->
-        <div class="profile-img-container" :style="{ backgroundImage: `url('${user.profileImgUrl}')` }">
+        <div class="profile-img-container" :style="{ backgroundImage: `url('')` }">
           <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
         </div>
         <div class="info">
@@ -37,10 +37,10 @@
             <div v-else><p>게시글</p><span>0</span></div>
             <div><p>댓글</p><span>{{ totalCommentCount }}</span></div>
             <div><p>좋아요</p><span>{{ totalLikeCount }}</span></div>
-            <div><p>친구</p><span>{{ FriendCount }}</span></div>
+            <div><p>친구</p><span> FriendCount </span></div>
           </div>
           <div class="bio">
-            <p>{{ user.introduction }}</p>
+            <p>user.introduction</p>
           </div>
           <div class="actions">
             <q-btn color="primary" label="좋아요 관리" />
@@ -81,7 +81,7 @@ const { setCookie, getCookie, removeCookie } = useCookie();
 const router = useRouter();
 const route = useRoute()
 const LoggedUserPK = ref();
-const uuid = ref(null);
+const uuid = ref("");
 const userPk = ref(route.params.userPk); // 동적인 userPk를 사용
 const feedWriterPk = ref();
 
@@ -96,38 +96,41 @@ const goFeedDetail = (feedId) => {
 
 const personalFeeds = ref([]);
 const user = ref(null);
-const FriendCount = ref('');
+// const FriendCount = ref('');
 let page = 0;
 const amount = 10;
 
 onBeforeMount(async () => {
+  uuid.value = getCookie('uuid')
   await fetchPersonalFeedData();
+  console.log("fetchPersonFeedData 끝");
   await fetchUserData();
   await getFriendCount();
   await getLoggedUserPk();
+  console.log("비포마운트끝")
 });
 
 //로그인한 유저pk값 가져오기
-const getLoggedUserPk = async () => {
-  try {
-    uuid.value = getCookie("uuid")
-    // console.log("UUID:", uuid.value);
-    const getCurrentUserPk = await getUserPk(uuid.value);
-    console.log(getCurrentUserPk);
-    LoggedUserPK.value = getCurrentUserPk
-  } catch (error) {
-    console.error("오류 발생!!!:", error);
-  }
-};
+// const getLoggedUserPk = async () => {
+//   try {
+//     uuid.value = getCookie("uuid")
+//     // console.log("UUID:", uuid.value);
+//     const getCurrentUserPk = await getUserPk(uuid.value);
+//     console.log(getCurrentUserPk);
+//     LoggedUserPK.value = getCurrentUserPk
+//   } catch (error) {
+//     console.error("오류 발생!!!:", error);
+//   }
+// };
 
 //유저 정보 가져오기
 const fetchUserData = async () => {
   try {
-    const fetchedUser = await fetchUser(userPk.value);
+    const fetchedUser = await fetchUser(uuid.value);
     user.value = fetchedUser;
-    // console.log(user.value);
+    console.log('유저정보',user.value);
     //피드 작성자 pk
-    feedWriterPk.value = user.value.userPk
+    // feedWriterPk.value = user.value.userPk
     // console.log('피드 작성자 pk',feedWriterPk.value)
   } catch (error) {
     console.error("Error fetching user data:", error.message);
@@ -137,7 +140,8 @@ const fetchUserData = async () => {
 
 const fetchPersonalFeedData = async() => {
   try {
-    const feeds = await getFeedsByUser(userPk.value);
+    console.log("uuid.value? ",uuid.value)
+    const feeds = await getFeedsByUser(uuid.value);
     for (let elem of feeds) {
       elem.likeCount = await fetchLikeCount(elem.feedId)
       elem.commentCount = await fetchCommentCount(elem.feedId);
@@ -150,15 +154,15 @@ const fetchPersonalFeedData = async() => {
   }
 }
 
-const getFriendCount = async() => {
-  try {
-    const FriendCounts = await fetchFriendCount(userPk.value, page++, amount);
-    FriendCount.value = FriendCounts;
-    // console.log(FriendCount.value);
-  } catch (error) {
-    console.error("Error fetching personal feeds:", error.message);
-  }
-}
+// const getFriendCount = async() => {
+//   try {
+//     const FriendCounts = await fetchFriendCount(userPk.value, page++, amount);
+//     FriendCount.value = FriendCounts;
+//     // console.log(FriendCount.value);
+//   } catch (error) {
+//     console.error("Error fetching personal feeds:", error.message);
+//   }
+// }
 
 const feedLength = computed(() => personalFeeds.value.length);
 
