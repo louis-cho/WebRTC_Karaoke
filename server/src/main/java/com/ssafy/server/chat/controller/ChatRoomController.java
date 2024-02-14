@@ -2,6 +2,7 @@ package com.ssafy.server.chat.controller;
 
 import com.ssafy.server.chat.model.ChatRoom;
 import com.ssafy.server.chat.model.UsersChats;
+import com.ssafy.server.chat.model.UsersChatsRes;
 import com.ssafy.server.chat.service.ChatRoomService;
 import com.ssafy.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,10 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final UserService userService;
 
+    @GetMapping("/test")
+    public String test(){
+        return "test";
+    }
     // 채팅 리스트 화면
     @GetMapping("/list/{userUuid}")
     public Page<UsersChats> chatRoomList(@PathVariable String userUuid,
@@ -39,13 +44,14 @@ public class ChatRoomController {
 
     // 채팅방 생성
     @PostMapping("/create")
-    public ChatRoom createRoom(@RequestParam String name, @RequestParam long host, @RequestParam List<String> guests) {
-        return chatRoomService.createChatRoom(name, host, guests);
+    public ChatRoom createRoom(@RequestParam String name, @RequestParam String host, @RequestParam List<String> guests) {
+        int hostPk = userService.getUserPk(UUID.fromString(host));
+        return chatRoomService.createChatRoom(name, hostPk, guests);
     }
 
     // 채팅방 참여 유저 리스트 반환
     @GetMapping("/list/users/{roomId}")
-    public List<UsersChats> userList(@PathVariable long roomId) {
+    public List<UsersChatsRes> userList(@PathVariable long roomId) {
         return chatRoomService.getUserList(roomId);
     }
 
