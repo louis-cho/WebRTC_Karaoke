@@ -150,7 +150,7 @@ public class FeedController {
     }
 
     @PostMapping("/update/{feedId}")
-    public ResponseEntity<ApiResponse<?>> updatePost(@PathVariable int feedId, @RequestBody Feed updatedPost) {
+    public ResponseEntity<ApiResponse<?>> updatePost(@PathVariable int feedId, @RequestBody FeedResponse updatedPost) {
         Feed post;
         try {
             post = feedService.updateFeed(feedId, updatedPost);

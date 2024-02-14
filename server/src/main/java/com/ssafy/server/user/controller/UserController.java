@@ -108,8 +108,8 @@ public class UserController {
                         System.out.println(newToken.getAccessToken());
                         System.out.println(newToken.getRefreshToken());
 
-                        jsonResponse.put(TokenKey.ACCESS.getKey(), newToken.getAccessToken());
-                        jsonResponse.put(TokenKey.REFRESH.getKey(), newToken.getRefreshToken());
+                        jsonResponse.put(TokenKey.ACCESS.getKey(), "Bearer-"+newToken.getAccessToken());
+                        jsonResponse.put(TokenKey.REFRESH.getKey(), "Bearer-"+newToken.getRefreshToken());
                     }
 
                     jsonResponse.put("uuid", uuid.toString());

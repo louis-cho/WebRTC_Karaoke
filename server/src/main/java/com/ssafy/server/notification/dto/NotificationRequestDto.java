@@ -8,10 +8,12 @@ import lombok.Setter;
 @Setter
 public class NotificationRequestDto {
     private Integer notificationId;
-    private Integer toUser;
-    private Integer fromUser;
+    private String toUserKey;
     private String info;
     private String type;
     private Character status;
+
+    private Integer toUser; //백에서 삽입
+    private Integer fromUser; //백에서 삽입
 
 }
