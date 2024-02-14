@@ -68,8 +68,8 @@ export async function fetchFriendCount() {
   })
     .then((response) => response.json())
     .then((result) => {
-      console.log('친구카운트',result)
-      return result.totalElements;
+      console.log('친구카운트!',result)
+      return result;
     })
     .catch((error) => {
       console.error("Error:", error);
