@@ -92,7 +92,7 @@
         <div class="margin-right-20" @click="handleLikeClick">
           <img
             class="margin-right-10"
-            :src="isLiked.value ? '../src/assets/icon/clicked_love.png' : '../src/assets/icon/love.png'"
+             :src="isLiked ? '../src/assets/icon/redheart.png' : '../src/assets/icon/love.png'"
             alt="좋아요"
           />
           <!-- :src="isLiked ? '@/assets/icon/redheart.png' : '@/assets/icon/heart.png'" -->
@@ -253,8 +253,8 @@ const goBack = function () {
 
 const handleLikeClick = async () => {
   if (!isLiked.value) {
-    feed.value.likeCount = await createLike(feedId.value, uuid.value);
-
+    await createLike(feedId.value, uuid.value);
+    feed.value.likeCount++;
     //좋아요알림 발송. 자기자신 제외.
     if(feed.value.userUUID != uuid.value){
       const body = {
@@ -266,7 +266,8 @@ const handleLikeClick = async () => {
       notificationStore.sendNotification(body);
     }
   } else {
-    feed.value.likeCount = await deleteLike(feedId.value, uuid.value);
+    await deleteLike(feedId.value, uuid.value);
+    feed.value.likeCount--;
   }
 
   isLiked.value = !isLiked.value;
