@@ -3,6 +3,7 @@
     <NavBar />
     <!-- <TabItem /> -->
     <!-- <h4>상세 피드 페이지</h4> -->
+
     <div class="my-feed">
       <!-- 첫번째 div -->
       <div class="header">
@@ -92,10 +93,9 @@
         <div class="margin-right-20" @click="handleLikeClick">
           <img
             class="margin-right-10"
-             :src="isLiked ? '@/assets/icon/redheart.png' : '@/assets/icon/love.png'"
+            :src="isLiked ? '../src/assets/icon/heart.png' : '../src/assets/icon/heart (1).png'"
             alt="좋아요"
           />
-          <!-- :src="isLiked ? '@/assets/icon/redheart.png' : '@/assets/icon/heart.png'" -->
           <span v-if="feed">{{ feed.likeCount }}</span>
         </div>
         <div class="margin-right-20">
@@ -234,7 +234,7 @@ import { useNotificationStore } from "@/stores/notificationStore.js";
 
 const { setCookie, getCookie, removeCookie } = useCookie();
 
-  const isLiked = ref(false);
+const isLiked = ref(false);
 const feed = ref();
 const router = useRouter();
 const comments = ref([]);
