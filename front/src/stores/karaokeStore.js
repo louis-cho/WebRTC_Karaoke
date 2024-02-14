@@ -57,6 +57,8 @@ export const useKaraokeStore = defineStore("karaoke", {
     selectedAudio: "", // 오디오 변경시 사용할 변수
     cameras: [],
     audios: [],
+    reservedSongs: [],
+    reservedSongsLength: 0,
   }),
   actions: {
     async createSession(
