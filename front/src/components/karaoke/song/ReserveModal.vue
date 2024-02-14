@@ -73,7 +73,7 @@ onMounted(() => {
       songs.value = response.data;
     })
     .catch((error) => {
-      console.error("Error fetching songs:", error);
+      alert(error.response.data);
     });
 });
 
@@ -100,7 +100,7 @@ function reserveSong(songId) {
       closeModal();
     })
     .catch((error) => {
-      console.error("Error fetching songs:", error);
+      alert(error.response.data);
     });
 }
 

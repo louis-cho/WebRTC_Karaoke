@@ -3,6 +3,7 @@
     <NavBar />
     <!-- <TabItem /> -->
     <!-- <h4>상세 피드 페이지</h4> -->
+
     <div class="my-feed">
       <!-- 첫번째 div -->
       <div class="header">
@@ -246,7 +247,7 @@ import { useNotificationStore } from "@/stores/notificationStore.js";
 
 const { setCookie, getCookie, removeCookie } = useCookie();
 
-  const isLiked = ref(false);
+const isLiked = ref(false);
 const feed = ref();
 const router = useRouter();
 const comments = ref([]);
