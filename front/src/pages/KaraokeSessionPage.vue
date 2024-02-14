@@ -156,9 +156,6 @@ function decodeBase64(encodedString) {
 .custom-header {
   height: 50px;
 }
-.user-video {
-  cursor: pointer;
-}
 
 #video-container {
   display: flex;

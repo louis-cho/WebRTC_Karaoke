@@ -25,12 +25,10 @@ export const useKaraokeStore = defineStore("karaoke", {
     singUser: undefined,
     songMode: true,
     newReserve: false,
-    deleteReserve: false,
 
     sessionName: undefined,
     userName: "로그인 하세요",
     isPrivate: false,
-    kicked: true,
 
     // OpenVidu 객체
     OV: undefined,
@@ -40,6 +38,7 @@ export const useKaraokeStore = defineStore("karaoke", {
     subscribers: [],
     token: undefined,
     isModerator: false,
+    kicked: true,
 
     // 방 설정을 위한 변수
     numberOfParticipants: undefined,
@@ -119,6 +118,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       });
 
       this.session.on("sessionDisconnected", () => {
+        console.log(this.kicked);
         this.singing = false;
 
         if (this.kicked == true) {
@@ -357,6 +357,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       this.isModerator = false;
       this.inputMessage = "";
       this.messages = [];
+      this.kicked = true;
 
       // beforeunload 리스너 제거
       window.removeEventListener("beforeunload", this.leaveSession);
