@@ -3,6 +3,7 @@ import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import pref from "@/js/config/preference.js";
 import useCookie from "@/js/cookie.js";
+import { error } from "jquery";
 const { setCookie, getCookie, removeCookie } = useCookie();
 export const useKaraokeStore = defineStore("karaoke", {
   state: () => ({
@@ -26,7 +27,7 @@ export const useKaraokeStore = defineStore("karaoke", {
     deleteReserve: false,
 
     sessionName: undefined,
-    userName: "사용자" + Math.round(Math.random() * 100),
+    userName: undefined,
     isPrivate: false,
     isModerator: false,
     kicked: true,
@@ -65,28 +66,32 @@ export const useKaraokeStore = defineStore("karaoke", {
     ) {
       this.joinSession();
 
+      await axios
+        .post(
+          this.APPLICATION_SERVER_URL + "/karaoke/sessions/createSession",
+          {
+            sessionName: sessionName,
+            userName: this.userName,
+            numberOfParticipants: numberOfParticipants,
+            isPrivate: isPrivate,
+            password: password,
+          },
+          {
+            headers: {
+              Authorization: getCookie("Authorization"),
+              refreshToken: getCookie("refreshToken"),
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .catch((error) => {
+          alert(error.response.data);
+          return;
+        });
+
       this.numberOfParticipants = numberOfParticipants;
       this.isPrivate = isPrivate;
       this.password = password;
-
-      await axios.post(
-        this.APPLICATION_SERVER_URL + "/karaoke/sessions/createSession",
-        {
-          sessionName: sessionName,
-          userName: this.userName,
-          numberOfParticipants: numberOfParticipants,
-          isPrivate: isPrivate,
-          password: password,
-        },
-        {
-          headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
       this.isModerator = true;
     },
 
@@ -132,9 +137,13 @@ export const useKaraokeStore = defineStore("karaoke", {
         this.messages.push(messageData);
       });
 
+      this.session.on("signal:songMode", (event) => {
+        const songModeData = JSON.parse(event.data);
+        this.songMode = songModeData.songMode;
+      });
+
       this.session.on("signal:sing", (event) => {
         const singData = JSON.parse(event.data);
-        this.songMode = singData.songMode;
         this.singing = singData.singing;
 
         if (singData.singUser == this.userName) {
@@ -154,71 +163,57 @@ export const useKaraokeStore = defineStore("karaoke", {
         this.publisher.publishAudio(!this.muted);
       });
 
-      this.session.on("signal:reserve", (event) => {
+      this.session.on("signal:reserve", () => {
         this.newReserve = true;
       });
     },
 
     async getToken(sessionName) {
-      if (this.session == undefined) {
-        this.joinSession();
-      }
-
-      // 녹화 확인
-      const isRecording = await axios.post(
-        this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkRecording",
-        { sessionName: sessionName },
-        {
-          headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          },
+      try {
+        if (this.session == undefined) {
+          this.joinSession();
         }
-      );
-      if (!isRecording.data) {
-        alert("녹화 중에 입장이 불가능합니다.");
-        return false;
-      }
 
-      // 인원수 확인
-      const participants = await axios.post(
-        this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkNumber",
-        { sessionName: sessionName },
-        {
-          headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!participants.data) {
-        alert("인원이 초과했습니다!");
-        return false;
-      }
+        // 녹화 확인
+        await axios
+          .post(
+            this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkRecording",
+            { sessionName: sessionName },
+            {
+              headers: {
+                Authorization: getCookie("Authorization"),
+                refreshToken: getCookie("refreshToken"),
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .catch((error) => {
+            alert(error.response.data);
+            throw error;
+          });
 
-      // 비공개 확인
-      const isPrivate = await axios.post(
-        this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPrivate",
-        { sessionName: sessionName },
-        {
-          headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          },
-        }
-      );
+        // 인원수 확인
+        await axios
+          .post(
+            this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkNumber",
+            { sessionName: sessionName },
+            {
+              headers: {
+                Authorization: getCookie("Authorization"),
+                refreshToken: getCookie("refreshToken"),
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .catch((error) => {
+            alert(error.response.data);
+            throw error;
+          });
 
-      // 비밀번호 확인
-      if (isPrivate.data) {
-        // 모달에서 값을 입력받는 함수 호출
-        const userInput = await this.showModal();
-
-        const response = await axios.post(
-          this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPassword",
-          { sessionName: sessionName, password: userInput },
+        // 비공개 확인
+        const isPrivate = await axios.post(
+          this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPrivate",
+          { sessionName: sessionName },
           {
             headers: {
               Authorization: getCookie("Authorization"),
@@ -228,123 +223,156 @@ export const useKaraokeStore = defineStore("karaoke", {
           }
         );
 
-        if (!response.data) {
-          alert("비밀번호가 틀렸습니다!");
-          return false;
+        // 비밀번호 확인
+        if (isPrivate.data) {
+          // 모달에서 값을 입력받는 함수 호출
+          const userInput = await this.showModal();
+
+          await axios
+            .post(
+              this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPassword",
+              { sessionName: sessionName, password: userInput },
+              {
+                headers: {
+                  Authorization: getCookie("Authorization"),
+                  refreshToken: getCookie("refreshToken"),
+                  "Content-Type": "application/json",
+                },
+              }
+            )
+            .catch((error) => {
+              alert(error.response.data);
+              throw error;
+            });
         }
-      }
 
-      // 토큰 생성
-      const token = await axios.post(
-        this.APPLICATION_SERVER_URL + "/karaoke/sessions/getToken",
-        {
-          sessionName: sessionName,
-          // filter 사용을 위해 create connection 시 body를 추가
-          type: "WEBRTC",
-          role: "PUBLISHER",
-          kurentoOptions: {
-            allowedFilters: ["GStreamerFilter", "FaceOverlayFilter"],
-          },
-        },
-        {
-          headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      this.session
-        .connect(token.data, { clientData: this.userName })
-        .then(() => {
-          // 토근을 저장한다.
-          this.token = token.data;
-          this.sessionName = sessionName;
-
-          // 원하는 속성으로 초기화된 발행자를 만듭니다.
-          let publisher_tmp = this.OV.initPublisher(undefined, {
-            audioSource: undefined, // 오디오의 소스. 정의되지 않으면 기본 마이크
-            videoSource: undefined, // 비디오의 소스. 정의되지 않으면 기본 웹캠
-            publishAudio: !this.muted, // 마이크 음소거 여부를 시작할지 여부
-            publishVideo: !this.camerOff, // 비디오 활성화 여부를 시작할지 여부
-            // resolution: "1280x720", // 비디오의 해상도
-            resolution: "320x240",
-            frameRate: 30, // 비디오의 프레임 속도
-            insertMode: "APPEND", // 비디오가 대상 요소 'video-container'에 어떻게 삽입되는지
-            mirror: false, // 로컬 비디오를 반전할지 여부
+        // 토큰 생성
+        const token = await axios
+          .post(
+            this.APPLICATION_SERVER_URL + "/karaoke/sessions/getToken",
+            {
+              sessionName: sessionName,
+              // filter 사용을 위해 create connection 시 body를 추가
+              type: "WEBRTC",
+              role: "PUBLISHER",
+              kurentoOptions: {
+                allowedFilters: ["GStreamerFilter", "FaceOverlayFilter"],
+              },
+            },
+            {
+              headers: {
+                Authorization: getCookie("Authorization"),
+                refreshToken: getCookie("refreshToken"),
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .catch((error) => {
+            alert(error.response.data);
+            throw error;
           });
 
-          console.log(publisher_tmp);
+        this.session
+          .connect(token.data, { clientData: this.userName })
+          .then(() => {
+            // 토근을 저장한다.
+            this.token = token.data;
+            this.sessionName = sessionName;
 
-          // 페이지에서 주요 비디오를 설정하여 웹캠을 표시하고 발행자를 저장합니다.
-          this.mainStreamManager = publisher_tmp;
-          this.publisher = publisher_tmp;
+            // 원하는 속성으로 초기화된 발행자를 만듭니다.
+            let publisher_tmp = this.OV.initPublisher(undefined, {
+              audioSource: undefined, // 오디오의 소스. 정의되지 않으면 기본 마이크
+              videoSource: undefined, // 비디오의 소스. 정의되지 않으면 기본 웹캠
+              publishAudio: !this.muted, // 마이크 음소거 여부를 시작할지 여부
+              publishVideo: !this.camerOff, // 비디오 활성화 여부를 시작할지 여부
+              // resolution: "1280x720", // 비디오의 해상도
+              resolution: "320x240",
+              frameRate: 30, // 비디오의 프레임 속도
+              insertMode: "APPEND", // 비디오가 대상 요소 'video-container'에 어떻게 삽입되는지
+              mirror: false, // 로컬 비디오를 반전할지 여부
+            });
 
-          // --- 6) 스트림을 발행하고, 원격 스트림을 수신하려면 subscribeToRemote() 호출하기 ---
-          this.publisher.subscribeToRemote();
-          this.session.publish(this.publisher);
-          this.getMedia(); // 세션이 만들어졌을 때 미디어를 불러옵니다.
-        })
-        .catch((error) => {
-          console.log(
-            "세션에 연결하는 중 오류가 발생했습니다:",
-            error.code,
-            error.message
-          );
-        });
+            // 페이지에서 주요 비디오를 설정하여 웹캠을 표시하고 발행자를 저장합니다.
+            this.mainStreamManager = publisher_tmp;
+            this.publisher = publisher_tmp;
 
-      window.addEventListener("beforeunload", this.leaveSession);
-      return true;
+            // --- 6) 스트림을 발행하고, 원격 스트림을 수신하려면 subscribeToRemote() 호출하기 ---
+            this.publisher.subscribeToRemote();
+            this.session.publish(this.publisher);
+            this.getMedia(); // 세션이 만들어졌을 때 미디어를 불러옵니다.
+          })
+          .catch((error) => {
+            alert("세션에 연결하는 중 오류가 발생했습니다");
+            throw error;
+          });
+
+        window.addEventListener("beforeunload", this.leaveSession);
+      } catch {
+        window.location.href = "/#/karaoke/";
+      }
     },
 
     async leaveSession() {
-      this.kicked = false;
+      try {
+        this.kicked = false;
 
-      // 방장이면 세션 닫기
-      if (this.isModerator) {
-        await axios.post(
-          this.APPLICATION_SERVER_URL + "/karaoke/sessions/closeSession",
-          {
-            sessionName: this.sessionName,
-            token: this.token,
-          },
-          {
-            headers: {
-              Authorization: getCookie("Authorization"),
-              refreshToken: getCookie("refreshToken"),
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      } else {
-        await axios.post(
-          this.APPLICATION_SERVER_URL + "/karaoke/sessions/removeToken",
-          {
-            sessionName: this.sessionName,
-            token: this.token,
-          },
-          {
-            headers: {
-              Authorization: getCookie("Authorization"),
-              refreshToken: getCookie("refreshToken"),
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        // 방장이면 세션 닫기
+        if (this.isModerator) {
+          await axios
+            .post(
+              this.APPLICATION_SERVER_URL + "/karaoke/sessions/closeSession",
+              {
+                sessionName: this.sessionName,
+                token: this.token,
+              },
+              {
+                headers: {
+                  Authorization: getCookie("Authorization"),
+                  refreshToken: getCookie("refreshToken"),
+                  "Content-Type": "application/json",
+                },
+              }
+            )
+            .catch((error) => {
+              alert(error.response.data);
+              throw error;
+            });
+        } else {
+          await axios
+            .post(
+              this.APPLICATION_SERVER_URL + "/karaoke/sessions/removeToken",
+              {
+                sessionName: this.sessionName,
+                token: this.token,
+              },
+              {
+                headers: {
+                  Authorization: getCookie("Authorization"),
+                  refreshToken: getCookie("refreshToken"),
+                  "Content-Type": "application/json",
+                },
+              }
+            )
+            .catch((error) => {
+              alert(error.response.data);
+              throw error;
+            });
+        }
+
+        // 모든 속성 비우기...
+        this.session = undefined;
+        this.mainStreamManager = undefined;
+        this.publisher = undefined;
+        this.subscribers = [];
+        this.OV = undefined;
+        this.token = undefined;
+        this.sessionName = undefined;
+
+        // beforeunload 리스너 제거
+        window.removeEventListener("beforeunload", this.leaveSession);
+      } catch {
+        window.location.href = "/#/karaoke/";
       }
-
-      // 모든 속성 비우기...
-      this.session = undefined;
-      this.mainStreamManager = undefined;
-      this.publisher = undefined;
-      this.subscribers = [];
-      this.OV = undefined;
-      this.token = undefined;
-      this.sessionName = undefined;
-
-      // beforeunload 리스너 제거
-      window.removeEventListener("beforeunload", this.leaveSession);
     },
 
     // 사용자에게 입력을 받는 모달을 띄우는 함수
@@ -367,9 +395,7 @@ export const useKaraokeStore = defineStore("karaoke", {
         // 첫번째 카메라와 오디오를 선택
         this.selectedCamera = this.cameras[0];
         this.selectedAudio = this.audios[0];
-      } catch (error) {
-        console.error("Error getting media devices:", error);
-      }
+      } catch (error) {}
     },
   },
 });

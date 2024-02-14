@@ -232,22 +232,23 @@ public class SessionController {
     }
 
     @RequestMapping(value = "/checkRecording", method = RequestMethod.POST)
-    public ResponseEntity<Boolean> checkRecording(@RequestBody Map<String, Object> params) {
+    public ResponseEntity<String> checkRecording(@RequestBody Map<String, Object> params) {
         String sessionName = (String) params.get("sessionName");
 
         if (openViduModel.getMapSessions().containsKey(sessionName)) {
             Session session = openViduModel.getMapSessions().get(sessionName);
 
             if (session.isBeingRecorded()) {
-                return ResponseEntity.ok(false);
+                return ResponseEntity.status(500).body("녹화 중에 입장이 불가능합니다.");
             }
-            return ResponseEntity.ok(true);
+            return ResponseEntity.ok(sessionName);
         }
-        return ResponseEntity.ok(false);
+        return ResponseEntity.status(500).body("존재하지 않는 세션입니다.");
+
     }
 
     @RequestMapping(value = "/checkNumber", method = RequestMethod.POST)
-    public ResponseEntity<Boolean> checkNumber(@RequestBody Map<String, Object> params) {
+    public ResponseEntity<String> checkNumber(@RequestBody Map<String, Object> params) {
         String sessionName = (String) params.get("sessionName");
 
         if (openViduModel.getMapSessionSettings().containsKey(sessionName)) {
@@ -256,11 +257,12 @@ public class SessionController {
 
             // 현재 인원이 전체 인원 이상이면 접속 불가능
             if (numberOfElements >= numberOfParticipants) {
-                return ResponseEntity.ok(false);
+                return ResponseEntity.status(500).body("인원이 초과했습니다.");
             }
-            return ResponseEntity.ok(true);
+            return ResponseEntity.ok(sessionName);
         }
-        return ResponseEntity.ok(false);
+        return ResponseEntity.status(500).body("존재하지 않는 세션입니다.");
+
     }
 
     @RequestMapping(value = "/checkPrivate", method = RequestMethod.POST)
@@ -277,17 +279,18 @@ public class SessionController {
     }
 
     @RequestMapping(value = "/checkPassword", method = RequestMethod.POST)
-    public ResponseEntity<Boolean> checkPassword(@RequestBody Map<String, Object> params) {
+    public ResponseEntity<String> checkPassword(@RequestBody Map<String, Object> params) {
         String sessionName = (String) params.get("sessionName");
         String password = (String) params.get("password");
 
         if (openViduModel.getMapSessionSettings().containsKey(sessionName)) {
             String answer = openViduModel.getMapSessionSettings().get(sessionName).getPassword();
             if (Objects.equals(answer, password)) {
-                return ResponseEntity.ok(true);
+                return ResponseEntity.ok(sessionName);
             }
+            return ResponseEntity.status(500).body("비밀번호가 틀렸습니다.");
         }
-        return ResponseEntity.ok(false);
+        return ResponseEntity.status(500).body("존재하지 않는 세션입니다.");
     }
 
     // 오픈비두 서버에서 모든 세션 정보를 가져오는 메소드
