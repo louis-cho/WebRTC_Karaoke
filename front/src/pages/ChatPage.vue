@@ -18,6 +18,7 @@
                 <div class="participants">
                   <div v-for="(user, index) in chatroomUsers" :key="index" class="participant">
                     {{ user.nickname }}
+                    <span v-if="user.userPk === userPk">(나)</span>
                   </div>
                 </div>
               </div>
@@ -94,7 +95,10 @@
                   <q-item-label>{{ user.nickname }}</q-item-label>
                   <q-item-label caption>{{ user.introduction }}</q-item-label>
                   <!-- 친구 아니라면 -->
-                  <div v-if="checkInvited(user.userPk)">
+                  <div v-if="user.userPk === userPk">
+                    <q-btn color="black" label="본인" :disable="true"></q-btn>
+                  </div>
+                  <div v-else-if="checkInvited(user.userPk)">
                     <q-btn color="primary" label="참가중" :disable="true"></q-btn>
                   </div>
                   <div v-else>
@@ -153,6 +157,7 @@ const searchNickname = async function () {
   try {
     // 백엔드 서버에서 유저 검색 결과 가져오기
     const response = await searchUser(search.value);
+    console.log(response)
     searchUsers.value = response; // 서버 응답에 따라 데이터를 업데이트
 
     for (let idx in searchUsers.value) {
@@ -187,7 +192,6 @@ async function fetchUserPk() {
   try {
     const response = await fetch(`https://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${userUUID}`);
     const data = await response.json();
-    console.log(data)
     return data;
   } catch (error) {
     console.error("Failed to fetch userPk:", error);
@@ -541,10 +545,8 @@ const fetchData = async () => {
     chatroomUsers.value = [];
     // chatRoomUsers 배열에 각 사용자의 정보 추가
     for (const user of users) {
-      console.log(user)
-      const a = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/getPk?uuid=${user.userPk}`);
-      console.log(a)
-      const userInfo = await axios.post(`https://i10a705.p.ssafy.io/api/v1/user/getPk/${user.userPk}`,{
+      const pkInfo = await axios.get(`https://i10a705.p.ssafy.io/api/v1/user/getUUID?pk=${user.userPk}`);
+      const userInfo = await axios.post(`https://i10a705.p.ssafy.io/api/v1/user/get/${pkInfo.data}`,{
         headers: {
       Authorization: getCookie("Authorization"),
       refreshToken: getCookie("refreshToken"),
@@ -553,7 +555,6 @@ const fetchData = async () => {
       });
       chatroomUsers.value.push(userInfo.data);
     }
-    console.log(chatroomUsers)
   } catch (error) {
     console.error("Failed to fetch chat rooms:", error);
   }

@@ -1,6 +1,12 @@
 <template>
-  <div>
-    <canvas ref="canvas" width="270" height="180"></canvas>
+  <div class="canvas-container">
+    <!-- 배경 이미지를 표시할 div 요소 -->
+    <div class="background-container">
+      <!-- 배경 이미지 -->
+      <img src="@/assets/img/normalmodebackground.jpg" class="background-image" alt="Background Image">
+      <!-- 캔버스 요소 -->
+      <canvas ref="canvas" width="1000" height="200"></canvas>
+    </div>
   </div>
 </template>
 
@@ -14,12 +20,13 @@ import {
 
 const props = defineProps({
   songData: Object,
+  hasNextSong: Boolean,
 });
 
 const audio = ref(null);
 const song = ref(null)
-const hasNextLyrics = ref(false)
 
+const hasNextLyrics = ref(false)
 const canvas = ref(null);
 const bundles = ref([]);
 const lyrics = ref([]);
@@ -31,18 +38,20 @@ const lyricFlag = ref(true)    // true면 위에거 업데이트, false면 아�
 const bundleIndex = ref(0)
 const lyricBundleIndex = ref(0)
 const lyricIndex = ref(0)
-const lyricPosX = 45;  // 가사 렌더링 시작 위치 x좌표, css에 따라 수정
+const lyricPosX = 250;  // 가사 렌더링 시작 위치 x좌표, css에 따라 수정
+const lyricPosXLower = 450; // 아랫 가사 렌더링 시작 위치 x좌표
 const lyricPosY = 70;  // 가사 렌더링 시작 위치 y좌표, css에 따라 수정
-const lyricInterval = 50; // 가사 윗묶음&아랫묶음 y좌표 간격
+const lyricInterval = 70; // 가사 윗묶음&아랫묶음 y좌표 간격
 const moveX = ref(0);       // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
-const fontSize = "24px ";
-const fontInterval = 24;    // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
-const fontStyle = "Arial";
+const fontSize = "36px ";
+const countDownSize = "38px ";
+const fontInterval = 34.8;    // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
+const fontStyle = "YCloverBold";
 const fontColor = "black"
 const filledFont = ref(""); // 부르고 있는 가사
 const extraFont = ref("");  // 같은 lyricBundle 내에서 부르고 있는 가사 외 나머지 가사
 const fontFillColor = "orange";
-const blankSize = 6.7 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 6.7
+const blankSize = 10.9 // 띄어쓰기 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 6.7
 const blanckCount = ref(0);
 const countDown = ref("");
 
@@ -52,7 +61,27 @@ const choose = () => {
   audio.value = new Audio(song.value.url); // mp3 url 연결
 };
 
+const initDrawer = () => {
+  hasNextLyrics.value = false;
+  lyricUpper.value = "";
+  lyricLower.value = "";
+  filledFont.value = "";
+  extraFont.value = "";
+  bundleIndex.value = 0
+  lyricBundleIndex.value = 0
+  lyricIndex.value = 0
+  startTimeRef.value = 0
+  lyricUpper.value = ""
+  lyricLower.value = ""
+  bundleFlag.value = true
+  lyricFlag.value = true
+  moveX.value = 0
+  const ctx = canvas.value.getContext('2d');
+  ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);
+}
+
 const play = () => {
+  initDrawer();
   hasNextLyrics.value = true;
   lyrics.value = parseLyric(parseScore(song.value.score));
   bundles.value = parseBundle(lyrics.value);
@@ -67,18 +96,12 @@ const play = () => {
 };
 
 const stop = () => {
-  lyricUpper.value = "";
-  lyricLower.value = "";
-  filledFont.value = "";
-  extraFont.value = "";
-  hasNextLyrics.value = false;
+  initDrawer();
+
   if(audio.value != null) {
     audio.value.currentTime = 0;
     audio.value.pause();
   }
-
-  const ctx = canvas.value.getContext('2d');
-  ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);
 }
 /*
 fontSize = 24pt면, 32~36px정도
@@ -107,7 +130,7 @@ const drawLyrics = () => {
       }
       if(countDown.value != "") {
         ctx.fillStyle = fontColor;
-        ctx.font = fontSize + fontStyle;
+        ctx.font = countDownSize + fontStyle;
         ctx.fillText(countDown.value, lyricPosX-30, lyricPosY-40);
       }
 
@@ -166,16 +189,17 @@ const drawLyrics = () => {
 
     // 렌더링
     ctx.font = fontSize + fontStyle;
-    if((bundleIndex.value == bundles.value.length) && (Date.now() - startTimeRef.value) >= (bundles.value[bundles.value.length-1].start + song.value.prelude)) {  // 노래 마지막 부분
+    if((bundleIndex.value == bundles.value.length) && (Date.now() - startTimeRef.value) >= (bundles.value[bundles.value.length-1].start + song.value.prelude)) {
+      // 노래 마지막 마디
       if(bundleFlag.value) {  // lyricLower가 마지막 마디인 경우
         ctx.fillStyle = fontFillColor;
         ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
-        ctx.fillText(filledFont.value, lyricPosX, lyricPosY + lyricInterval);
+        ctx.fillText(filledFont.value, lyricPosXLower, lyricPosY + lyricInterval);
         ctx.fillStyle = fontColor;
-        ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY + lyricInterval);
+        ctx.fillText(extraFont.value, (lyricPosXLower + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY + lyricInterval);
       } else {  // lyricUpper가 마지막 마디인 경우
         ctx.fillStyle = fontFillColor;
-        ctx.fillText(lyricLower.value, lyricPosX, lyricPosY + lyricInterval);
+        ctx.fillText(lyricLower.value, lyricPosXLower, lyricPosY + lyricInterval);
         ctx.fillText(filledFont.value, lyricPosX, lyricPosY);
         ctx.fillStyle = fontColor;
         ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY);
@@ -185,19 +209,19 @@ const drawLyrics = () => {
         if(filledFont.value == "" && extraFont.value == "") { // 간주 중 . . .
           ctx.fillStyle = fontColor;
           ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
-          ctx.fillText(lyricLower.value, lyricPosX, lyricPosY + lyricInterval);
+          ctx.fillText(lyricLower.value, lyricPosXLower, lyricPosY + lyricInterval);
         } else {  // 윗 가사 부르는 중
           ctx.fillStyle = fontFillColor;
           ctx.fillText(filledFont.value, lyricPosX, lyricPosY);
           ctx.fillStyle = fontColor;
           ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY);
-          ctx.fillText(lyricLower.value, lyricPosX, lyricPosY + lyricInterval);
+          ctx.fillText(lyricLower.value, lyricPosXLower, lyricPosY + lyricInterval);
         }
       } else {  // 아랫 가사 부르는 중
         ctx.fillStyle = fontFillColor;
-        ctx.fillText(filledFont.value, lyricPosX, lyricPosY + lyricInterval);
+        ctx.fillText(filledFont.value, lyricPosXLower, lyricPosY + lyricInterval);
         ctx.fillStyle = fontColor;
-        ctx.fillText(extraFont.value, (lyricPosX + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY + lyricInterval);
+        ctx.fillText(extraFont.value, (lyricPosXLower + (fontInterval * (filledFont.value.length - blanckCount.value)) + (blanckCount.value * blankSize)), lyricPosY + lyricInterval);
         ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);
       }
     }
@@ -226,7 +250,24 @@ defineExpose({
 </script>
 
 <style scoped>
+.canvas-container {
+  position: relative;
+  width: 1000px; /* 배경 이미지와 같은 너비 지정 */
+  height: 350px; /* 배경 이미지와 같은 높이 지정 */
+}
+
+.background-container {
+  position: relative;
+}
+
+.background-image {
+  width: 100%; /* 배경 이미지를 부모 요소에 맞게 확장 */
+  height: auto; /* 이미지 비율 유지 */
+}
+
 canvas {
-  width: 100%;
+  position: absolute; /* 절대 위치 설정 */
+  top: 150px; /* 배경 이미지와 캔버스의 상단 여백 설정 (배경 이미지의 높이 - 캔버스의 높이) / 2 */
+  left: 0;
 }
 </style>
