@@ -38,8 +38,6 @@ public class RecordingController {
         // RecordingProperties 객체를 빌드하여 녹화 설정을 생성함
         RecordingProperties properties = new RecordingProperties.Builder().outputMode(outputMode).hasAudio(hasAudio).hasVideo(hasVideo).build();
 
-        System.out.println("Starting recording for session " + sessionName + " with properties {outputMode=" + outputMode + ", hasAudio=" + hasAudio + ", hasVideo=" + hasVideo + "}");
-
         try {
             // OpenVidu 서버에서 녹화 시작
             Recording recording = openViduModel.getOpenvidu().startRecording(sessionName, properties);
@@ -55,8 +53,6 @@ public class RecordingController {
     public ResponseEntity<?> stopRecording(@RequestBody Map<String, Object> params) {
         String recordingId = (String) params.get("recordingId");
 
-        System.out.println("Stoping recording | {recordingId}=" + recordingId);
-
         try {
             // OpenVidu 서버에서 녹화 중지
             Recording recording = openViduModel.getOpenvidu().stopRecording(recordingId);
@@ -71,8 +67,6 @@ public class RecordingController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public ResponseEntity<?> deleteRecording(@RequestBody Map<String, Object> params) {
         String recordingId = (String) params.get("recordingId");
-
-        System.out.println("Deleting recording | {recordingId}=" + recordingId);
 
         try {
             // OpenVidu 서버에서 녹화 삭제

@@ -13,11 +13,7 @@
       :label="pref.app.kor.karaoke.session.stop"
     />
     <q-btn @click="finishSong()" color="primary" label="종료" />
-    <q-btn
-      @click="store.songMode = !store.songMode"
-      color="primary"
-      label="모드 바꾸기"
-    />
+    <q-btn @click="changeSongMode()" color="primary" label="모드 바꾸기" />
   </div>
 
   <div>
@@ -263,27 +259,35 @@ function uploadRecording() {
     });
 }
 
+function changeSongMode() {
+  store.session.signal({
+    data: JSON.stringify({
+      songMode: !store.songMode,
+    }),
+    type: "songMode",
+  });
+}
+
 function singing() {
   store.session.signal({
     data: JSON.stringify({
       singUser: singUser.value,
       singing: !store.singing,
-      songMode: store.songMode,
-    }), // 메시지 데이터를 문자열로 변환해서 전송
-    type: "sing", // 신호 타입을 'chat'으로 설정
+    }),
+    type: "sing",
   });
 }
 
 watch(
   () => store.songMode,
-  (newSongMode, oldSongMode) => {
+  (newSongMode) => {
     console.log("SongMode이 변경됨:", newSongMode);
   }
 );
 
 watch(
   () => store.singing,
-  (newSinging, oldSinging) => {
+  (newSinging) => {
     console.log("Singing이 변경됨:", newSinging);
 
     if (newSinging) {

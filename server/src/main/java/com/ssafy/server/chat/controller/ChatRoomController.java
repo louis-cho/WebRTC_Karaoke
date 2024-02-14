@@ -35,7 +35,7 @@ public class ChatRoomController {
 
     // 채팅방 생성
     @PostMapping("/create")
-    public ChatRoom createRoom(@RequestParam String name, @RequestParam long host, @RequestParam List<Long> guests) {
+    public ChatRoom createRoom(@RequestParam String name, @RequestParam long host, @RequestParam List<String> guests) {
         return chatRoomService.createChatRoom(name, host, guests);
     }
 
@@ -47,7 +47,7 @@ public class ChatRoomController {
 
     //유저 초대
     @PostMapping("/invite/{roomId}")
-    public void inviteUser(@PathVariable long roomId, @RequestParam List<Long> guests){
+    public void inviteUser(@PathVariable long roomId, @RequestParam List<String> guests){
         chatRoomService.inviteUser(guests, roomId);
     }
 

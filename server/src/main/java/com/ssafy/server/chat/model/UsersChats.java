@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -19,6 +20,7 @@ public class UsersChats {
     private long roomPk;
     private char status; // 1 : enter 0 : exit
     private String time;
+    private UUID userUuid;
     public UsersChats() {}
     public UsersChats(long up, long rp, String time){
         this.userPk = up;

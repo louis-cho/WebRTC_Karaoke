@@ -57,13 +57,17 @@
 
 <script setup>
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import axios from "axios";
 import useCookie from "@/js/cookie.js";
 const { setCookie, getCookie, removeCookie } = useCookie();
 const store = useKaraokeStore();
 
 const lists = ref([]);
+
+onMounted(() => {
+  fetchReserveList();
+});
 
 watch(
   () => store.newReserve,
@@ -107,7 +111,7 @@ function fetchReserveList() {
       console.log(response.data);
     })
     .catch((error) => {
-      console.error("Error fetching songs:", error);
+      alert(error.response.data);
     });
 }
 
@@ -131,7 +135,7 @@ function cancelReserve(hashString) {
       store.session.signal({ type: "reserve" });
     })
     .catch((error) => {
-      console.error("Error fetching songs:", error);
+      alert(error.response.data);
     });
 }
 
