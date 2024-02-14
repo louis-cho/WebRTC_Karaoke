@@ -76,7 +76,7 @@ export async function fetchFriendCount(userId,pageNo,sizeNo) {
   })
     .then((response) => response.json())
     .then((result) => {
-      // console.log('친구카운트',result.totalElements)
+      console.log('친구카운트',result.totalElements)
       return result.totalElements;
     })
     .catch((error) => {
