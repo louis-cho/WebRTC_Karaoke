@@ -28,6 +28,8 @@ import {
   parseBundle,
   parseScore,
 } from "@/js/karaoke/karaokeParser.js";
+import { useKaraokeStore } from "@/stores/karaokeStore.js";
+const store = useKaraokeStore();
 
 const props = defineProps({
   songData: Object,
@@ -36,8 +38,20 @@ const props = defineProps({
 const audio = ref(null);
 const song = ref(null)
 
+watch(
+  () => store.reservedSongsLength,
+  () => {
+    console.log(store.reservedSongs[0].title)
+    if(store.reservedSongs.length == 0) {
+      announceString.value = "노래를 예약해주세요."
+    } else {
+      announceString.value = store.reservedSongs[0].title;
+    }
+
+  }
+);
+
 const announceString = ref("노래를 예약해주세요.")
-const hasReservedSong = ref(false)
 const showSongInfo = ref(false);
 
 const hasNextLyrics = ref(false)
@@ -110,7 +124,6 @@ const play = () => {
         resolve();
       }, showSongInfoTime);
     }).then(() => {
-      console.log("checkPoint1")
       initDrawer();
       hasNextLyrics.value = true;
       lyrics.value = parseLyric(parseScore(song.value.score));
@@ -146,6 +159,12 @@ const stop = () => {
     audio.value.currentTime = 0;
     audio.value.pause();
   }
+
+  if(store.reservedSongs.length == 0) {
+    announceString.value = "노래를 예약해주세요."
+  } else {
+    announceString.value = store.reservedSongs[0].title;
+  }
 }
 /*
 fontSize = 24pt면, 32~36px정도
@@ -153,15 +172,11 @@ fillText(text, x, y)는 xy 좌표 기준으로 1사분면에 렌더링
 fillRect(x, y, width, height)는 xy좌표 기준 4사분면에 렌더링
 */
 const drawLyrics = () => {
-  console.log("checkPoint2")
   const renderFrame = (timestamp) => {
-    console.log("checkPoint3")
-    console.log(lyricUpper.value)
     const ctx = canvas.value.getContext("2d");
     ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);   // 초기화
 
     if(hasNextLyrics.value) { // 렌더링할 가사가 있으면,
-      console.log("checkPoint4")
       // 카운트다운
       const beforeStart = (bundles.value[0].start + song.value.prelude) - (Date.now() - startTimeRef.value);
       if(beforeStart <= 3000 && beforeStart > 2000) {
@@ -180,14 +195,10 @@ const drawLyrics = () => {
       }
 
       if(bundleIndex.value == 0 && (Math.abs((Date.now() - startTimeRef.value) >= (bundles.value[1].start + song.value.prelude)))) {
-        console.log("checkPoint5")
         // 전주 ~ 첫 마디를 벗어나면
         bundleIndex.value = 2;
       }
-      console.log(Date.now())
-      console.log(startTimeRef.value);
       if((Date.now() - startTimeRef.value) < bundles.value[1].start + song.value.prelude) {  // 첫 마디 다 부르기 전까지
-        console.log("checkPoint6")
         lyricUpper.value = bundles.value[bundleIndex.value].lyric;
         lyricLower.value = bundles.value[bundleIndex.value+1].lyric;
       } else if((Date.now() - startTimeRef.value) >= (bundles.value[bundleIndex.value-1].start + song.value.prelude)) {
@@ -254,7 +265,6 @@ const drawLyrics = () => {
       }
     } else {  // 처음 ~ 마지막 부분 전
       if(bundleFlag.value) {
-        console.log("checkPoint7")
         if(filledFont.value == "" && extraFont.value == "") { // 간주 중 . . .
           ctx.fillStyle = fontColor;
           ctx.fillText(lyricUpper.value, lyricPosX, lyricPosY);

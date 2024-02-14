@@ -196,16 +196,19 @@
         <q-card-section class="display-flex-row">
           <div class="video-container">
             <!-- 영상 가져오기 -->
-            <video controls width="100%" height="100%" v-if="videoUrl">
+            <video controls width="100%" ref="videoPlayer">
+              <source :src="feed.videoUrl" type="video/mp4" />
+            </video>
+            <!-- <video controls width="100%" height="100%" v-if="videoUrl">
               <source :src="videoUrl" type="video/mp4">
             </video>
-            <div v-else>No video available</div>
+            <div v-else>No video available</div> -->
           </div>
 
           <div class="display-flex-column">
             <div>
-              <!-- <input class="caption-input" type="text" placeholder="문구 입력..."> -->
-              <textarea class="caption-input" placeholder="문구 입력..." v-model="newContent"></textarea>
+              <input class="caption-input" type="text" placeholder="문구 입력..." v-model="newContent">
+              <!-- <textarea class="caption-input" placeholder="문구 입력..." v-model="newContent"></textarea> -->
             </div>
             <div>
               <!-- 공개범위 토글 -->
@@ -604,7 +607,7 @@ const closeModal = () => {
 
 /* ------------------------------ */
 .modal-card {
-  max-width: 400px;
+  max-width: 800px;
   margin: 20px;
 }
 
@@ -634,19 +637,33 @@ const closeModal = () => {
 }
 
 .video-container {
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  width: 60%;
+  /* border: 1px solid #ddd; */
+  /* border-radius: 8px; */
   overflow: hidden;
   margin-bottom: 0px;
 }
 
 .caption-input {
+  box-sizing: content-box;
   width: 100%;
   padding: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   border: 1px solid #ddd;
   border-radius: 8px;
+  resize: vertical; /* 세로로 길게 조절 가능하도록 함 */
+  min-height: 184px; /* Set the minimum height to 179.4px */
 }
+
+/* .caption-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 0px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 80px;
+} */
 
 .privacy-dropdown {
   padding-left: 0;
@@ -664,14 +681,12 @@ const closeModal = () => {
 }
 
 
-.caption-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 0px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  resize: vertical; /* 세로로 길게 조절 가능하도록 함 */
-  min-height: 80px; /* 최소 높이 설정 */
-}
+
+
+
+
+
+
+
 
 </style>

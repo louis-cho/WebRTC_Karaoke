@@ -35,6 +35,9 @@ import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 
+/**
+ * 랭킹 서비스 구현 클래스
+ */
 @Service
 public class RankServiceImpl implements RankService {
 
@@ -43,6 +46,9 @@ public class RankServiceImpl implements RankService {
     @Getter
     private List<FeedStatsDocument> top100Ranking = new ArrayList<>();
 
+    /**
+     * 기존의 동기화 데이터를 필터링하기 위한 변수
+     */
     private String lastTime = null;
 
     @Autowired
@@ -51,15 +57,16 @@ public class RankServiceImpl implements RankService {
         this.elasticsearchRestTemplate = elasticsearchRestTemplate;
     }
 
-    @Scheduled(cron = "0 */15 * * * *") // 15분마다 실행
+    /**
+     * 스케줄링을 통해 아직 동기화되지 않은 데이터를 가져와 랭킹 계산에 반영한다.
+     */
+    @Scheduled(cron = "0 */15 * * * *") 
     public void calculateRank() {
-        String likesIndexName = "likes"; // like 인덱스
-        String hitIndexName = "hits"; // hit 인덱스
+        String likesIndexName = "likes"; 
+        String hitIndexName = "hits"; 
 
-        // likes 데이터 가져오기
         List<SearchHit> likesData = fetchDataFromElasticsearch(likesIndexName);
 
-        // hit 데이터 가져오기
         List<SearchHit> hitsData = fetchDataFromElasticsearch(hitIndexName);
 
         // 각 게시글 아이디 별로 점수 계산
@@ -69,6 +76,9 @@ public class RankServiceImpl implements RankService {
         updateTop100Ranking();
     }
 
+    /**
+     * elastic search 내의 상위 100개 랭킹 데이터를 갱신한다.
+     */
     private void updateTop100Ranking() {
         // Sort feed_stats based on scores and select top 100
         try {
@@ -84,6 +94,11 @@ public class RankServiceImpl implements RankService {
         }
     }
 
+    /**
+     * elastic search 데이터 내의 최신 데이터를 가져온다.
+     * @param index elastic search index
+     * @return 검색 결과
+     */
     private List<SearchHit> fetchDataFromElasticsearch(String index) {
         List<SearchHit> searchData = new ArrayList<>();
 
@@ -126,7 +141,11 @@ public class RankServiceImpl implements RankService {
     }
 
 
-
+    /**
+     * fetch한 데이터를 바탕으로 점수를 갱신한다.
+     * @param likesData 좋아요 데이터
+     * @param hitsData 조회수 데이터
+     */
     private void calculateScores(List<SearchHit> likesData, List<SearchHit> hitsData) {
         // 각 게시글 아이디 별로 점수 계산 로직
         // 이 부분은 실제 프로젝트의 비즈니스 로직에 맞게 수정해야 합니다.
@@ -196,6 +215,11 @@ public class RankServiceImpl implements RankService {
 
     }
 
+    /**
+     * 피드 아이디 별로 생성된 좋아요, 조회수 그룹을 바탕으로 피드 통계를 업데이트한다.
+     * @param likesByFeedId 피드 별 좋아요 정보
+     * @param hitsByFeedId 피드 별 조회수 정보
+     */
     private void updateFeedStats(Map<Integer, List<LikesDocument>> likesByFeedId, Map<Integer, List<HitDocument>> hitsByFeedId) {
         Set<Integer> uniqueFeedIds = new HashSet<>();
         uniqueFeedIds.addAll(likesByFeedId.keySet());
@@ -228,6 +252,10 @@ public class RankServiceImpl implements RankService {
         updateFeedStatsInElasticsearch(feedStatsList);
     }
 
+    /**
+     * elasticsearch 내 피드 통계를 업데이트한다.
+     * @param feedStatsList 업데이트에 적용할 피드 통계 리스트
+     */
     private void updateFeedStatsInElasticsearch(List<FeedStatsDocument> feedStatsList) {
         for (FeedStatsDocument newFeedStats : feedStatsList) {
             int feedId = newFeedStats.getFeedId();
@@ -251,6 +279,10 @@ public class RankServiceImpl implements RankService {
         }
     }
 
+    /**
+     * 새로운 피드 통계를 저장 혹은 업데이트한다.
+     * @param feedStatsDocument
+     */
     private void saveFeedStatsToElasticsearch(FeedStatsDocument feedStatsDocument) {
         IndexQuery indexQuery = new IndexQueryBuilder()
                 .withId(String.valueOf(feedStatsDocument.getFeedId()))
@@ -260,6 +292,11 @@ public class RankServiceImpl implements RankService {
         elasticsearchRestTemplate.index(indexQuery, IndexCoordinates.of("feed_stats"));
     }
 
+    /**
+     * 피드 아이디에 해당하는 피드 통계를 반환한다.
+     * @param feedId 피드 아이디
+     * @return 피드 통계
+     */
     private Optional<FeedStatsDocument> fetchFeedStatsByIdFromElasticsearch(int feedId) {
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(QueryBuilders.termQuery("feedId", feedId))
@@ -278,9 +315,13 @@ public class RankServiceImpl implements RankService {
         }
     }
 
+    /**
+     * 피드의 좋아요, 조회수 갯수에 따라 랭킹 점수를 계산한다.
+     * @param likesCount 추가된 좋아요 갯수
+     * @param hitsCount 추가된 조회수 갯수
+     * @return 추가될 점수
+     */
     private double calculateScore(int likesCount, int hitsCount) {
-        // 실제 프로젝트의 비즈니스 로직에 따라 점수 계산 방식을 수정해주세요.
-        // 예시로 likesCount와 hitsCount를 가중치를 곱하여 합산하는 방식을 사용하였습니다.
         return likesCount * 5 + hitsCount * 3.0;
     }
 

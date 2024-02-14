@@ -120,7 +120,6 @@ import ReserveModal from "@/components/karaoke/song/ReserveModal.vue";
 import ReserveList from "@/components/karaoke/song/ReserveList.vue";
 import SongController from "@/components/karaoke/song/SongController.vue";
 
-// store 사용
 const store = useKaraokeStore();
 const router = useRouter();
 
