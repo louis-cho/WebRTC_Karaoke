@@ -30,7 +30,7 @@
 
       <!-- 두번째 div -->
 
-      <div v-for="feed in feeds" :key="feed.feedId">
+      <div v-for="feed in filteredFeeds" :key="feed.feedId">
         <div class="profile">
           <div
             class="profile-img-container"
@@ -52,7 +52,7 @@
               <div v-if="feed && feed.song">
                 <span>
                   {{
-                    feed.song.title ? feed.song.txtle + "-" : "Default Title-"
+                    feed.song.title ? feed.song.title + "-" : "Default Title-"
                   }}
                 </span>
                 <span>
@@ -98,14 +98,14 @@
             />
             <span v-if="feed">{{ feed.viewCount }}</span>
           </div>
-          <div class="margin-right-20">
+          <!-- <div class="margin-right-20">
             <img
               class="margin-right-10"
               src="@/assets/icon/dollar.png"
               alt="후원"
             />
             <span v-if="feed">{{ feed.TOTAL_POINT }}</span>
-          </div>
+          </div> -->
           <q-btn @click="goFeedDetail(feed.feedId)">피드 디테일 페이지로</q-btn>
         </div>
         <hr />
@@ -189,6 +189,7 @@ const getUser = async (userPk) => {
   return user;
 };
 
+
 // 스크롤 이벤트 핸들러
 const handleScroll = async () => {
   const element = document.documentElement;
@@ -220,31 +221,35 @@ onUnmounted(() => {
 // 검색 기능을 위한 변수와 메소드 추가
 const searchQuery = ref("");
 
-// const filteredFeeds = computed(() => {
-//   return feeds.value.filter(feed => {
-//     const userNameLowerCase = getUserName(feed.userPk).toLowerCase();
-//     const songTitleLowerCase = getSongTitle(feed.songId).toLowerCase();
-//     return (
-//       userNameLowerCase.includes(searchQuery.value.toLowerCase()) ||
-//       songTitleLowerCase.includes(searchQuery.value.toLowerCase())
-//     )
-//   })
-// })
 
-// const search = () => {
-//   const searchQueryLowerCase = searchQuery.value.toLowerCase();
+const filteredFeeds = computed(() => {
+  return feeds.value.filter(feed => {
+    const userNameLowerCase = feed.user.nickname.toLowerCase();
+    const songTitleLowerCase = feed.song.title.toLowerCase();
 
-//   feeds.value = feeds.value.filter(feed => {
-//     const userNameLowerCase = getUserName(feed.USER_PK).toLowerCase();
-//     const songTitleLowerCase = getSongTitle(feed.songId).toLowerCase();
+    return (
+      userNameLowerCase.includes(searchQuery.value.toLowerCase()) ||
+      songTitleLowerCase.includes(searchQuery.value.toLowerCase())
+    );
+  });
+});
 
-//     // 닉네임이나 노래제목에 검색어가 포함되어 있는지 확인
-//     return (
-//       userNameLowerCase.includes(searchQueryLowerCase) ||
-//       songTitleLowerCase.includes(searchQueryLowerCase)
-//     );
-//   });
-// }
+const search = () => {
+  const searchQueryLowerCase = searchQuery.value.toLowerCase();
+
+  feeds.value = feeds.value.filter(feed => {
+    const userNameLowerCase = feed.user.nickname.toLowerCase();
+    const songTitleLowerCase = feed.song.title.toLowerCase();
+
+    return (
+      userNameLowerCase.includes(searchQueryLowerCase) ||
+      songTitleLowerCase.includes(searchQueryLowerCase)
+    );
+  });
+};
+
+
+
 
 const toggleLike = async (feedId) => {};
 </script>

@@ -118,6 +118,7 @@
             v-model="newComment"
             placeholder="댓글을 입력하세요..."
             class="comment-input"
+            @keydown.enter="registComment"
           />
           <button class="comment-button bg-blue-7" @click="registComment">
             등록
