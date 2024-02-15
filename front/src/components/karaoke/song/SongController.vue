@@ -352,11 +352,9 @@ watch(
         )
         .then((res) => {
           song.value = null;
-          if (JSON.parse(JSON.stringify(res.data)) == "") {
-            console.log("데이터 없는 노래 예약");
-          } else {
+          if (JSON.parse(JSON.stringify(res.data)) != "") {
             song.value = JSON.parse(JSON.stringify(res.data));
-          }
+          }ㄴ
         })
         .catch((error) => {
           console.error("songInfo 불러오기 실패" + error);
