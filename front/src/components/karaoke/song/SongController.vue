@@ -2,6 +2,12 @@
   <div style="display: flex; flex-direction: column">
     <q-btn
       v-if="!store.singing"
+      @click="changeSongMode()"
+      color="primary"
+      label="모드 바꾸기"
+    />
+    <q-btn
+      v-if="!store.singing && store.reservedSongsLength"
       @click="startSong()"
       color="positive"
       :label="pref.app.kor.karaoke.session.start"
@@ -12,8 +18,12 @@
       color="negative"
       :label="pref.app.kor.karaoke.session.stop"
     />
-    <q-btn @click="finishSong()" color="primary" label="종료" />
-    <q-btn @click="changeSongMode()" color="primary" label="모드 바꾸기" />
+    <q-btn
+      v-if="store.singing"
+      @click="finishSong()"
+      color="primary"
+      label="종료"
+    />
   </div>
 
   <div>
@@ -344,7 +354,7 @@ const closeModal = () => {
 watch(
   () => store.reservedSongsLength,
   () => {
-    if(store.reservedSongs.length == 0) {
+    if (store.reservedSongs.length == 0) {
     } else {
       axios
         .get(
@@ -368,12 +378,10 @@ watch(
         console.error("songInfo 불러오기 실패"+error);
       });
     }
-
   }
 );
 
 const song = ref({});
-
 </script>
 
 <style scoped>

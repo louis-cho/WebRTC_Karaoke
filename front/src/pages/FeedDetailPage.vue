@@ -230,7 +230,6 @@ import {
   addComment,
 } from "@/js/comment/comment.js";
 import CommentItem from "@/components/CommentItem.vue";
-
 import { fetchHitCount, createHit } from "@/js/hit/hit.js";
 import { fetchLikeCount, createLike, deleteLike, fetchLike } from "@/js/like/like.js";
 import { fetchFeedList, fetchFeed, fetchFeedDelete, fetchFeedUpdate} from "@/js/feed/feed.js";
