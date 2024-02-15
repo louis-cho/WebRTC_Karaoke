@@ -4,7 +4,6 @@ app.api = {};
 
 app.api.prefix = "/api/v1";
 
-<<<<<<< HEAD
 app.api.socket = "wss:"; //ec2
 app.api.protocol = "https:";
 app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
@@ -12,17 +11,7 @@ app.api.websocket = app.api.socket + "//i10a705.p.ssafy.io";
 // app.api.socket = "ws:";
 // app.api.protocol = "http:";
 // app.api.host = "//localhost:8081" + app.api.prefix;
-// app.api.websocket = app.api.socket + "//localhost:8081"
-=======
-// app.api.socket = "wss:"; //ec2
-// app.api.protocol = "https:";
-// app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
-// app.api.websocket = app.api.socket + "//i10a705.p.ssafy.io";
-app.api.socket = "ws:";
-app.api.protocol = "http:";
-app.api.host = "//localhost:8081" + app.api.prefix;
-app.api.websocket = app.api.socket + "//localhost:8081";
->>>>>>> origin/develop
+// app.api.websocket = app.api.socket + "//localhost:8081";
 
 app.api.user = {};
 app.api.user.login = "/user/login";

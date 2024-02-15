@@ -1,7 +1,7 @@
 <template>
-    <nav-bar />
   <div @scroll="handleScroll">
     <!-- <TabItem/> -->
+    <NavBar />
     <!-- <h3>전체 피드 페이지</h3> -->
     <div class="my-feed">
       <!-- 첫번째 div -->
@@ -205,24 +205,19 @@ onBeforeMount(async () => {
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false);
 
-const gotoUserFeed = (userKey) => {
-  router.push({ name: "feed", params: { userUUID: userKey } });
-};
+const gotoUserFeed  = (userKey) => {
+  router.push({ name: "feed", params: { userUUID:  userKey }});
+}
 
 //가상 피드 데이터
 const fetchFeedData = async (select) => {
   const newFeeds = await fetchFeedList(page++, amount, select);
 
-<<<<<<< HEAD
   if(newFeeds == null) {
-=======
-  if (newFeeds == null) {
-    console.log("Gdgd");
->>>>>>> origin/develop
     return;
   }
 
-  console.log(newFeeds);
+  console.log(newFeeds)
   for (let elem of newFeeds) {
     elem.song = await fetchSong(elem.songId);
     elem.user = await fetchUser(elem.userUUID);
@@ -250,6 +245,7 @@ const getUser = async (userPk) => {
   let user = await fetchUser(userPk);
   return user;
 };
+
 
 // 스크롤 이벤트 핸들러
 const handleScroll = async () => {
@@ -282,8 +278,9 @@ onUnmounted(() => {
 // 검색 기능을 위한 변수와 메소드 추가
 const searchQuery = ref("");
 
+
 const filteredFeeds = computed(() => {
-  return feeds.value.filter((feed) => {
+  return feeds.value.filter(feed => {
     const userNameLowerCase = feed.user.nickname.toLowerCase();
     const songTitleLowerCase = feed.song.title.toLowerCase();
 
@@ -297,7 +294,7 @@ const filteredFeeds = computed(() => {
 const search = () => {
   const searchQueryLowerCase = searchQuery.value.toLowerCase();
 
-  feeds.value = feeds.value.filter((feed) => {
+  feeds.value = feeds.value.filter(feed => {
     const userNameLowerCase = feed.user.nickname.toLowerCase();
     const songTitleLowerCase = feed.song.title.toLowerCase();
 
@@ -309,133 +306,11 @@ const search = () => {
 };
 
 const toggleLike = async (feedId) => {
-  const likeStatus = await createLike;
-  console.log("라이크 상태", likeStatus);
+  const likeStatus = await createLike
+  console.log('라이크 상태',likeStatus)
 };
-
 </script>
-
 <style scoped>
-.my-feed {
-  padding-left: 200px;
-  padding-right: 200px;
-}
-
-.display-flex {
-  display: flex;
-}
-.profile-img-container {
-  width: 70px;
-  height: 70px;
-  /* object-fit : contain; */
-  border-radius: 25px;
-  background-size: cover;
-  background-position: center;
-  display: flex; /* Flexbox 사용 */
-  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
-  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
-}
-
-.comment-img-container {
-  width: 70px;
-  height: 70px;
-  background-image: url("@/assets/img/capture3.png");
-  /* object-fit : contain; */
-  border-radius: 25px;
-  background-size: cover;
-  background-position: center;
-  display: flex; /* Flexbox 사용 */
-  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
-  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
-}
-
-.comment-img-container2 {
-  width: 50px;
-  height: 50px;
-  background-image: url("@/assets/img/capture3.png");
-  /* object-fit : contain; */
-  border-radius: 25px;
-  background-size: cover;
-  background-position: center;
-  display: flex; /* Flexbox 사용 */
-  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
-  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
-}
-
-.comment-img {
-  width: 100%;
-  height: 100%;
-  border-radius: 30%;
-  display: block; /* 인라인 요소 간격 제거 */
-  object-fit: cover;
-}
-
-.my-feed {
-  /* padding: 20px; */
-  padding-left: 200px;
-  padding-right: 200px;
-}
-.profile {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  margin: 20px 0;
-}
-
-.width-100 {
-  width: 100%;
-  padding-left: 5%;
-}
-
-.comments {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.space-between {
-  display: flex;
-  justify-content: space-between;
-}
-
-.space-start {
-  display: flex;
-  justify-content: start;
-}
-
-.flex-row {
-  display: flex;
-}
-
-.margin-right-10 {
-  margin-right: 10px;
-}
-
-.margin-right-20 {
-  margin-right: 20px;
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.align-between {
-  flex-wrap: wrap;
-  align-content: space-between;
-}
-
-.thumbnail {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-
-/* .thumbnail-container {
-  position: relative;
-  cursor: pointer;
-} */
-
 .search-container {
   display: flex;
   flex-direction: row;
