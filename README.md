@@ -8,9 +8,8 @@
 - 실시간으로 사람들 앞에서 노래를 부르고, 피드에 공유할수 있습니다.
 
 ## 링크
-[![EC2](https://img.shields.io/badge/EC2HOME-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)](https://i10a705.p.ssafy.io/)
 
-[![logo1-removebg-preview](/uploads/f209be2d2ca10643fce6737fb70ed623/logo1-removebg-preview.png)](https://i10a705.p.ssafy.io/)
+[![logo1-removebg-preview](/uploads/62539bb6b1639ad6fda02617b81db772/logo1-removebg-preview.png)](https://i10a705.p.ssafy.io/)
 
 [![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/d3b9636405c8451499659f8d8b4ba876)
 
