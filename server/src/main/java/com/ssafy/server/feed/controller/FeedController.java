@@ -133,6 +133,8 @@ public class FeedController {
                 // 피드 ID로 피드 가져오기
                 Feed feed = feedService.getFeedById(feedId);
 
+                if(feed == null)
+                    continue;
                 // 유저 UUID 가져오기
                 UUID userUuid = userService.getUUIDByUserPk(feed.getUserPk());
 
