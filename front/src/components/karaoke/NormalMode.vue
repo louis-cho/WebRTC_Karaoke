@@ -6,7 +6,7 @@
         class="background-image"
         alt="Background Image"
       />
-      <div class="announce">
+      <div v-if="showAnnounce" class="announce">
         <div>
           {{ announceString }}
         </div>
@@ -59,13 +59,13 @@ watch(
       announceString.value = "노래를 예약해주세요.";
     } else {
       announceString.value = store.reservedSongs[0].title;
-      songInfo.value.title = store.reservedSongs[0].title;
-      songInfo.value.singer = store.reservedSongs[0].singer;
+
     }
   }
 );
 
 const announceString = ref("노래를 예약해주세요.");
+const showAnnounce = ref(true);
 const showSongInfo = ref(false);
 
 const hasNextLyrics = ref(false);
@@ -87,7 +87,7 @@ const lyricInterval = 70; // 가사 윗묶음&아랫묶음 y좌표 간격
 const moveX = ref(0); // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
 const fontSize = "36px ";
 const countDownSize = "38px ";
-const fontInterval = 36; // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
+const fontInterval = 34.6; // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
 const fontStyle = "YCloverBold";
 const fontColor = "white";
 const filledFont = ref(""); // 부르고 있는 가사
@@ -102,6 +102,8 @@ const showSongInfoTimeOut = 9000;
 const choose = () => {
   // props로 내려온 songData 주입
   song.value = props.songData;
+  songInfo.value.title = store.reservedSongs[0].title;
+  songInfo.value.singer = store.reservedSongs[0].singer;
   songInfo.value.author = song.value.author;
   audio.value = new Audio(song.value.songUrl); // mp3 url 연결
 };
@@ -126,22 +128,21 @@ const initDrawer = () => {
 };
 
 const play = () => {
-  announceString.value = "";
+  showAnnounce.value = false;
   audio.value.play();
   startTimeRef.value = Date.now();
-
   if (song.value.prelude >= showSongInfoTimeOut) {
     showSongInfo.value = true;    // 노래 시작하고 노래 정보 띄우기
-    new Promise(() => {
+    new Promise((resolve) => {
       setTimeout(() => {
         showSongInfo.value = false; // 5초 후에 노래 정보 내리기
+        resolve();
       }, showSongInfoTime);
     }).then(() => {
       initDrawer();
       hasNextLyrics.value = true;
       lyrics.value = parseLyric(parseScore(song.value.mmlData));
       bundles.value = parseBundle(lyrics.value);
-
       bundleIndex.value = 0;
       lyricBundleIndex.value = 0;
       lyricIndex.value = 0;
@@ -165,8 +166,10 @@ const play = () => {
 };
 
 const stop = () => {
-  new Promise(() => {
+  new Promise((resolve) => {
+    showAnnounce.value = true;
     showSongInfo.value = false;
+    resolve();
   }).then(() => {
     initDrawer();
   })

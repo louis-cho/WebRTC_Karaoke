@@ -20,6 +20,7 @@ export const useKaraokeStore = defineStore("karaoke", {
     singUser: undefined,
     songMode: false,
     newReserve: false,
+    singUserOut: false,
 
     sessionName: undefined,
     userName: "로그인 하세요",
@@ -107,8 +108,10 @@ export const useKaraokeStore = defineStore("karaoke", {
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
-        if (JSON.parse(stream.connection.data).clientData == this.singUser)
+        if (JSON.parse(stream.connection.data).clientData == this.singUser) {
           this.mainStreamManager = this.publisher;
+          this.singUserOut = true;
+        }
 
         const index = this.subscribers.indexOf(stream.streamManager, 0);
         if (index >= 0) {
@@ -194,7 +197,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       }
 
       if (isRecording.data) {
-        alert("녹화 중에 입장이 불가능합니다.");
+        alert("노래 중에 입장이 불가능합니다.");
         return false;
       }
 

@@ -19,10 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -118,18 +115,37 @@ public class FeedController {
     }
 
     @GetMapping("/get/top100")
-    public ResponseEntity<List<FeedStatsDocument>> getTop100(@RequestParam(defaultValue = "0") int page,
-                                                             @RequestParam(defaultValue = "10") int size){
-        List<FeedStatsDocument> topList;
+    public ResponseEntity<List<FeedResponse>> getTop100(@RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "100") int size){
+        List<FeedResponse> response;
         try {
-            topList = rankService.getTop100Ranking();
-            if (!topList.isEmpty()) {
-                topList = paginate(topList, page, size);
+            List<FeedStatsDocument> topList = rankService.getTop100Ranking();
+
+            // 특정 페이지에 해당하는 피드 가져오기
+            int startIndex = page * size;
+            int endIndex = Math.min(startIndex + size, topList.size());
+            List<FeedResponse> feedResponses = new ArrayList<>();
+
+            for (int i = startIndex; i < endIndex; i++) {
+                FeedStatsDocument feedStatsDocument = topList.get(i);
+                int feedId = feedStatsDocument.getFeedId();
+
+                // 피드 ID로 피드 가져오기
+                Feed feed = feedService.getFeedById(feedId);
+
+                // 유저 UUID 가져오기
+                UUID userUuid = userService.getUUIDByUserPk(feed.getUserPk());
+
+                // FeedResponse 생성
+                FeedResponse feedResponse = FeedResponseFactory.createFeedResponseFromFeed(feed, userUuid);
+                feedResponses.add(feedResponse);
             }
+
+            response = feedResponses;
         } catch (Exception e){
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(FeedExceptionEnum.FEED_NOT_FOUND));
         }
-        return ResponseEntity.ok(topList);
+        return ResponseEntity.ok(response);
     }
 
     /**

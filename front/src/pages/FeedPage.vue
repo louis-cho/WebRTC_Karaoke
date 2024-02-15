@@ -1,7 +1,7 @@
 <template>
-    <nav-bar />
   <div @scroll="handleScroll">
     <!-- <TabItem/> -->
+    <NavBar />
     <!-- <h3>전체 피드 페이지</h3> -->
     <div class="my-feed">
       <!-- 첫번째 div -->
@@ -24,8 +24,32 @@
           class="search-button"
           color="primary"
           label="검색"
+          style="height: 40px; width: 45px;"
           dense
         />
+        <div class="q-pa-md">
+          <q-btn-dropdown color="primary" label="피드 정렬">
+            <q-list>
+              <q-item clickable v-close-popup @click="onItemClick(0)">
+                <q-item-section>
+                  <q-item-label>최신순</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onItemClick(1)">
+                <q-item-section>
+                  <q-item-label>오래된순</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onItemClick(2)">
+                <q-item-section>
+                  <q-item-label>랭킹순</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
       </div>
 
       <!-- 두번째 div -->
@@ -140,35 +164,60 @@ import { fetchCommentCount } from "@/js/comment/comment.js";
 let pref = app;
 const feeds = ref([]);
 const router = useRouter();
-let select = 1;
+const select = ref(0);
 
 let page = 0;
 const amount = 3;
+
+const onItemClick = (value) => {
+  // 클릭된 항목의 값에 따라 다른 동작 수행
+  switch (value) {
+        case 0:
+          select.value = 0;
+          page = 0;
+          feeds.value = [];
+          fetchFeedData(select.value);
+          break;
+        case 1:
+          select.value = 1;
+          page = 0;
+          feeds.value = [];
+          fetchFeedData(select.value);
+          break;
+        case 2:
+          select.value = 2;
+          page = 0;
+          feeds.value = [];
+          fetchFeedData(select.value);
+          break;
+        default:
+          break;
+      }
+};
 
 const goFeedDetail = (feedId) => {
   router.push({ name: "feed_detail", params: { feedId } });
 };
 
 onBeforeMount(async () => {
-  await fetchFeedData(select);
+  await fetchFeedData(select.value);
 });
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false);
 
-const gotoUserFeed = (userKey) => {
-  router.push({ name: "feed", params: { userUUID: userKey } });
-};
+const gotoUserFeed  = (userKey) => {
+  router.push({ name: "feed", params: { userUUID:  userKey }});
+}
 
 //가상 피드 데이터
 const fetchFeedData = async (select) => {
   const newFeeds = await fetchFeedList(page++, amount, select);
 
-  if (newFeeds == null) {
-    console.log("Gdgd");
+  if(newFeeds == null) {
     return;
   }
 
-  console.log(newFeeds);
+  console.log(newFeeds)
   for (let elem of newFeeds) {
     elem.song = await fetchSong(elem.songId);
     elem.user = await fetchUser(elem.userUUID);
@@ -197,6 +246,7 @@ const getUser = async (userPk) => {
   return user;
 };
 
+
 // 스크롤 이벤트 핸들러
 const handleScroll = async () => {
   const element = document.documentElement;
@@ -206,7 +256,7 @@ const handleScroll = async () => {
     loading.value = true;
 
     try {
-      await fetchFeedData(select);
+      await fetchFeedData(select.value);
     } catch (error) {
       console.error("Error fetching new feeds:", error);
     } finally {
@@ -228,8 +278,9 @@ onUnmounted(() => {
 // 검색 기능을 위한 변수와 메소드 추가
 const searchQuery = ref("");
 
+
 const filteredFeeds = computed(() => {
-  return feeds.value.filter((feed) => {
+  return feeds.value.filter(feed => {
     const userNameLowerCase = feed.user.nickname.toLowerCase();
     const songTitleLowerCase = feed.song.title.toLowerCase();
 
@@ -243,7 +294,7 @@ const filteredFeeds = computed(() => {
 const search = () => {
   const searchQueryLowerCase = searchQuery.value.toLowerCase();
 
-  feeds.value = feeds.value.filter((feed) => {
+  feeds.value = feeds.value.filter(feed => {
     const userNameLowerCase = feed.user.nickname.toLowerCase();
     const songTitleLowerCase = feed.song.title.toLowerCase();
 
@@ -255,135 +306,15 @@ const search = () => {
 };
 
 const toggleLike = async (feedId) => {
-  const likeStatus = await createLike;
-  console.log("라이크 상태", likeStatus);
+  const likeStatus = await createLike
+  console.log('라이크 상태',likeStatus)
 };
 </script>
-
 <style scoped>
-.my-feed {
-  padding-left: 200px;
-  padding-right: 200px;
-}
-
-.display-flex {
-  display: flex;
-}
-.profile-img-container {
-  width: 70px;
-  height: 70px;
-  /* object-fit : contain; */
-  border-radius: 25px;
-  background-size: cover;
-  background-position: center;
-  display: flex; /* Flexbox 사용 */
-  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
-  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
-}
-
-.comment-img-container {
-  width: 70px;
-  height: 70px;
-  background-image: url("@/assets/img/capture3.png");
-  /* object-fit : contain; */
-  border-radius: 25px;
-  background-size: cover;
-  background-position: center;
-  display: flex; /* Flexbox 사용 */
-  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
-  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
-}
-
-.comment-img-container2 {
-  width: 50px;
-  height: 50px;
-  background-image: url("@/assets/img/capture3.png");
-  /* object-fit : contain; */
-  border-radius: 25px;
-  background-size: cover;
-  background-position: center;
-  display: flex; /* Flexbox 사용 */
-  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
-  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
-}
-
-.comment-img {
-  width: 100%;
-  height: 100%;
-  border-radius: 30%;
-  display: block; /* 인라인 요소 간격 제거 */
-  object-fit: cover;
-}
-
-.my-feed {
-  /* padding: 20px; */
-  padding-left: 200px;
-  padding-right: 200px;
-}
-.profile {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  margin: 20px 0;
-}
-
-.width-100 {
-  width: 100%;
-  padding-left: 5%;
-}
-
-.comments {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.space-between {
-  display: flex;
-  justify-content: space-between;
-}
-
-.space-start {
-  display: flex;
-  justify-content: start;
-}
-
-.flex-row {
-  display: flex;
-}
-
-.margin-right-10 {
-  margin-right: 10px;
-}
-
-.margin-right-20 {
-  margin-right: 20px;
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.align-between {
-  flex-wrap: wrap;
-  align-content: space-between;
-}
-
-.thumbnail {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-
-/* .thumbnail-container {
-  position: relative;
-  cursor: pointer;
-} */
-
 .search-container {
   display: flex;
-  margin-bottom: 20px;
+  flex-direction: row;
+  align-items: center;
 }
 
 .search-input {
