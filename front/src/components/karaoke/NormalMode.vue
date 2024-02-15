@@ -6,7 +6,7 @@
         class="background-image"
         alt="Background Image"
       />
-      <div class="announce">
+      <div v-if="showAnnounce" class="announce">
         <div>
           {{ announceString }}
         </div>
@@ -59,13 +59,13 @@ watch(
       announceString.value = "노래를 예약해주세요.";
     } else {
       announceString.value = store.reservedSongs[0].title;
-      songInfo.value.title = store.reservedSongs[0].title;
-      songInfo.value.singer = store.reservedSongs[0].singer;
+
     }
   }
 );
 
 const announceString = ref("노래를 예약해주세요.");
+const showAnnounce = ref(true);
 const showSongInfo = ref(false);
 
 const hasNextLyrics = ref(false);
@@ -102,6 +102,8 @@ const showSongInfoTimeOut = 9000;
 const choose = () => {
   // props로 내려온 songData 주입
   song.value = props.songData;
+  songInfo.value.title = store.reservedSongs[0].title;
+  songInfo.value.singer = store.reservedSongs[0].singer;
   songInfo.value.author = song.value.author;
   audio.value = new Audio(song.value.songUrl); // mp3 url 연결
 };
@@ -126,7 +128,7 @@ const initDrawer = () => {
 };
 
 const play = () => {
-  announceString.value = "";
+  showAnnounce.value = false;
   audio.value.play();
   startTimeRef.value = Date.now();
   if (song.value.prelude >= showSongInfoTimeOut) {
@@ -165,6 +167,7 @@ const play = () => {
 
 const stop = () => {
   new Promise((resolve) => {
+    showAnnounce.value = true;
     showSongInfo.value = false;
     resolve();
   }).then(() => {
