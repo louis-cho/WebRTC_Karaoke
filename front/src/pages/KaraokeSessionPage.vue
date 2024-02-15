@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf" v-if="store.session" class="background">
+  <q-layout view="lHh Lpr lFf" v-if="store.session">
     <!-- 상단 AppBar -->
     <q-header elevated class="custom-header">
       <div
@@ -168,11 +168,11 @@ function changeSongMode() {
 
 <style scoped>
 .custom-header {
-  background-color: darkorchid;
+  background-color: #c794d4;
   height: 60px;
 }
 .custom-footer {
-  background-color: darkorchid;
+  background-color: #c794d4;
 }
 
 #video-container {
@@ -184,9 +184,5 @@ function changeSongMode() {
 /* 추가한 클래스로 반응형 스타일을 지정합니다. */
 .responsive-container {
   flex-wrap: wrap; /* 자식 요소들이 한 줄에 나오도록 설정 */
-}
-
-.background {
-  background-color: mediumorchid; /* 또는 다른 원하는 색상으로 변경 */
 }
 </style>
