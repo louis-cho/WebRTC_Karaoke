@@ -1,4 +1,5 @@
 <template>
+  <nav-bar />
   <div id="main-container" class="q-pa-md q-gutter-md">
     <div id="join-dialog" class="q-pa-md">
       <session-list :changeRoute="router" />

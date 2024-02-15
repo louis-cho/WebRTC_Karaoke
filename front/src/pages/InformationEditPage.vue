@@ -1,4 +1,5 @@
 <template>
+    <nav-bar />
   <div>
     <div class="my-feed">
       <!-- <p>개인정보수정페이지</p> -->

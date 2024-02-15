@@ -1,6 +1,8 @@
 <template>
   <!-- class="bg-purple" -->
+  <nav-bar />
   <div id="back">
+
     <q-carousel
       v-model="slide"
       vertical
@@ -13,7 +15,7 @@
       padding
       arrows
       control-color="white"
-      class="bg-purple text-white rounded-borders"
+      class="bg-transparent text-white rounded-borders"
     >
       <!-- shadow1 -->
       <q-carousel-slide name="style" class="column no-wrap flex-center">
