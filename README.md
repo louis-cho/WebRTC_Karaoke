@@ -1,66 +1,215 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=#a374db&height=150&section=header" />
 
-# 프로젝트 개요
+# 노래 해방 🎵
+![homePage](/uploads/82b358dc3a816ca1cf7360edab0021e2/homePage.png)
+
+<br />
+
+# 프로젝트 소개
 - 내가 부른 노래를 sns형태로 공유 할 수 있는 웹 노래방 서비스
 - 실시간으로 사람들 앞에서 노래를 부르고, 피드에 공유할수 있습니다.
 
-# 배포 주소
-[![EC2](https://img.shields.io/badge/EC2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)](https://i10a705.p.ssafy.io/)
+<br />
 
+# 링크
+[![logo1-removebg-preview](/uploads/62539bb6b1639ad6fda02617b81db772/logo1-removebg-preview.png)](https://i10a705.p.ssafy.io/)
+
+[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/d3b9636405c8451499659f8d8b4ba876)
+
+[![ERD Cloud](https://img.shields.io/badge/ERDCloud-000000?style=for-the-badge&logo=ERDCloud&logoColor=white)](https://www.erdcloud.com/d/3SsAyJ6rGXSMzyPcw)
+
+[![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/file/cnHpMUN4kpZ55qLu2FKBD6/%5BNEW%5D-Quick-UXUI-Wireframe-templates!-(%EA%B8%B0%ED%9A%8D%EC%9E%90%EC%99%80-%EB%94%94%EC%9E%90%EC%9D%B4%EB%84%88%EB%A5%BC-%EC%9C%84%ED%95%9C-UXUI-%ED%99%94%EB%A9%B4%EA%B8%B0%ED%9A%8D%EC%84%9C%2F%ED%99%94%EB%A9%B4%EC%84%A4%EA%B3%84%EC%84%9C-%ED%85%9C%ED%94%8C%EB%A6%BF)-(Community)?type=design&node-id=103-2&mode=design&t=VZrVBeL6BKOWOGX8-0)
+
+<br />
+
+
+# 개발 환경
+ - **IDE** : `IntelliJ IDEA`, `Vidsual Studeo Code`
+ - **BE** : `Java 11` `Spring Boot 2.7.18` `Redis 7.2.4` `MariaDB 11.2.2` `Gradle 6.8`
+ - **FE** :  `Node 20.11.0` `Vue 3.4.15` `Quasar 2.14.3`
+ - **ETC** : `openvidu 2.29.0` `ELK 7.17.0` `Docker 25.0.1` `jenkins 2.442` `rabbitMQ 3.12.12` 
+
+<br />
 
 # 기술 스택
-<div align=center><h1>📚 STACKS</h1></div>
-<div align=center>
+## Back-end
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
 <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
-<img src="https://img.shields.io/badge/vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white">
-<img src="https://img.shields.io/badge/Quasar-16B7FB?style=for-the-badge&logo=Quasar&logoColor=white"/>
-
-<br/>
-
-<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
-<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-<img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
-<img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
+<img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
 <img src="https://img.shields.io/badge/JPA-000000?style=for-the-badge&logo=jpa&logoColor=white"/>
 <img src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white"/>
 
-<br/>
+## Front-end
+<img alt="JavaScript" src ="https://img.shields.io/badge/JavaScript-F7DF1E.svg?&style=for-the-badge&logo=JavaScript&logoColor=black"/>
+<img src="https://img.shields.io/badge/vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white">
+<img src="https://img.shields.io/badge/Quasar-16B7FB?style=for-the-badge&logo=Quasar&logoColor=white"/>
+<img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white">
+<img alt="Static Badge" src="https://img.shields.io/badge/pinia-F3F781.svg?style=for-the-badge">
+<img alt="Static Badge" src="https://img.shields.io/badge/axios-FF00FF.svg?style=for-the-badge&logo=axios&logoColor=black">
 
-<img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
-<img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white">
+## DB
+<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
+<img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
+
+## Dev-Ops
 <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
-<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white"/>
-<img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white"/>
+<img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white">
+<img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white">
+<img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
 
-<br/>
+## 협업Tools
+<img src="https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white">
+<img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white">
+<img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
+<img src="https://img.shields.io/badge/gitlab-FC6D26?style=for-the-badge&logo=gitlab&logoColor=white">
 
+## ETC
 <img src="https://img.shields.io/badge/webrtc-FFE033?style=for-the-badge&logo=webrtc&logoColor=white">
 <img src="https://img.shields.io/badge/rabbitmq-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white">
 <img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">
 <img src="https://img.shields.io/badge/logstash-005571?style=for-the-badge&logo=logstash&logoColor=white">
 <img src="https://img.shields.io/badge/kibana-005571?style=for-the-badge&logo=kibana&logoColor=white">
 
+<br />
 
-</div>
+# 주요 기능
+- webRTC와 활용한 실시간 화상 노래방 환경 제공
+- 2가지 노래방 모드
+    - 일반 노래방
+        - MR과 가사 제공
+        - 녹화
+    - 퍼펙트 스코어
+        - 사용자의 음성 데이터 분석
+        - 분석된 데이터로 음정 평가
+- 실시간 알림
+- 녹화된 영상을 sns 피드 형태로 공유
+- ***추가
+
+<br />
+
+# 화면
+<<도메인 별로>>
+gif 화면 추가
+
+<br />
 
 # 아키넥처 구성도
 ![a705.drawio](/uploads/2f07ef3d0808a1239f11647ffaeb4f9a/a705.drawio.png)
 
-# 요구사항
-[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/f7c62f5c6d1a441bbb191911ca3a1e7b?v=13e99663afb74afcb843af0fbe7daef9)
+<br />
 
-# 화면정의서 
-[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/32635f45919f4e62bea19d9727fc7b5f)
+# 디렉토리 구조
+```
+├─front
+│  ├─docker
+│  ├─public
+│  │  └─resources
+│  │      └─images
+│  └─src
+│      ├─assets
+│      │  ├─icon
+│      │  └─img
+│      ├─boot
+│      ├─components
+│      │  └─karaoke
+│      ├─css
+│      ├─js
+│      │  ├─chat
+│      │  ├─config
+│      │  ├─encrypt
+│      │  ├─karaoke
+│      │  ├─perfectScore
+│      │  └─websocket
+│      ├─layouts
+│      ├─pages
+│      ├─router
+│      └─stores
+└─server
+    └─src
+        ├─main
+        │  ├─java
+        │  │  └─com
+        │  │      └─ssafy
+        │  │          └─server
+        │  │              ├─audit
+        │  │              ├─chat
+        │  │              │  ├─controller
+        │  │              │  ├─model
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─comment
+        │  │              │  ├─controller
+        │  │              │  ├─model
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─common
+        │  │              │  └─util
+        │  │              ├─config
+        │  │              ├─exception
+        │  │              │  ├─feed
+        │  │              │  ├─like
+        │  │              │  ├─request
+        │  │              │  └─user
+        │  │              ├─feed
+        │  │              │  ├─controller
+        │  │              │  ├─model
+        │  │              │  ├─rank
+        │  │              │  │  ├─document
+        │  │              │  │  ├─model
+        │  │              │  │  └─service
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─hit
+        │  │              │  ├─controller
+        │  │              │  ├─document
+        │  │              │  ├─model
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─karaoke
+        │  │              │  ├─controller
+        │  │              │  ├─model
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─like
+        │  │              │  ├─controller
+        │  │              │  ├─document
+        │  │              │  ├─model
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─notification
+        │  │              ├─point
+        │  │              │  ├─controller
+        │  │              │  ├─model
+        │  │              │  │  ├─dto
+        │  │              │  │  └─entity
+        │  │              │  ├─repository
+        │  │              │  └─service
+        │  │              ├─syncdata
+        │  │              └─user
+        │  │                  ├─auth
+        │  │                  ├─controller
+        │  │                  ├─document
+        │  │                  ├─model
+        │  │                  ├─repository
+        │  │                  ├─secure
+        │  │                  ├─service
+        │  │                  └─util
+        │  └─resources
+        │      └─templates
+        └─test
+            └─java
+                └─com
+                    └─ssafy
+                        └─server
+```
 
-# erd
-[![ERD Cloud](https://img.shields.io/badge/ERDCloud-000000?style=for-the-badge&logo=ERDCloud&logoColor=white)](https://www.erdcloud.com/d/3SsAyJ6rGXSMzyPcw)
+<img src="https://capsule-render.vercel.app/api?section=footer&type=waving&color=#a374db&height=150" />
 
-# Figma
-[![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/file/cnHpMUN4kpZ55qLu2FKBD6/%5BNEW%5D-Quick-UXUI-Wireframe-templates!-(%EA%B8%B0%ED%9A%8D%EC%9E%90%EC%99%80-%EB%94%94%EC%9E%90%EC%9D%B4%EB%84%88%EB%A5%BC-%EC%9C%84%ED%95%9C-UXUI-%ED%99%94%EB%A9%B4%EA%B8%B0%ED%9A%8D%EC%84%9C%2F%ED%99%94%EB%A9%B4%EC%84%A4%EA%B3%84%EC%84%9C-%ED%85%9C%ED%94%8C%EB%A6%BF)-(Community)?type=design&node-id=103-2&mode=design&t=VZrVBeL6BKOWOGX8-0)
+<br />
+<br />
+<br />
 
-# 접속 주소
- [노래해방](http://i10a705.p.ssafy.io)
 
 # 프로젝트 한 일(0129 ~ 0202)
 
@@ -459,110 +608,3 @@ $ docker-compose up
 ```
 
 localhost:5601로 접속하면 확인 가능
-
-# 디렉토리 구조
-```
-├─front
-│  ├─docker
-│  ├─public
-│  │  └─resources
-│  │      └─images
-│  └─src
-│      ├─assets
-│      │  ├─icon
-│      │  └─img
-│      ├─boot
-│      ├─components
-│      │  └─karaoke
-│      ├─css
-│      ├─js
-│      │  ├─chat
-│      │  ├─config
-│      │  ├─encrypt
-│      │  ├─karaoke
-│      │  ├─perfectScore
-│      │  └─websocket
-│      ├─layouts
-│      ├─pages
-│      ├─router
-│      └─stores
-└─server
-    └─src
-        ├─main
-        │  ├─java
-        │  │  └─com
-        │  │      └─ssafy
-        │  │          └─server
-        │  │              ├─audit
-        │  │              ├─chat
-        │  │              │  ├─controller
-        │  │              │  ├─model
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─comment
-        │  │              │  ├─controller
-        │  │              │  ├─model
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─common
-        │  │              │  └─util
-        │  │              ├─config
-        │  │              ├─exception
-        │  │              │  ├─feed
-        │  │              │  ├─like
-        │  │              │  ├─request
-        │  │              │  └─user
-        │  │              ├─feed
-        │  │              │  ├─controller
-        │  │              │  ├─model
-        │  │              │  ├─rank
-        │  │              │  │  ├─document
-        │  │              │  │  ├─model
-        │  │              │  │  └─service
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─hit
-        │  │              │  ├─controller
-        │  │              │  ├─document
-        │  │              │  ├─model
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─karaoke
-        │  │              │  ├─controller
-        │  │              │  ├─model
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─like
-        │  │              │  ├─controller
-        │  │              │  ├─document
-        │  │              │  ├─model
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─notification
-        │  │              ├─point
-        │  │              │  ├─controller
-        │  │              │  ├─model
-        │  │              │  │  ├─dto
-        │  │              │  │  └─entity
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─syncdata
-        │  │              └─user
-        │  │                  ├─auth
-        │  │                  ├─controller
-        │  │                  ├─document
-        │  │                  ├─model
-        │  │                  ├─repository
-        │  │                  ├─secure
-        │  │                  ├─service
-        │  │                  └─util
-        │  └─resources
-        │      └─templates
-        └─test
-            └─java
-                └─com
-                    └─ssafy
-                        └─server
-```
-
-<img src="https://capsule-render.vercel.app/api?section=footer&type=waving&color=#a374db&height=150" />

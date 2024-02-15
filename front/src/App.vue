@@ -1,11 +1,10 @@
 <template>
-  <div>
+  <div class="background">
     <router-view />
   </div>
 </template>
 
-<script setup>
-</script>
+<script setup></script>
 
 <!-- 폰트 추가 -->
 <style>
@@ -16,5 +15,9 @@
 
 body {
   font-family: "YCloverBold", sans-serif; /* 지정한 폰트 사용 */
+}
+
+.background {
+  background-color: #dec1de;
 }
 </style>
