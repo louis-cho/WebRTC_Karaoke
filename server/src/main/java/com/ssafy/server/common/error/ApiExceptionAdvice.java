@@ -25,7 +25,6 @@ public class ApiExceptionAdvice {
                         .status(String.valueOf(e.getStatus()))
                         .message(e.getCode())
                         .data(null)
-                        .exception(apiExceptionEntity)
                         .build());
     }
 }
