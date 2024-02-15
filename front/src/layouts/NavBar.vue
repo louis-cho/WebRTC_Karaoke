@@ -21,7 +21,6 @@ const isLoggedIn = ref(false);
 onMounted(() => {
   if (getCookie("Authorization")) {
     isLoggedIn.value = true;
-    // notificationStore.setSse();
   }
 });
 </script>

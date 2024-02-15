@@ -27,7 +27,7 @@ export const useNotificationStore = defineStore("notification", {
         headers: {
           Authorization : getCookie("Authorization"),
           refreshToken : getCookie("refreshToken"),
-          heartbeatTimeout: 180 * 1000,
+          heartbeatTimeout: 120000,
           "Content-Type": "application/json",
         },
       });
@@ -88,5 +88,6 @@ export const useNotificationStore = defineStore("notification", {
         console.log("메시지 보내는데 문제 생김:",error.message)
       })
     }
-  }
+  },
+  persist : true
 });

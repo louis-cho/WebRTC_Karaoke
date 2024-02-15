@@ -238,6 +238,7 @@ const logout = () => {
     removeCookie("Authorization");
     removeCookie("refreshToken");
     removeCookie("uuid");
+    localStorage.clear();
     alert("로그아웃되었습니다.");
     window.location.replace("/");
   } else {
