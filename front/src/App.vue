@@ -14,10 +14,14 @@
 }
 
 body {
+  text-shadow:1px 1px 1px #0ff;
+  color:#000;
+  font-size: 250%;
   font-family: "YCloverBold", sans-serif; /* 지정한 폰트 사용 */
 }
 
 .background {
-  background-image: url("@/assets/img/mikebackground.jpg");
+background: rgb(238,174,202);
+background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
 }
 </style>
