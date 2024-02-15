@@ -440,13 +440,45 @@ int userPk = userService.getUserPk(UUID.fromString(uuid));
 
 # OpenVidu
 
-<img src="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/uploads/d3aba65d32a825af084d40eb56ad8e18/openvidu-workflow-server.png"/>
+<img src="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/uploads/d3aba65d32a825af084d40eb56ad8e18/openvidu-workflow-server.png" width="400" height="400"/>
 
-### FrontEnd
+### Application Client
 
-@RestControllerAdvice annotation을 통해 예외에 따라 모든 결과물이 동일한 로직을 거쳐 전달되도록 구현하였습니다. <br>
+<div>
+OpenVidu를 사용하기 위해서는 라이브러리를 통해 객체를 만들어야합니다. 주로 사용하는 객체는 OpenVidu, Session, Token, Publisher, Subscriber 등이 있고 순서대로 객체를 만들어나가면 됩니다.
+</div>
 
-### BackEnd
+```javascript
+// 초기 객체 생성
+OV = new OpenVidu();
+session = OV.initSession();
+```
+
+<div>
+Session 객체를 만들고 나면 이벤트를 설정할 수 있습니다. streamCreated, streamDestroyed, sessionDisconnected, signal 등의 이벤트를 설정할 수 있고 방법은 아래와 같습니다. 예시는 Session에 새로운 Subscriber가 들어와 Stream이 생기면 해당 Stream을 구독하고 관리하는 것입니다.
+</div>
+
+```javascript
+// Session에 이벤트 설정
+session.on('streamCreated', ({ stream }) => {
+    const subscriber = session.subscribe(stream, undefined, {
+        subscribeToAudio: true,
+        subscribeToVideo: true,
+    });
+
+    subscribers.push(subscriber);
+});
+```
+
+<div>
+이제 Token을 얻어올 차례입니다. 입력한 SessionId와 일치하는 Session이 존재하면 해당 Session과 연결된 Connection 객체의 Token을 얻어옵니다. 이 작업은 Server에서 이루어지기 때문에 Client에서는 요청만 보냅니다.
+</div>
+
+<div>
+얻어온 Toekn으로 Session을 연결합니다.
+</div>
+
+### Application Server
 
 @ExceptionHandler(ApiException.class) annotation을 통해 ApiException 클래스의 예외는 제네릭 타입의 일관된 리턴 타입 ResponseEntity<ApiResponse<?>>을 갖도록 구현하였습니다.
 
