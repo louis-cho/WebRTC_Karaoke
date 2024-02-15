@@ -103,6 +103,7 @@ const choose = () => {
   // props로 내려온 songData 주입
   if(props.songData == null) {
     alert("노래 데이터가 아직 없어요,,,")
+    return ;
   }
   song.value = props.songData;
   songInfo.value.author = song.value.author
