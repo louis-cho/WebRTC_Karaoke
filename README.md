@@ -17,12 +17,61 @@
 
 ## 팀원
 
--   [조현우](https://github.com/louis-cho)
--   [이준범](https://github.com/bum19)
--   [연정흠](https://github.com/madirony)
--   [노성은](https://github.com/seroh00)
--   [고정원](https://github.com/gardengo)
--   [송준석](https://github.com/jsong98)
+<table>
+    <tr height="140px">
+        <td align="center" width="130px">
+            <a href="https://github.com/louis-cho"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/38391852?v=4"/></a>
+            <br />
+            <a href="https://github.com/louis-cho">조현우</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/gardengo"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/48192100?v=4"/></a>
+            <br />
+            <a href="https://github.com/gardengo">고정원</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/seroh00"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/139421118?v=4"/></a>
+            <br />
+            <a href="https://github.com/seroh00">노성은</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/jsong98"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/79959903?v=4"/></a>
+            <br />
+            <a href="https://github.com/jsong98">송준석</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/madirony"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/48685874?v=4"/></a>
+            <br />
+            <a href="https://github.com/madirony">연정흠</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/bum19"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/77481223?v=4"/></a>
+            <br />
+            <a href="https://github.com/bum19">이준범</a>
+        </td>
+      <tr height="50px">
+        <td align="center">
+            <a>으아아</a>
+        </td>
+        <td align="center">
+            <a>으아아</a>
+        </td>
+        <td align="center">
+            <a>으아아</a>
+        </td>
+        <td align="center">
+            <a>으아아</a>
+        </td>
+        <td align="center">
+            <a>으아아</a>
+        </td>
+        <td align="center">
+            <a>으아아</a>
+        </td>
+    </tr>
+    </tr>
+    
+</table>
 
 ## 링크
 
