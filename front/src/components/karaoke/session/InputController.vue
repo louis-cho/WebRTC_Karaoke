@@ -1,7 +1,7 @@
 <template>
   <q-dialog v-model="store.toggleModals['input-controller']">
     <q-card>
-      <q-card-section style="max-height: 400px; overflow-y: auto">
+      <q-card-section style="max-height: 400px; overflow-y: hidden">
         <q-layout style="min-width: 256px">
           <q-header
             class="bg-transparent"

@@ -1,7 +1,7 @@
 <template>
-  <q-layout>
+  <q-layout style="min-height: 500px">
     <q-page-container>
-      <q-page>
+      <q-page style="min-height: 500px">
         <q-header class="custom-header">
           <q-toolbar>
             <q-toolbar-title>
