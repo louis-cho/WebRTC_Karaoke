@@ -104,13 +104,16 @@ function fetchReserveList() {
 
         if (parts.length === 4) {
           const [userName, songId, title, singer] = parts;
+          if (id == 1) {
+            store.singUser = userName;
+          }
+
           lists.value.push({ id, userName, songId, title, singer });
           id++;
         }
       });
       store.reservedSongsLength = lists.value.length;
       store.reservedSongs = lists.value;
-
     })
     .catch((error) => {
       alert(error.response.data);

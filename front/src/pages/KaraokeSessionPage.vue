@@ -17,6 +17,12 @@
         >
         <div style="display: flex">
           <q-btn
+            v-if="!store.singing && store.isModerator"
+            @click="changeSongMode()"
+            color="primary"
+            label="모드 바꾸기"
+          />
+          <q-btn
             @click="openInviteModal"
             color="black"
             :label="pref.app.kor.karaoke.session.invite"
@@ -149,6 +155,15 @@ const toggleModal = (modalName) => {
 
 function decodeBase64(encodedString) {
   return decodeURIComponent(escape(atob(encodedString)));
+}
+
+function changeSongMode() {
+  store.session.signal({
+    data: JSON.stringify({
+      songMode: !store.songMode,
+    }),
+    type: "songMode",
+  });
 }
 </script>
 

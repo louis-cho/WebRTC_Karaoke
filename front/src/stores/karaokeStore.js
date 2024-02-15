@@ -384,6 +384,8 @@ export const useKaraokeStore = defineStore("karaoke", {
       this.newReserve = false;
       this.reservedSongs = [];
       this.reservedSongsLength = 0;
+      this.singUserOut = false;
+      this.sing = null;
 
       // beforeunload 리스너 제거
       window.removeEventListener("beforeunload", this.leaveSession);
