@@ -4,6 +4,9 @@ import useCookie from "../cookie.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 const store = useKaraokeStore();
 
+import {useLoginStore} from "@/stores/loginStore.js"
+const loginStore = useLoginStore();
+
 import { ref } from "vue";
 let pref = app;
 let modulus = null;
@@ -132,7 +135,8 @@ async function login(id, pw) {
           sameSite: "none",
         });
         store.userName = result.nickname;
-        location.reload();
+        loginStore.isLoggedIn = true;
+        // location.reload();
       } else {
         console.log("로그인 실패");
         alert("아이디 혹은 비밀번호가 올바르지 않습니다.");

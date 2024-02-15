@@ -43,9 +43,11 @@
         id="main-video"
         style="display: flex; flex-direction: row; overflow-x: auto"
       >
-        <UserVideo :stream-manager="mainStreamManagerComputed" />
-
-        <song-controller />
+        <div>
+          <UserVideo :stream-manager="mainStreamManagerComputed" />
+          <song-controller />
+        </div>
+        <song-mode />
       </div>
 
       <!-- 모든 캠 -->
@@ -115,6 +117,7 @@ import InviteModal from "@/components/karaoke/session/InviteModal.vue";
 import ReserveModal from "@/components/karaoke/song/ReserveModal.vue";
 import ReserveList from "@/components/karaoke/song/ReserveList.vue";
 import SongController from "@/components/karaoke/song/SongController.vue";
+import SongMode from "src/components/karaoke/song/SongMode.vue";
 
 const store = useKaraokeStore();
 const router = useRouter();

@@ -60,7 +60,7 @@ public class RankServiceImpl implements RankService {
     /**
      * 스케줄링을 통해 아직 동기화되지 않은 데이터를 가져와 랭킹 계산에 반영한다.
      */
-    @Scheduled(cron = "0 */15 * * * *") 
+    @Scheduled(cron = "0/5 * * * * *")
     public void calculateRank() {
         String likesIndexName = "likes"; 
         String hitIndexName = "hits"; 

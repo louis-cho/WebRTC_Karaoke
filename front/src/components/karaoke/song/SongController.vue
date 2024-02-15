@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; flex-direction: column">
+  <div style="display: flex; flex-direction: row">
     <q-btn
       v-if="!store.singing"
       @click="changeSongMode()"
@@ -23,15 +23,6 @@
       @click="finishSong()"
       color="primary"
       label="종료"
-    />
-  </div>
-
-  <div>
-    <normal-mode ref="normalModeRef" v-if="!store.songMode" :songData="song" />
-    <perfect-score
-      ref="perfectScoreRef"
-      v-if="store.songMode"
-      :songData="song"
     />
   </div>
 
@@ -100,8 +91,6 @@ const store = useKaraokeStore();
 
 const fileUrl = ref(undefined);
 const recordingId = ref(undefined);
-const perfectScoreRef = ref(null);
-const normalModeRef = ref(null);
 
 const selectedOption = ref("비공개");
 const videoUrl = ref("");
@@ -114,7 +103,7 @@ const songId = ref(undefined);
 function startSong() {
   removeReserve()
     .then(() => {
-      if (song.value == null) {
+      if (store.song == null) {
         alert("노래 데이터가 아직 없어요,,,");
         return;
       }
@@ -282,27 +271,6 @@ watch(
 );
 
 watch(
-  () => store.singing,
-  (newSinging) => {
-    if (newSinging) {
-      if (store.songMode) {
-        perfectScoreRef.value.choose();
-        perfectScoreRef.value.play();
-      } else {
-        normalModeRef.value.choose();
-        normalModeRef.value.play();
-      }
-    } else {
-      if (store.songMode) {
-        perfectScoreRef.value.stop();
-      } else {
-        normalModeRef.value.stop();
-      }
-    }
-  }
-);
-
-watch(
   () => store.singUserOut,
   () => {
     if (store.singUserOut) {
@@ -341,39 +309,6 @@ const submitPost = () => {
 const closeModal = () => {
   modalVisible.value = false;
 };
-
-watch(
-  () => store.reservedSongsLength,
-  () => {
-    if (store.reservedSongs.length == 0) {
-    } else {
-      axios
-        .get(
-          store.APPLICATION_SERVER_URL +
-            "/song/songInfo/" +
-            store.reservedSongs[0].songId,
-          {
-            headers: {
-              Authorization: getCookie("Authorization"),
-              refreshToken: getCookie("refreshToken"),
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          song.value = null;
-          if (JSON.parse(JSON.stringify(res.data)) != "") {
-            song.value = JSON.parse(JSON.stringify(res.data));
-          }
-        })
-        .catch((error) => {
-          console.error("songInfo 불러오기 실패" + error);
-        });
-    }
-  }
-);
-
-const song = ref({});
 </script>
 
 <style scoped>

@@ -51,6 +51,8 @@ public class SecurityConfig {
                 .antMatchers("/api/v1/auth/filter").permitAll()
                 .antMatchers("/api/v1/user/login").permitAll()
                 .antMatchers("/api/v1/user/register").permitAll()
+                .antMatchers("/api/ws/**").permitAll()
+                .antMatchers("/api/v1/user/get/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .logout().logoutSuccessUrl("/");
