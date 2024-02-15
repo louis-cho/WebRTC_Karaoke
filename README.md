@@ -517,7 +517,97 @@ public class ApiExceptionAdvice {
     }
 }
 ```
+# SSE(Server Side Events)
+### 알림 기능 구현
 
+로그인 시 Http 1.1 통신을 통해 SSE를 위한 연결을 설정합니다.<br>
+알림의 경우 단방향통신이기 때문에 SSE연결이 최적의 선택이 될 수 있었습니다.<br>
+
+### BackEnd
+```java
+    // NotifcationController.java
+    //요청보낸 유저의 구독(연결) 요청
+    @GetMapping(value = "/subscribe")
+    public ResponseEntity<SseEmitter> subscribe(HttpServletRequest request) throws IOException {
+        Integer userPk = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserPk();
+        SseEmitter emitter = new SseEmitter(60 * 60 * 1000L); //새로운 연결 객체 생성. 매개변수로 만료시간 줄 수 있다. 1시간.
+        sseEmitters.add(userPk, emitter); //객체 메모리에 저장.
+
+  ...
+        return ResponseEntity.ok(emitter);
+    }
+```
+```java
+//SseEmitter.java
+package com.ssafy.server.notification.util;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+@Component
+@Slf4j
+public class SseEmitters {
+
+    private static final AtomicLong counter = new AtomicLong();
+
+    private final Map<Integer, SseEmitter> emitters = new ConcurrentHashMap<>(); //thread-safe한 자료구조.
+
+    public SseEmitter add(Integer userPk, SseEmitter emitter) {
+        this.emitters.put(userPk, emitter);
+        log.info("new emitter added: {}", emitter);
+        log.info("emitter list size: {}", emitters.size());
+        log.info("emitter list: {}", emitters);
+        emitter.onCompletion(() -> {
+            log.info("onCompletion callback");
+            this.emitters.remove(userPk, emitter);
+        });
+        emitter.onTimeout(() -> {
+            log.info("onTimeout callback");
+            emitter.complete();
+        });
+
+        return emitter;
+    }
+
+    public SseEmitter getSseEmitter(Integer userPk){
+        return emitters.get(userPk);
+    }
+    public void remove(Integer userPk, SseEmitter emitter){
+        emitters.remove(userPk, emitter);
+    }
+
+}
+```
+### FrontEnd
+기본적으로 EventSource 객체를 이용해 SSE 연결 요청을 보낼수 있지만, 헤더에 인증 토큰을 추가하기위해 EventSourcePolyfill 객체를 사용했습니다.
+```javascript
+//notificatinoStore.js
+  state: () => ({
+...
+    sse : undefined,
+...
+  }),
+   async setSse() {
+      const { setCookie, getCookie, removeCookie } = useCookie();
+      this.sse = new EventSourcePolyfill(pref.app.api.protocol + pref.app.api.host + "/notifications/subscribe",{
+        headers: {
+          Authorization : getCookie("Authorization"),
+          refreshToken : getCookie("refreshToken"),
+          heartbeatTimeout: 120000,
+          "Content-Type": "application/json",
+        },
+      });
+...
+
+      this.sse.addEventListener('message', (message) => {
+        // const { data: receivedConnectData } = e;
+        console.log(' \'message\' event data shoud be notificationID: ', message.data);  // "connected!"
+ ...
+ ```
 # 디렉토리 구조
 
 ```
