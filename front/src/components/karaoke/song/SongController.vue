@@ -2,6 +2,12 @@
   <div style="display: flex; flex-direction: column">
     <q-btn
       v-if="!store.singing"
+      @click="changeSongMode()"
+      color="primary"
+      label="모드 바꾸기"
+    />
+    <q-btn
+      v-if="!store.singing && store.reservedSongsLength"
       @click="startSong()"
       color="positive"
       :label="pref.app.kor.karaoke.session.start"
@@ -12,8 +18,12 @@
       color="negative"
       :label="pref.app.kor.karaoke.session.stop"
     />
-    <q-btn @click="finishSong()" color="primary" label="종료" />
-    <q-btn @click="changeSongMode()" color="primary" label="모드 바꾸기" />
+    <q-btn
+      v-if="store.singing"
+      @click="finishSong()"
+      color="primary"
+      label="종료"
+    />
   </div>
 
   <div>
@@ -344,28 +354,28 @@ const closeModal = () => {
 watch(
   () => store.reservedSongsLength,
   () => {
-    console.log(store.reservedSongs[0].title)
-    if(store.reservedSongs.length == 0) {
+    if (store.reservedSongs.length == 0) {
     } else {
       axios
         .get(
-        store.APPLICATION_SERVER_URL + "/song/songInfo/" + store.reservedSongs[0].songId,
-        {
-          headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        song.value =  JSON.parse(JSON.stringify(res.data))
-      })
-      .catch((error) => {
-        console.error("song info 불러오기"+error);
-      });
+          store.APPLICATION_SERVER_URL +
+            "/song/songInfo/" +
+            store.reservedSongs[0].songId,
+          {
+            headers: {
+              Authorization: getCookie("Authorization"),
+              refreshToken: getCookie("refreshToken"),
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          song.value = JSON.parse(JSON.stringify(res.data));
+        })
+        .catch((error) => {
+          console.error("song info 불러오기" + error);
+        });
     }
-
   }
 );
 
