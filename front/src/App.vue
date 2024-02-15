@@ -1,12 +1,12 @@
 <template>
   <div>
-    <nav-bar />
+    <!-- <nav-bar /> -->
     <router-view />
   </div>
 </template>
 
 <script setup>
-import NavBar from "./layouts/NavBar.vue";
+// import NavBar from "./layouts/NavBar.vue";
 </script>
 
 <!-- 폰트 추가 -->

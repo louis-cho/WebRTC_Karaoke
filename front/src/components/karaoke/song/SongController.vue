@@ -354,7 +354,7 @@ watch(
           song.value = null;
           if (JSON.parse(JSON.stringify(res.data)) != "") {
             song.value = JSON.parse(JSON.stringify(res.data));
-          }ㄴ
+          }
         })
         .catch((error) => {
           console.error("songInfo 불러오기 실패" + error);
