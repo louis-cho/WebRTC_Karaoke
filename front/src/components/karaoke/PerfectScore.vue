@@ -39,7 +39,7 @@ const choose = () => {
   appInstance.value.lyrics = parseBundle(
     parseLyric(parseScore(song.value.mmlData))
   ); // 가사 연결
-  audio.value = new Audio(song.value.url); // mp3 url 연결
+  audio.value = new Audio(song.value.songUrl); // mp3 url 연결
 };
 
 const play = () => {
