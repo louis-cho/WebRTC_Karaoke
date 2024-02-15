@@ -32,10 +32,6 @@ const props = defineProps({
 const song = ref(null);
 
 const choose = () => {
-  if(props.songData == null) {
-    alert("노래 데이터가 아직 없어요,,,")
-    return ;
-  }
   song.value = props.songData;
   appInstance.value.score = parseScore(song.value.mmlData); // 퍼펙트스코어 데이터주입
   appInstance.value.songLength = song.value.length;

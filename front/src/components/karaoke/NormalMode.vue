@@ -101,10 +101,6 @@ const showSongInfoTimeOut = 9000;
 
 const choose = () => {
   // props로 내려온 songData 주입
-  if(props.songData == null) {
-    alert("노래 데이터가 아직 없어요,,,")
-    return ;
-  }
   song.value = props.songData;
   songInfo.value.author = song.value.author
   audio.value = new Audio(song.value.songUrl); // mp3 url 연결
@@ -171,7 +167,6 @@ const play = () => {
 };
 
 const stop = () => {
-  initDrawer();
   startTimeRef.value = 0;
   song.value = null;
 
@@ -179,6 +174,7 @@ const stop = () => {
     audio.value.currentTime = 0;
     audio.value.pause();
   }
+  initDrawer();
 
   if (store.reservedSongs.length == 0) {
     announceString.value = "노래를 예약해주세요.";
@@ -192,7 +188,10 @@ fillText(text, x, y)는 xy 좌표 기준으로 1사분면에 렌더링
 fillRect(x, y, width, height)는 xy좌표 기준 4사분면에 렌더링
 */
 const drawLyrics = () => {
+
   const renderFrame = (timestamp) => {
+    if(song.value == null) return ;
+
     const ctx = canvas.value.getContext("2d");
     ctx.clearRect(0, 0, canvas.value.width, canvas.value.height); // 초기화
 

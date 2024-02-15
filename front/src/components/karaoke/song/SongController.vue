@@ -114,6 +114,10 @@ const songId = ref(undefined);
 function startSong() {
   removeReserve()
     .then(() => {
+    if(song.value == null) {
+      alert("노래 데이터가 아직 없어요,,,")
+      return ;
+    }
       singing();
       startRecording();
     })
