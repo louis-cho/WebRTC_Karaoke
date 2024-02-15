@@ -524,8 +524,30 @@ session.on('streamCreated', ({ stream }) => {
 이제 Token을 얻어올 차례입니다. 입력한 SessionId와 일치하는 Session이 존재하면 해당 Session과 연결된 Connection 객체의 Token을 얻어옵니다. 이 작업은 Server에서 이루어지기 때문에 Client에서는 요청만 보냅니다.
 </div>
 
+```javascript
+const token = await axios.post(
+    APPLICATION_SERVER_URL + '/karaoke/sessions/getToken',
+    {
+        sessionName: sessionName,
+        // filter 사용을 위한 설정들
+        type: 'WEBRTC',
+        role: 'PUBLISHER',
+        kurentoOptions: {
+            allowedFilters: ['GStreamerFilter', 'FaceOverlayFilter'],
+        },
+    },
+    {
+        headers: {
+            Authorization: getCookie('Authorization'),
+            refreshToken: getCookie('refreshToken'),
+            'Content-Type': 'application/json',
+        },
+    }
+);
+```
+
 <div>
-얻어온 Token으로 Session을 연결합니다. 
+얻어온 Token으로 Session에 연결합니다. 이후에 Publisher를 만들고 Session에 발행합니다. subscribeToRemote()는 원격 스트림을 수신하기 위한 설정으로, 위에서 설정했던 이벤트를 수신하기 위해 필요합니다.
 </div>
 
 ```javascript
@@ -542,16 +564,11 @@ session.connect(token.data, { clientData: userName }).then(() => {
         mirror: true, // 로컬 비디오를 반전할지 여부
     });
 
-    console.log(publisher_tmp);
-
-    // 페이지에서 주요 비디오를 설정하여 웹캠을 표시하고 발행자를 저장합니다.
-    mainStreamManager = publisher_tmp;
     publisher = publisher_tmp;
 
-    // --- 6) 스트림을 발행하고, 원격 스트림을 수신하려면 subscribeToRemote() 호출하기 ---
+    // 원격 스트림을 수신하기위해 subscribeToRemote() 호출
     publisher.subscribeToRemote();
-    session.publish(this.publisher);
-    getMedia(); // 세션이 만들어졌을 때 미디어를 불러옵니다.
+    session.publish(publisher);
 });
 ```
 
