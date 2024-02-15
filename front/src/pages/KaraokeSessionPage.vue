@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf" v-if="store.session">
+  <q-layout view="lHh Lpr lFf" v-if="store.session" class="background">
     <!-- 상단 AppBar -->
     <q-header elevated class="custom-header">
       <div
@@ -11,10 +11,9 @@
           justify-content: space-between;
         "
       >
-        <q-toolbar-title style="font-size: 40px"
-          >{{ pref.app.kor.karaoke.list.sessionId }} :
-          {{ decodeBase64(store.sessionName) }}</q-toolbar-title
-        >
+        <q-toolbar-title style="font-size: 35px">
+          {{ decodeBase64(store.sessionName) }}
+        </q-toolbar-title>
         <div style="display: flex">
           <q-btn
             v-if="!store.singing && store.isModerator"
@@ -69,7 +68,7 @@
     </q-page-container>
 
     <!-- 하단 메뉴바 -->
-    <q-footer>
+    <q-footer class="custom-footer">
       <q-tabs align="justify" active-color="positive" indicator-color="primary">
         <q-tab
           name="karaoke-chat"
@@ -169,7 +168,11 @@ function changeSongMode() {
 
 <style scoped>
 .custom-header {
-  height: 50px;
+  background-color: darkorchid;
+  height: 60px;
+}
+.custom-footer {
+  background-color: darkorchid;
 }
 
 #video-container {
@@ -181,5 +184,9 @@ function changeSongMode() {
 /* 추가한 클래스로 반응형 스타일을 지정합니다. */
 .responsive-container {
   flex-wrap: wrap; /* 자식 요소들이 한 줄에 나오도록 설정 */
+}
+
+.background {
+  background-color: mediumorchid; /* 또는 다른 원하는 색상으로 변경 */
 }
 </style>
