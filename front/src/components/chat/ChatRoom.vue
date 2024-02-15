@@ -45,6 +45,17 @@ onMounted(async () => {
   border-radius: 5px;
 }
 
+.room-name {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 160px;
+  text-align: center;
+  font-size: 20px;
+  color: white;
+}
+
 .room-id, .user-pk, .status, .time {
   display: block;
   margin-bottom: 5px;

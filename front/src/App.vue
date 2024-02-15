@@ -18,6 +18,6 @@ body {
 }
 
 .background {
-  background-color: #dec1de;
+  background-image: url("@/assets/img/mikebackground.jpg");
 }
 </style>

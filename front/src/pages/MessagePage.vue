@@ -1,8 +1,8 @@
 <template>
-    <nav-bar />
   <q-layout view="hHh lpR fFf">
-    <q-page-container>
-      <q-page class="flex flex-center">
+    <nav-bar />
+    <q-page-container style="max-width: 480px; position: absolute; left: 50%; margin-left:-15%">
+      <q-page style="min-width: 480px;">
         <div>
           <div class="flex justify-between items-center">
             <div>
@@ -13,12 +13,20 @@
             </div>
           </div>
           <!-- Chat room list -->
-          <ul v-if="paginatedChatRooms.length > 0" class="q-mt-md">
-            <ChatRoom
-              v-for="chatRoom in paginatedChatRooms"
-              :key="chatRoom.roomPk"
-              :chatRoom="chatRoom"
-            />
+          <ul v-if="paginatedChatRooms.length > 0" class="q-mt-md flex flex-wrap">
+            <div v-for="(chatRoom, index) in paginatedChatRooms" :key="chatRoom.roomPk" class="w-1/2">
+              <div style="width: 200px;">
+                <q-card
+                  class="my-card text-white"
+                  style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)"
+                >
+                <ChatRoom :chatRoom="chatRoom" />
+                </q-card>
+              </div>
+              <!-- 한 줄에 2개의 ChatRoom이 표시될 때마다 줄 바꿈을 추가합니다 -->
+              <!-- index가 홀수일 때에만 줄 바꿈을 추가합니다 -->
+              <br v-if="(index + 1) % 2 === 0 && index !== paginatedChatRooms.length - 1">
+            </div>
           </ul>
           <!-- No chat rooms message -->
           <p v-else class="text-caption text-center q-mt-md">
@@ -26,7 +34,7 @@
           </p>
 
           <!-- Pagination -->
-          <div class="q-mt-md q-px-md">
+          <div class="q-mt-md q-px-md" style="position: absolute; left: 50%; margin-left:-35%">
             <q-btn
               @click="prevPage"
               :disable="pageNumber === 1"
@@ -299,5 +307,11 @@ const handleCancel = () => {
 <style scoped>
 .q-btn {
   margin-right: 10px;
+}
+.content-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 </style>
