@@ -18,27 +18,14 @@
           <q-page-container>
             <q-page>
               <q-card-section>
-                <div
-                  class="q-mb-md"
-                  v-for="(slider, index) in filteredSliders"
-                  :key="index"
-                >
-                  <label
-                    style="
-                      white-space: nowrap;
-                      display: flex;
-                      justify-content: space-between;
-                    "
-                  >
-                    {{ slider.label }}: {{ slider.value }}
-                    <q-slider
-                      v-model="slider.value"
-                      :min="slider.min"
-                      :max="slider.max"
-                      :step="slider.step"
-                      style="width: 60%"
-                    />
-                  </label>
+                <div>
+                  에코 : {{ selectedIndex + 1 }}
+                  <q-slider
+                    v-model="selectedIndex"
+                    :min="0"
+                    :max="sliders.length - 1"
+                    :step="1"
+                  ></q-slider>
                 </div>
 
                 <div style="display: flex; justify-content: flex-end">
@@ -100,22 +87,27 @@ import { useKaraokeStore } from "@/stores/karaokeStore.js";
 const store = useKaraokeStore();
 
 // 필터를 위한 변수
-const selectedFilter = ref({ label: "에코", value: "Audioecho" });
 const filterApplied = ref(false);
 
-// 에코 관련 변수
-const sliders = ref([
-  { label: "딜레이", value: 300, min: 100, max: 500, step: 10 },
-  { label: "강도", value: 0.5, min: 0.1, max: 1, step: 0.1 },
-  { label: "피드백", value: 0.2, min: 0, max: 0.5, step: 0.01 },
-]);
+const selectedIndex = ref(2);
+const sliders = [
+  { delay: 100, intensity: 20, feedback: 30 },
+  { delay: 150, intensity: 40, feedback: 40 },
+  { delay: 200, intensity: 60, feedback: 50 },
+  { delay: 250, intensity: 80, feedback: 60 },
+  { delay: 300, intensity: 100, feedback: 70 },
+];
 
 // 필터를 적용해주는 함수
 function applyFilter() {
   const filter = {
     type: "GStreamerFilter",
     options: {
-      command: `audioecho delay=${sliders.value[0].value} intensity=${sliders.value[1].value} feedback=${sliders.value[2].value}`,
+      command: `audioecho delay=${
+        sliders[selectedIndex.value].delay
+      } intensity=${sliders[selectedIndex.value].intensity} feedback=${
+        sliders[selectedIndex.value].feedback
+      }`,
     },
   };
 
@@ -129,16 +121,6 @@ const removeFilter = () => {
   store.publisher.stream.removeFilter();
   filterApplied.value = false;
 };
-
-// 선택된 라디오 버튼에 따라 동적으로 보여지는 슬라이더 목록
-const filteredSliders = computed(() => {
-  return selectedFilter.value.value === "Audioecho"
-    ? sliders.value.filter((slider) =>
-        ["딜레이", "강도", "피드백"].includes(slider.label)
-      )
-    : null;
-});
-
 // 필터 함수 종료
 
 // 음소거, 캠 활성화 버튼 작동
