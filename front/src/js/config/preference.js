@@ -60,6 +60,7 @@ app.api.friends = {};
 app.api.friends.get = "/friends";
 app.api.friends.list = "/list/";
 app.api.friends.request = "/friends/request/";
+app.api.friends.incomingRequest = "/friends/incoming-requests"
 app.api.friends.count = "/count"
 // app.api.friends.accept = "/friends/accept/";
 // app.api.friends.delete = "/friends/delete/";
