@@ -122,7 +122,7 @@ export const useKaraokeStore = defineStore("karaoke", {
 
         if (this.kicked == true) {
           alert("추방당했습니다.");
-          window.location.href = "/#/karaoke/";
+          window.location.href = "/karaoke/";
         }
       });
 
@@ -376,7 +376,10 @@ export const useKaraokeStore = defineStore("karaoke", {
       };
       this.singing = false;
       this.singUser = undefined;
+      this.songMode = false;
       this.newReserve = false;
+      this.reservedSongs = [];
+      this.reservedSongsLength = 0;
 
       // beforeunload 리스너 제거
       window.removeEventListener("beforeunload", this.leaveSession);
