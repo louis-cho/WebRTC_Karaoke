@@ -1,48 +1,101 @@
-<!-- <img src="https://capsule-render.vercel.app/api?type=waving&color=#a374db&height=150&section=header" /> -->
-
 # 노래 해방 🎵
+
 ![homePage](/uploads/82b358dc3a816ca1cf7360edab0021e2/homePage.png)
 
 <br />
 
 # 프로젝트 소개
-- 내가 부른 노래를 sns형태로 공유 할 수 있는 웹 노래방 서비스
-- 실시간으로 사람들 앞에서 노래를 부르고, 피드에 공유할수 있습니다.
 
+-   내가 부른 노래를 sns형태로 공유 할 수 있는 웹 노래방 서비스
+-   실시간으로 사람들 앞에서 노래를 부르고, 피드에 공유할수 있습니다.
 
 ## 프로젝트 기간
+
 2024.01.04 ~ 2024.02.16
 
 ## 팀원
- - [조현우](https://github.com/louis-cho)
- - [이준범](https://github.com/bum19)
- - [연정흠](https://github.com/madirony)
- - [노성은](https://github.com/seroh00)
- - [고정원](https://github.com/gardengo)
- - [송준석](https://github.com/jsong98)
+
+<table>
+    <tr height="140px">
+        <td align="center" width="130px">
+            <a href="https://github.com/louis-cho"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/38391852?v=4"/></a>
+            <br />
+            <a href="https://github.com/louis-cho">조현우</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/gardengo"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/48192100?v=4"/></a>
+            <br />
+            <a href="https://github.com/gardengo">고정원</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/seroh00"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/139421118?v=4"/></a>
+            <br />
+            <a href="https://github.com/seroh00">노성은</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/jsong98"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/79959903?v=4"/></a>
+            <br />
+            <a href="https://github.com/jsong98">송준석</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/madirony"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/48685874?v=4"/></a>
+            <br />
+            <a href="https://github.com/madirony">연정흠</a>
+        </td>
+        <td align="center" width="130px">
+            <a href="https://github.com/bum19"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/77481223?v=4"/></a>
+            <br />
+            <a href="https://github.com/bum19">이준범</a>
+        </td>
+      <tr height="50px">
+        <td align="center">
+            <a>으아아</a>
+        </td>
+        <td align="center">
+            <a>으아아</a>
+        </td>
+        <td align="center">
+            <a>으아아</a>
+        </td>
+        <td align="center">
+            <a>으아아</a>
+        </td>
+        <td align="center">
+            <a>으아아</a>
+        </td>
+        <td align="center">
+            <a>으아아</a>
+        </td>
+    </tr>
+    </tr>
+    
+</table>
 
 ## 링크
+
 [![logo1-removebg-preview](/uploads/62539bb6b1639ad6fda02617b81db772/logo1-removebg-preview.png)](https://i10a705.p.ssafy.io/)
 
 [![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/d3b9636405c8451499659f8d8b4ba876)
 
 [![ERD Cloud](https://img.shields.io/badge/ERDCloud-000000?style=for-the-badge&logo=ERDCloud&logoColor=white)](https://www.erdcloud.com/d/3SsAyJ6rGXSMzyPcw)
 
-[![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/file/cnHpMUN4kpZ55qLu2FKBD6/%5BNEW%5D-Quick-UXUI-Wireframe-templates!-(%EA%B8%B0%ED%9A%8D%EC%9E%90%EC%99%80-%EB%94%94%EC%9E%90%EC%9D%B4%EB%84%88%EB%A5%BC-%EC%9C%84%ED%95%9C-UXUI-%ED%99%94%EB%A9%B4%EA%B8%B0%ED%9A%8D%EC%84%9C%2F%ED%99%94%EB%A9%B4%EC%84%A4%EA%B3%84%EC%84%9C-%ED%85%9C%ED%94%8C%EB%A6%BF)-(Community)?type=design&node-id=103-2&mode=design&t=VZrVBeL6BKOWOGX8-0)
+[![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](<https://www.figma.com/file/cnHpMUN4kpZ55qLu2FKBD6/%5BNEW%5D-Quick-UXUI-Wireframe-templates!-(%EA%B8%B0%ED%9A%8D%EC%9E%90%EC%99%80-%EB%94%94%EC%9E%90%EC%9D%B4%EB%84%88%EB%A5%BC-%EC%9C%84%ED%95%9C-UXUI-%ED%99%94%EB%A9%B4%EA%B8%B0%ED%9A%8D%EC%84%9C%2F%ED%99%94%EB%A9%B4%EC%84%A4%EA%B3%84%EC%84%9C-%ED%85%9C%ED%94%8C%EB%A6%BF)-(Community)?type=design&node-id=103-2&mode=design&t=VZrVBeL6BKOWOGX8-0>)
 
 <br />
 
-
 # 개발 환경
- - **IDE** : `IntelliJ IDEA`, `Vidsual Studeo Code`
- - **BE** : `Java 11` `Spring Boot 2.7.18` `Redis 7.2.4` `MariaDB 11.2.2` `Gradle 6.8`
- - **FE** :  `Node 20.11.0` `Vue 3.4.15` `Quasar 2.14.3`
- - **ETC** : `openvidu 2.29.0` `ELK 7.17.0` `Docker 25.0.1` `jenkins 2.442` `rabbitMQ 3.12.12` 
+
+-   **IDE** : `IntelliJ IDEA`, `Vidsual Studeo Code`
+-   **BE** : `Java 11` `Spring Boot 2.7.18` `Redis 7.2.4` `MariaDB 11.2.2` `Gradle 6.8`
+-   **FE** : `Node 20.11.0` `Vue 3.4.15` `Quasar 2.14.3`
+-   **ETC** : `openvidu 2.29.0` `ELK 7.17.0` `Docker 25.0.1` `jenkins 2.442` `rabbitMQ 3.12.12`
 
 <br />
 
 # 기술 스택
+
 ## Back-end
+
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
 <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
 <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
@@ -50,6 +103,7 @@
 <img src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white"/>
 
 ## Front-end
+
 <img alt="JavaScript" src ="https://img.shields.io/badge/JavaScript-F7DF1E.svg?&style=for-the-badge&logo=JavaScript&logoColor=black"/>
 <img src="https://img.shields.io/badge/vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white">
 <img src="https://img.shields.io/badge/Quasar-16B7FB?style=for-the-badge&logo=Quasar&logoColor=white"/>
@@ -58,23 +112,27 @@
 <img alt="Static Badge" src="https://img.shields.io/badge/axios-FF00FF.svg?style=for-the-badge&logo=axios&logoColor=black">
 
 ## DB
+
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
 <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
 <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
 
 ## Dev-Ops
+
 <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
 <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white">
 <img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white">
 <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
 
 ## 협업Tools
+
 <img src="https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white">
 <img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white">
 <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 <img src="https://img.shields.io/badge/gitlab-FC6D26?style=for-the-badge&logo=gitlab&logoColor=white">
 
 ## ETC
+
 <img src="https://img.shields.io/badge/webrtc-FFE033?style=for-the-badge&logo=webrtc&logoColor=white">
 <img src="https://img.shields.io/badge/rabbitmq-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white">
 <img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">
@@ -84,27 +142,39 @@
 <br />
 
 # 주요 기능
-- webRTC와 활용한 실시간 화상 노래방 환경 제공
-- 2가지 노래방 모드
-    - 일반 노래방
-        - MR과 가사 제공
-        - 녹화
-    - 퍼펙트 스코어
-        - 사용자의 음성 데이터 분석
-        - 분석된 데이터로 음정 평가
-- 실시간 알림
-- 녹화된 영상을 sns 피드 형태로 공유
-- ***추가
+
+-   webRTC와 활용한 실시간 화상 노래방 환경 제공
+-   2가지 노래방 모드
+    -   일반 노래방
+        -   MR과 가사 제공
+        -   녹화
+    -   퍼펙트 스코어
+        -   사용자의 음성 데이터 분석
+        -   분석된 데이터로 음정 평가
+-   노래방 부가 기능
+    -   인원제한, 비밀번호 설정
+    -   추방
+    -   채팅
+    -   입력 변경
+    -   종료 후 피드 작성
+-   실시간 알림
+-   녹화된 영상을 sns 피드 형태로 공유
+-   DM
+  - 방생성
+  - 초대
+  - 실시간 채팅
 
 <br />
 
 # 화면
+
 <<도메인 별로>>
 gif 화면 추가
 
 <br />
 
 # 아키넥처 구성도
+
 ![a705.drawio](/uploads/2f07ef3d0808a1239f11647ffaeb4f9a/a705.drawio.png)
 
 <br />
@@ -112,15 +182,17 @@ gif 화면 추가
 # Elastic Search
 
 ### 유저 검색
+
 회원가입 시 Elasticsearch에서 사용하는 UserDocument 타입 데이터를 저장합니다.<br>
 UserDocument는 userPk(int), nickname(String)을 갖고 있어 ElasticsearchRepository를 통해 유저 닉네임 기반 검색을 가능하게 합니다.<br>
 또한 유사도 있는 검색 결과도 보여줄 수 있도록 Elasticsearch Query의 fuzziness의 유연성을 설정하였습니다.
+
 ```java
     // UserServiceImpl.java
     @Override
     public List<UserDocument> searchUsersByNickname(String nickname) {
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(fuzzyQuery("nickname", nickname).fuzziness(Fuzziness.TWO)) 
+                .withQuery(fuzzyQuery("nickname", nickname).fuzziness(Fuzziness.TWO))
                 .build();
 
         SearchHits<UserDocument> searchHits = elasticsearchRestTemplate.search(searchQuery, UserDocument.class);
@@ -129,14 +201,16 @@ UserDocument는 userPk(int), nickname(String)을 갖고 있어 ElasticsearchRepo
 ```
 
 ### 인기 피드 랭킹 계산
+
 인기 피드 랭킹은 Elasticsearch에 동기화된 데이터를 스케줄링을 통해 일정 주기로 새롭게 추가된 데이터를 대상으로 계산됩니다.<br>
 각 피드 별 점수에 영향을 미치는 요인은 좋아요 개수와 조회수가 있으며 각각은 5:3의 가중치를 갖고 계산됩니다.<br>
 업데이트된 피드 랭킹은 상위 100개의 피드가 내림차순으로 정렬됩니다. 이 결과물은 조회가 자주 일어날 것이 예상되므로 메모리 변수 형태로 유지 관리합니다.<br>
+
 ```java
-    @Scheduled(cron = "0 */15 * * * *") 
+    @Scheduled(cron = "0 */15 * * * *")
     public void calculateRank() {
-        String likesIndexName = "likes"; 
-        String hitIndexName = "hits"; 
+        String likesIndexName = "likes";
+        String hitIndexName = "hits";
 
         List<SearchHit> likesData = fetchDataFromElasticsearch(likesIndexName);
 
@@ -163,7 +237,9 @@ UserDocument는 userPk(int), nickname(String)을 갖고 있어 ElasticsearchRepo
             }
     }
 ```
+
 ### MySQL, Elasticsearch 동기화
+
 MySQL DB와 Elasticsearch Document는 서로 동기화되어 일관성을 유지해야 합니다. 이를 만족시키기 위해 logstash를 활용하였습니다. <br>
 크론식 표현을 통해 일정 주기로 동기화 작업이 이뤄지도록 구성하였습니다. <br>
 좋아요, 조회수 정보는 각 DB SELECT 문을 통해 fetch 시 timestamp를 기준으로 새로운 데이터만 가져오도록 작성하였습니다. <br>
@@ -171,16 +247,16 @@ MySQL DB와 Elasticsearch Document는 서로 동기화되어 일관성을 유지
 
 ```
 input {
-  
+
   jdbc {
     jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/karaoke"
     jdbc_user => "root"
     jdbc_password => "1234"
     jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
     jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
-    
+
     statement => "SELECT * FROM likes WHERE timestamp > :sql_last_value"
-    
+
     schedule => "*/10 * * * * *"
     use_column_value => true
     tracking_column => "timestamp"
@@ -188,7 +264,7 @@ input {
     clean_run => false
     type => "like"
   }
-  
+
   jdbc {
     ...
   }
@@ -201,11 +277,11 @@ output {
       index => "likes"
     }
   }
-  
+
   if [type] == "hit" {
   	...
   }
-  
+
   stdout { codec => rubydebug }
 }
 
@@ -231,7 +307,8 @@ output {
 
 ### Generic Type. 일관된 반환 타입
 
-@ExceptionHandler(ApiException.class) annotation을 통해 ApiException 클래스의 예외는 제네릭 타입의  일관된 리턴 타입 ResponseEntity<ApiResponse<?>>을 갖도록 구현하였습니다.
+@ExceptionHandler(ApiException.class) annotation을 통해 ApiException 클래스의 예외는 제네릭 타입의 일관된 리턴 타입 ResponseEntity<ApiResponse<?>>을 갖도록 구현하였습니다.
+
 ```java
 @RestControllerAdvice
 public class ApiExceptionAdvice {
@@ -251,10 +328,10 @@ public class ApiExceptionAdvice {
 }
 ```
 
-
-
 ### 에러 정의. Enum Type 활용
+
 각 도메인 별 에러 타입을 Enum Type을 통해 일관성을 갖춰 구현하였습니다. 테스트 단계에서 요청 실패에 대해서 어떤 예외가 발생했는지 빠르게 파악하고 관리할 수 있도록 하였습니다.
+
 ```JAVA
 public enum CommentExceptionEnum implements ExceptionEnum {
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C00001", "댓글을 찾을 수 없습니다"),
@@ -263,6 +340,7 @@ public enum CommentExceptionEnum implements ExceptionEnum {
     ...
 }
 ```
+
 ```JAVA
 public enum LikeExceptionEnum implements ExceptionEnum {
 
@@ -272,14 +350,17 @@ public enum LikeExceptionEnum implements ExceptionEnum {
     ...
 }
 ```
+
 # 회원 정보 암호화 관리
 
 ### RSA 암복호화
+
 RSA 2048 bit + bcrypt hash를 기반으로 제작하였습니다. <br>
 서버는 유저가 로그인 및 회원가입을 필요로 하는 페이지에 접속 시 유저 ip에 따라 RSA 비대칭키 쌍을 생성한 뒤, 이를 관리합니다. <br>
 jsbn, prng4, rng, rsa js 파일을 es6 형태에 맞게 포팅하였으며 이를 통해 서버 응답으로 넘어온 modulus, exponent public key를 기반으로 비밀번호 암호화를 수행합니다.<br>
 공개키로 암호화된 정보는 서버 측의 비밀키로 복호화한 원문 패스워드와 SALTING 기능이 내장된 bcrypt 해싱 결과를 DB로부터 가져와 비교합니다.<br>
 이를 통해 사용자 비밀번호 원문을 저장하지 않고 로그인 인증 성공/실패 판단이 가능합니다.
+
 ```javascript
     // 암호화 과정 (클라이언트)
     import * as RSA from "./rsa.js";
@@ -302,8 +383,8 @@ jsbn, prng4, rng, rsa js 파일을 es6 형태에 맞게 포팅하였으며 이�
    UserAuth userAuth = new UserAuth(id, hashedPassword);
 ```
 
-
 ### RSA Key Manager
+
 비대칭키 쌍은 서버 메모리 변수로 관리됩니다. RSA Key Manager는 싱글톤 패턴으로 관리되며, 내부에는 각 클라이언트의 마지막 조회 시각을 의미하는 lastRequest와 클라이언트의 ip를 key 값으로 rsa key pair가 저장된 hash map이 존재합니다.<br>
 이는 스케줄러를 통해 일정 주기마다 마지막 키 조회 요청으로부터 10분이 지난 키는 삭제하여 메모리 낭비를 줄일 수 있도록 작성하였습니다.
 
@@ -320,7 +401,7 @@ public class RSAKeyManagerCleanupTask {
 
     private final int period = 600000;
 
-    @Scheduled(fixedRate = period) 
+    @Scheduled(fixedRate = period)
     public void cleanupUnusedKeys() { // 사용하지 않는 비대칭 키 쌍을 삭제합니다
       ...
     }
@@ -328,6 +409,7 @@ public class RSAKeyManagerCleanupTask {
 ```
 
 # 좋아요, 조회수 데이터 동기화
+
 좋아요, 조회수가 급증하는 게시글 피드에 대해 바로 DB write 요청이 일어난다면 많은 부하가 일어날 수 있습니다. 이를 해결하기 위해 Redis cache를 사용하여 DB write가 각 요청에 대해 매번 일어나는 것을 방지하였습니다.<br>
 사용자 요청에 대해 우선적으로는 Redis cache에 저장하였으며, 이를 일정 주기로 비동기 DB 동기화를 통해 해결하고자 했습니다.<br>
 또한 게시글에 대한 통계 정보를 관리하는 테이블을 생성하여 각 게시글의 좋아요, 조회수 정보를 빠르게 확인할 수 있도록 구현하였습니다.<br>
@@ -337,13 +419,13 @@ public class RSAKeyManagerCleanupTask {
     public CompletableFuture<Void> saveToMySQLAsync() {
         HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
         long count = hashOperations.scan(LIKE_HASH_KEY, ScanOptions.scanOptions().match("*").build()).stream().count();
-      
+
         hashOperations.scan(LIKE_HASH_KEY, ScanOptions.scanOptions().match("*").build())
                 .forEachRemaining(entry -> {
                        Like like = (Like) entry.getValue();
                          // 조건에 따라 redis 데이터를 mysql 테이블 동기화
                          ...
-                       );     
+                       );
                         hashOperations.delete(LIKE_HASH_KEY, entry.getKey());
                         return;
                     }
@@ -367,6 +449,7 @@ public class RSAKeyManagerCleanupTask {
 ```
 
 # 프로시저 적용
+
 SQL을 백엔드 서버에서 생성하여 DB 요청하기 보다는 pre-compiled procedure를 통해 DB 작업 성능 개선을 이끌어 내며 한 번의 수많은 댓글을 로드하지 않고 페이지네이션을 통해 효율을 추구하였습니다.
 
 ```
@@ -386,6 +469,7 @@ END
 ```
 
 # 시스템 내외부 user key 구조
+
 user key가 외부에 노출되면 해당 id의 유저를 특정할 수 있어 보안에 좋지 않은 방식이라 생각했습니다.<br>
 그럼에도 불구하고 Auto Increment 속성을 통해 생성 시각 별로 정렬되어 있으면서도, 데이터 조회에 있어서 빠른 int 형태의 user key를 쓰는 것이 성능면에서 좋다고 생각했습니다.<br>
 두가지 측면 모두 놓치지 않기 위해 두가지 방법 모두 사용하였으며 이를 위해 int uesr key와 uuid user key 사이의 변환을 담당하는 매핑 테이블을 추가하여
@@ -396,14 +480,169 @@ int userPk = userService.getUserPk(UUID.fromString(uuid));
 ```
 
 ### 내부 시스템 user key
-클라이언트에게 노출되지 않고 백엔드 서버 내부에서 사용되는 user key의 경우 int 형태의 데이터를 사용하도록 구현하였습니다. 
+
+클라이언트에게 노출되지 않고 백엔드 서버 내부에서 사용되는 user key의 경우 int 형태의 데이터를 사용하도록 구현하였습니다.
 
 ### 외부 시스템 user key
+
 클라이언트에게 노출되는 정보의 경우 int user key를 uuid user key로 변환하여 응답하도록 작성하였습니다.<br>
 이는 비단 유저 클래스 뿐 아니라 피드, 댓글, 좋아요 등에 담겨 있는 user key 정보도 마찬가지로 int 타입이 아닌 uuid를 반환하도록 적용되었습니다.
 
+# OpenVidu
 
+<img src="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/uploads/d3aba65d32a825af084d40eb56ad8e18/openvidu-workflow-server.png" width="400" height="400"/>
+
+### Application Client
+
+<div>
+OpenVidu를 사용하기 위해서는 라이브러리를 통해 객체를 만들어야합니다. 주로 사용하는 객체는 OpenVidu, Session, Token, Publisher, Subscriber 등이 있고 순서대로 객체를 만들어나가면 됩니다.
+</div>
+
+```javascript
+// 초기 객체 생성
+OV = new OpenVidu();
+session = OV.initSession();
+```
+
+<div>
+Session 객체를 만들고 나면 이벤트를 설정할 수 있습니다. streamCreated, streamDestroyed, sessionDisconnected, signal 등의 이벤트를 설정할 수 있고 방법은 아래와 같습니다. 예시는 Session에 새로운 Subscriber가 들어와 Stream이 생기면 해당 Stream을 구독하고 관리하는 것입니다.
+</div>
+
+```javascript
+// Session에 이벤트 설정
+session.on('streamCreated', ({ stream }) => {
+    const subscriber = session.subscribe(stream, undefined, {
+        subscribeToAudio: true,
+        subscribeToVideo: true,
+    });
+
+    subscribers.push(subscriber);
+});
+```
+
+<div>
+이제 Token을 얻어올 차례입니다. 입력한 SessionId와 일치하는 Session이 존재하면 해당 Session과 연결된 Connection 객체의 Token을 얻어옵니다. 이 작업은 Server에서 이루어지기 때문에 Client에서는 요청만 보냅니다.
+</div>
+
+<div>
+얻어온 Toekn으로 Session을 연결합니다.
+</div>
+
+### Application Server
+
+@ExceptionHandler(ApiException.class) annotation을 통해 ApiException 클래스의 예외는 제네릭 타입의 일관된 리턴 타입 ResponseEntity<ApiResponse<?>>을 갖도록 구현하였습니다.
+
+```java
+@RestControllerAdvice
+public class ApiExceptionAdvice {
+
+    @ExceptionHandler(ApiException.class)
+    @ResponseStatus
+    public ResponseEntity<ApiResponse<?>> handleApiException(HttpServletRequest request, ApiException e) {
+
+        return ResponseEntity
+                .status(e.getStatus())
+                .body(ApiResponse.builder()
+                        .status(String.valueOf(e.getStatus()))
+                        .message(e.getCode())
+                        .data(null)
+                        .build());
+    }
+}
+```
+# SSE(Server Side Events)
+### 알림 기능 구현
+
+로그인 시 Http 1.1 통신을 통해 SSE를 위한 연결을 설정합니다.<br>
+알림의 경우 단방향통신이기 때문에 SSE연결이 최적의 선택이 될 수 있었습니다.<br>
+
+### BackEnd
+```java
+    // NotifcationController.java
+    //요청보낸 유저의 구독(연결) 요청
+    @GetMapping(value = "/subscribe")
+    public ResponseEntity<SseEmitter> subscribe(HttpServletRequest request) throws IOException {
+        Integer userPk = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserPk();
+        SseEmitter emitter = new SseEmitter(60 * 60 * 1000L); //새로운 연결 객체 생성. 매개변수로 만료시간 줄 수 있다. 1시간.
+        sseEmitters.add(userPk, emitter); //객체 메모리에 저장.
+
+  ...
+        return ResponseEntity.ok(emitter);
+    }
+```
+```java
+//SseEmitter.java
+package com.ssafy.server.notification.util;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+@Component
+@Slf4j
+public class SseEmitters {
+
+    private static final AtomicLong counter = new AtomicLong();
+
+    private final Map<Integer, SseEmitter> emitters = new ConcurrentHashMap<>(); //thread-safe한 자료구조.
+
+    public SseEmitter add(Integer userPk, SseEmitter emitter) {
+        this.emitters.put(userPk, emitter);
+        log.info("new emitter added: {}", emitter);
+        log.info("emitter list size: {}", emitters.size());
+        log.info("emitter list: {}", emitters);
+        emitter.onCompletion(() -> {
+            log.info("onCompletion callback");
+            this.emitters.remove(userPk, emitter);
+        });
+        emitter.onTimeout(() -> {
+            log.info("onTimeout callback");
+            emitter.complete();
+        });
+
+        return emitter;
+    }
+
+    public SseEmitter getSseEmitter(Integer userPk){
+        return emitters.get(userPk);
+    }
+    public void remove(Integer userPk, SseEmitter emitter){
+        emitters.remove(userPk, emitter);
+    }
+
+}
+```
+### FrontEnd
+기본적으로 EventSource 객체를 이용해 SSE 연결 요청을 보낼수 있지만, 헤더에 인증 토큰을 추가하기위해 EventSourcePolyfill 객체를 사용했습니다.
+```javascript
+//notificatinoStore.js
+  state: () => ({
+...
+    sse : undefined,
+...
+  }),
+   async setSse() {
+      const { setCookie, getCookie, removeCookie } = useCookie();
+      this.sse = new EventSourcePolyfill(pref.app.api.protocol + pref.app.api.host + "/notifications/subscribe",{
+        headers: {
+          Authorization : getCookie("Authorization"),
+          refreshToken : getCookie("refreshToken"),
+          heartbeatTimeout: 120000,
+          "Content-Type": "application/json",
+        },
+      });
+...
+
+      this.sse.addEventListener('message', (message) => {
+        // const { data: receivedConnectData } = e;
+        console.log(' \'message\' event data shoud be notificationID: ', message.data);  // "connected!"
+ ...
+ ```
 # 디렉토리 구조
+
 ```
 front
 ├─assets
@@ -529,153 +768,12 @@ server
     └─util
 ```
 
-<!-- <img src="https://capsule-render.vercel.app/api?section=footer&type=waving&color=#a374db&height=150" /> -->
-
 <br />
 <br />
 <br />
 
-
-# 프로젝트 한 일(0129 ~ 0202)
-
-### 이준범
-BE
-- 포인트(마일리지)
-  - 포인트(마일리지) 제도에 필요한 api, repository작성
-  - redis를 이용한 현재 포인트값 캐싱
-  - redis 만료시 중간 포인트 값 갱신 작업 (service)
-
-INFRA
-- 인프라
-  - ec2에 mariadb, elk, openvidu 배포
-  - ec2에 프론트 npm run build를 통한 statc한 파일로 배포
-  - ec2에 백엔드 이미지로 배포
-  - application.properties에 배포환경에 맞는 포트설정
-  - nginx에서 https를 통한 리버스 프록시 구축. 프론트-백,    -백-오픈비두 연결 구현.
-  - 프론트-오픈비두 미구현
 ---
 
-### 노성은
-- FE
-  - [DM] 메시지 파싱 처리 (메시지 입력 타입 따라 다르게 처리하는)
-  - [DM] 1:1 dm 페이지 생성 
-  - [DM] 텍스트/이미지 전송 기능
-  - [DM] 스크롤 기능
-  - [DM] ChatPage dm 작성자에 따른 기능 분리 미구현
-  - [FEED] SNS 상세 피드 페이지 (FeedDetail) 생성
-  - [FEED] 본인 계정 피드 페이지 (MyProfile)생성
-  - [FEED] 피드 리스트 페이지 (FeedPage) 생성
----
-### 송준석
-- BE
-  - [노래방] 백엔드 노래 스켈레톤 코드 작성 
-  - [AWS S3] 버킷 생성 및 인증키 발급
-  - [AWS S3] 커넥션 설정
-  - [AWS S3] S3fileUploader 구현
-
-- FE
-  - [노래방] 퍼펙트스코어, MML형식 -> ScoreData 파싱하는 ScoreParser 구현
-  - [노래방] 퍼펙트스코어, 음성 인식 및 주파수로 변환하는 ToneDetector 구현
-  - [노래방] 퍼펙트스코어, 입력 주파수 및 Scoredata를 그리는 ScoreDrawer 구현
-  - [노래방] 일반모드, 노래 데이터 변환 및 출력 구현
-  - [노래방] 일반모드, 진행중인 노래 싱크에 맞게 가사 렌더링 구현
----
-### 조현우
-
-- BE
-  - [유저인증] 서버 측 RSA 복호화
-  - [유저인증] 서버 측 클라이언트 암호화 정보 해시 비교 (bcrypt 해시 비교 및 복호화)
-  - [유저인증] AOP를 활용해 백엔드 서버 함수 호출 시 함수 정보 출력
-  - [유저인증] RSA Key Manager 개발 key-value : ip- 비대칭 KeyPair
-  - [유저인증] RSA Key Manager Clean up 스케줄러 개발 - 마지막 요청으로부터 10분 이후 삭제
-  - [유저] 시스템 내부에서는 Autoincrement INT Type user primary key, 시스템 외부에서는 UUID를 사용하도록 구성 (성능, 보안)
-  - [웹소켓] 백엔드 웹소켓 스켈레톤 코드 개발
-  - [알림] 알림 기능 구현 (SSE)
-  - [검색] ELK docker-compose 설정
-  - [검색] Logstash를 통해 MySQL - Elasticsearch 데이터 동기화
-  - [검색] Elasticsearch Spring boot 연동
-  - [검색] Elasticsearch를 통해 유저 닉네임 검색 시 INT Type user primary key 반환
-  - [검색] Elasticsearch + Logstash + MySQL을 통한 게시글 피드 랭킹 서비스 개발
-  - [발표] 프로젝트 기획 발표 담당
-  - [댓글] 백엔드 댓글 스켈레톤 코드 작성
-  - [피드] 백엔드 피드 스켈레톤 코드 작성
-  - [좋아요] 백엔드 좋아요 스켈레톤 코드 작성
-  - [DM] 백엔드 Websocket 스켈레톤 코드 작성
-  - [DB] Redis <-> MySQL 동기화 스켈레톤 코드 작성
-
-- FE
-  - [환경설정] 프론트엔드 vue & quasar 프레임워크 환경 설정
-  - [유저인증] 클라이언트 RSA 암호화
-  - [DM] 클라이언트 Websocket 스켈레톤 코드 작성
-
-
----
-### 연정흠
-[BE] DM
-- STOMP pub sub & RabbitMQ & Redis & MySQL 활용 DM(채팅) 구현
-- [DM] STOMP 실시간 채팅 구현
-- [DM] STOMP와 RabbitMQ 연동
-- [DM] 채팅방 & 채팅내역 JPA 활용 DB 저장
-- [DM] 이전 채팅 내역 및 새로운 채팅 내역 mySQL <-> Redis 로딩 및 저장
-- [DM] redis에 이전 채팅 내역이 존재하지 않을 경우 db 조회 후 redis 저장
-- [DM] 스케줄링(Batch)을 위한 로직 구현 및 redis 캐시 삭제
-- [DM] 채팅방 입장 시, 이전 채팅 내역 중 가장 최근 날짜 데이터 로딩
----
-### 고정원
-- __BE__
-  - __[노래방_세션] 노래방 생성 및 입장__
-    - SessionName으로 OpenVidu Session 객체 생성, 이미 존재하면 생성하지 않고 가져옴
-    - 세션에 연결된 Connection 객체 생성(입장하기)
-    - BE 서버에 Session과 Token을 저장하여 관리
-    - Connection 객체의 토큰 반환
-
-  - __[노래방_세션]  노래방 퇴장 및 제거__
-    - SessionName과 Token으로 해당하는 Session에서 Token 제거
-    - 해당 Session에 더이상 Token이 존재하지 않으면 Session도 제거
-
-  - __[노래방_세션] 노래방 제거__
-    - SessionName에 해당하는 Session 강제 제거
-    - Session에 들어와있던 Token도 모두 제거
-
-  - __[노래방_세션] 노래방 리스트__
-    - OpenVidu 서버에 생성된 모든 Session 정보 반환
-
-  - __[노래방_세션] 노래방 정보__
-    - SessionName에 해당하는 Session의 정보 보기
-
-  - __[노래방_녹화] 녹화 시작__
-    - SessionName에 해당하는 세션 녹화 시작
-    - OutputMode를 설정할 수 있음(Computed, Individual)
-
-  - __[노래방_녹화] 녹화 종료__
-    - 녹화 종료, 녹화된 영상은 OpenVidu 서버에 저장
-    - url을 통해 저장된 영상 확인 가능
-
-  - __[노래방_녹화] 녹화 영상 제거__
-    - RecordingId에 해당하는 녹화 영상을 OpenVidu 서버에서 제거
-
-  - __[노래방_녹화] 녹화 영상 정보__
-    - RecordingId에 해당하는 녹화 영상의 정보 반환
-
-  - __[노래방_녹화] 녹화 영상 리스트__
-    - OpenVidu 서버에 저장되어있는 모든 영상 정보 반환
-
-  - __[노래방_녹화] 녹화 영상 업로드__
-    - OpenVidu에 저장되어 있는 영상을 AWS S3에 업로드
-    - OpenVidu 서버 -> BackEnd 서버에 저장 -> AWS S3에 저장
-
-- __FE__
-  - [노래방] 생성된 노래방을 리스트로 출력
-  - [노래방] 제목과 일치하는 노래방 생성 및 입장
-  - [노래방] 노래방 나가기
-  - [노래방] 노래방 내 화상채팅 구현
-  - [노래방] 음성필터 적용하기(에코, 증폭, 피치), 적용할 필터를 고르고 강도 설정
-  - [노래방] 노래방 내 채팅 구현
-  - [노래방] 카메라, 마이크 on/off 기능 구현
-  - [노래방] 카메라, 마이크 변경 기능 구현
-  - [노래방] 녹화 시작, 종료, 확인, 삭제 구현 -> 저장모드, 카메라, 마이크 사용여부 선택 가능
-
-___
 # firstPjtTest
 
 공통테스트
@@ -765,6 +863,7 @@ $ gedit docker-compose.yml
 ```
 
 // docker-compose.yml
+
 ```
 version: '3.6'
 services:
@@ -818,6 +917,7 @@ networks:
   elk:
 
 ```
+
 // end of docker-compose.yml
 
 ```
@@ -827,6 +927,7 @@ $ gedit logstash.conf
 ```
 
 // mysql 설정
+
 ```
 # mysql connector java jar 다운로드
 wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.30/mysql-connector-java-8.0.30.jar
@@ -842,19 +943,20 @@ mv /path/to/mysql-connector-java-8.0.30.jar /path/to/logstash/
 ```
 
 // logstash.conf
+
 ```
 # synchronization with elasticseasrch & mysql
 input {
-  
+
   jdbc {
     jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/testuser"
     jdbc_user => "root"
     jdbc_password => "1234"
     jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
     jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
-    
+
     statement => "SELECT * FROM likes WHERE timestamp > :sql_last_value"
-    
+
     schedule => "*/10 * * * * *"
     use_column_value => true
     tracking_column => "timestamp"
@@ -862,16 +964,16 @@ input {
     clean_run => false
     type => "like"
   }
-  
+
   jdbc {
     jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/testuser"
     jdbc_user => "root"
     jdbc_password => "1234"
     jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
     jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
-    
+
     statement => "SELECT * FROM hit WHERE timestamp > :sql_last_value"
-    
+
     schedule => "*/10 * * * * *"
     use_column_value => true
     tracking_column => "timestamp"
@@ -894,14 +996,14 @@ output {
       index => "likes"
     }
   }
-  
+
   if [type] == "hit" {
   	elasticsearch {
   	  hosts => ["elasticsearch:9200"]
   	  index => "hit"
   	}
   }
-  
+
   stdout { codec => rubydebug }
 }
 
@@ -926,6 +1028,7 @@ output {
 }
 
 ```
+
 // end of logstash-config
 
 ```
