@@ -64,8 +64,6 @@ app.api.friends.incomingRequest = "/friends/incoming-requests";
 app.api.friends.count = "/count";
 app.api.friends.accept = "/friends/accept/";
 app.api.friends.delete = "/friends/delete/";
-// app.api.friends.incoming.requests = "/friends/incoming-requests/";
-app.api.friends.outgoing.requests = "/friends/outgoing-requests/";
 
 app.kor = {};
 
