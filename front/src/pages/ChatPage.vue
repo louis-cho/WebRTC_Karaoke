@@ -1,4 +1,5 @@
 <template>
+    <nav-bar />
   <q-layout view="hHh lpR fFf">
     <q-page-container>
       <div class="dm-container">

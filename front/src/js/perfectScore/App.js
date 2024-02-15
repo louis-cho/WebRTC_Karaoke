@@ -108,7 +108,6 @@ export class App {
           this.hasNextLyric = false;
         }
       }
-
     }
 
     if (this.lastTime === 0) {

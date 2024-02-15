@@ -127,16 +127,14 @@ const initDrawer = () => {
 
 const play = () => {
   announceString.value = "";
-  showSongInfo.value = true;
-
   audio.value.play();
   startTimeRef.value = Date.now();
 
   if (song.value.prelude >= showSongInfoTimeOut) {
-    new Promise((resolve) => {
+    showSongInfo.value = true;    // 노래 시작하고 노래 정보 띄우기
+    new Promise(() => {
       setTimeout(() => {
-        showSongInfo.value = false;
-        resolve();
+        showSongInfo.value = false; // 5초 후에 노래 정보 내리기
       }, showSongInfoTime);
     }).then(() => {
       initDrawer();
@@ -167,6 +165,12 @@ const play = () => {
 };
 
 const stop = () => {
+  new Promise(() => {
+    showSongInfo.value = false;
+  }).then(() => {
+    initDrawer();
+  })
+
   startTimeRef.value = 0;
   song.value = null;
 
@@ -174,7 +178,6 @@ const stop = () => {
     audio.value.currentTime = 0;
     audio.value.pause();
   }
-  initDrawer();
 
   if (store.reservedSongs.length == 0) {
     announceString.value = "노래를 예약해주세요.";
