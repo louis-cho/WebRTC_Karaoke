@@ -14,10 +14,6 @@ public class ApiExceptionAdvice {
     @ExceptionHandler(ApiException.class)
     @ResponseStatus
     public ResponseEntity<ApiResponse<?>> handleApiException(HttpServletRequest request, ApiException e) {
-        ApiExceptionEntity apiExceptionEntity = ApiExceptionEntity.builder()
-                .errorCode(e.getCode())
-                .errorMessage(e.getMessage())
-                .build();
 
         return ResponseEntity
                 .status(e.getStatus())

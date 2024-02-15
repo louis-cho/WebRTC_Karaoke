@@ -1,28 +1,21 @@
 <template>
   <div style="display: flex; flex-direction: row">
     <q-btn
-      v-if="!store.singing"
-      @click="changeSongMode()"
-      color="primary"
-      label="모드 바꾸기"
-    />
-    <q-btn
-      v-if="!store.singing && store.reservedSongsLength"
+      v-if="
+        !store.singing &&
+        store.reservedSongsLength &&
+        store.reservedSongsLength > 0 &&
+        store.singUser == store.userName
+      "
       @click="startSong()"
       color="positive"
       :label="pref.app.kor.karaoke.session.start"
     />
     <q-btn
-      v-if="store.singing"
+      v-if="store.singing && store.singUser == store.userName"
       @click="stopSong()"
       color="negative"
       :label="pref.app.kor.karaoke.session.stop"
-    />
-    <q-btn
-      v-if="store.singing"
-      @click="finishSong()"
-      color="primary"
-      label="종료"
     />
   </div>
 
@@ -82,8 +75,6 @@ import { ref, watch } from "vue";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import pref from "@/js/config/preference.js";
 import axios from "axios";
-import NormalMode from "@/components/karaoke/NormalMode.vue";
-import PerfectScore from "@/components/karaoke/PerfectScore.vue";
 import useCookie from "@/js/cookie.js";
 const { setCookie, getCookie, removeCookie } = useCookie();
 
@@ -91,7 +82,6 @@ const store = useKaraokeStore();
 
 const fileUrl = ref(undefined);
 const recordingId = ref(undefined);
-
 const selectedOption = ref("비공개");
 const videoUrl = ref("");
 const privacyOptions = ["전체공개", "친구공개", "비공개"];
@@ -109,6 +99,7 @@ function startSong() {
       }
       singing();
       startRecording();
+      setTimeout(finishSong, store.song.length * 1000);
     })
     .catch((error) => {});
 }
@@ -244,15 +235,6 @@ function uploadRecording() {
       removeRecording();
     })
     .catch((error) => {});
-}
-
-function changeSongMode() {
-  store.session.signal({
-    data: JSON.stringify({
-      songMode: !store.songMode,
-    }),
-    type: "songMode",
-  });
 }
 
 function singing() {

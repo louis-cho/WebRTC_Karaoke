@@ -70,7 +70,7 @@ function sendMessage(event) {
     // 다른 참가원에게 메시지 전송하기
     store.session.signal({
       data: JSON.stringify({
-        username: store.myUserName,
+        username: store.userName,
         message: store.inputMessage,
       }), // 메시지 데이터를 문자열로 변환해서 전송
       type: "chat", // 신호 타입을 'chat'으로 설정

@@ -35,7 +35,7 @@
         >
           <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
         </div>
-        <div class="info">
+        <div class="info" >
           <div class="stats">
             <div v-if="feedLength">
               <p>게시글</p>
@@ -53,10 +53,10 @@
               <p>좋아요</p>
               <span>{{ totalLikeCount }}</span>
             </div>
-            <div>
+            <!-- <div>
               <p>친구</p>
               <span> {{ FriendCount }} </span>
-            </div>
+            </div> -->
           </div>
           <div class="bio">
             <p>{{ user.introduction }}</p>
@@ -165,7 +165,7 @@ const getFriendCount = async () => {
   try {
     const FriendCounts = await fetchFriendCount();
     FriendCount.value = FriendCounts;
-    // console.log('이거뽑을래',FriendCount.value);
+    console.log('이거뽑을래',FriendCount.value);
   } catch (error) {
     console.error("Error fetching personal feeds:", error.message);
   }
@@ -207,8 +207,8 @@ const totalCommentCount = computed(() => {
 
 .my-feed {
   /* padding: 20px; */
-  padding-left: 200px;
-  padding-right: 200px;
+  padding-left: 400px;
+  padding-right: 400px;
 }
 
 .header {
@@ -227,7 +227,7 @@ const totalCommentCount = computed(() => {
 
 .profile {
   display: flex;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
   align-items: center;
   margin: 20px 0;
 }
@@ -290,5 +290,12 @@ const totalCommentCount = computed(() => {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.info {
+  margin-left: 150px; /* Adjust the margin as needed */
+  flex-grow: 1; /* Allow the info div to grow and take remaining space */
+  display: flex;
+  flex-direction: column;
 }
 </style>

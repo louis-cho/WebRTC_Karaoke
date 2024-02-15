@@ -56,17 +56,18 @@
 
       <div v-for="feed in filteredFeeds" :key="feed.feedId">
         <div class="profile">
+          {{ feed.user.profileImgUrl }}
           <div
             class="profile-img-container"
             :style="{
               backgroundImage: `url(${(
-                feed.user.profileImgUrl || 'https://picsum.photos/200'
-              ).trim()})`,
+              feed.user.profileImgUrl || 'https://picsum.photos/200'
+            ).trim()})`,
             }"
             @click="gotoUserFeed(feed.user.userKey)"
           ></div>
 
-          <div class="width-100">
+          <div class="width-100" style="margin-left: 20px;">
             <div class="space-between">
               <div>
                 <!-- 닉네임 -->
@@ -74,7 +75,7 @@
               </div>
             </div>
             <div class="space-start">
-              <div v-if="feed && feed.song">
+              <div v-if="feed && feed.song" class="margin-right-20">
                 <span>
                   {{
                     feed.song.title ? feed.song.title + "-" : "Default Title-"
@@ -329,4 +330,49 @@ const toggleLike = async (feedId) => {
 .search-icon {
   color: grey;
 }
+.space-start {
+  display: flex;
+  justify-content: start;
+}
+
+.my-feed {
+  /* padding: 20px; */
+  padding-left: 400px;
+  padding-right: 400px;
+}
+
+.flex-row {
+  display: flex;
+}
+
+.margin-right-10 {
+  margin-right: 10px;
+}
+
+.margin-right-20 {
+  margin-right: 20px;
+}
+
+
+
+.profile-img-container {
+  width: 70px;
+  height: 70px;
+  background-image: url("@/assets/img/capture.png");
+  /* object-fit : contain; */
+  border-radius: 25px;
+  background-size: cover;
+  background-position: center;
+  display: flex; /* Flexbox 사용 */
+  justify-content: center; /* 수평 정렬을 위한 가로 중앙 정렬 */
+  align-items: center; /* 수직 정렬을 위한 세로 중앙 정렬 */
+}
+
+.profile {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin: 20px 0;
+}
+
 </style>
