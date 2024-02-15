@@ -368,6 +368,7 @@ watch(
         }
       )
       .then((res) => {
+        song.value = null;
         if(JSON.parse(JSON.stringify(res.data)) == "") {
           console.log("데이터 없는 노래 예약")
         } else {
