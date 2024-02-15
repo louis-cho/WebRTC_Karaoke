@@ -1,4 +1,4 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=#a374db&height=150&section=header" />
+<!-- <img src="https://capsule-render.vercel.app/api?type=waving&color=#a374db&height=150&section=header" /> -->
 
 # 노래 해방 🎵
 ![homePage](/uploads/82b358dc3a816ca1cf7360edab0021e2/homePage.png)
@@ -508,7 +508,7 @@ int userPk = userService.getUserPk(UUID.fromString(uuid));
                         └─server
 ```
 
-<img src="https://capsule-render.vercel.app/api?section=footer&type=waving&color=#a374db&height=150" />
+<!-- <img src="https://capsule-render.vercel.app/api?section=footer&type=waving&color=#a374db&height=150" /> -->
 
 <br />
 <br />
