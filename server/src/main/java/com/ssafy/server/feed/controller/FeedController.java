@@ -92,7 +92,23 @@ public class FeedController {
 
             response = oldPageList.getContent()
                     .stream()
-                    .map(feed -> FeedResponseFactory.createFeedResponseFromFeed(feed, userService.getUUID(String.valueOf(feed.getUserPk()))))
+                    .map(feed -> {
+                        int userPk = -1;
+                        if(feed.getUserPk() == null)
+                            return null;
+                        userPk = feed.getUserPk();
+                        UUID uuid = null;
+                        try {
+                            uuid = userService.getUUIDByUserPk(userPk);
+                        } catch (Exception e) {
+                            return null;
+                        }
+                        if(uuid == null) {
+                            return null; // 또는 원하는 다른 값으로 대체
+                        }
+                        return FeedResponseFactory.createFeedResponseFromFeed(feed, uuid);
+                    })
+                    .filter(Objects::nonNull) // null 값 필터링
                     .collect(Collectors.toList());
 
         } catch (Exception e) {
