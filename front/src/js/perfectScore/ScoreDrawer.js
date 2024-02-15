@@ -26,8 +26,8 @@ export class ScoreDrawer {
 
     // 음표 배열 생성 및 리사이즈 콜백 등록
     this._notes = new Array(300).fill(-1);
-    // const resizeObserver = new ResizeObserver(this._resizeCallback.bind(this));
-    // resizeObserver.observe(this._canvas);
+    const resizeObserver = new ResizeObserver(this._resizeCallback.bind(this));
+    resizeObserver.observe(this._canvas);
   }
 
   // 옥타브 getter/setter
@@ -97,7 +97,7 @@ export class ScoreDrawer {
     const latency = 40 / fps;
     let current = null;
 
-    this._playScore.forEach(note => {
+    this._playScore.forEach((note) => {
       if (note.note === -1) return;
 
       const x = (note.start - this._elapsed) / fps;
@@ -176,43 +176,75 @@ export class ScoreDrawer {
 
     ctx.restore();
 
-    ctx.font = '20px YCloverBold';
+    ctx.font = "20px YCloverBold";
     // 가사 렌더링
     // 시작~전주
-    if(this._elapsed < 0) {
-      ctx.fillStyle = 'white';
-      ctx.fillText( this.lyricUpper, this._screenWidth/2-60, this._canvas.height-50);
-      ctx.fillText(this.lyricLower, this._screenWidth/2-60, this._canvas.height-20);
-    } else if(this._elapsed >= 0) {
-      if(!this.isLastLyric) {
-        if(this.lyricFlag) {
-          ctx.fillStyle = 'yellow';
-          ctx.fillText( this.lyricUpper, this._screenWidth/2-60, this._canvas.height-50);
-          ctx.fillStyle = 'white';
-          ctx.fillText(this.lyricLower, this._screenWidth/2-60, this._canvas.height-20);
+    if (this._elapsed < 0) {
+      ctx.fillStyle = "white";
+      ctx.fillText(
+        this.lyricUpper,
+        this._screenWidth / 2 - 60,
+        this._canvas.height - 50
+      );
+      ctx.fillText(
+        this.lyricLower,
+        this._screenWidth / 2 - 60,
+        this._canvas.height - 20
+      );
+    } else if (this._elapsed >= 0) {
+      if (!this.isLastLyric) {
+        if (this.lyricFlag) {
+          ctx.fillStyle = "yellow";
+          ctx.fillText(
+            this.lyricUpper,
+            this._screenWidth / 2 - 60,
+            this._canvas.height - 50
+          );
+          ctx.fillStyle = "white";
+          ctx.fillText(
+            this.lyricLower,
+            this._screenWidth / 2 - 60,
+            this._canvas.height - 20
+          );
         } else {
-          ctx.fillStyle = 'white';
-          ctx.fillText( this.lyricUpper, this._screenWidth/2-60, this._canvas.height-50);
-          ctx.fillStyle = 'yellow';
-          ctx.fillText(this.lyricLower, this._screenWidth/2-60, this._canvas.height-20);
+          ctx.fillStyle = "white";
+          ctx.fillText(
+            this.lyricUpper,
+            this._screenWidth / 2 - 60,
+            this._canvas.height - 50
+          );
+          ctx.fillStyle = "yellow";
+          ctx.fillText(
+            this.lyricLower,
+            this._screenWidth / 2 - 60,
+            this._canvas.height - 20
+          );
         }
       } else {
-        ctx.fillStyle = 'yellow';
-        ctx.fillText( this.lyricUpper, this._screenWidth/2-60, this._canvas.height-50);
-        ctx.fillText(this.lyricLower, this._screenWidth/2-60, this._canvas.height-20);
+        ctx.fillStyle = "yellow";
+        ctx.fillText(
+          this.lyricUpper,
+          this._screenWidth / 2 - 60,
+          this._canvas.height - 50
+        );
+        ctx.fillText(
+          this.lyricLower,
+          this._screenWidth / 2 - 60,
+          this._canvas.height - 20
+        );
       }
     }
 
     // score 렌더링
-    if(this.eval === "PERFECT!") {
-      ctx.fillStyle = 'cyan';
-    } else if(this.eval === "GOOD!") {
-      ctx.fillStyle = 'lime';
+    if (this.eval === "PERFECT!") {
+      ctx.fillStyle = "cyan";
+    } else if (this.eval === "GOOD!") {
+      ctx.fillStyle = "lime";
     } else {
-      ctx.fillStyle = 'Tomato';
+      ctx.fillStyle = "Tomato";
     }
-    ctx.font = '20px Arial Rounded MT Bold';
-    ctx.fillText(this.eval, this._screenWidth/2-50, 50);
+    ctx.font = "20px Arial Rounded MT Bold";
+    ctx.fillText(this.eval, this._screenWidth / 2 - 50, 50);
   }
 
   // 음성 렌더링
@@ -222,18 +254,13 @@ export class ScoreDrawer {
       if (note !== -1) {
         const octav = Math.floor(note / 12) - 4;
         const n = note % 12;
-        ctx.fillRect(
-          x,
-          noteTop[n] * 5 + 150 + octav * 35 - 2.5,
-          1,
-          5
-        );
+        ctx.fillRect(x, noteTop[n] * 5 + 150 + octav * 35 - 2.5, 1, 5);
       }
     });
     const latestNote = this._notes[this._notes.length - 1];
     const octav = Math.floor(latestNote / 12) - 4;
     const n = latestNote % 12;
-    if(this._currentNote != null && latestNote !== -1) {
+    if (this._currentNote != null && latestNote !== -1) {
       // console.log("현재: "+ (noteTop[this._currentNote.note] * 5 +
       // (this._currentNote.octav - 3) * 35 +
       // 150 +
@@ -241,26 +268,25 @@ export class ScoreDrawer {
       // 2.5))
       // console.log("입력: " + (noteTop[n] * 5 + 150 + octav * 35 - 2.5))
 
-      const voice = noteTop[this._currentNote.note] * 5 +
+      const voice =
+        noteTop[this._currentNote.note] * 5 +
         (this._currentNote.octav - 3) * 35 +
         150 +
         this._oct * 5 -
         2.5;
       const score = noteTop[n] * 5 + 150 + octav * 35 - 2.5;
-      const abs = Math.abs(voice-score);
+      const abs = Math.abs(voice - score);
 
-      if(abs <= 2) {
+      if (abs <= 2) {
         this.eval = "PERFECT!";
-      } else if(abs <= 6){
-        this.eval = "GOOD!"
+      } else if (abs <= 6) {
+        this.eval = "GOOD!";
       } else {
-        this.eval = "BAD"
+        this.eval = "BAD";
       }
     } else {
       this.eval = "";
     }
-
-
   }
 
   // 초기화 완료

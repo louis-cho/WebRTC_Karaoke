@@ -2,6 +2,12 @@
   <div style="display: flex; flex-direction: column">
     <q-btn
       v-if="!store.singing"
+      @click="changeSongMode()"
+      color="primary"
+      label="모드 바꾸기"
+    />
+    <q-btn
+      v-if="!store.singing && store.reservedSongsLength"
       @click="startSong()"
       color="positive"
       :label="pref.app.kor.karaoke.session.start"
@@ -12,8 +18,12 @@
       color="negative"
       :label="pref.app.kor.karaoke.session.stop"
     />
-    <q-btn @click="finishSong()" color="primary" label="종료" />
-    <q-btn @click="changeSongMode()" color="primary" label="모드 바꾸기" />
+    <q-btn
+      v-if="store.singing"
+      @click="finishSong()"
+      color="primary"
+      label="종료"
+    />
   </div>
 
   <div>
@@ -104,12 +114,14 @@ const songId = ref(undefined);
 function startSong() {
   removeReserve()
     .then(() => {
+    if(song.value == null) {
+      alert("노래 데이터가 아직 없어요,,,")
+      return ;
+    }
       singing();
       startRecording();
     })
-    .catch((error) => {
-      console.log("removeReserve 실패", error);
-    });
+    .catch((error) => {});
 }
 
 function stopSong() {
@@ -119,9 +131,7 @@ function stopSong() {
     .then(() => {
       removeRecording();
     })
-    .catch((error) => {
-      console.log("stopRecording 실패", error);
-    });
+    .catch((error) => {});
 }
 
 function finishSong() {
@@ -132,9 +142,7 @@ function finishSong() {
       await uploadRecording();
       modalVisible.value = true;
     })
-    .catch((error) => {
-      console.log("stopRecording 실패", error);
-    });
+    .catch((error) => {});
 }
 
 function removeReserve() {
@@ -153,7 +161,6 @@ function removeReserve() {
       }
     )
     .then((res) => {
-      console.log(res.data);
       store.session.signal({ type: "reserve" });
       const parts = res.data.split("&");
 
@@ -181,12 +188,9 @@ function startRecording() {
       }
     )
     .then((res) => {
-      console.log(res.data);
       recordingId.value = res.data.id;
     })
-    .catch((error) => {
-      console.error(error);
-    });
+    .catch((error) => {});
 }
 
 function stopRecording() {
@@ -205,7 +209,6 @@ function stopRecording() {
       }
     )
     .then((res) => {
-      console.log(res.data);
       fileUrl.value = res.data.url;
     });
 }
@@ -229,13 +232,10 @@ function removeRecording() {
       fileUrl.value = undefined;
       recordingId.value = undefined;
     })
-    .catch((error) => {
-      console.error(error);
-    });
+    .catch((error) => {});
 }
 
 function uploadRecording() {
-  console.log(fileUrl.value);
   axios
     .post(
       store.APPLICATION_SERVER_URL + "/karaoke/file/upload",
@@ -251,13 +251,10 @@ function uploadRecording() {
       }
     )
     .then((res) => {
-      console.log(res.data);
       videoUrl.value = res.data;
       removeRecording();
     })
-    .catch((error) => {
-      console.error("uploadRecording 실패", error);
-    });
+    .catch((error) => {});
 }
 
 function changeSongMode() {
@@ -281,16 +278,12 @@ function singing() {
 
 watch(
   () => store.songMode,
-  (newSongMode) => {
-    console.log("SongMode이 변경됨:", newSongMode);
-  }
+  (newSongMode) => {}
 );
 
 watch(
   () => store.singing,
   (newSinging) => {
-    console.log("Singing이 변경됨:", newSinging);
-
     if (newSinging) {
       if (store.songMode) {
         perfectScoreRef.value.choose();
@@ -329,11 +322,9 @@ const submitPost = () => {
       }
     )
     .then((res) => {
-      console.log(res.data);
       recordingId.value = res.data.id;
     });
 
-  console.log("게시글 작성 완료:", postContent.value);
   closeModal();
 };
 
@@ -344,32 +335,35 @@ const closeModal = () => {
 watch(
   () => store.reservedSongsLength,
   () => {
-    if(store.reservedSongs.length == 0) {
+    if (store.reservedSongs.length == 0) {
     } else {
       axios
         .get(
-        store.APPLICATION_SERVER_URL + "/song/songInfo/" + store.reservedSongs[0].songId,
-        {
-          headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        song.value =  JSON.parse(JSON.stringify(res.data))
-      })
-      .catch((error) => {
-        console.error("songInfo 불러오기 실패"+error);
-      });
+          store.APPLICATION_SERVER_URL +
+            "/song/songInfo/" +
+            store.reservedSongs[0].songId,
+          {
+            headers: {
+              Authorization: getCookie("Authorization"),
+              refreshToken: getCookie("refreshToken"),
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          song.value = null;
+          if (JSON.parse(JSON.stringify(res.data)) != "") {
+            song.value = JSON.parse(JSON.stringify(res.data));
+          }
+        })
+        .catch((error) => {
+          console.error("songInfo 불러오기 실패" + error);
+        });
     }
-
   }
 );
 
 const song = ref({});
-
 </script>
 
 <style scoped>

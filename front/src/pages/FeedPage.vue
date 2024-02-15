@@ -1,7 +1,7 @@
 <template>
+    <nav-bar />
   <div @scroll="handleScroll">
     <!-- <TabItem/> -->
-    <NavBar />
     <!-- <h3>전체 피드 페이지</h3> -->
     <div class="my-feed">
       <!-- 첫번째 div -->
@@ -205,19 +205,24 @@ onBeforeMount(async () => {
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false);
 
-const gotoUserFeed  = (userKey) => {
-  router.push({ name: "feed", params: { userUUID:  userKey }});
-}
+const gotoUserFeed = (userKey) => {
+  router.push({ name: "feed", params: { userUUID: userKey } });
+};
 
 //가상 피드 데이터
 const fetchFeedData = async (select) => {
   const newFeeds = await fetchFeedList(page++, amount, select);
 
+<<<<<<< HEAD
   if(newFeeds == null) {
+=======
+  if (newFeeds == null) {
+    console.log("Gdgd");
+>>>>>>> origin/develop
     return;
   }
 
-  console.log(newFeeds)
+  console.log(newFeeds);
   for (let elem of newFeeds) {
     elem.song = await fetchSong(elem.songId);
     elem.user = await fetchUser(elem.userUUID);
@@ -245,7 +250,6 @@ const getUser = async (userPk) => {
   let user = await fetchUser(userPk);
   return user;
 };
-
 
 // 스크롤 이벤트 핸들러
 const handleScroll = async () => {
@@ -278,9 +282,8 @@ onUnmounted(() => {
 // 검색 기능을 위한 변수와 메소드 추가
 const searchQuery = ref("");
 
-
 const filteredFeeds = computed(() => {
-  return feeds.value.filter(feed => {
+  return feeds.value.filter((feed) => {
     const userNameLowerCase = feed.user.nickname.toLowerCase();
     const songTitleLowerCase = feed.song.title.toLowerCase();
 
@@ -294,7 +297,7 @@ const filteredFeeds = computed(() => {
 const search = () => {
   const searchQueryLowerCase = searchQuery.value.toLowerCase();
 
-  feeds.value = feeds.value.filter(feed => {
+  feeds.value = feeds.value.filter((feed) => {
     const userNameLowerCase = feed.user.nickname.toLowerCase();
     const songTitleLowerCase = feed.song.title.toLowerCase();
 
@@ -306,8 +309,8 @@ const search = () => {
 };
 
 const toggleLike = async (feedId) => {
-  const likeStatus = await createLike
-  console.log('라이크 상태',likeStatus)
+  const likeStatus = await createLike;
+  console.log("라이크 상태", likeStatus);
 };
 
 </script>

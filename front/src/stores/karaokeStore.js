@@ -194,7 +194,7 @@ export const useKaraokeStore = defineStore("karaoke", {
       }
 
       if (isRecording.data) {
-        alert("녹화 중에 입장이 불가능합니다.");
+        alert("노래 중에 입장이 불가능합니다.");
         return false;
       }
 

@@ -80,7 +80,7 @@ export class App {
     this.drawer.isLastLyric = false;
     this.drawer.lyricFlag = true;
     this.playMusic = false;
-    this.lyricIndex = 0;
+    this.lyricIndex = 1;
   }
 
   // 노트 이벤트 핸들러
@@ -91,24 +91,25 @@ export class App {
   // 애니메이션 루프
   loop(time) {
     if(this.hasNextLyric) {
-      if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this.prelude) {
-        if(this.lyricFlag) {  // 윗가사 업데이트
-          this.drawer.lyricUpper = this.lyrics[this.lyricIndex].lyric;
-          this.lyricFlag = !this.lyricFlag
-          this.drawer.lyricFlag = !this.drawer.lyricFlag
-          this.lyricIndex++;
-        } else {  // 아랫가사 업데이트
-          this.drawer.lyricLower = this.lyrics[this.lyricIndex].lyric;
-          this.lyricFlag = !this.lyricFlag
-          this.drawer.lyricFlag = !this.drawer.lyricFlag
-          this.lyricIndex++;
-        }
-        if(this.lyricIndex >= this.lyrics.length) {
-          this.drawer.isLastLyric = true;
-          this.hasNextLyric = false;
+      if(this.lyricIndex != 1) {
+        if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this.prelude) {
+          if(this.lyricFlag) {  // 윗가사 업데이트
+            this.drawer.lyricUpper = this.lyrics[this.lyricIndex].lyric;
+            this.lyricFlag = !this.lyricFlag
+            this.drawer.lyricFlag = !this.drawer.lyricFlag
+            this.lyricIndex++;
+          } else {  // 아랫가사 업데이트
+            this.drawer.lyricLower = this.lyrics[this.lyricIndex].lyric;
+            this.lyricFlag = !this.lyricFlag
+            this.drawer.lyricFlag = !this.drawer.lyricFlag
+            this.lyricIndex++;
+          }
+          if(this.lyricIndex >= this.lyrics.length) {
+            this.drawer.isLastLyric = true;
+            this.hasNextLyric = false;
+          }
         }
       }
-
     }
 
     if (this.lastTime === 0) {
