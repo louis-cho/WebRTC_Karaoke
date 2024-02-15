@@ -16,21 +16,19 @@ public class ApiResponse<T> {
     private String status;
     private String message;
     private T data;
-    private ApiExceptionEntity exception;
 
     public static <T> ApiResponse<T> success(T data) {
-        return new ApiResponse<>("success", null, data, null);
+        return new ApiResponse<>("success", null, data);
     }
 
     public static ApiResponse<?> error(String message) {
-        return new ApiResponse<>("error", message, null, null);
+        return new ApiResponse<>("error", message, null);
     }
 
     @Builder
-    public ApiResponse(String status, String message, T data, ApiExceptionEntity exception) {
+    public ApiResponse(String status, String message, T data) {
         this.status = status;
         this.message = message;
         this.data = data;
-        this.exception = exception;
     }
 }
