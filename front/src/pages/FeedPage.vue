@@ -1,4 +1,5 @@
 <template>
+    <nav-bar />
   <div @scroll="handleScroll">
     <!-- <TabItem/> -->
     <!-- <h3>전체 피드 페이지</h3> -->

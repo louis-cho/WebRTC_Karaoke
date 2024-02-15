@@ -1,4 +1,5 @@
 <template>
+    <nav-bar />
   <div>
     <!-- <TabItem /> -->
     <!-- <h4>상세 피드 페이지</h4> -->
