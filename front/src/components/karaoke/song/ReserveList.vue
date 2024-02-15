@@ -112,7 +112,6 @@ function fetchReserveList() {
           id++;
         }
       });
-      console.log(store.reservedSongs[0]);
     })
     .catch((error) => {
       alert(error.response.data);

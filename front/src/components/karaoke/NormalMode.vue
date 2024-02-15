@@ -102,7 +102,7 @@ const showSongInfoTimeOut = 9000;
 const choose = () => {
   // props로 내려온 songData 주입
   song.value = props.songData;
-  songInfo.value.author = song.value.author
+  songInfo.value.author = song.value.author;
   audio.value = new Audio(song.value.songUrl); // mp3 url 연결
 };
 
@@ -397,7 +397,6 @@ const drawLyrics = () => {
 };
 
 onMounted(() => {
-  console.log("reservedSongs.length", store.reservedSongs.length);
   if (store.reservedSongs.length == 0) {
     announceString.value = "노래를 예약해주세요.";
   } else {

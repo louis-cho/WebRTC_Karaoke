@@ -36,7 +36,6 @@ const choose = () => {
   appInstance.value.score = parseScore(song.value.mmlData); // 퍼펙트스코어 데이터주입
   appInstance.value.songLength = song.value.length;
   appInstance.value.prelude = song.value.prelude;
-  console.log(parseScore(song.value.mmlData));
   appInstance.value.lyrics = parseBundle(
     parseLyric(parseScore(song.value.mmlData))
   ); // 가사 연결
