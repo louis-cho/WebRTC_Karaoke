@@ -18,6 +18,9 @@ body {
 }
 
 .background {
-  background-image: url("@/assets/img/mikebackground.jpg");
+  background-image: url("@/assets/img/mic.jpg");
+  background-size: 100% auto; /* 가로로 맞추고 아래로는 100% 반복 */
+  background-position: center; /* 이미지를 가운데 정렬 */
+  background-repeat: repeat-y; /* 아래로 반복 */
 }
 </style>

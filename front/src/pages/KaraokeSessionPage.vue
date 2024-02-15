@@ -18,18 +18,18 @@
           <q-btn
             v-if="!store.singing && store.isModerator"
             @click="changeSongMode()"
-            color="black"
+            color="primary"
             label="모드 바꾸기"
           />
           <q-btn
             @click="openInviteModal"
-            color="black"
+            color="primary"
             :label="pref.app.kor.karaoke.session.invite"
           />
           <q-btn
             v-if="store.isModerator"
             @click="openModal"
-            color="black"
+            color="primary"
             :label="pref.app.kor.karaoke.session.setting"
           />
           <q-btn
@@ -168,11 +168,11 @@ function changeSongMode() {
 
 <style scoped>
 .custom-header {
-  background-color: #c794d4;
+  background-color: skyblue;
   height: 60px;
 }
 .custom-footer {
-  background-color: #c794d4;
+  background-color: skyblue;
 }
 
 #video-container {

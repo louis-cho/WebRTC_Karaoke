@@ -10,12 +10,12 @@
             <q-btn
               @click="openModal"
               :label="pref.app.kor.karaoke.list.createSession"
-              color="secondary"
+              color="primary"
             />
           </q-toolbar>
         </q-header>
 
-        <q-page-container>
+        <q-page-container style="background-color: white">
           <q-item-section>
             <q-input
               type="text"
@@ -143,6 +143,6 @@ const filteredSession = computed(() => {
 
 <style scoped>
 .custom-header {
-  background-color: #c794d4;
+  background-color: skyblue;
 }
 </style>
