@@ -22,6 +22,7 @@
             :label="pref.app.kor.karaoke.session.invite"
           />
           <q-btn
+            v-if="store.isModerator"
             @click="openModal"
             color="positive"
             :label="pref.app.kor.karaoke.session.setting"
@@ -132,10 +133,6 @@ const openModal = () => {
 
 const openInviteModal = () => {
   notificationStore.inviteModal = true;
-  console.log(
-    "click : notificationStore.inviteModal : ",
-    notificationStore.inviteModal
-  );
 };
 
 async function leaveSession() {

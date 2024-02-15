@@ -36,7 +36,6 @@ const choose = () => {
   appInstance.value.score = parseScore(song.value.mmlData); // 퍼펙트스코어 데이터주입
   appInstance.value.songLength = song.value.length;
   appInstance.value.prelude = song.value.prelude;
-  console.log(parseScore(song.value.mmlData));
   appInstance.value.lyrics = parseBundle(
     parseLyric(parseScore(song.value.mmlData))
   ); // 가사 연결
@@ -50,8 +49,11 @@ const play = () => {
 
 const stop = () => {
   appInstance.value.stopSong();
-  audio.value.currentTime = 0;
-  audio.value.pause();
+  song.value = null;
+  if(audio.value != null) {
+    audio.value.currentTime = 0;
+    audio.value.pause();
+  }
 };
 
 defineExpose({
@@ -62,5 +64,8 @@ defineExpose({
 </script>
 
 <style scoped>
-/* 스타일링 추가 */
+#app1 {
+  width: 1000px;
+  height: 360px;
+}
 </style>

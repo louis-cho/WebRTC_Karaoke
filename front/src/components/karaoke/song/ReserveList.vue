@@ -81,7 +81,6 @@ watch(
 
 function fetchReserveList() {
   lists.value = [];
-  store.reservedSongs = [];
 
   // API 호출을 통해 노래 데이터 가져오기
   axios
@@ -106,12 +105,12 @@ function fetchReserveList() {
         if (parts.length === 4) {
           const [userName, songId, title, singer] = parts;
           lists.value.push({ id, userName, songId, title, singer });
-          store.reservedSongs.push({ id, userName, songId, title, singer });
-          store.reservedSongsLength++;
           id++;
         }
       });
-      console.log(store.reservedSongs[0]);
+      store.reservedSongsLength = lists.value.length;
+      store.reservedSongs = lists.value;
+
     })
     .catch((error) => {
       alert(error.response.data);

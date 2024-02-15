@@ -1,7 +1,7 @@
 <template>
+    <nav-bar />
   <q-layout view="hHh lpR fFf">
     <q-page-container>
-      <NavBar />
       <q-page class="flex flex-center">
         <div>
           <div class="flex justify-between items-center">
@@ -14,7 +14,11 @@
           </div>
           <!-- Chat room list -->
           <ul v-if="paginatedChatRooms.length > 0" class="q-mt-md">
-            <ChatRoom v-for="chatRoom in paginatedChatRooms" :key="chatRoom.roomPk" :chatRoom="chatRoom" />
+            <ChatRoom
+              v-for="chatRoom in paginatedChatRooms"
+              :key="chatRoom.roomPk"
+              :chatRoom="chatRoom"
+            />
           </ul>
           <!-- No chat rooms message -->
           <p v-else class="text-caption text-center q-mt-md">
@@ -23,9 +27,23 @@
 
           <!-- Pagination -->
           <div class="q-mt-md q-px-md">
-            <q-btn @click="prevPage" :disable="pageNumber === 1" color="primary" label="Previous" class="q-mr-sm"/>
-            <span class="text-body-2">Page {{ pageNumber }} of {{ totalPages }}</span>
-            <q-btn @click="nextPage" :disable="pageNumber === totalPages" color="primary" label="Next" class="q-ml-sm"/>
+            <q-btn
+              @click="prevPage"
+              :disable="pageNumber === 1"
+              color="primary"
+              label="Previous"
+              class="q-mr-sm"
+            />
+            <span class="text-body-2"
+              >Page {{ pageNumber }} of {{ totalPages }}</span
+            >
+            <q-btn
+              @click="nextPage"
+              :disable="pageNumber === totalPages"
+              color="primary"
+              label="Next"
+              class="q-ml-sm"
+            />
           </div>
         </div>
       </q-page>
@@ -35,65 +53,83 @@
     <q-dialog v-model="modalOpen" persistent>
       <q-card>
         <q-card>
-        <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">대화 상대 검색</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup @click="handleCancel" />
-        </q-card-section>
+          <q-card-section class="row items-center q-pb-none">
+            <div class="text-h6">대화 상대 검색</div>
+            <q-space />
+            <q-btn
+              icon="close"
+              flat
+              round
+              dense
+              v-close-popup
+              @click="handleCancel"
+            />
+          </q-card-section>
 
-        <q-card-section class="q-pt-none">
-          <q-input
-            rounded
-            outlined
-            v-model="search"
-            label="Search NickName"
-            @keydown.enter.stop
-            @change="searchNickname"
-          >
-            <template v-slot:append>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-        </q-card-section>
+          <q-card-section class="q-pt-none">
+            <q-input
+              rounded
+              outlined
+              v-model="search"
+              label="Search NickName"
+              @keydown.enter.stop
+              @change="searchNickname"
+            >
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </q-card-section>
 
-        <q-scroll-area style="height: 300px; max-width: 300px">
-          <div>
-            <!-- 유저 목록 뜨게 -->
-            <q-list v-if="searchUsers && searchUsers.length && filteredUsers.length">
-              <q-item v-for="user in filteredUsers" :key="user.userKey">
+          <q-scroll-area style="height: 300px; max-width: 300px">
+            <div>
+              <!-- 유저 목록 뜨게 -->
+              <q-list
+                v-if="searchUsers && searchUsers.length && filteredUsers.length"
+              >
+                <q-item v-for="user in filteredUsers" :key="user.userKey">
+                  <q-item-section>
+                    <q-img class="img-container" :src="user.profileImgUrl" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>{{ user.nickname }}</q-item-label>
+                    <q-item-label caption>{{ user.introduction }}</q-item-label>
+                    <!-- 친구 아니라면 -->
+                    <div v-if="user.userKey === userUUID">
+                      <q-btn color="black" label="본인" :disable="true"></q-btn>
+                    </div>
+                    <div v-else-if="checkInvited(user.userKey)">
+                      <q-btn
+                        color="primary"
+                        label="초대중"
+                        :disable="true"
+                      ></q-btn>
+                    </div>
+                    <div v-else>
+                      <q-btn
+                        color="red"
+                        label="초대하기"
+                        @click="inviteUser(user.userKey)"
+                        v-if="!checkInvited(user.userKey)"
+                      />
+                    </div>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+              <!-- Display a message if no users match the search -->
+              <q-item v-else>
                 <q-item-section>
-                  <q-img class="img-container" :src="user.profileImgUrl" />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>{{ user.nickname }}</q-item-label>
-                  <q-item-label caption>{{ user.introduction }}</q-item-label>
-                  <!-- 친구 아니라면 -->
-                  <div v-if="user.userKey === userUUID">
-                    <q-btn color="black" label="본인" :disable="true"></q-btn>
-                  </div>
-                  <div v-else-if="checkInvited(user.userKey)">
-                    <q-btn color="primary" label="초대중" :disable="true"></q-btn>
-                  </div>
-                  <div v-else>
-                    <q-btn color="red" label="초대하기" @click="inviteUser(user.userKey)" v-if="!checkInvited(user.userKey)" />
-                  </div>
+                  <q-item-label align="center"
+                    >일치하는 유저가 없습니다.</q-item-label
+                  >
                 </q-item-section>
               </q-item>
-            </q-list>
-            <!-- Display a message if no users match the search -->
-            <q-item v-else>
-              <q-item-section>
-                <q-item-label align="center"
-                  >일치하는 유저가 없습니다.</q-item-label
-                >
-              </q-item-section>
-            </q-item>
-          </div>
-        </q-scroll-area>
-      </q-card>
-      <q-card-section>
+            </div>
+          </q-scroll-area>
+        </q-card>
+        <q-card-section>
           <q-input v-model="newRoomName" label="Room Name" />
-      </q-card-section>
+        </q-card-section>
         <q-card-actions align="right">
           <!-- cancel 버튼 -->
           <q-btn label="Cancel" color="primary" @click="handleCancel" />
@@ -112,7 +148,7 @@
 <script setup>
 import pref from "@/js/config/preference.js";
 import { ref, onMounted, computed } from "vue";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 import axios from "axios";
 import ChatRoom from "@/components/chat/ChatRoom.vue";
 import NavBar from "@/layouts/NavBar.vue";
@@ -125,12 +161,14 @@ const searchUsers = ref([]);
 const chatroomUsers = ref([]);
 
 const filteredUsers = computed(() => {
-  const query = search.value ? search.value.toLowerCase() : '';
+  const query = search.value ? search.value.toLowerCase() : "";
   if (!query) return [];
 
   return searchUsers.value.filter((user) => {
-    const nickname = user.nickname ? user.nickname.toLowerCase() : '';
-    const introduction = user.introduction ? user.introduction.toLowerCase() : '';
+    const nickname = user.nickname ? user.nickname.toLowerCase() : "";
+    const introduction = user.introduction
+      ? user.introduction.toLowerCase()
+      : "";
     return nickname.includes(query) || introduction.includes(query);
   });
 });
@@ -156,7 +194,9 @@ const inviteUser = async (userUuid) => {
 };
 
 const checkInvited = (userUuid) => {
-  return newGuests.value.some((userKey) => String(userKey) === String(userUuid));
+  return newGuests.value.some(
+    (userKey) => String(userKey) === String(userUuid)
+  );
 };
 
 const { getCookie } = useCookie();
@@ -168,7 +208,7 @@ let totalPages = ref(1);
 
 const paginatedChatRooms = ref([]);
 const modalOpen = ref(false);
-const newRoomName = ref('');
+const newRoomName = ref("");
 const newGuests = ref([]);
 
 const openModal = () => {
@@ -181,17 +221,20 @@ const closeModal = () => {
 
 const fetchData = async () => {
   try {
-    const response = await axios.get(`${pref.app.api.host}/chatroom/list/${userUUID}`, {
-      params: {
-        page: pageNumber.value - 1,
-        size: pageSize
-      },
-      headers: {
-      Authorization: getCookie("Authorization"),
-      refreshToken: getCookie("refreshToken"),
-      "Content-Type": "application/json",
-    },
-    });
+    const response = await axios.get(
+      `${pref.app.api.host}/chatroom/list/${userUUID}`,
+      {
+        params: {
+          page: pageNumber.value - 1,
+          size: pageSize,
+        },
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    );
     paginatedChatRooms.value = response.data.content;
     totalPages.value = response.data.totalPages;
   } catch (error) {
@@ -223,18 +266,22 @@ onMounted(async () => {
 
 const handleCreateChatRoom = async () => {
   try {
-    const guestsString = newGuests.value.join(',');
-    const response = await axios.post(`${pref.app.api.host}/chatroom/create?name=${newRoomName.value}&host=${userUUID}&guests=${guestsString}`,null,{
-      headers: {
-      Authorization: getCookie("Authorization"),
-      refreshToken: getCookie("refreshToken"),
-      "Content-Type": "application/json",
-    },
-    });
+    const guestsString = newGuests.value.join(",");
+    const response = await axios.post(
+      `${pref.app.api.host}/chatroom/create?name=${newRoomName.value}&host=${userUUID}&guests=${guestsString}`,
+      null,
+      {
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const roomPk = response.data.roomPk;
     closeModal();
     fetchData();
-    newRoomName.value = '';
+    newRoomName.value = "";
     newGuests.value = [];
     await router.push(`/chat/${roomPk}`);
   } catch (error) {
@@ -243,7 +290,7 @@ const handleCreateChatRoom = async () => {
 };
 
 const handleCancel = () => {
-  newRoomName.value = '';
+  newRoomName.value = "";
   newGuests.value = [];
   closeModal();
 };

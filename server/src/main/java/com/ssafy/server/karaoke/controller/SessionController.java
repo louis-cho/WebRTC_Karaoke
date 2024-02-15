@@ -182,11 +182,18 @@ public class SessionController {
         if (!openViduModel.getMapSessions().containsKey(sessionName)) {
             return ResponseEntity.status(500).body("존재하지 않는 세션입니다.");
         }
+        if(!openViduModel.getMapSessionSettings().containsKey(sessionName)) {
+            return ResponseEntity.status(500).body("존재하지 않는 세션입니다.");
+        }
 
         try {
             SessionSetting setting;
 
             String manager = (String) params.get("userName");
+            if(!openViduModel.getMapSessionSettings().get(sessionName).getManager().equals(manager)){
+                return ResponseEntity.status(500).body("방장이 아닙니다.");
+            }
+
             int numberOfParticipants = Integer.parseInt((String) params.get("numberOfParticipants"));
             boolean isPrivate = (boolean) params.get("isPrivate");
             if (isPrivate) {
@@ -201,7 +208,7 @@ public class SessionController {
 
             return ResponseEntity.ok("변경되었습니다.");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("방 생성에 실패했습니다.");
+            return ResponseEntity.status(500).body("수정 중 오류 발생");
         }
     }
 
