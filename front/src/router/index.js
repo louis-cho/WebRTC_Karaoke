@@ -73,6 +73,9 @@ export default route(function (/* { store, ssrContext } */) {
           pattern.test(destUrl)
         ) {
           alert("로그인 후 이용가능합니다.");
+          removeCookie("Authorization");
+          removeCookie("refreshToken");
+          removeCookie("uuid");
           window.location.replace("/");
           // next();`
         } else {
