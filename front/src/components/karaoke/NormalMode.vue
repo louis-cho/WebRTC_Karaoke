@@ -87,7 +87,7 @@ const lyricInterval = 70; // 가사 윗묶음&아랫묶음 y좌표 간격
 const moveX = ref(0); // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
 const fontSize = "36px ";
 const countDownSize = "38px ";
-const fontInterval = 36; // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
+const fontInterval = 34.6; // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
 const fontStyle = "YCloverBold";
 const fontColor = "white";
 const filledFont = ref(""); // 부르고 있는 가사
@@ -129,19 +129,18 @@ const play = () => {
   announceString.value = "";
   audio.value.play();
   startTimeRef.value = Date.now();
-
   if (song.value.prelude >= showSongInfoTimeOut) {
     showSongInfo.value = true;    // 노래 시작하고 노래 정보 띄우기
-    new Promise(() => {
+    new Promise((resolve) => {
       setTimeout(() => {
         showSongInfo.value = false; // 5초 후에 노래 정보 내리기
+        resolve();
       }, showSongInfoTime);
     }).then(() => {
       initDrawer();
       hasNextLyrics.value = true;
       lyrics.value = parseLyric(parseScore(song.value.mmlData));
       bundles.value = parseBundle(lyrics.value);
-
       bundleIndex.value = 0;
       lyricBundleIndex.value = 0;
       lyricIndex.value = 0;
@@ -165,8 +164,9 @@ const play = () => {
 };
 
 const stop = () => {
-  new Promise(() => {
+  new Promise((resolve) => {
     showSongInfo.value = false;
+    resolve();
   }).then(() => {
     initDrawer();
   })
