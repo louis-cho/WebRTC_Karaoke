@@ -14,11 +14,11 @@
         <q-toolbar-title style="font-size: 35px">
           {{ decodeBase64(store.sessionName) }}
         </q-toolbar-title>
-        <div style="display: flex">
+        <div style="display: flex; gap: 5px">
           <q-btn
             v-if="!store.singing && store.isModerator"
             @click="changeSongMode()"
-            color="primary"
+            color="black"
             label="모드 바꾸기"
           />
           <q-btn
@@ -29,7 +29,7 @@
           <q-btn
             v-if="store.isModerator"
             @click="openModal"
-            color="positive"
+            color="black"
             :label="pref.app.kor.karaoke.session.setting"
           />
           <q-btn

@@ -2,7 +2,7 @@
   <q-dialog v-model="store.toggleModals['reserve-song']">
     <q-card>
       <q-card-section>
-        <q-layout>
+        <q-layout style="min-height: 512px">
           <q-header
             class="bg-transparent"
             style="border-bottom: 1px solid #ddd"
@@ -24,7 +24,7 @@
           </q-header>
 
           <q-page-container>
-            <q-page class="flex flex-start">
+            <q-page class="flex flex-start" style="min-height: 512px">
               <q-list style="min-width: 512px">
                 <q-item v-for="song in filteredSongs" :key="song.songId">
                   <q-item-section>

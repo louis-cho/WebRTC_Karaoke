@@ -3,12 +3,11 @@
     <q-btn
       v-if="
         !store.singing &&
-        store.reservedSongsLength &&
         store.reservedSongsLength > 0 &&
         store.singUser == store.userName
       "
       @click="startSong()"
-      color="positive"
+      color="black"
       :label="pref.app.kor.karaoke.session.start"
     />
     <q-btn
@@ -16,6 +15,12 @@
       @click="stopSong()"
       color="negative"
       :label="pref.app.kor.karaoke.session.stop"
+    />
+    <q-btn
+      v-if="store.singing && store.singUser == store.userName"
+      @click="finishSong()"
+      color="black"
+      label="그만부르기"
     />
   </div>
 

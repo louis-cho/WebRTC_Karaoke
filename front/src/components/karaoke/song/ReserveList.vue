@@ -2,7 +2,7 @@
   <q-dialog v-model="store.toggleModals['reserve-list']">
     <q-card>
       <q-card-section style="min-width: 512px">
-        <q-layout>
+        <q-layout style="min-height: 512px">
           <q-header
             class="bg-transparent"
             style="border-bottom: 1px solid #ddd"
@@ -16,7 +16,7 @@
           </q-header>
 
           <q-page-container>
-            <q-page class="flex flex-start">
+            <q-page class="flex flex-start" style="min-height: 512px">
               <q-list>
                 <q-item v-for="list in lists" :key="list.id">
                   <q-item-section class="q-mb-md" style="min-width: 400px">
