@@ -12,7 +12,10 @@
                 </h2>
                 <div class="section-divider"></div>
               </div>
-              <ul class="chat-history q-mb-md">
+              <ul
+                class="chat-history q-mb-md"
+                style="max-height: 300px; overflow-y: scroll"
+              >
                 <li
                   v-for="(message, index) in store.messages"
                   :key="index"
@@ -26,24 +29,24 @@
               </ul>
             </q-card-section>
           </q-card>
-
-          <form id="chat-write" class="q-mt-md" @submit.prevent="sendMessage">
-            <q-input
-              type="text"
-              :placeholder="pref.app.kor.karaoke.session.message"
-              v-model="store.inputMessage"
-              outlined
-              dense
-              class="inline-input"
-              @keydown.enter="sendMessage"
-            />
-            <q-btn
-              @click="sendMessage"
-              color="primary"
-              :label="pref.app.kor.karaoke.session.send"
-            />
-          </form>
         </div>
+
+        <form id="chat-write" class="q-mt-md" @submit.prevent="sendMessage">
+          <q-input
+            type="text"
+            :placeholder="pref.app.kor.karaoke.session.message"
+            v-model="store.inputMessage"
+            outlined
+            dense
+            class="inline-input"
+            @keydown.enter="sendMessage"
+          />
+          <q-btn
+            @click="sendMessage"
+            color="primary"
+            :label="pref.app.kor.karaoke.session.send"
+          />
+        </form>
 
         <q-card-section class="q-mt-sm q-mb-sm float-right">
           <q-btn
