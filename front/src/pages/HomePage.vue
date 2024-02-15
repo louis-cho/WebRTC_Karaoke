@@ -1,8 +1,6 @@
 <template>
   <!-- class="bg-purple" -->
   <div id="back">
-
-    <nav-bar />
     <q-carousel
       v-model="slide"
       vertical
@@ -46,8 +44,6 @@ import StartTest from "@/components/StartTest.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import SignIn from "@/components/SignIn.vue";
 
-
-
 const slide = ref("style");
 const lorem1 = "노래하고 싶어? 여기서 노래해방!";
 const lorem2 = "어디서나 노래와 함께하는 새로운 자유, 노래해방( 解放 )";
@@ -56,13 +52,11 @@ const lorem4 = "너도 나도 올려방";
 const lorem5 = "스트레스 해소해방";
 
 onMounted(() => {
-
-document.getElementById("back").classList.add("back");
+  document.getElementById("back").classList.add("back");
 });
 </script>
 
 <style scoped>
-
 .carousel-container {
   position: relative;
   width: 100%;
@@ -80,8 +74,9 @@ document.getElementById("back").classList.add("back");
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('@/assets/img/background.gif') center center / 100% 100% no-repeat;
-   z-index: -1;
+  background: url("@/assets/img/background.gif") center center / 100% 100%
+    no-repeat;
+  z-index: -1;
 }
 
 .transparent-div {

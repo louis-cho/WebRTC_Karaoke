@@ -2,12 +2,15 @@
   <q-layout view="hHh lpR fFf">
     <q-page-container>
       <div class="dm-container">
-        <NavBar />
-
         <div class="content-container">
           <!-- 채팅방 정보 표시 -->
           <div class="chatroom-info">
-            <img src="@/assets/icon/back.png" alt="뒤로가기" class="back-icon" @click="goBack" />
+            <img
+              src="@/assets/icon/back.png"
+              alt="뒤로가기"
+              class="back-icon"
+              @click="goBack"
+            />
             <!-- 채팅방 정보 내용 -->
             <h5 :title="roomName">{{ roomName }}</h5>
             <q-btn @click="openModal" color="primary" label="Invite" />
@@ -16,7 +19,11 @@
               <span class="participant-list-title">채팅방 참여자</span>
               <div class="participants-container">
                 <div class="participants">
-                  <div v-for="(user, index) in chatroomUsers" :key="index" class="participant">
+                  <div
+                    v-for="(user, index) in chatroomUsers"
+                    :key="index"
+                    class="participant"
+                  >
                     {{ user.nickname }}
                     <span v-if="user.userKey === userUUID">(나)</span>
                   </div>
@@ -25,35 +32,66 @@
             </div>
           </div>
 
-
           <!-- 채팅창 내역 -->
-          <div class="chatting-container" style="min-width: 600px; max-width: 600px;">
-            <div class="dm-messages" ref="messagesContainer" @scroll="handleScroll">
+          <div
+            class="chatting-container"
+            style="min-width: 600px; max-width: 600px"
+          >
+            <div
+              class="dm-messages"
+              ref="messagesContainer"
+              @scroll="handleScroll"
+            >
               <div v-for="(message, index) in messages" :key="index">
-                <div :class="['message', message.sender == userUUID ? 'my-message' : 'other-message']">
+                <div
+                  :class="[
+                    'message',
+                    message.sender == userUUID ? 'my-message' : 'other-message',
+                  ]"
+                >
                   <template v-if="message.sender != userUUID">
                     {{ getNickname(message.sender) }}
                   </template>
-                  <div v-if="message.type === 'TALK' || message.type === 'TYPE'">
+                  <div
+                    v-if="message.type === 'TALK' || message.type === 'TYPE'"
+                  >
                     {{ message.message }}
                   </div>
                   <div v-else-if="message.type === 'MEDIA'">
-                    <img class="message-img" :src="message.message" alt="MEDIA" @click="openOriginalImage(message.message)">
+                    <img
+                      class="message-img"
+                      :src="message.message"
+                      alt="MEDIA"
+                      @click="openOriginalImage(message.message)"
+                    />
                   </div>
-                  <div v-else>
-                    Unknown message type: {{ message.type }}
-                  </div>
+                  <div v-else>Unknown message type: {{ message.type }}</div>
                 </div>
               </div>
             </div>
 
             <!-- 메시지 입력창 -->
             <div class="img_class1">
-              <textarea v-model="newMessage" @keydown.enter.prevent="sendMessage" @input="sendTypingHandler" placeholder="메시지를 입력하세요..."></textarea>
+              <textarea
+                v-model="newMessage"
+                @keydown.enter.prevent="sendMessage"
+                @input="sendTypingHandler"
+                placeholder="메시지를 입력하세요..."
+              ></textarea>
               <label for="fileInput" class="img_label">
-                <img src="@/assets/icon/image.png" alt="File Icon" class="img_class2">
+                <img
+                  src="@/assets/icon/image.png"
+                  alt="File Icon"
+                  class="img_class2"
+                />
               </label>
-              <input type="file" ref="fileInput" id="fileInput" @change="handleFileUpload" style="display: none;">
+              <input
+                type="file"
+                ref="fileInput"
+                id="fileInput"
+                @change="handleFileUpload"
+                style="display: none"
+              />
             </div>
           </div>
         </div>
@@ -86,7 +124,9 @@
         <q-scroll-area style="height: 300px; max-width: 300px">
           <div>
             <!-- 유저 목록 뜨게 -->
-            <q-list v-if="searchUsers && searchUsers.length && filteredUsers.length">
+            <q-list
+              v-if="searchUsers && searchUsers.length && filteredUsers.length"
+            >
               <q-item v-for="user in filteredUsers" :key="user.userKey">
                 <q-item-section>
                   <q-img class="img-container" :src="user.profileImgUrl" />
@@ -99,10 +139,19 @@
                     <q-btn color="black" label="본인" :disable="true"></q-btn>
                   </div>
                   <div v-else-if="checkInvited(user.userKey)">
-                    <q-btn color="primary" label="참가중" :disable="true"></q-btn>
+                    <q-btn
+                      color="primary"
+                      label="참가중"
+                      :disable="true"
+                    ></q-btn>
                   </div>
                   <div v-else>
-                    <q-btn color="red" label="초대하기" @click="inviteUser(user.userKey)" v-if="!checkInvited(user.userKey)" />
+                    <q-btn
+                      color="red"
+                      label="초대하기"
+                      @click="inviteUser(user.userKey)"
+                      v-if="!checkInvited(user.userKey)"
+                    />
                   </div>
                 </q-item-section>
               </q-item>
@@ -119,7 +168,7 @@
         </q-scroll-area>
       </q-card>
     </q-dialog>
-</q-layout>
+  </q-layout>
 </template>
 
 <script setup>
@@ -127,11 +176,11 @@ import Stomp from "stompjs";
 import pref from "@/js/config/preference.js";
 import { ref, nextTick, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import axios from 'axios';
+import axios from "axios";
 import NavBar from "@/layouts/NavBar.vue";
 import useCookie from "@/js/cookie.js";
 import { searchUser, fetchUser } from "@/js/user/user.js";
-import logoImage from "@/assets/icon/logo1-removebg-preview.png"
+import logoImage from "@/assets/icon/logo1-removebg-preview.png";
 
 const router = useRouter();
 
@@ -142,12 +191,14 @@ const search = ref("");
 const searchUsers = ref([]);
 
 const filteredUsers = computed(() => {
-  const query = search.value ? search.value.toLowerCase() : '';
+  const query = search.value ? search.value.toLowerCase() : "";
   if (!query) return [];
 
   return searchUsers.value.filter((user) => {
-    const nickname = user.nickname ? user.nickname.toLowerCase() : '';
-    const introduction = user.introduction ? user.introduction.toLowerCase() : '';
+    const nickname = user.nickname ? user.nickname.toLowerCase() : "";
+    const introduction = user.introduction
+      ? user.introduction.toLowerCase()
+      : "";
     return nickname.includes(query) || introduction.includes(query);
   });
 });
@@ -188,75 +239,87 @@ onMounted(async () => {
   stompClient.value = Stomp.over(socket);
 
   stompClient.value.connect({}, () => {
-      stompClient.value.subscribe(`/exchange/chat.exchange/room.${roomId.value}`, (message) => {
-          handleIncomingMessage(JSON.parse(message.body));
-      });
-      fetchData().then(() => {
-        loadOldMessages().then(() => {
-          loadNewMessages().then(() => {
-            setTimeout(() => {
-              nextTick(() => {
-                if (messagesContainer.value) {
-                  messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-                }
-              });
-            }, 150);
-          });
+    stompClient.value.subscribe(
+      `/exchange/chat.exchange/room.${roomId.value}`,
+      (message) => {
+        handleIncomingMessage(JSON.parse(message.body));
+      }
+    );
+    fetchData().then(() => {
+      loadOldMessages().then(() => {
+        loadNewMessages().then(() => {
+          setTimeout(() => {
+            nextTick(() => {
+              if (messagesContainer.value) {
+                messagesContainer.value.scrollTop =
+                  messagesContainer.value.scrollHeight;
+              }
+            });
+          }, 150);
         });
       });
+    });
   });
 
-  const response = await axios.get(`${pref.app.api.host}/chatroom/info/${roomId.value}`,{headers: {
-      Authorization: getCookie("Authorization"),
-      refreshToken: getCookie("refreshToken"),
-      "Content-Type": "application/json",
-    },});
+  const response = await axios.get(
+    `${pref.app.api.host}/chatroom/info/${roomId.value}`,
+    {
+      headers: {
+        Authorization: getCookie("Authorization"),
+        refreshToken: getCookie("refreshToken"),
+        "Content-Type": "application/json",
+      },
+    }
+  );
   roomName.value = response.data.roomName;
 });
 
 function handleIncomingMessage(message) {
   if (message) {
-    const existingTypeMessages = messages.value.filter(msg => msg.type === 'TYPE');
-    existingTypeMessages.forEach(msg => {
+    const existingTypeMessages = messages.value.filter(
+      (msg) => msg.type === "TYPE"
+    );
+    existingTypeMessages.forEach((msg) => {
       const index = messages.value.indexOf(msg);
       messages.value.splice(index, 1);
     });
 
-    if (message.type === 'TYPE') {
-      const existingTypeMessage = messages.value.find(msg => msg.sender === message.sender && msg.type === 'TYPE');
+    if (message.type === "TYPE") {
+      const existingTypeMessage = messages.value.find(
+        (msg) => msg.sender === message.sender && msg.type === "TYPE"
+      );
 
       if (existingTypeMessage) {
-        existingTypeMessage.message = '...';
+        existingTypeMessage.message = "...";
         clearTimeout(existingTypeMessage.timer);
       } else {
-        setTemporaryMessage(message.sender, 'TYPE', '...', message.time);
+        setTemporaryMessage(message.sender, "TYPE", "...", message.time);
       }
 
       setTimeout(() => {
         nextTick(() => {
-          messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+          messagesContainer.value.scrollTop =
+            messagesContainer.value.scrollHeight;
         });
       }, 300);
 
       setTimeout(() => {
-        removeTemporaryMessage(message.sender, 'TYPE');
+        removeTemporaryMessage(message.sender, "TYPE");
       }, 5000);
-    }
-
-    else if (message.type === 'TALK') {
+    } else if (message.type === "TALK") {
       setMessage(message.sender, message.type, message.message, message.time);
       setTimeout(() => {
         nextTick(() => {
-          messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+          messagesContainer.value.scrollTop =
+            messagesContainer.value.scrollHeight;
         });
       }, 300);
-    }
-
-    else if (message.type === 'MEDIA') {
+    } else if (message.type === "MEDIA") {
       setMessage(message.sender, message.type, message.message, message.time);
       setTimeout(() => {
         nextTick(() => {
-          messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+          messagesContainer.value.scrollTop =
+            messagesContainer.value.scrollHeight;
         });
       }, 300);
     }
@@ -264,8 +327,10 @@ function handleIncomingMessage(message) {
 }
 
 function removeTemporaryMessage(sender, type) {
-  const temporaryMessages = messages.value.filter(msg => msg.temporary && msg.sender === sender && msg.type === type);
-  temporaryMessages.forEach(msg => {
+  const temporaryMessages = messages.value.filter(
+    (msg) => msg.temporary && msg.sender === sender && msg.type === type
+  );
+  temporaryMessages.forEach((msg) => {
     const index = messages.value.indexOf(msg);
     messages.value.splice(index, 1);
   });
@@ -274,7 +339,7 @@ function removeTemporaryMessage(sender, type) {
 function setTemporaryMessage(sender, type, message, time) {
   const temporaryMessage = { sender, type, message, time, temporary: true };
 
-  if(userUUID != sender){
+  if (userUUID != sender) {
     messages.value.push(temporaryMessage);
 
     temporaryMessage.timer = setTimeout(() => {
@@ -283,37 +348,53 @@ function setTemporaryMessage(sender, type, message, time) {
   }
 }
 
-
 function loadOldMessages() {
   if (loading) return;
   loading = true;
-  return axios.get(`${pref.app.api.host}/chat/room/${roomId.value}/oldMsg?page=${page}&size=50`,{headers: {
-      Authorization: getCookie("Authorization"),
-      refreshToken: getCookie("refreshToken"),
-      "Content-Type": "application/json",
-    },})
-    .then(response => {
+  return axios
+    .get(
+      `${pref.app.api.host}/chat/room/${roomId.value}/oldMsg?page=${page}&size=50`,
+      {
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
       const oldMessages = response.data;
       if (oldMessages.length === 0) {
         // alert("마지막 페이지입니다.");
       } else if (page === 1) {
-        oldMessages.forEach(message => {
+        oldMessages.forEach((message) => {
           message = JSON.parse(message);
-          setMessage(message.sender, message.type, message.message, message.time);
+          setMessage(
+            message.sender,
+            message.type,
+            message.message,
+            message.time
+          );
         });
         page++;
-        if(oldMessages.length <= 25){
+        if (oldMessages.length <= 25) {
           loading = false;
-          loadOldMessages().then(()=>{
+          loadOldMessages().then(() => {
             nextTick(() => {
-              messagesContainer.value.scrollTop += messagesContainer.value.scrollHeight;
+              messagesContainer.value.scrollTop +=
+                messagesContainer.value.scrollHeight;
             });
           });
         }
       } else {
-        oldMessages.reverse().forEach(message => {
+        oldMessages.reverse().forEach((message) => {
           message = JSON.parse(message);
-          setNewMessage(message.sender, message.type, message.message, message.time);
+          setNewMessage(
+            message.sender,
+            message.type,
+            message.message,
+            message.time
+          );
         });
         nextTick(() => {
           messagesContainer.value.scrollTop += 1;
@@ -321,8 +402,8 @@ function loadOldMessages() {
         page++;
       }
     })
-    .catch(error => {
-      console.error('이전 메시지 불러오기 실패:', error);
+    .catch((error) => {
+      console.error("이전 메시지 불러오기 실패:", error);
     })
     .finally(() => {
       loading = false;
@@ -336,31 +417,34 @@ function handleScroll() {
 }
 
 function loadNewMessages() {
-  return axios.get(`${pref.app.api.host}/chat/room/${roomId.value}/newMsg`,{headers: {
-      Authorization: getCookie("Authorization"),
-      refreshToken: getCookie("refreshToken"),
-      "Content-Type": "application/json",
-    },})
-    .then(response => {
+  return axios
+    .get(`${pref.app.api.host}/chat/room/${roomId.value}/newMsg`, {
+      headers: {
+        Authorization: getCookie("Authorization"),
+        refreshToken: getCookie("refreshToken"),
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
       const newMessages = response.data;
-      newMessages.reverse().forEach(message => {
+      newMessages.reverse().forEach((message) => {
         message = JSON.parse(message);
         setMessage(message.sender, message.type, message.message, message.time);
       });
     })
-    .catch(error => {
-      console.error('최근 메시지 불러오기 실패:', error);
+    .catch((error) => {
+      console.error("최근 메시지 불러오기 실패:", error);
     });
 }
 
 const messages = ref([]);
-const newMessage = ref('');
+const newMessage = ref("");
 const messagesContainer = ref(null);
-const roomId = ref('');
+const roomId = ref("");
 const modalOpen = ref(false);
-const roomName = ref('');
+const roomName = ref("");
 const chatroomUsers = ref([]);
-const newGuests = ref('');
+const newGuests = ref("");
 const route = useRoute();
 const stompClient = ref(null);
 
@@ -370,31 +454,29 @@ let loading = false;
 let typingTimer = null;
 const throttleTime = 500;
 
-const throttleSendTyping = function() {
+const throttleSendTyping = function () {
   clearTimeout(typingTimer);
   typingTimer = setTimeout(() => {
     sendTyping();
   }, throttleTime);
 };
 
-const sendTypingHandler = function() {
+const sendTypingHandler = function () {
   throttleSendTyping();
 };
 
-
-const sendMessage = function() {
+const sendMessage = function () {
   if (newMessage.value.trim() !== "") {
     const textMessageString = `{"type": "TALK", "roomId" : ${roomId.value}, "sender" : "${userUUID}", "message": "${newMessage.value}", "time" : ""}`;
     handleMessage(textMessageString);
     newMessage.value = "";
   }
-}
+};
 
-const sendTyping = function() {
+const sendTyping = function () {
   const textMessageString = `{"type": "TYPE", "roomId" : ${roomId.value}, "sender" : "${userUUID}", "message": "...", "time" : ""}`;
   handleMessage(textMessageString);
-}
-
+};
 
 function handleMessage(msg) {
   try {
@@ -403,27 +485,40 @@ function handleMessage(msg) {
     if (result.type != null && result.message != null) {
       switch (result.type) {
         case "TALK":
-          stompClient.value.send(`/pub/chat.message.${roomId.value}`, {}, JSON.stringify(result));
+          stompClient.value.send(
+            `/pub/chat.message.${roomId.value}`,
+            {},
+            JSON.stringify(result)
+          );
           break;
         case "MEDIA":
-          stompClient.value.send(`/pub/chat.message.${roomId.value}`, {}, JSON.stringify(result));
+          stompClient.value.send(
+            `/pub/chat.message.${roomId.value}`,
+            {},
+            JSON.stringify(result)
+          );
           setTimeout(() => {
             nextTick(() => {
-              messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+              messagesContainer.value.scrollTop =
+                messagesContainer.value.scrollHeight;
             });
           }, 300);
           break;
         case "TYPE":
-             stompClient.value.send(`/pub/chat.typing.${roomId.value}`, {}, JSON.stringify(result));
-              break;
+          stompClient.value.send(
+            `/pub/chat.typing.${roomId.value}`,
+            {},
+            JSON.stringify(result)
+          );
+          break;
         default:
-          setMessage('unknown', result.type);
+          setMessage("unknown", result.type);
       }
     } else {
-      setMessage('invalid', null);
+      setMessage("invalid", null);
     }
   } catch (error) {
-    setMessage('error', error);
+    setMessage("error", error);
   }
 }
 
@@ -440,22 +535,26 @@ async function handleFileUpload(event) {
   if (file) {
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
-      const response = await axios.post(`${pref.app.api.host}/upload`, formData, {
-        headers: {
-          Authorization: getCookie("Authorization"),
-           refreshToken: getCookie("refreshToken"),
-          'Content-Type': 'multipart/form-data'
+      const response = await axios.post(
+        `${pref.app.api.host}/upload`,
+        formData,
+        {
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "multipart/form-data",
+          },
         }
-      });
+      );
 
       const fileUrl = response.data;
 
       const imageMessageString = `{"type": "MEDIA", "roomId" : ${roomId.value}, "sender" : "${userUUID}", "message": "${fileUrl}", "time" : ""}`;
       handleMessage(imageMessageString);
     } catch (error) {
-      console.error('파일 업로드 실패:', error);
+      console.error("파일 업로드 실패:", error);
     }
   }
 }
@@ -470,13 +569,17 @@ const closeModal = () => {
 
 const handleInviteUsers = async () => {
   try {
-    await axios.post(`${pref.app.api.host}/chatroom/invite/${roomId.value}?guests=${newGuests.value}`,null,{
-      headers: {
-      Authorization: getCookie("Authorization"),
-      refreshToken: getCookie("refreshToken"),
-      "Content-Type": "application/json",
-    },
-    });
+    await axios.post(
+      `${pref.app.api.host}/chatroom/invite/${roomId.value}?guests=${newGuests.value}`,
+      null,
+      {
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    );
     fetchData();
   } catch (error) {
     console.error("Failed to invite chat room:", error);
@@ -485,21 +588,29 @@ const handleInviteUsers = async () => {
 
 const fetchData = async () => {
   try {
-    const response = await axios.get(`${pref.app.api.host}/chatroom/list/users/${roomId.value}`,{    headers: {
-      Authorization: getCookie("Authorization"),
-      refreshToken: getCookie("refreshToken"),
-      "Content-Type": "application/json",
-    },});
+    const response = await axios.get(
+      `${pref.app.api.host}/chatroom/list/users/${roomId.value}`,
+      {
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const users = response.data;
     chatroomUsers.value = [];
     for (const user of users) {
-      const userInfo = await axios.post(`${pref.app.api.host}/user/get/${user.userUuid}`,{
-        headers: {
-      Authorization: getCookie("Authorization"),
-      refreshToken: getCookie("refreshToken"),
-      "Content-Type": "application/json",
-    },
-      });
+      const userInfo = await axios.post(
+        `${pref.app.api.host}/user/get/${user.userUuid}`,
+        {
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
       chatroomUsers.value.push(userInfo.data);
     }
   } catch (error) {
@@ -508,7 +619,11 @@ const fetchData = async () => {
 };
 
 const openOriginalImage = (imageUrl) => {
-  window.open(imageUrl, '_blank', 'width=800,height=600,resizable=yes,scrollbars=yes');
+  window.open(
+    imageUrl,
+    "_blank",
+    "width=800,height=600,resizable=yes,scrollbars=yes"
+  );
 };
 
 const getNickname = (userUuid) => {
@@ -517,13 +632,12 @@ const getNickname = (userUuid) => {
       return user.nickname;
     }
   }
-  return '(알수없음)';
+  return "(알수없음)";
 };
 
 const goBack = function () {
   router.go(-1);
 };
-
 </script>
 
 <style scoped>
@@ -557,7 +671,7 @@ const goBack = function () {
   text-overflow: ellipsis;
 }
 
-.chatting-container{
+.chatting-container {
   display: flex;
   flex-direction: column;
   height: 80vh;
@@ -640,5 +754,4 @@ textarea {
   cursor: pointer;
   float: left;
 }
-
 </style>

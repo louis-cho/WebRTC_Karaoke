@@ -1,6 +1,5 @@
 <template>
   <div>
-    <NavBar />
     <!-- <TabItem /> -->
     <!-- <h4>상세 피드 페이지</h4> -->
     <div class="my-feed">
@@ -21,8 +20,8 @@
               'https://picsum.photos/200'
             ).trim()})`,
           }"
-          @click="gotoUserFeed">
-          </div>
+          @click="gotoUserFeed"
+        ></div>
 
         <div class="width-100">
           <div class="space-between">
@@ -30,7 +29,10 @@
               <p v-if="feed && feed.user">{{ feed.user.nickname }}</p>
             </div>
             <!-- 게시글 작성자가 로그인되어 있는 사람이라면 -->
-            <div v-if="feed && feed.user && feed.userUUID === uuid" @click="toggleModal">
+            <div
+              v-if="feed && feed.user && feed.userUUID === uuid"
+              @click="toggleModal"
+            >
               <img src="@/assets/icon/setting.png" alt="설정" />
             </div>
           </div>
@@ -48,7 +50,6 @@
                 feed && feed.status
                   ? getButtonColor(feed.status)
                   : getButtonColor(null)
-
               "
               :label="
                 feed && feed.status
@@ -62,7 +63,6 @@
             :label="getButtonLabel(feedUpdateStatus)"
             size="sm"
           /> -->
-
           </div>
         </div>
       </div>
@@ -81,24 +81,24 @@
           <span v-if="feed">{{ feed.commentCount }}</span>
         </div>
         <div class="margin-right-20" @click="handleLikeClick">
-            <span>
-              <img
-                class="margin-right-10"
-                src='@/assets/icon/love.png'
-                alt="좋아요"
-                v-show="!isLiked"
-              />
-            </span>
+          <span>
+            <img
+              class="margin-right-10"
+              src="@/assets/icon/love.png"
+              alt="좋아요"
+              v-show="!isLiked"
+            />
+          </span>
 
-            <!-- Div 2 - love.png -->
-            <span>
-              <img
-                class="margin-right-10"
-                src='@/assets/icon/redheart.png'
-                alt="좋아요"
-                v-show="isLiked"
-              />
-            </span>
+          <!-- Div 2 - love.png -->
+          <span>
+            <img
+              class="margin-right-10"
+              src="@/assets/icon/redheart.png"
+              alt="좋아요"
+              v-show="isLiked"
+            />
+          </span>
           <span v-if="feed">{{ feed.likeCount }}</span>
         </div>
         <div class="margin-right-20">
@@ -114,13 +114,15 @@
 
       <!-- 세번째 div(내 댓글 입력창) -->
       <div class="profile">
-        <div class="comment-img-container" :style="{
+        <div
+          class="comment-img-container"
+          :style="{
             backgroundImage: `url(${(
               (feed && feed.user && feed.user.profileImgUrl) ||
               'https://picsum.photos/200'
             ).trim()})`,
-          }">
-        </div>
+          }"
+        ></div>
         <div class="comment-input-container">
           <input
             v-model="newComment"
@@ -153,8 +155,12 @@
             </q-item-section>
           </q-item>
           <q-card-actions align="center">
-            <q-btn label="게시글 수정" color="primary" @click="openModal"/>
-            <q-btn label="게시글 삭제" color="negative" @click="deleteFeed(feedId)" />
+            <q-btn label="게시글 수정" color="primary" @click="openModal" />
+            <q-btn
+              label="게시글 삭제"
+              color="negative"
+              @click="deleteFeed(feedId)"
+            />
           </q-card-actions>
         </q-card-section>
       </q-card>
@@ -166,22 +172,26 @@
         <q-card-section class="modal-header">
           <div class="user-info">
             <!-- 내 프로필 이미지 가져오기... -->
-            <q-avatar class="img-container"
-            :style="{
-            backgroundImage: `url(${(
-              (feed && feed.user && feed.user.profileImgUrl) ||
-              'https://picsum.photos/200'
-            ).trim()})`,
-          }"/>
+            <q-avatar
+              class="img-container"
+              :style="{
+                backgroundImage: `url(${(
+                  (feed && feed.user && feed.user.profileImgUrl) ||
+                  'https://picsum.photos/200'
+                ).trim()})`,
+              }"
+            />
             <q-item-section>
               <!-- 닉네임 가져오기 -->
               <q-item-label>{{ feed.user.nickname }}</q-item-label>
             </q-item-section>
           </div>
           <span><strong>게시물 업로드</strong></span>
-          <span class="upload-label" @click="updateFeed(feedId)"><strong>업로드</strong></span>
+          <span class="upload-label" @click="updateFeed(feedId)"
+            ><strong>업로드</strong></span
+          >
         </q-card-section>
-        <hr>
+        <hr />
 
         <q-card-section class="display-flex-row">
           <div class="video-container">
@@ -197,7 +207,12 @@
 
           <div class="display-flex-column">
             <div>
-              <input class="caption-input" type="text" placeholder="문구 입력..." v-model="newContent">
+              <input
+                class="caption-input"
+                type="text"
+                placeholder="문구 입력..."
+                v-model="newContent"
+              />
               <!-- <textarea class="caption-input" placeholder="문구 입력..." v-model="newContent"></textarea> -->
             </div>
             <div>
@@ -209,10 +224,8 @@
                 map-options
               />
             </div>
-
           </div>
         </q-card-section>
-
       </q-card>
     </q-dialog>
   </div>
@@ -231,10 +244,20 @@ import {
 } from "@/js/comment/comment.js";
 import CommentItem from "@/components/CommentItem.vue";
 import { fetchHitCount, createHit } from "@/js/hit/hit.js";
-import { fetchLikeCount, createLike, deleteLike, fetchLike } from "@/js/like/like.js";
-import { fetchFeedList, fetchFeed, fetchFeedDelete, fetchFeedUpdate} from "@/js/feed/feed.js";
+import {
+  fetchLikeCount,
+  createLike,
+  deleteLike,
+  fetchLike,
+} from "@/js/like/like.js";
+import {
+  fetchFeedList,
+  fetchFeed,
+  fetchFeedDelete,
+  fetchFeedUpdate,
+} from "@/js/feed/feed.js";
 import { fetchSong } from "@/js/song/song.js";
-import { fetchUser, getUserPk  } from "@/js/user/user.js";
+import { fetchUser, getUserPk } from "@/js/user/user.js";
 import { useNotificationStore } from "@/stores/notificationStore.js";
 
 const { setCookie, getCookie, removeCookie } = useCookie();
@@ -250,7 +273,7 @@ const feedId = ref();
 const newContent = ref();
 const uuid = ref(getCookie("uuid"));
 const notificationStore = useNotificationStore();
-const userKey = ref('');
+const userKey = ref("");
 
 const goBack = function () {
   router.go(-1);
@@ -261,15 +284,15 @@ const handleLikeClick = async () => {
     await createLike(feedId.value, uuid.value);
     feed.value.likeCount++;
     //좋아요알림 발송. 자기자신 제외.
-    if(feed.value.userUUID != uuid.value){
+    if (feed.value.userUUID != uuid.value) {
       const body = {
-      toUserKey : feed.value.userUUID, //받는사람 userUUID, 게시글 작성자.
-      info : `${feed.value.feedId}`,
-      type : "like",
-      status : '0'
-      }
+        toUserKey: feed.value.userUUID, //받는사람 userUUID, 게시글 작성자.
+        info: `${feed.value.feedId}`,
+        type: "like",
+        status: "0",
+      };
       notificationStore.sendNotification(body);
-      userKey.value = feed.value.userUUID
+      userKey.value = feed.value.userUUID;
     }
   } else {
     await deleteLike(feedId.value, uuid.value);
@@ -279,15 +302,12 @@ const handleLikeClick = async () => {
   isLiked.value = !isLiked.value;
 };
 
-
 const getButtonColor = (status) => {
   return status === "0" ? "primary" : status === "1" ? "secondary" : "black";
 };
 const getButtonLabel = (status) => {
   return status === "0" ? "전체 공개" : status === "1" ? "친구 공개" : "비공개";
 };
-
-
 
 const toggleModal = () => {
   modal.value = !modal.value;
@@ -303,21 +323,19 @@ const registComment = () => {
   comment.isDeleted = false;
 
   addComment(comment);
-  if(feed.value.userUUID != uuid.value){
+  if (feed.value.userUUID != uuid.value) {
     const body = {
-      toUser : feed.value.userUUID, //받는사람 userPk.
-      info : `${feed.value.feedId}`,//친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
-      type : "comment", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
-      status : '0'
-    }
+      toUser: feed.value.userUUID, //받는사람 userPk.
+      info: `${feed.value.feedId}`, //친구요청이면 빈 문자열, 좋아요, 댓글이면 게시글 아이디, 노래초대면 노래방주소.
+      type: "comment", //친구요청이면 frined, 좋아요면 like, 댓글이면 comment, 노래초대면 karaoke
+      status: "0",
+    };
     notificationStore.sendNotification(body);
   }
-    location.reload();
+  location.reload();
 };
 
-
 onBeforeMount(async () => {
-
   uuid.value = getCookie("uuid");
   feedId.value = window.location.href.split("/").pop();
 
@@ -368,56 +386,64 @@ async function fetchAndRenderComments(feedId) {
   }
 }
 
-
-
-const deleteFeed = async(feedId) => {
+const deleteFeed = async (feedId) => {
   try {
     //게시글 삭제
     const feedDelete = await fetchFeedDelete(feedId);
-    console.log('피드 delete',feedDelete);
+    console.log("피드 delete", feedDelete);
     modal.value = false;
-    router.push({ name: "feed", params: { userUUID: uuid.value }});
+    router.push({ name: "feed", params: { userUUID: uuid.value } });
   } catch (error) {
     console.error("피드 삭제 에러", error);
   }
-}
+};
 
 const gotoUserFeed = () => {
-  router.push({ name: "feed", params: { userUUID:  userKey.value }});
-}
+  router.push({ name: "feed", params: { userUUID: userKey.value } });
+};
 
 const privacyStatus = computed(() => {
-  return selectedOption.value === '전체공개' ? '0': selectedOption.value === '친구공개' ? '1' : '2';
+  return selectedOption.value === "전체공개"
+    ? "0"
+    : selectedOption.value === "친구공개"
+    ? "1"
+    : "2";
 });
 
 const feedUpdateStatus = ref(null);
-const updateFeed = async(feedId) => {
+const updateFeed = async (feedId) => {
   try {
     //게시글 수정
-    const feedUpdate = await fetchFeedUpdate(feedId,newContent.value, privacyStatus.value);
-    console.log('피드 update',feedUpdate);
+    const feedUpdate = await fetchFeedUpdate(
+      feedId,
+      newContent.value,
+      privacyStatus.value
+    );
+    console.log("피드 update", feedUpdate);
     feedUpdateStatus.value = feedUpdate.status;
-    console.log('이거거거',feedUpdateStatus.value)
+    console.log("이거거거", feedUpdateStatus.value);
     modalOpen.value = false;
-    modal.value=false;
-    router.replace({ name: "feed_detail", params: { feedId: feedUpdate.feedId  } });
+    modal.value = false;
+    router.replace({
+      name: "feed_detail",
+      params: { feedId: feedUpdate.feedId },
+    });
     location.reload();
   } catch (error) {
     console.error("피드 수정 에러", error);
   }
-}
+};
 
 // ---------------------------수정모달---------------------------
 const modalOpen = ref(false);
-const selectedOption = ref('공개범위');
-const videoUrl = ref('');
-const privacyOptions = ['전체공개', '친구공개', '비공개']
-
+const selectedOption = ref("공개범위");
+const videoUrl = ref("");
+const privacyOptions = ["전체공개", "친구공개", "비공개"];
 
 const getVideoUrl = () => {
   // 비디오 URL을 가져오는 비동기 작업
   setTimeout(() => {
-    videoUrl.value = 'https://your-s3-bucket-url/your-video.mp4'; // 실제 S3 버킷 URL로 대체
+    videoUrl.value = "https://your-s3-bucket-url/your-video.mp4"; // 실제 S3 버킷 URL로 대체
   }, 1000);
 };
 
@@ -425,25 +451,22 @@ onMounted(() => {
   getVideoUrl();
 });
 
-
 const openModal = () => {
   modalOpen.value = true;
-  modal.value=false;
+  modal.value = false;
 };
 
 const uploadFeed = () => {
   // 피드 업로드 로직..
-  console.log('Uploading feed...');
+  console.log("Uploading feed...");
 
   // 피드 업로드를 후 모달 닫기
-  closeModal()
+  closeModal();
 };
 
 const closeModal = () => {
   modalOpen.value = false;
 };
-
-
 </script>
 <style scoped>
 .display-flex {
@@ -663,14 +686,4 @@ const closeModal = () => {
   background-position: center;
   margin-right: 10px;
 }
-
-
-
-
-
-
-
-
-
-
 </style>
