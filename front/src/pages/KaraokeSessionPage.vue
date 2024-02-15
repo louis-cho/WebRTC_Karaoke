@@ -22,6 +22,7 @@
             :label="pref.app.kor.karaoke.session.invite"
           />
           <q-btn
+            v-if="store.isModerator"
             @click="openModal"
             color="positive"
             :label="pref.app.kor.karaoke.session.setting"
@@ -146,14 +147,6 @@ const toggleModal = (modalName) => {
 function decodeBase64(encodedString) {
   return decodeURIComponent(escape(atob(encodedString)));
 }
-
-document.addEventListener("keydown", function (e) {
-  if ((e.ctrlKey && (e.key === "r" || e.key === "n")) || e.key === "F5") {
-    e.preventDefault();
-    alert("새로고침을 할 수 없습니다.");
-  }
-});
-
 </script>
 
 <style scoped>
