@@ -27,6 +27,7 @@
             v-model="loginForm.password"
             label="비밀번호"
             type="password"
+            @keydown.enter="login"
           />
         </q-card-section>
 
@@ -67,11 +68,10 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { getPublicKey, register, login } from "@/js/encrypt/authRequest.js";
-import { isLoggedIn } from "@/js/encrypt/authRequest";
-
+import { useNotificationStore } from "@/stores/notificationStore.js";
+const notificationStore = useNotificationStore();
 // const router = useRouter()
 
 export default {
@@ -93,6 +93,9 @@ export default {
     };
   },
   methods: {
+    goToPage(path) {
+      this.$router.push(path);
+    },
     async openLoginModal() {
       await getPublicKey();
       this.loginModal = true;
@@ -100,8 +103,8 @@ export default {
     closeLoginModal() {
       this.loginModal = false;
     },
-    subNotification(){
-      console.log("구독요청실행.");
+    async subNotification() {
+      await notificationStore.setSse();
     },
     async login() {
       console.log("로그인:", this.loginForm);
@@ -111,6 +114,7 @@ export default {
 
       await login(username, password);
       await this.subNotification();
+
       this.closeLoginModal();
       // console.log(isLoggedIn)
     },

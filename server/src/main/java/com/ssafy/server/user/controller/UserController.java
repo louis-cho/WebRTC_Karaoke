@@ -16,6 +16,8 @@ import com.ssafy.server.user.document.UserDocument;
 import com.ssafy.server.user.error.UserExceptionEnum;
 import com.ssafy.server.user.model.User;
 import com.ssafy.server.user.model.UserAuth;
+import com.ssafy.server.user.model.UserNoPk;
+import com.ssafy.server.user.model.UserUuidNick;
 import com.ssafy.server.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +28,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 
 @RestController
+
 @RequestMapping("/api/v1/user")
 @Slf4j
 public class UserController {
@@ -40,6 +44,16 @@ public class UserController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @GetMapping("/getPk") //@RequestBody JsonNode jsonNode 원래라면 이걸로 받아야 할 것 같지만 Test용으로 ...
+    public int pkTest(@RequestParam UUID uuid){
+        return userService.getUserPk(uuid);
+    }
+
+    @GetMapping("/getUUID")
+    public UUID UUIDTest(@RequestParam int pk){
+        return userService.getUUIDByUserPk(pk);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(HttpServletRequest servletRequest,  @RequestBody JsonNode request) throws Exception{
@@ -89,17 +103,15 @@ public class UserController {
                         String newAccessToken = jwtUtil.generateAccess(userPk, Role.USER.getKey());
                         System.out.println("db에 저장된 refreshToken이 있고, 유효한 경우, AccessToken 재발급: " + " " + newAccessToken);
 
-                        jsonResponse.put(TokenKey.ACCESS.getKey(), newAccessToken);
-                        jsonResponse.put(TokenKey.REFRESH.getKey(), refreshToken);
+                        jsonResponse.put(TokenKey.ACCESS.getKey(), "Bearer-" + newAccessToken);
+                        jsonResponse.put(TokenKey.REFRESH.getKey(), "Bearer-" + refreshToken);
                     } else {
                         // db에 저장된  refreshToken이 없거나, 있어도 유효하지 않은 경우
                         Token newToken = jwtUtil.generateToken(userPk, Role.USER.getKey());
                         System.out.println("accessToken & refreshToken 둘다 발급.");
-                        System.out.println(newToken.getAccessToken());
-                        System.out.println(newToken.getRefreshToken());
 
-                        jsonResponse.put(TokenKey.ACCESS.getKey(), newToken.getAccessToken());
-                        jsonResponse.put(TokenKey.REFRESH.getKey(), newToken.getRefreshToken());
+                        jsonResponse.put(TokenKey.ACCESS.getKey(), "Bearer-" + newToken.getAccessToken());
+                        jsonResponse.put(TokenKey.REFRESH.getKey(), "Bearer-" + newToken.getRefreshToken());
                     }
 
                     jsonResponse.put("uuid", uuid.toString());
@@ -117,6 +129,8 @@ public class UserController {
         }
         return null;
     }
+
+
     // register
     @PostMapping("/register")
     public ResponseEntity<String> register(HttpServletRequest servletRequest,  @RequestBody JsonNode request) throws Exception{
@@ -164,15 +178,28 @@ public class UserController {
 
 
     @GetMapping("/search/{nickname}")
-    public ResponseEntity<List<UserDocument>> searchUsersByNickname(@PathVariable String nickname) {
+    public ResponseEntity<List<UserUuidNick>> searchUsersByNickname(@PathVariable String nickname) {
         List<UserDocument> users = userService.searchUsersByNickname(nickname);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        List<UserUuidNick> resList = new ArrayList<>();
+        for(UserDocument ud : users){
+            UserUuidNick tmp = new UserUuidNick();
+            tmp.setNickname(ud.getNickname());
+            tmp.setUserUuid(userService.getUUIDByUserPk(ud.getUserPk()));
+            resList.add(tmp);
+        }
+        return new ResponseEntity<>(resList, HttpStatus.OK);
     }
 
-    @GetMapping("/get/{userPk}")
-    public ResponseEntity<User> getUser(@PathVariable int userPk) {
-       try {
-           return new ResponseEntity<>(userService.getUser(userPk), HttpStatus.OK);
+    @PostMapping("/get/{uuid}")
+    public ResponseEntity<UserNoPk> getUser(@PathVariable String uuid) {
+        User user = null;
+
+        try {
+           int userPk = userService.getUserPk(UUID.fromString(uuid));
+           user = userService.getUser(userPk);
+           UserNoPk resDto = new UserNoPk(user);
+           ResponseEntity responseEntity = new ResponseEntity<>(resDto, HttpStatus.OK);
+            return responseEntity;
        }
        catch(Exception e) {
            throw new ApiException(ApiExceptionFactory.fromExceptionEnum(UserExceptionEnum.USER_NOT_FOUND));
@@ -182,15 +209,14 @@ public class UserController {
     @PostMapping("/delete")
     public ResponseEntity<Boolean> delete(@RequestBody JsonNode jsonNode) {
         JsonNode uuidNode = jsonNode.get("uuid");
-        JsonNode userPkNode = jsonNode.get("userPk");
 
         int userPk = -1;
 
         try {
-            if (uuidNode == null) {
+            if (uuidNode != null) {
                 userPk = userService.getUserPk(UUID.fromString(uuidNode.asText()));
             } else {
-                userPk = Integer.parseInt(userPkNode.asText());
+                return null;
             }
             userService.deleteUser(userPk);
         } catch(Exception e) {
@@ -201,8 +227,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<Boolean> update(@RequestBody JsonNode jsonNode) {
-        JsonNode userKey = jsonNode.get("userKey");
+    public ResponseEntity<Boolean> update(@CookieValue(name = "uuid") String uuid, @RequestBody JsonNode jsonNode) {
         JsonNode nicknameNode = jsonNode.get("nickname");
         JsonNode profileImgUrlNode = jsonNode.get("profileImgUrl");
         JsonNode introductionNode = jsonNode.get("introduction");
@@ -215,7 +240,7 @@ public class UserController {
         if(profileImgUrlNode != null)
             user.setProfileImgUrl(profileImgUrlNode.asText());
         try {
-            int userPk = userService.getUserPk(UUID.fromString(userKey.asText()));
+            int userPk = userService.getUserPk(UUID.fromString(uuid));
             user.setUserPk(userPk);
             userService.updateUser(user);
         } catch(Exception e ) {

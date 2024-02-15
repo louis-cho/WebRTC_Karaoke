@@ -48,15 +48,16 @@ public class SecurityConfig {
                 .and()
                 // token 검증하는 페이지&메인페이지는 인가 허가, 외엔 모두 인가 필요
                 .authorizeRequests()
-                .antMatchers("/api/v1/test/login").permitAll()
-                .antMatchers("/api/v1/user/**").permitAll()
-                .antMatchers("/api/v1/**").permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/api/v1/auth/filter").permitAll()
+                .antMatchers("/api/v1/user/login").permitAll()
+                .antMatchers("/api/v1/user/register").permitAll()
+                .antMatchers("/api/ws/**").permitAll()
+                .antMatchers("/api/v1/user/get/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .logout().logoutSuccessUrl("/");
 
-        // http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+         http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

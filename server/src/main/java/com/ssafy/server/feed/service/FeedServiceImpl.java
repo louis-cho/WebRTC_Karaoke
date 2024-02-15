@@ -1,13 +1,17 @@
 package com.ssafy.server.feed.service;
 
 import com.ssafy.server.feed.model.Feed;
+import com.ssafy.server.feed.model.FeedResponse;
 import com.ssafy.server.feed.repository.FeedRepository;
+import com.ssafy.server.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,6 +19,9 @@ public class FeedServiceImpl implements FeedService {
 
     @Autowired
     private final FeedRepository feedRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     public FeedServiceImpl(FeedRepository feedRepository) {
@@ -50,13 +57,15 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public Feed updateFeed(int feedId, Feed updatedFeed) {
+    public Feed updateFeed(int feedId, FeedResponse updatedFeed) {
         // 데이터베이스에서 기존 피드 조회 후 업데이트
         Optional<Feed> optionalExistingFeed = feedRepository.findById(feedId);
 
+        Integer userPk = userService.getUserPk(updatedFeed.getUserUUID());
+
         if (optionalExistingFeed.isPresent()) {
             Feed existingFeed = optionalExistingFeed.get();
-            existingFeed.setUserPk(updatedFeed.getUserPk());
+            existingFeed.setUserPk(userPk);
             existingFeed.setSongId(updatedFeed.getSongId());
             existingFeed.setTitle(updatedFeed.getTitle());
             existingFeed.setContent(updatedFeed.getContent());
@@ -80,5 +89,27 @@ public class FeedServiceImpl implements FeedService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<FeedResponse> getFeedByUserPk(int userPk) {
+         List<Feed> list =  feedRepository.findByUserPk(userPk).get();
+         List<FeedResponse> res = new ArrayList<>();
+         for(Feed feed : list){
+             FeedResponse tmp = new FeedResponse();
+             tmp.setFeedId(feed.getFeedId());
+             tmp.setUserUUID(userService.getUUIDByUserPk(userPk));
+             tmp.setTime(feed.getTime());
+             tmp.setStatus(feed.getStatus());
+             tmp.setTitle(feed.getTitle());
+             tmp.setContent(feed.getContent());
+             tmp.setSongId(feed.getSongId());
+             tmp.setThumbnailUrl(feed.getThumbnailUrl());
+             tmp.setTotalPoint(feed.getTotalPoint());
+             tmp.setVideoLength(feed.getVideoLength());
+             tmp.setVideoUrl(feed.getVideoUrl());
+             res.add(tmp);
+         }
+         return res;
     }
 }

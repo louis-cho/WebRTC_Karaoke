@@ -1,6 +1,7 @@
 package com.ssafy.server.like.service;
 
 
+import com.ssafy.server.hit.model.HitStat;
 import com.ssafy.server.like.model.LikeStats;
 import com.ssafy.server.like.repository.LikeRepository;
 import com.ssafy.server.like.repository.LikeStatRepository;
@@ -87,7 +88,25 @@ public class LikeServiceImpl implements LikeService {
         }
     }
 
-        public void update (Like updatedLike){
+    @Override
+    public boolean isClicked(int feedId, int userPk) {
+        try {
+            List<Like> like = likeRepository.findByUserPkAndFeedId(userPk, feedId);
+            if (like.get(0).isStatus() == true) {
+                return true;
+            }
+
+            Like cacheLike = (Like) redisTemplate.opsForHash().get(LIKE_HASH_KEY, getHashKey(feedId, userPk));
+            if (cacheLike.isStatus() == true) {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+    public void update (Like updatedLike){
             // Redis에서 업데이트
             redisTemplate.opsForHash().put(LIKE_HASH_KEY, getHashKey(updatedLike), updatedLike);
         }
@@ -106,7 +125,28 @@ public class LikeServiceImpl implements LikeService {
                     List<Like> list = likeRepository.findByUserPkAndFeedId(like.getUserPk(), like.getFeedId());
                     if (list.size() < 1) {
                         likeRepository.save(like);
-                        hashOperations.delete(LIKE_HASH_KEY, entry.getKey());
+                        likeStatRepository.findById(like.getFeedId())
+                                .ifPresentOrElse(
+                                        existingLikeStat -> {
+                                            // LikeStat 데이터가 이미 존재하는 경우
+                                            if(like.isStatus())
+                                            {
+                                                existingLikeStat.increment(); // LikeStat 값을 증가시킴
+                                            }
+                                            else {
+                                                existingLikeStat.decrement();
+                                            }
+                                            likeStatRepository.save(existingLikeStat); // 업데이트된 HitStat 데이터를 저장
+
+                                         },
+                                        () -> {
+                                            // LikeStat 데이터가 존재하지 않는 경우
+                                            LikeStats newLikeStat = new LikeStats();
+                                            newLikeStat.setFeedId(like.getFeedId());
+                                            newLikeStat.setLikeCount(1); // 초기 값 설정
+                                            likeStatRepository.save(newLikeStat); // 새로운 HitStat 데이터를 저장
+                                        }
+                                );     hashOperations.delete(LIKE_HASH_KEY, entry.getKey());
                         return;
                     }
 

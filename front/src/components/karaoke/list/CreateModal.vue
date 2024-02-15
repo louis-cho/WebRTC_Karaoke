@@ -8,6 +8,7 @@
           <q-input
             v-model="sessionName"
             :label="pref.app.kor.karaoke.list.sessionId"
+            @keydown.enter="createSession"
             outlined
             dense
             class="q-mb-md"
@@ -46,6 +47,7 @@
             v-if="isPrivate"
             v-model="password"
             :label="pref.app.kor.karaoke.list.password"
+            @keydown.enter="createSession"
             outlined
             dense
             type="password"
@@ -86,17 +88,31 @@ const { changeRoute } = defineProps(["changeRoute"]);
 const router = changeRoute;
 
 const sessionName = ref(undefined);
-const numberOfParticipants = ref("1");
+const numberOfParticipants = ref("6");
 const isPrivate = ref(false);
 const password = ref(undefined);
+const base64EncodedText = ref(undefined);
 
 function closeModal() {
   store.createModal = false;
 }
 
 async function createSession() {
+  if (!sessionName.value) {
+    alert("방 제목을 입력하세요");
+    return;
+  }
+  if (isPrivate.value && !password.value) {
+    alert("비밀번호를 입력하세요");
+    return;
+  }
+
+  base64EncodedText.value = btoa(
+    unescape(encodeURIComponent(sessionName.value))
+  ).replace(/=+$/, "");
+
   await store.createSession(
-    sessionName.value,
+    base64EncodedText.value,
     numberOfParticipants.value,
     isPrivate.value,
     password.value
@@ -108,7 +124,7 @@ async function createSession() {
 function joinSession() {
   closeModal();
 
-  const url = `/karaoke/${sessionName.value}`;
+  const url = `/karaoke/${base64EncodedText.value}`;
   router.push(url);
 }
 

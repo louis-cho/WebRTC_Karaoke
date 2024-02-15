@@ -1,5 +1,6 @@
 package com.ssafy.server.feed.service;
 import com.ssafy.server.feed.model.Feed;
+import com.ssafy.server.feed.model.FeedResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,7 +18,9 @@ public interface FeedService {
 
     Feed createFeed(Feed feed);
 
-    Feed updateFeed(int feedId, Feed updatedFeed);
+    Feed updateFeed(int feedId, FeedResponse updatedFeed);
 
     boolean deleteFeed(int feedId);
+
+    List<FeedResponse> getFeedByUserPk(int userPk);
 }

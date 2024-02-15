@@ -2,8 +2,6 @@ package com.ssafy.server.comment.service;
 
 import com.ssafy.server.comment.model.Comment;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 public interface CommentService {

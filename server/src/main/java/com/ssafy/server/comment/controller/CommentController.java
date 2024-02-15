@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/comment")
@@ -61,9 +62,15 @@ public class CommentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<?>> createComment(@RequestBody Comment newComment) {
+    public ResponseEntity<ApiResponse<?>> createComment(@RequestHeader(name="uuid") String uuid, @RequestBody Comment newComment) {
 
+        int userPk = -1;
         try {
+            userPk = userService.getUserPk(UUID.fromString(uuid));
+            if(userPk < 0) {
+                return null;
+            }
+            newComment.setUserPk(userPk);
             commentService.createComment(newComment);
         } catch(Exception e) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(CommentExceptionEnum.COMMENT_CREATION_FAILED));

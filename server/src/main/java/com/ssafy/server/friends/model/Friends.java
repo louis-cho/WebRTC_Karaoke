@@ -13,12 +13,12 @@ public class Friends {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="FRIEND_ID", updatable = false)
-    private long friendId;
+    private Integer friendId;
 
-    private long fromUserPk;
-    private long toUserPk;
+    private Integer fromUserPk;
+    private Integer toUserPk;
     public Friends() {}
-    public Friends(long from, long to){
+    public Friends(Integer from, Integer to){
         this.fromUserPk = from;
         this.toUserPk = to;
     }
