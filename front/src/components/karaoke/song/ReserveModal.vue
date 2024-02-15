@@ -95,8 +95,8 @@ function reserveSong(songId) {
       }
     )
     .then((response) => {
-      console.log(response.data);
       store.session.signal({ type: "reserve" });
+      searchQuery.value = "";
       closeModal();
     })
     .catch((error) => {
@@ -105,7 +105,6 @@ function reserveSong(songId) {
 }
 
 const filteredSongs = computed(() => {
-  // console.log(searchQuery.value);
   if (!searchQuery.value.trim()) {
     return songs.value;
   }

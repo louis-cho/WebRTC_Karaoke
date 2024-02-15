@@ -32,13 +32,16 @@ const props = defineProps({
 const song = ref(null);
 
 const choose = () => {
+  if(props.songData == null) {
+    alert("노래 데이터가 아직 없어요,,,")
+    return ;
+  }
   song.value = props.songData;
-  appInstance.value.score = parseScore(song.value.score); // 퍼펙트스코어 데이터주입
+  appInstance.value.score = parseScore(song.value.mmlData); // 퍼펙트스코어 데이터주입
   appInstance.value.songLength = song.value.length;
   appInstance.value.prelude = song.value.prelude;
-  console.log(parseScore(song.value.score));
   appInstance.value.lyrics = parseBundle(
-    parseLyric(parseScore(song.value.score))
+    parseLyric(parseScore(song.value.mmlData))
   ); // 가사 연결
   audio.value = new Audio(song.value.url); // mp3 url 연결
 };
@@ -50,8 +53,11 @@ const play = () => {
 
 const stop = () => {
   appInstance.value.stopSong();
-  audio.value.currentTime = 0;
-  audio.value.pause();
+  song.value = null;
+  if(audio.value != null) {
+    audio.value.currentTime = 0;
+    audio.value.pause();
+  }
 };
 
 defineExpose({

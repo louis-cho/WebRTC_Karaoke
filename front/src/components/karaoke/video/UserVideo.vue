@@ -58,10 +58,10 @@ function kickUser() {
     },
     {
       headers: {
-      Authorization: getCookie("Authorization"),
-      refreshToken: getCookie("refreshToken"),
-      "Content-Type": "application/json",
-    },
+        Authorization: getCookie("Authorization"),
+        refreshToken: getCookie("refreshToken"),
+        "Content-Type": "application/json",
+      },
     }
   );
 }

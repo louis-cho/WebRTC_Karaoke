@@ -140,6 +140,7 @@ import { fetchCommentCount } from "@/js/comment/comment.js";
 let pref = app;
 const feeds = ref([]);
 const router = useRouter();
+let select = 1;
 
 let page = 0;
 const amount = 3;
@@ -149,7 +150,7 @@ const goFeedDetail = (feedId) => {
 };
 
 onBeforeMount(async () => {
-  await fetchFeedData();
+  await fetchFeedData(select);
 });
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false);
@@ -159,13 +160,15 @@ const gotoUserFeed  = (userKey) => {
 }
 
 //가상 피드 데이터
-const fetchFeedData = async () => {
-  const newFeeds = await fetchFeedList(page++, amount);
+const fetchFeedData = async (select) => {
+  const newFeeds = await fetchFeedList(page++, amount, select);
 
   if(newFeeds == null) {
+    console.log("Gdgd")
     return;
   }
 
+  console.log(newFeeds)
   for (let elem of newFeeds) {
     elem.song = await fetchSong(elem.songId);
     elem.user = await fetchUser(elem.userUUID);
@@ -204,7 +207,7 @@ const handleScroll = async () => {
     loading.value = true;
 
     try {
-      await fetchFeedData();
+      await fetchFeedData(select);
     } catch (error) {
       console.error("Error fetching new feeds:", error);
     } finally {

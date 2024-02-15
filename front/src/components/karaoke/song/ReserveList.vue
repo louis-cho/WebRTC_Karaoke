@@ -82,6 +82,7 @@ watch(
 function fetchReserveList() {
   lists.value = [];
   store.reservedSongs = [];
+  store.reservedSongsLength = 0;
 
   // API 호출을 통해 노래 데이터 가져오기
   axios
@@ -111,7 +112,6 @@ function fetchReserveList() {
           id++;
         }
       });
-      console.log(store.reservedSongs[0]);
     })
     .catch((error) => {
       alert(error.response.data);

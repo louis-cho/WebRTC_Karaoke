@@ -132,10 +132,6 @@ const openModal = () => {
 
 const openInviteModal = () => {
   notificationStore.inviteModal = true;
-  console.log(
-    "click : notificationStore.inviteModal : ",
-    notificationStore.inviteModal
-  );
 };
 
 async function leaveSession() {

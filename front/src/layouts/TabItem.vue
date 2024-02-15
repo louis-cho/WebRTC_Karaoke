@@ -35,11 +35,7 @@
 
     <div class="container">
       <q-tabs>
-        <q-tab
-          name="person"
-          icon="person"
-          @click="goToFeedPage(uuid)"
-        />
+        <q-tab name="person" icon="person" @click="goToFeedPage(uuid)" />
         <q-tab
           name="notifications"
           icon="notifications"
@@ -136,7 +132,9 @@
           <q-scroll-area style="height: 300px; max-width: 300px">
             <div>
               <!-- 유저 목록 뜨게 -->
-              <q-list v-if="searchUsers && searchUsers.length && filteredUsers.length">
+              <q-list
+                v-if="searchUsers && searchUsers.length && filteredUsers.length"
+              >
                 <q-item v-for="user in filteredUsers" :key="user.userKey">
                   <q-item-section @click="gotoUserFeed(user.userKey)">
                     <q-img class="img-container" :src="user.profileImgUrl" />
@@ -178,12 +176,11 @@ const store = useKaraokeStore();
 
 const { setCookie, getCookie, removeCookie } = useCookie();
 // const userUUID = getCookie("uuid");
-const uuid = ref('');
+const uuid = ref("");
 const notificationStore = useNotificationStore();
 const router = useRouter();
 const isDropdownOpen1 = ref(false);
 const isDropdownOpen2 = ref(false);
-
 
 const userSearchModal = ref(false);
 const openUserSearchModal = () => {
@@ -196,15 +193,13 @@ const gotoUserFeed = (param) => {
 }
 
 onBeforeMount(async () => {
-  uuid.value = getCookie('uuid');
+  uuid.value = getCookie("uuid");
 });
 
 // 이벤트 핸들러 추가
 const goToPage = (path) => {
   router.push(path);
 };
-
-
 
 const goToFeedPage = (param) => {
   router.push({ name: "feed", params: { userUUID: param } });
@@ -223,11 +218,8 @@ const toggleDropdown1 = () => {
       })
       .then((response) => {
         notificationStore.notificationList = response.data;
-        console.log("알림관련 데이터잘받아와쓰요.");
       })
-      .catch((err) => {
-        console.log(err.message);
-      });
+      .catch((err) => {});
   }
   isDropdownOpen1.value = !isDropdownOpen1.value;
 };
@@ -254,7 +246,6 @@ const logout = () => {
 };
 
 const handleNotificationClick = (notification) => {
-  console.log("notification", notification.notificationId);
   //알림 읽음으로변경 요청
   axios
     .get(
@@ -268,16 +259,12 @@ const handleNotificationClick = (notification) => {
       }
     )
     .then((response) => {
-      console.log("알림상태 잘 수정됐음.");
       //읽음으로 변경됐으면 알림삭제
       notificationStore.notificationList =
         notificationStore.notificationList.filter(
           (item) => item != notification
         );
-      console.log(
-        "알림잘삭제됨!  리스트 :",
-        notificationStore.notificationList
-      );
+
       //종소리 카운트 줄이기
       notificationStore.bellCount--;
 
@@ -292,13 +279,10 @@ const handleNotificationClick = (notification) => {
         router.push("/friend_list");
       }
     })
-    .catch((err) => {
-      console.log(err.message);
-    });
+    .catch((err) => {});
 };
 
 const readAllNotification = () => {
-  console.log("모두읽기가 눌렸어잉");
   axios
     .post(
       `${pref.app.api.protocol}${pref.app.api.host}/notifications/readAll`,
@@ -312,26 +296,24 @@ const readAllNotification = () => {
       }
     )
     .then((response) => {
-      console.log("모두읽기처리완료");
       notificationStore.notificationList = [];
       notificationStore.bellCount = 0;
     })
-    .catch((err) => {
-      console.log("모두읽기중 에러발생.");
-    });
+    .catch((err) => {});
 };
-
 
 const search = ref("");
 const searchUsers = ref([]);
 
 const filteredUsers = computed(() => {
-  const query = search.value ? search.value.toLowerCase() : '';
+  const query = search.value ? search.value.toLowerCase() : "";
   if (!query) return [];
 
   return searchUsers.value.filter((user) => {
-    const nickname = user.nickname ? user.nickname.toLowerCase() : '';
-    const introduction = user.introduction ? user.introduction.toLowerCase() : '';
+    const nickname = user.nickname ? user.nickname.toLowerCase() : "";
+    const introduction = user.introduction
+      ? user.introduction.toLowerCase()
+      : "";
     return nickname.includes(query) || introduction.includes(query);
   });
 });
@@ -346,9 +328,7 @@ const searchNickname = async function () {
       let userUuid = searchUsers.value[idx].userUuid;
       searchUsers.value[idx] = await fetchUser(userUuid);
     }
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-  }
+  } catch (error) {}
 };
 
 
@@ -380,9 +360,8 @@ const searchNickname = async function () {
   right: 0;
   background-color: #f9f9f9;
   min-width: 160px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 9999;
-
 }
 
 .dropdown-content q-tab {
