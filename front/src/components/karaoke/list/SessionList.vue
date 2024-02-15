@@ -2,7 +2,7 @@
   <q-layout style="min-height: 500px">
     <q-page-container>
       <q-page style="min-height: 500px">
-        <q-header class="custom-header">
+        <q-header style="background-color: mediumorchid">
           <q-toolbar>
             <q-toolbar-title>
               {{ pref.app.kor.karaoke.list.sessionList }}
@@ -141,8 +141,4 @@ const filteredSession = computed(() => {
 });
 </script>
 
-<style scoped>
-.custom-header {
-  background-color: skyblue;
-}
-</style>
+<style scoped></style>
