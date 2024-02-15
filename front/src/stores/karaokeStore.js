@@ -21,6 +21,7 @@ export const useKaraokeStore = defineStore("karaoke", {
     songMode: false,
     newReserve: false,
     singUserOut: false,
+    song: null,
 
     sessionName: undefined,
     userName: "로그인 하세요",
