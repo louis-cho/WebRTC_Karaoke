@@ -138,20 +138,12 @@
               <!-- 유저 목록 뜨게 -->
               <q-list v-if="searchUsers && searchUsers.length && filteredUsers.length">
                 <q-item v-for="user in filteredUsers" :key="user.userKey">
-                  <q-item-section>
+                  <q-item-section @click="gotoUserFeed(user.userKey)">
                     <q-img class="img-container" :src="user.profileImgUrl" />
                   </q-item-section>
                   <q-item-section>
                     <q-item-label>{{ user.nickname }}</q-item-label>
                     <q-item-label caption>{{ user.introduction }}</q-item-label>
-                    <!-- 친구 아니라면 -->
-                    <!-- 여기 수정~~~~~~~~~~~` -->
-                    <div v-if="ex">
-                      <q-btn color="primary" label="친구요청"></q-btn>
-                    </div>
-                    <div v-else>
-                      <q-btn color="red" label="친구삭제"></q-btn>
-                    </div>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -173,15 +165,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onBeforeMount } from "vue";
+import { ref, computed, onBeforeMount, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useNotificationStore } from "@/stores/notificationStore.js";
 import pref from "@/js/config/preference.js";
 import axios from "axios";
 import { searchUser, fetchUser } from "@/js/user/user.js";
 import useCookie from "@/js/cookie.js";
-import { getUserPk } from "@/js/user/user.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
+import { fetchFriendList, fetchFriendRequest, fetchFriendRequestList, fetchFriendCount } from "@/js/friends/friends.js";
 const store = useKaraokeStore();
 
 const { setCookie, getCookie, removeCookie } = useCookie();
@@ -199,8 +191,9 @@ const openUserSearchModal = () => {
   isDropdownOpen2.value = false;
 };
 
-//친구인지 아닌지 판별 변수
-const ex = ref(false);
+const gotoUserFeed = (param) => {
+  router.push({ name: "feed", params: { userUUID:  param }});
+}
 
 onBeforeMount(async () => {
   uuid.value = getCookie('uuid');
@@ -343,6 +336,7 @@ const filteredUsers = computed(() => {
   });
 });
 
+
 const searchNickname = async function () {
   try {
     const response = await searchUser(search.value);
@@ -356,6 +350,7 @@ const searchNickname = async function () {
     console.error("Error fetching user data:", error);
   }
 };
+
 
 
 </script>
