@@ -20,6 +20,7 @@ export const useKaraokeStore = defineStore("karaoke", {
     singUser: undefined,
     songMode: false,
     newReserve: false,
+    singUserOut: false,
 
     sessionName: undefined,
     userName: "로그인 하세요",
@@ -107,8 +108,10 @@ export const useKaraokeStore = defineStore("karaoke", {
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
-        if (JSON.parse(stream.connection.data).clientData == this.singUser)
+        if (JSON.parse(stream.connection.data).clientData == this.singUser) {
           this.mainStreamManager = this.publisher;
+          this.singUserOut = true;
+        }
 
         const index = this.subscribers.indexOf(stream.streamManager, 0);
         if (index >= 0) {
