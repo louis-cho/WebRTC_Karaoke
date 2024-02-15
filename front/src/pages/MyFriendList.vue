@@ -1,6 +1,6 @@
 <template>
-    <nav-bar />
   <div>
+    <nav-bar />
     <q-layout>
       <q-page-container>
         <q-page>

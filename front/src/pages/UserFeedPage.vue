@@ -1,6 +1,6 @@
 <template>
-    <nav-bar />
   <div>
+    <nav-bar />
     <!-- 내 피드 페이지(마이페이지/혹은 타인 페이지)-->
     <div class="my-feed">
       <!-- style="padding-left:100px; padding-right:100px" -->
