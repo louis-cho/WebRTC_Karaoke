@@ -9,9 +9,19 @@
 - 내가 부른 노래를 sns형태로 공유 할 수 있는 웹 노래방 서비스
 - 실시간으로 사람들 앞에서 노래를 부르고, 피드에 공유할수 있습니다.
 
-<br />
 
-# 링크
+## 프로젝트 기간
+2024.01.04 ~ 2024.02.16
+
+## 팀원
+ - [조현우](https://github.com/louis-cho)
+ - [이준범](https://github.com/bum19)
+ - [연정흠](https://github.com/madirony)
+ - [노성은](https://github.com/seroh00)
+ - [고정원](https://github.com/gardengo)
+ - [송준석](https://github.com/jsong98)
+
+## 링크
 [![logo1-removebg-preview](/uploads/62539bb6b1639ad6fda02617b81db772/logo1-removebg-preview.png)](https://i10a705.p.ssafy.io/)
 
 [![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/d3b9636405c8451499659f8d8b4ba876)
