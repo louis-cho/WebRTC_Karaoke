@@ -109,6 +109,300 @@ gif 화면 추가
 
 <br />
 
+# Elastic Search
+
+### 유저 검색
+회원가입 시 Elasticsearch에서 사용하는 UserDocument 타입 데이터를 저장합니다.<br>
+UserDocument는 userPk(int), nickname(String)을 갖고 있어 ElasticsearchRepository를 통해 유저 닉네임 기반 검색을 가능하게 합니다.<br>
+또한 유사도 있는 검색 결과도 보여줄 수 있도록 Elasticsearch Query의 fuzziness의 유연성을 설정하였습니다.
+```java
+    // UserServiceImpl.java
+    @Override
+    public List<UserDocument> searchUsersByNickname(String nickname) {
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(fuzzyQuery("nickname", nickname).fuzziness(Fuzziness.TWO)) 
+                .build();
+
+        SearchHits<UserDocument> searchHits = elasticsearchRestTemplate.search(searchQuery, UserDocument.class);
+        return searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
+    }
+```
+
+### 인기 피드 랭킹 계산
+인기 피드 랭킹은 Elasticsearch에 동기화된 데이터를 스케줄링을 통해 일정 주기로 새롭게 추가된 데이터를 대상으로 계산됩니다.<br>
+각 피드 별 점수에 영향을 미치는 요인은 좋아요 개수와 조회수가 있으며 각각은 5:3의 가중치를 갖고 계산됩니다.<br>
+업데이트된 피드 랭킹은 상위 100개의 피드가 내림차순으로 정렬됩니다. 이 결과물은 조회가 자주 일어날 것이 예상되므로 메모리 변수 형태로 유지 관리합니다.<br>
+```java
+    @Scheduled(cron = "0 */15 * * * *") 
+    public void calculateRank() {
+        String likesIndexName = "likes"; 
+        String hitIndexName = "hits"; 
+
+        List<SearchHit> likesData = fetchDataFromElasticsearch(likesIndexName);
+
+        List<SearchHit> hitsData = fetchDataFromElasticsearch(hitIndexName);
+
+        // 각 게시글 아이디 별로 점수 계산
+        calculateScores(likesData, hitsData);
+
+        // 상위 100개 게시글만 선택
+        updateTop100Ranking();
+    }
+
+     private void updateTop100Ranking() {
+           try {
+            top100Ranking = elasticsearchRestTemplate.search(
+                            new NativeSearchQueryBuilder()
+                                    .withPageable(PageRequest.of(0, 100, Sort.by(Sort.Order.desc("score"))))
+                                    .build(), FeedStatsDocument.class)
+                    .stream()
+                    .map(searchHit -> (FeedStatsDocument) searchHit.getContent())
+                    .collect(Collectors.toList());
+            } catch (...) {
+               ...
+            }
+    }
+```
+### MySQL, Elasticsearch 동기화
+MySQL DB와 Elasticsearch Document는 서로 동기화되어 일관성을 유지해야 합니다. 이를 만족시키기 위해 logstash를 활용하였습니다. <br>
+크론식 표현을 통해 일정 주기로 동기화 작업이 이뤄지도록 구성하였습니다. <br>
+좋아요, 조회수 정보는 각 DB SELECT 문을 통해 fetch 시 timestamp를 기준으로 새로운 데이터만 가져오도록 작성하였습니다. <br>
+이를 각각의 Elasticsearch Document에 해당하는 index로 데이터를 전달하도록 설정하였습니다.
+
+```
+input {
+  
+  jdbc {
+    jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/karaoke"
+    jdbc_user => "root"
+    jdbc_password => "1234"
+    jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
+    jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
+    
+    statement => "SELECT * FROM likes WHERE timestamp > :sql_last_value"
+    
+    schedule => "*/10 * * * * *"
+    use_column_value => true
+    tracking_column => "timestamp"
+    tracking_column_type => "timestamp"
+    clean_run => false
+    type => "like"
+  }
+  
+  jdbc {
+    ...
+  }
+}
+
+output {
+  if [type] == "like" {
+    elasticsearch {
+      hosts => ["elasticsearch:9200"]
+      index => "likes"
+    }
+  }
+  
+  if [type] == "hit" {
+  	...
+  }
+  
+  stdout { codec => rubydebug }
+}
+
+output {
+  if [type] == "like" {
+    elasticsearch {
+      hosts => ["localhost:9200"]
+      index => "like"                             # index를 like로 데이터 동기화
+    }
+  }
+
+  if [type] == "view" {
+    ...
+  }
+}
+```
+
+# 에러 처리
+
+### 동일한 처리 구조
+
+@RestControllerAdvice annotation을 통해 예외에 따라 모든 결과물이 동일한 로직을 거쳐 전달되도록 구현하였습니다. <br>
+
+### Generic Type. 일관된 반환 타입
+
+@ExceptionHandler(ApiException.class) annotation을 통해 ApiException 클래스의 예외는 제네릭 타입의  일관된 리턴 타입 ResponseEntity<ApiResponse<?>>을 갖도록 구현하였습니다.
+```java
+@RestControllerAdvice
+public class ApiExceptionAdvice {
+
+    @ExceptionHandler(ApiException.class)
+    @ResponseStatus
+    public ResponseEntity<ApiResponse<?>> handleApiException(HttpServletRequest request, ApiException e) {
+
+        return ResponseEntity
+                .status(e.getStatus())
+                .body(ApiResponse.builder()
+                        .status(String.valueOf(e.getStatus()))
+                        .message(e.getCode())
+                        .data(null)
+                        .build());
+    }
+}
+```
+
+
+
+### 에러 정의. Enum Type 활용
+각 도메인 별 에러 타입을 Enum Type을 통해 일관성을 갖춰 구현하였습니다. 테스트 단계에서 요청 실패에 대해서 어떤 예외가 발생했는지 빠르게 파악하고 관리할 수 있도록 하였습니다.
+```JAVA
+public enum CommentExceptionEnum implements ExceptionEnum {
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C00001", "댓글을 찾을 수 없습니다"),
+    COMMENT_CREATION_FAILED(HttpStatus.BAD_REQUEST, "C00002", "댓글을 생성할 수 없습니다"),
+    COMMENT_UPDATE_FAILED(HttpStatus.BAD_REQUEST, "C00003", "댓글을 업데이트할 수 없습니다"),
+    ...
+}
+```
+```JAVA
+public enum LikeExceptionEnum implements ExceptionEnum {
+
+    LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "L00001", "좋아요를 찾을 수 없습니다"),
+    LIKE_CREATION_FAILED(HttpStatus.BAD_REQUEST, "L00002", "좋아요를 생성할 수 없습니다"),
+    LIKE_UPDATE_FAILED(HttpStatus.BAD_REQUEST, "L00003", "좋아요를 업데이트할 수 없습니다"),
+    ...
+}
+```
+# 회원 정보 암호화 관리
+
+### RSA 암복호화
+RSA 2048 bit + bcrypt hash를 기반으로 제작하였습니다. <br>
+서버는 유저가 로그인 및 회원가입을 필요로 하는 페이지에 접속 시 유저 ip에 따라 RSA 비대칭키 쌍을 생성한 뒤, 이를 관리합니다. <br>
+jsbn, prng4, rng, rsa js 파일을 es6 형태에 맞게 포팅하였으며 이를 통해 서버 응답으로 넘어온 modulus, exponent public key를 기반으로 비밀번호 암호화를 수행합니다.<br>
+공개키로 암호화된 정보는 서버 측의 비밀키로 복호화한 원문 패스워드와 SALTING 기능이 내장된 bcrypt 해싱 결과를 DB로부터 가져와 비교합니다.<br>
+이를 통해 사용자 비밀번호 원문을 저장하지 않고 로그인 인증 성공/실패 판단이 가능합니다.
+```javascript
+    // 암호화 과정 (클라이언트)
+    import * as RSA from "./rsa.js";
+    export let rsa = new RSA.RSAKey();
+    ...
+    {
+        pw: rsa.encrypt(pw),
+    }
+```
+
+```JAVA
+    // 복호화 과정 (서버)
+   String privateKey = RSA_2048.keyToString(keyManager.getPrivateKey(ip));
+   String password = RSA_2048.decrypt(rawPassword, privateKey);
+
+   // 비밀번호를 해싱하여 저장
+   String hashedPassword = passwordEncoder.encode(password);
+
+   // 생성된 해시된 비밀번호를 사용하여 사용자 엔터티를 생성
+   UserAuth userAuth = new UserAuth(id, hashedPassword);
+```
+
+
+### RSA Key Manager
+비대칭키 쌍은 서버 메모리 변수로 관리됩니다. RSA Key Manager는 싱글톤 패턴으로 관리되며, 내부에는 각 클라이언트의 마지막 조회 시각을 의미하는 lastRequest와 클라이언트의 ip를 key 값으로 rsa key pair가 저장된 hash map이 존재합니다.<br>
+이는 스케줄러를 통해 일정 주기마다 마지막 키 조회 요청으로부터 10분이 지난 키는 삭제하여 메모리 낭비를 줄일 수 있도록 작성하였습니다.
+
+```java
+public class RSAKeyManager { // 클라이언트 ip 를 키로 관리하는 비대칭키 쌍 & 마지막 요청 시각
+    private static HashMap<String, KeyPair> keyMap;
+    private static HashMap<String, Long> lastRequest;
+    private static RSAKeyManager instance = null;
+    ...
+}
+
+@Component
+public class RSAKeyManagerCleanupTask {
+
+    private final int period = 600000;
+
+    @Scheduled(fixedRate = period) 
+    public void cleanupUnusedKeys() { // 사용하지 않는 비대칭 키 쌍을 삭제합니다
+      ...
+    }
+}
+```
+
+# 좋아요, 조회수 데이터 동기화
+좋아요, 조회수가 급증하는 게시글 피드에 대해 바로 DB write 요청이 일어난다면 많은 부하가 일어날 수 있습니다. 이를 해결하기 위해 Redis cache를 사용하여 DB write가 각 요청에 대해 매번 일어나는 것을 방지하였습니다.<br>
+사용자 요청에 대해 우선적으로는 Redis cache에 저장하였으며, 이를 일정 주기로 비동기 DB 동기화를 통해 해결하고자 했습니다.<br>
+또한 게시글에 대한 통계 정보를 관리하는 테이블을 생성하여 각 게시글의 좋아요, 조회수 정보를 빠르게 확인할 수 있도록 구현하였습니다.<br>
+
+```java
+    @Async
+    public CompletableFuture<Void> saveToMySQLAsync() {
+        HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
+        long count = hashOperations.scan(LIKE_HASH_KEY, ScanOptions.scanOptions().match("*").build()).stream().count();
+      
+        hashOperations.scan(LIKE_HASH_KEY, ScanOptions.scanOptions().match("*").build())
+                .forEachRemaining(entry -> {
+                       Like like = (Like) entry.getValue();
+                         // 조건에 따라 redis 데이터를 mysql 테이블 동기화
+                         ...
+                       );     
+                        hashOperations.delete(LIKE_HASH_KEY, entry.getKey());
+                        return;
+                    }
+
+                    Like elem = list.get(0);
+                    if (like.isStatus() == elem.isStatus()) {
+                       // 상태가 같은 경우 아무 것도 수행하지 않는다
+                       ...
+                    } else {
+                      //  다른 경우 집계 테이블 동기화
+                      ...
+                    }
+
+                    // 저장 후 해당 데이터를 해시에서 삭제
+                    hashOperations.delete(LIKE_HASH_KEY, entry.getKey());
+                });
+
+        // 비동기 작업 완료
+        return CompletableFuture.completedFuture(null);
+    }
+```
+
+# 프로시저 적용
+SQL을 백엔드 서버에서 생성하여 DB 요청하기 보다는 pre-compiled procedure를 통해 DB 작업 성능 개선을 이끌어 내며 한 번의 수많은 댓글을 로드하지 않고 페이지네이션을 통해 효율을 추구하였습니다.
+
+```
+CREATE DEFINER=`root`@`%` PROCEDURE `GetCommentsByFeedIdWithPagination`(
+    IN feedIdParam INT,
+    IN startIndexParam INT,
+    IN pageSizeParam INT
+)
+BEGIN
+    SELECT *
+    FROM comment
+    WHERE feed_id = feedIdParam
+      AND LOWER(is_deleted) NOT LIKE 'o%'
+    ORDER BY comment_id
+    LIMIT startIndexParam, pageSizeParam;
+END
+```
+
+# 시스템 내외부 user key 구조
+user key가 외부에 노출되면 해당 id의 유저를 특정할 수 있어 보안에 좋지 않은 방식이라 생각했습니다.<br>
+그럼에도 불구하고 Auto Increment 속성을 통해 생성 시각 별로 정렬되어 있으면서도, 데이터 조회에 있어서 빠른 int 형태의 user key를 쓰는 것이 성능면에서 좋다고 생각했습니다.<br>
+두가지 측면 모두 놓치지 않기 위해 두가지 방법 모두 사용하였으며 이를 위해 int uesr key와 uuid user key 사이의 변환을 담당하는 매핑 테이블을 추가하여
+메소드를 통해 uuid를 int 타입으로 바꿀 수 있습니다.
+
+```JAVA
+int userPk = userService.getUserPk(UUID.fromString(uuid));
+```
+
+### 내부 시스템 user key
+클라이언트에게 노출되지 않고 백엔드 서버 내부에서 사용되는 user key의 경우 int 형태의 데이터를 사용하도록 구현하였습니다. 
+
+### 외부 시스템 user key
+클라이언트에게 노출되는 정보의 경우 int user key를 uuid user key로 변환하여 응답하도록 작성하였습니다.<br>
+이는 비단 유저 클래스 뿐 아니라 피드, 댓글, 좋아요 등에 담겨 있는 user key 정보도 마찬가지로 int 타입이 아닌 uuid를 반환하도록 적용되었습니다.
+
+
 # 디렉토리 구조
 ```
 ├─front
