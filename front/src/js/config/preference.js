@@ -4,15 +4,15 @@ app.api = {};
 
 app.api.prefix = "/api/v1";
 
-// app.api.socket = "wss:"; //ec2
-// app.api.protocol = "https:";
-// app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
-// app.api.websocket = app.api.socket + "//i10a705.p.ssafy.io";
+app.api.socket = "wss:"; //ec2
+app.api.protocol = "https:";
+app.api.host = "//i10a705.p.ssafy.io" + app.api.prefix; // ec2
+app.api.websocket = app.api.socket + "//i10a705.p.ssafy.io";
 
-app.api.socket = "ws:";
-app.api.protocol = "http:";
-app.api.host = "//localhost:8081" + app.api.prefix;
-app.api.websocket = app.api.socket + "//localhost:8081";
+// app.api.socket = "ws:";
+// app.api.protocol = "http:";
+// app.api.host = "//localhost:8081" + app.api.prefix;
+// app.api.websocket = app.api.socket + "//localhost:8081";
 app.api.user = {};
 app.api.user.login = "/user/login";
 app.api.user.register = "/user/register";
@@ -62,10 +62,10 @@ app.api.friends.list = "/list/";
 app.api.friends.request = "/friends/request/";
 app.api.friends.incomingRequest = "/friends/incoming-requests";
 app.api.friends.count = "/count";
-// app.api.friends.accept = "/friends/accept/";
-// app.api.friends.delete = "/friends/delete/";
+app.api.friends.accept = "/friends/accept/";
+app.api.friends.delete = "/friends/delete/";
 // app.api.friends.incoming.requests = "/friends/incoming-requests/";
-// app.api.friends.outgoing.requests = "/friends/outgoing-requests/";
+app.api.friends.outgoing.requests = "/friends/outgoing-requests/";
 
 app.kor = {};
 
