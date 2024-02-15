@@ -1,5 +1,3 @@
-<!-- <img src="https://capsule-render.vercel.app/api?type=waving&color=#a374db&height=150&section=header" /> -->
-
 # 노래 해방 🎵
 
 ![homePage](/uploads/82b358dc3a816ca1cf7360edab0021e2/homePage.png)
@@ -161,7 +159,10 @@
     -   종료 후 피드 작성
 -   실시간 알림
 -   녹화된 영상을 sns 피드 형태로 공유
--   \*\*\*추가
+-   DM
+  - 방생성
+  - 초대
+  - 실시간 채팅
 
 <br />
 
@@ -645,178 +646,9 @@ server
     └─util
 ```
 
-<!-- <img src="https://capsule-render.vercel.app/api?section=footer&type=waving&color=#a374db&height=150" /> -->
-
 <br />
 <br />
 <br />
-
-# 프로젝트 한 일(0129 ~ 0202)
-
-### 이준범
-
-BE
-
--   포인트(마일리지)
-    -   포인트(마일리지) 제도에 필요한 api, repository작성
-    -   redis를 이용한 현재 포인트값 캐싱
-    -   redis 만료시 중간 포인트 값 갱신 작업 (service)
-
-INFRA
-
--   인프라
-    -   ec2에 mariadb, elk, openvidu 배포
-    -   ec2에 프론트 npm run build를 통한 statc한 파일로 배포
-    -   ec2에 백엔드 이미지로 배포
-    -   application.properties에 배포환경에 맞는 포트설정
-    -   nginx에서 https를 통한 리버스 프록시 구축. 프론트-백, -백-오픈비두 연결 구현.
-    -   프론트-오픈비두 미구현
-
----
-
-### 노성은
-
--   FE
-    -   [DM] 메시지 파싱 처리 (메시지 입력 타입 따라 다르게 처리하는)
-    -   [DM] 1:1 dm 페이지 생성
-    -   [DM] 텍스트/이미지 전송 기능
-    -   [DM] 스크롤 기능
-    -   [DM] ChatPage dm 작성자에 따른 기능 분리 미구현
-    -   [FEED] SNS 상세 피드 페이지 (FeedDetail) 생성
-    -   [FEED] 본인 계정 피드 페이지 (MyProfile)생성
-    -   [FEED] 피드 리스트 페이지 (FeedPage) 생성
-
----
-
-### 송준석
-
--   BE
-
-    -   [노래방] 백엔드 노래 스켈레톤 코드 작성
-    -   [AWS S3] 버킷 생성 및 인증키 발급
-    -   [AWS S3] 커넥션 설정
-    -   [AWS S3] S3fileUploader 구현
-
--   FE
-    -   [노래방] 퍼펙트스코어, MML형식 -> ScoreData 파싱하는 ScoreParser 구현
-    -   [노래방] 퍼펙트스코어, 음성 인식 및 주파수로 변환하는 ToneDetector 구현
-    -   [노래방] 퍼펙트스코어, 입력 주파수 및 Scoredata를 그리는 ScoreDrawer 구현
-    -   [노래방] 일반모드, 노래 데이터 변환 및 출력 구현
-    -   [노래방] 일반모드, 진행중인 노래 싱크에 맞게 가사 렌더링 구현
-
----
-
-### 조현우
-
--   BE
-
-    -   [유저인증] 서버 측 RSA 복호화
-    -   [유저인증] 서버 측 클라이언트 암호화 정보 해시 비교 (bcrypt 해시 비교 및 복호화)
-    -   [유저인증] AOP를 활용해 백엔드 서버 함수 호출 시 함수 정보 출력
-    -   [유저인증] RSA Key Manager 개발 key-value : ip- 비대칭 KeyPair
-    -   [유저인증] RSA Key Manager Clean up 스케줄러 개발 - 마지막 요청으로부터 10분 이후 삭제
-    -   [유저] 시스템 내부에서는 Autoincrement INT Type user primary key, 시스템 외부에서는 UUID를 사용하도록 구성 (성능, 보안)
-    -   [웹소켓] 백엔드 웹소켓 스켈레톤 코드 개발
-    -   [알림] 알림 기능 구현 (SSE)
-    -   [검색] ELK docker-compose 설정
-    -   [검색] Logstash를 통해 MySQL - Elasticsearch 데이터 동기화
-    -   [검색] Elasticsearch Spring boot 연동
-    -   [검색] Elasticsearch를 통해 유저 닉네임 검색 시 INT Type user primary key 반환
-    -   [검색] Elasticsearch + Logstash + MySQL을 통한 게시글 피드 랭킹 서비스 개발
-    -   [발표] 프로젝트 기획 발표 담당
-    -   [댓글] 백엔드 댓글 스켈레톤 코드 작성
-    -   [피드] 백엔드 피드 스켈레톤 코드 작성
-    -   [좋아요] 백엔드 좋아요 스켈레톤 코드 작성
-    -   [DM] 백엔드 Websocket 스켈레톤 코드 작성
-    -   [DB] Redis <-> MySQL 동기화 스켈레톤 코드 작성
-
--   FE
-    -   [환경설정] 프론트엔드 vue & quasar 프레임워크 환경 설정
-    -   [유저인증] 클라이언트 RSA 암호화
-    -   [DM] 클라이언트 Websocket 스켈레톤 코드 작성
-
----
-
-### 연정흠
-
-[BE] DM
-
--   STOMP pub sub & RabbitMQ & Redis & MySQL 활용 DM(채팅) 구현
--   [DM] STOMP 실시간 채팅 구현
--   [DM] STOMP와 RabbitMQ 연동
--   [DM] 채팅방 & 채팅내역 JPA 활용 DB 저장
--   [DM] 이전 채팅 내역 및 새로운 채팅 내역 mySQL <-> Redis 로딩 및 저장
--   [DM] redis에 이전 채팅 내역이 존재하지 않을 경우 db 조회 후 redis 저장
--   [DM] 스케줄링(Batch)을 위한 로직 구현 및 redis 캐시 삭제
--   [DM] 채팅방 입장 시, 이전 채팅 내역 중 가장 최근 날짜 데이터 로딩
-
----
-
-### 고정원
-
--   **BE**
-
-    -   **[노래방_세션] 노래방 생성 및 입장**
-
-        -   SessionName으로 OpenVidu Session 객체 생성, 이미 존재하면 생성하지 않고 가져옴
-        -   세션에 연결된 Connection 객체 생성(입장하기)
-        -   BE 서버에 Session과 Token을 저장하여 관리
-        -   Connection 객체의 토큰 반환
-
-    -   **[노래방_세션] 노래방 퇴장 및 제거**
-
-        -   SessionName과 Token으로 해당하는 Session에서 Token 제거
-        -   해당 Session에 더이상 Token이 존재하지 않으면 Session도 제거
-
-    -   **[노래방_세션] 노래방 제거**
-
-        -   SessionName에 해당하는 Session 강제 제거
-        -   Session에 들어와있던 Token도 모두 제거
-
-    -   **[노래방_세션] 노래방 리스트**
-
-        -   OpenVidu 서버에 생성된 모든 Session 정보 반환
-
-    -   **[노래방_세션] 노래방 정보**
-
-        -   SessionName에 해당하는 Session의 정보 보기
-
-    -   **[노래방_녹화] 녹화 시작**
-
-        -   SessionName에 해당하는 세션 녹화 시작
-        -   OutputMode를 설정할 수 있음(Computed, Individual)
-
-    -   **[노래방_녹화] 녹화 종료**
-
-        -   녹화 종료, 녹화된 영상은 OpenVidu 서버에 저장
-        -   url을 통해 저장된 영상 확인 가능
-
-    -   **[노래방_녹화] 녹화 영상 제거**
-
-        -   RecordingId에 해당하는 녹화 영상을 OpenVidu 서버에서 제거
-
-    -   **[노래방_녹화] 녹화 영상 정보**
-
-        -   RecordingId에 해당하는 녹화 영상의 정보 반환
-
-    -   **[노래방_녹화] 녹화 영상 리스트**
-
-        -   OpenVidu 서버에 저장되어있는 모든 영상 정보 반환
-
-    -   **[노래방_녹화] 녹화 영상 업로드**
-        -   OpenVidu에 저장되어 있는 영상을 AWS S3에 업로드
-        -   OpenVidu 서버 -> BackEnd 서버에 저장 -> AWS S3에 저장
-
--   **FE**
-    -   [노래방] 생성된 노래방을 리스트로 출력
-    -   [노래방] 제목과 일치하는 노래방 생성 및 입장
-    -   [노래방] 노래방 나가기
-    -   [노래방] 노래방 내 화상채팅 구현
-    -   [노래방] 음성필터 적용하기(에코, 증폭, 피치), 적용할 필터를 고르고 강도 설정
-    -   [노래방] 노래방 내 채팅 구현
-    -   [노래방] 카메라, 마이크 on/off 기능 구현
-    -   [노래방] 카메라, 마이크 변경 기능 구현
-    -   [노래방] 녹화 시작, 종료, 확인, 삭제 구현 -> 저장모드, 카메라, 마이크 사용여부 선택 가능
 
 ---
 
