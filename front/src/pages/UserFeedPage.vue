@@ -5,7 +5,6 @@
     <!-- 내 피드 페이지(마이페이지/혹은 타인 페이지)-->
     <div class="my-feed">
       <!-- style="padding-left:100px; padding-right:100px" -->
-
       <!-- 첫번째 div -->
       <div class="header">
         <div @click="goBack">
@@ -14,10 +13,9 @@
         <div>
           <h3 v-if="user">{{ user.nickname }}</h3>
         </div>
-        <div class="icons" v-if="feedWriterPk !== LoggedUserPK">
+        <!-- 게시글 작성자와 로그인 유저가 다르다면 -->
+        <div class="icons" v-if="user.userKey !== uuid">
           <div><img src="@/assets/icon/send.png" alt="dm"></div>
-          <!-- <div><img src="@/assets/icon/wallet.png" alt="지갑"></div> -->
-          <!-- <div><img src="@/assets/icon/setting.png" alt="설정"></div> -->
         </div>
         <div class="icons" v-else>
           <div></div>
@@ -28,7 +26,10 @@
       <!-- 두번째 div -->
       <div class="profile">
         <!-- 프로필 이미지 가져오기 -->
-        <div class="profile-img-container" :style="{ backgroundImage: `url('${user.profileImgUrl}')` }">
+        <div class="profile-img-container" :style="{ backgroundImage: `url(${(
+              (user.profileImgUrl) ||
+              'https://picsum.photos/200'
+            ).trim()})` }">
           <!-- <img src="@/assets/img/capture.png" alt="프로필 이미지" class="profile-img"> -->
         </div>
         <div class="info">
@@ -37,17 +38,17 @@
             <div v-else><p>게시글</p><span>0</span></div>
             <div><p>댓글</p><span>{{ totalCommentCount }}</span></div>
             <div><p>좋아요</p><span>{{ totalLikeCount }}</span></div>
-            <div><p>친구</p><span>{{ FriendCount }}</span></div>
+            <div><p>친구</p><span> {{ FriendCount }} </span></div>
           </div>
           <div class="bio">
             <p>{{ user.introduction }}</p>
           </div>
-          <div class="actions">
-            <q-btn color="primary" label="좋아요 관리" />
-            <q-btn color="purple" label="댓글 관리" />
+          <!-- <div class="actions"> -->
+            <!-- <q-btn color="primary" label="좋아요 관리" /> -->
+            <!-- <q-btn color="purple" label="댓글 관리" /> -->
             <!-- <div></div> -->
             <!-- <div></div> -->
-          </div>
+          <!-- </div> -->
         </div>
       </div>
       <hr>
@@ -57,7 +58,11 @@
         <!-- 각 피드 항목을 감싸는 그리드 레이아웃 부모 요소 -->
         <div v-for="feed in personalFeeds" :key="feed.feedId" class="feed-item" @click="goFeedDetail(feed.feedId)">
           <!-- 피드 내용 및 요소들을 표시 -->
-          <img v-if="feed" :src="feed.thumbnailUrl" alt="피드 이미지(썸네일)" class="feed-image">
+          <!-- <img v-if="feed" :src="feed.thumbnailUrl" alt="피드 이미지(썸네일)" class="feed-image"> -->
+          <!-- {{ feed.videoUrl }} -->
+          <video controls width="100%" ref="videoPlayer">
+            <source :src="feed.videoUrl" type="video/mp4" />
+          </video>
         </div>
       </div>
     </div>
@@ -66,25 +71,23 @@
 
 <script setup>
 import { ref,onMounted,onBeforeMount,computed } from "vue";
-import TabItem from "@/layouts/TabItem.vue";
 import NavBar from "@/layouts/NavBar.vue";
 import { useRouter, useRoute } from "vue-router";
 import { getFeedsByUser } from '@/js/feed/feed.js';
 import { fetchUser } from "@/js/user/user.js";
 import { fetchLikeCount } from "src/js/like/like";
 import { fetchCommentCount } from "@/js/comment/comment.js";
-import { fetchFriendCount } from "@/js/friends/friends.js";
+import { fetchFriendList, fetchFriendCount } from "@/js/friends/friends.js";
 import useCookie from "@/js/cookie.js";
-import { getUserPk  } from "@/js/user/user.js";
+
 
 const { setCookie, getCookie, removeCookie } = useCookie();
 const router = useRouter();
 const route = useRoute()
-const LoggedUserPK = ref();
-const uuid = ref(null);
-const userPk = ref(route.params.userPk); // 동적인 userPk를 사용
-const feedWriterPk = ref();
+// const uuid = ref("");
+const uuid = ref(route.params.userUUID); // 동적인 userPk를 사용
 
+// console.log('이거지금 uuid',uuid.value)
 
 const goBack = function () {
   router.go(-1)
@@ -101,50 +104,37 @@ let page = 0;
 const amount = 10;
 
 onBeforeMount(async () => {
+  // uuid.value = getCookie('uuid')
   await fetchPersonalFeedData();
   await fetchUserData();
   await getFriendCount();
-  await getLoggedUserPk();
+  // console.log("비포마운트끝")
 });
 
-//로그인한 유저pk값 가져오기
-const getLoggedUserPk = async () => {
-  try {
-    uuid.value = getCookie("uuid")
-    // console.log("UUID:", uuid.value);
-    const getCurrentUserPk = await getUserPk(uuid.value);
-    console.log(getCurrentUserPk);
-    LoggedUserPK.value = getCurrentUserPk
-  } catch (error) {
-    console.error("오류 발생!!!:", error);
-  }
-};
 
-//유저 정보 가져오기
+//유저 정보 가져오기(피드작성자)
 const fetchUserData = async () => {
   try {
-    const fetchedUser = await fetchUser(userPk.value);
+    const fetchedUser = await fetchUser(uuid.value);
     user.value = fetchedUser;
-    // console.log(user.value);
-    //피드 작성자 pk
-    feedWriterPk.value = user.value.userPk
-    // console.log('피드 작성자 pk',feedWriterPk.value)
+    console.log('유저정보',user.value);
   } catch (error) {
     console.error("Error fetching user data:", error.message);
   }
 }
 
-
+//유저별 피드들 가져오기
 const fetchPersonalFeedData = async() => {
   try {
-    const feeds = await getFeedsByUser(userPk.value);
+    console.log("uuid.value? ",uuid.value)
+    const feeds = await getFeedsByUser(uuid.value);
     for (let elem of feeds) {
       elem.likeCount = await fetchLikeCount(elem.feedId)
       elem.commentCount = await fetchCommentCount(elem.feedId);
     }
 
     personalFeeds.value = feeds;
-    // console.log(personalFeeds.value);
+    console.log('퍼스널피드',personalFeeds.value);
   } catch (error) {
     console.error("Error fetching personal feeds:", error.message);
   }
@@ -152,14 +142,15 @@ const fetchPersonalFeedData = async() => {
 
 const getFriendCount = async() => {
   try {
-    const FriendCounts = await fetchFriendCount(userPk.value, page++, amount);
+    const FriendCounts = await fetchFriendCount();
     FriendCount.value = FriendCounts;
-    // console.log(FriendCount.value);
+    // console.log('이거뽑을래',FriendCount.value);
   } catch (error) {
     console.error("Error fetching personal feeds:", error.message);
   }
 }
 
+//피드 개수
 const feedLength = computed(() => personalFeeds.value.length);
 
 const totalLikeCount = computed(() => {

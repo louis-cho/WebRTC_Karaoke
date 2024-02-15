@@ -3,7 +3,6 @@
     <NavBar />
     <!-- <TabItem /> -->
     <!-- <h4>상세 피드 페이지</h4> -->
-
     <div class="my-feed">
       <!-- 첫번째 div -->
       <div class="header">
@@ -22,7 +21,8 @@
               'https://picsum.photos/200'
             ).trim()})`,
           }"
-        ></div>
+          @click="gotoUserFeed">
+          </div>
 
         <div class="width-100">
           <div class="space-between">
@@ -30,7 +30,6 @@
               <p v-if="feed && feed.user">{{ feed.user.nickname }}</p>
             </div>
             <!-- 게시글 작성자가 로그인되어 있는 사람이라면 -->
-
             <div v-if="feed && feed.user && feed.userUUID === uuid" @click="toggleModal">
               <img src="@/assets/icon/setting.png" alt="설정" />
             </div>
@@ -67,15 +66,6 @@
           </div>
         </div>
       </div>
-
-      <!-- <p>{{ feed }}</p>
-      -----------------------
-      <p>{{feed.user}}</p>
-      --------------------------- -->
-      <!-- {{ feed.user.userPk }}
-      ----------------------------------------
-      {{ LoggedUserPK }} -->
-
 
       <p v-if="feed">{{ feed.content }}</p>
       <video controls width="100%" ref="videoPlayer">
@@ -258,9 +248,9 @@ const commentContainer = ref(null);
 const modal = ref(false);
 const feedId = ref();
 const newContent = ref();
-// const newStatus = ref();
 const uuid = ref(getCookie("uuid"));
 const notificationStore = useNotificationStore();
+const userKey = ref('');
 
 const goBack = function () {
   router.go(-1);
@@ -279,6 +269,7 @@ const handleLikeClick = async () => {
       status : '0'
       }
       notificationStore.sendNotification(body);
+      userKey.value = feed.value.userUUID
     }
   } else {
     await deleteLike(feedId.value, uuid.value);
@@ -324,15 +315,8 @@ const registComment = () => {
     location.reload();
 };
 
-// const scrollToBottom = () => {
-//   nextTick(() => {
-//     commentContainer.value.scrollTop = commentContainer.value.scrollHeight;
-//   });
-// }
 
 onBeforeMount(async () => {
-
-
 
   uuid.value = getCookie("uuid");
   feedId.value = window.location.href.split("/").pop();
@@ -350,8 +334,10 @@ onBeforeMount(async () => {
   elem.likeCount = await fetchLikeCount(elem.feedId);
 
   feed.value = elem;
-
   await fetchAndRenderComments(feedId.value);
+  // console.log('이어거ㅓㅇㄴ',feed.value.user.userKey)
+  userKey.value = feed.value.user.userKey;
+
   // await updateFeed(feedId.value)
 });
 
@@ -388,7 +374,7 @@ const deleteFeed = async(feedId) => {
   try {
     //게시글 삭제
     const feedDelete = await fetchFeedDelete(feedId);
-    // console.log('피드 delete',feedDelete);
+    console.log('피드 delete',feedDelete);
     modal.value = false;
     router.push({ name: "feed", params: { userUUID: uuid.value }});
   } catch (error) {
@@ -396,11 +382,10 @@ const deleteFeed = async(feedId) => {
   }
 }
 
+const gotoUserFeed = () => {
+  router.push({ name: "feed", params: { userUUID:  userKey.value }});
+}
 
-// 게시글 삭제 함수
-// const deleteFeed = (feedId) => {
-//   toggleModal();
-// };
 const privacyStatus = computed(() => {
   return selectedOption.value === '전체공개' ? '0': selectedOption.value === '친구공개' ? '1' : '2';
 });

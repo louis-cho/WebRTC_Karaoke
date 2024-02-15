@@ -9,10 +9,10 @@
       </div>
       <div>
         <div v-if="showSongInfo" class="song-info-container">
-          <div class="title">{{ song.title }}</div>
+          <div class="title">{{ songInfo.title }}</div>
           <div class="details">
-            <span>노래: {{ song.singer }}</span><br>
-            <span>작곡: {{ song.author }}</span>
+            <span>노래: {{ songInfo.singer }}</span><br>
+            <span>작곡: {{ songInfo.author }}</span>
           </div>
         </div>
         <canvas v-else ref="canvas" width="1000" height="200"></canvas>
@@ -30,6 +30,8 @@ import {
 } from "@/js/karaoke/karaokeParser.js";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import axios from "axios";
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 
 const store = useKaraokeStore();
 
@@ -39,6 +41,11 @@ const props = defineProps({
 
 const audio = ref(null);
 const song = ref(null)
+const songInfo = ref({
+  title: "",
+  singer: "",
+  author: "",
+})
 
 watch(
   () => store.reservedSongsLength,
@@ -48,23 +55,8 @@ watch(
       announceString.value = "노래를 예약해주세요."
     } else {
       announceString.value = store.reservedSongs[0].title;
-      axios
-        .post(
-        store.APPLICATION_SERVER_URL + "/songInfo/" + store.reservedSongs[0].songId,
-        {
-          headers: {
-            Authorization: getCookie("Authorization"),
-            refreshToken: getCookie("refreshToken"),
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((error) => {
-        console.error("normal모드 노래 정보 불어오기"+error);
-      });
+      songInfo.value.title = store.reservedSongs[0].title;
+      songInfo.value.singer = store.reservedSongs[0].singer;
     }
 
   }
@@ -92,7 +84,7 @@ const lyricInterval = 70; // 가사 윗묶음&아랫묶음 y좌표 간격
 const moveX = ref(0);       // 가사가 채워질 때 이동하는 x좌표, 초기값은 lyricPosX와 동일
 const fontSize = "36px ";
 const countDownSize = "38px ";
-const fontInterval = 35;    // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
+const fontInterval = 36;    // 가사가 채워질 때 이동하는 x좌표 간격. 24px Arial 기준 24
 const fontStyle = "YCloverBold";
 const fontColor = "white"
 const filledFont = ref(""); // 부르고 있는 가사
@@ -107,7 +99,9 @@ const showSongInfoTimeOut = 9000;
 const choose = () => {
   // props로 내려온 songData 주입
   song.value = props.songData;
-  audio.value = new Audio(song.value.url); // mp3 url 연결
+  console.log(song.value) // 받은 데이터 확인
+  songInfo.value.author = song.value.author
+  audio.value = new Audio(song.value.songUrl); // mp3 url 연결
 };
 
 const initDrawer = () => {
@@ -145,7 +139,7 @@ const play = () => {
     }).then(() => {
       initDrawer();
       hasNextLyrics.value = true;
-      lyrics.value = parseLyric(parseScore(song.value.score));
+      lyrics.value = parseLyric(parseScore(song.value.mmlData));
       bundles.value = parseBundle(lyrics.value);
 
       bundleIndex.value = 0;
@@ -158,7 +152,7 @@ const play = () => {
   } else {
     initDrawer();
     hasNextLyrics.value = true;
-    lyrics.value = parseLyric(parseScore(song.value.score));
+    lyrics.value = parseLyric(parseScore(song.value.mmlData));
     bundles.value = parseBundle(lyrics.value);
 
     bundleIndex.value = 0;
@@ -318,6 +312,12 @@ const drawLyrics = () => {
 };
 
 onMounted(() => {
+  console.log("reservedSongs.length",store.reservedSongs.length)
+  if(store.reservedSongs.length == 0) {
+    announceString.value = "노래를 예약해주세요.";
+  } else {
+    announceString.value = store.reservedSongs[0].title;
+  }
 });
 
 defineExpose({

@@ -88,7 +88,7 @@ const { changeRoute } = defineProps(["changeRoute"]);
 const router = changeRoute;
 
 const sessionName = ref(undefined);
-const numberOfParticipants = ref("1");
+const numberOfParticipants = ref("6");
 const isPrivate = ref(false);
 const password = ref(undefined);
 const base64EncodedText = ref(undefined);

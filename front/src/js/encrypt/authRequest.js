@@ -131,10 +131,8 @@ async function login(id, pw) {
           secure: true,
           sameSite: "none",
         });
-        store.isLoggedIn = true;
-        alert("로그인 성공!");
-        console.log("서버로부터 받은 결과 >> " + result.nickname);
         store.userName = result.nickname;
+        location.reload();
       } else {
         console.log("로그인 실패");
         alert("아이디 혹은 비밀번호가 올바르지 않습니다.");

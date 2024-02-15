@@ -27,6 +27,7 @@ export const useNotificationStore = defineStore("notification", {
         headers: {
           Authorization : getCookie("Authorization"),
           refreshToken : getCookie("refreshToken"),
+          heartbeatTimeout: 180 * 1000,
           "Content-Type": "application/json",
         },
       });

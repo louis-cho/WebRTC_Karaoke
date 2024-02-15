@@ -15,6 +15,8 @@ export class ScoreDrawer {
     this.lyricUpper = ""; // 위에 띄울 가사
     this.lyricLower = ""; // 아래 띄울 가사
     this.eval = "";
+    this.lyricFlag = true;
+    this.isLastLyric = false;
 
     // 캔버스 생성 및 설정
     this._canvas = document.createElement("canvas");
@@ -174,12 +176,32 @@ export class ScoreDrawer {
 
     ctx.restore();
 
+    ctx.font = '20px YCloverBold';
     // 가사 렌더링
-    ctx.fillStyle = 'white';
-    ctx.font = '15px Arial Rounded MT Bold';
-    // ctx.fillText(this._oct.toString(), 0, 20); // 옥타브 렌더링
-    ctx.fillText( this.lyricUpper, this._screenWidth/2-50, this._canvas.height-50);
-    ctx.fillText(this.lyricLower, this._screenWidth/2-50, this._canvas.height-20);
+    // 시작~전주
+    if(this._elapsed < 0) {
+      ctx.fillStyle = 'white';
+      ctx.fillText( this.lyricUpper, this._screenWidth/2-60, this._canvas.height-50);
+      ctx.fillText(this.lyricLower, this._screenWidth/2-60, this._canvas.height-20);
+    } else if(this._elapsed >= 0) {
+      if(!this.isLastLyric) {
+        if(this.lyricFlag) {
+          ctx.fillStyle = 'yellow';
+          ctx.fillText( this.lyricUpper, this._screenWidth/2-60, this._canvas.height-50);
+          ctx.fillStyle = 'white';
+          ctx.fillText(this.lyricLower, this._screenWidth/2-60, this._canvas.height-20);
+        } else {
+          ctx.fillStyle = 'white';
+          ctx.fillText( this.lyricUpper, this._screenWidth/2-60, this._canvas.height-50);
+          ctx.fillStyle = 'yellow';
+          ctx.fillText(this.lyricLower, this._screenWidth/2-60, this._canvas.height-20);
+        }
+      } else {
+        ctx.fillStyle = 'yellow';
+        ctx.fillText( this.lyricUpper, this._screenWidth/2-60, this._canvas.height-50);
+        ctx.fillText(this.lyricLower, this._screenWidth/2-60, this._canvas.height-20);
+      }
+    }
 
     // score 렌더링
     if(this.eval === "PERFECT!") {

@@ -38,7 +38,7 @@
         <q-tab
           name="person"
           icon="person"
-          @click="goToFeedPage(LoggedUserPK)"
+          @click="goToFeedPage(uuid)"
         />
         <q-tab
           name="notifications"
@@ -100,11 +100,11 @@
             @click="goToPage('/friend_list')"
           />
           <!-- <q-tab name="포인트" label="포인트" @click="handleDropdownItemClick('/item3')" /> -->
-          <q-tab
+          <!-- <q-tab
             name="프로필 수정"
             label="프로필 수정"
             @click="goToPage('/info_edit')"
-          />
+          /> -->
           <q-tab name="로그아웃" label="로그아웃" @click="logout()" />
         </q-tabs>
       </div>
@@ -124,6 +124,7 @@
               outlined
               v-model="search"
               label="Search User"
+              @keydown.enter.stop
               @change="searchNickname"
             >
               <template v-slot:append>
@@ -134,9 +135,9 @@
 
           <q-scroll-area style="height: 300px; max-width: 300px">
             <div>
-              <!-- 친구들 목록 뜨게 -->
-              <q-list v-if="users && users.length && filteredUsers.length">
-                <q-item v-for="user in filteredUsers" :key="user.userPk">
+              <!-- 유저 목록 뜨게 -->
+              <q-list v-if="searchUsers && searchUsers.length && filteredUsers.length">
+                <q-item v-for="user in filteredUsers" :key="user.userKey">
                   <q-item-section>
                     <q-img class="img-container" :src="user.profileImgUrl" />
                   </q-item-section>
@@ -144,6 +145,7 @@
                     <q-item-label>{{ user.nickname }}</q-item-label>
                     <q-item-label caption>{{ user.introduction }}</q-item-label>
                     <!-- 친구 아니라면 -->
+                    <!-- 여기 수정~~~~~~~~~~~` -->
                     <div v-if="ex">
                       <q-btn color="primary" label="친구요청"></q-btn>
                     </div>
@@ -153,7 +155,7 @@
                   </q-item-section>
                 </q-item>
               </q-list>
-              <!-- Display a message if no users match the search -->
+
               <q-item v-else>
                 <q-item-section>
                   <q-item-label align="center"
@@ -183,12 +185,13 @@ import { useKaraokeStore } from "@/stores/karaokeStore.js";
 const store = useKaraokeStore();
 
 const { setCookie, getCookie, removeCookie } = useCookie();
+// const userUUID = getCookie("uuid");
+const uuid = ref('');
 const notificationStore = useNotificationStore();
 const router = useRouter();
 const isDropdownOpen1 = ref(false);
 const isDropdownOpen2 = ref(false);
-const LoggedUserPK = ref();
-const uuid = ref(null);
+
 
 const userSearchModal = ref(false);
 const openUserSearchModal = () => {
@@ -196,12 +199,11 @@ const openUserSearchModal = () => {
   isDropdownOpen2.value = false;
 };
 
-const search = ref("");
 //친구인지 아닌지 판별 변수
 const ex = ref(false);
 
 onBeforeMount(async () => {
-  await getLoggedUserPk();
+  uuid.value = getCookie('uuid');
 });
 
 // 이벤트 핸들러 추가
@@ -209,20 +211,10 @@ const goToPage = (path) => {
   router.push(path);
 };
 
-const getLoggedUserPk = async () => {
-  try {
-    uuid.value = getCookie("uuid");
-    console.log("UUID:", uuid.value);
-    const getCurrentUserPk = await getUserPk(uuid.value);
-    console.log(getCurrentUserPk);
-    LoggedUserPK.value = getCurrentUserPk;
-  } catch (error) {
-    console.error("오류 발생!!!:", error);
-  }
-};
+
 
 const goToFeedPage = (param) => {
-  router.push({ name: "feed", params: { userPk: param } });
+  router.push({ name: "feed", params: { userUUID: param } });
 };
 
 const toggleDropdown1 = () => {
@@ -261,7 +253,6 @@ const logout = () => {
     removeCookie("Authorization");
     removeCookie("refreshToken");
     removeCookie("uuid");
-    store.isLoggedIn = false;
     alert("로그아웃되었습니다.");
     window.location.replace("/");
   } else {
@@ -337,62 +328,36 @@ const readAllNotification = () => {
     });
 };
 
-// 예시 데이터
-const users = ref([
-  {
-    userPk: 1,
-    nickname: "노송",
-    profileImgUrl: "프로필이미지1",
-    role: 0,
-    introduction: "저 노송임ㅇㅇ",
-  },
-  {
-    userPk: 2,
-    nickname: "티모시",
-    profileImgUrl:
-      "https://image.utoimage.com/preview/cp872722/2022/12/202212008462_500.jpg",
-    role: 0,
-    introduction: "나 웡카",
-  },
-  {
-    userPk: 3,
-    nickname: "오타니",
-    profileImgUrl: "프로필이미지3",
-    role: 0,
-    introduction: "인사드립니다ㅏ",
-  },
-  {
-    userPk: 4,
-    nickname: "황희찬",
-    profileImgUrl: "프로필이미지4",
-    role: 0,
-    introduction: "하이",
-  },
-]);
+
+const search = ref("");
+const searchUsers = ref([]);
 
 const filteredUsers = computed(() => {
-  const query = search.value.toLowerCase();
-  return users.value.filter(
-    (user) =>
-      user.nickname.toLowerCase().includes(query) ||
-      user.introduction.toLowerCase().includes(query)
-  );
+  const query = search.value ? search.value.toLowerCase() : '';
+  if (!query) return [];
+
+  return searchUsers.value.filter((user) => {
+    const nickname = user.nickname ? user.nickname.toLowerCase() : '';
+    const introduction = user.introduction ? user.introduction.toLowerCase() : '';
+    return nickname.includes(query) || introduction.includes(query);
+  });
 });
 
 const searchNickname = async function () {
   try {
-    // 백엔드 서버에서 유저 검색 결과 가져오기
     const response = await searchUser(search.value);
-    users.value = response; // 서버 응답에 따라 데이터를 업데이트
+    searchUsers.value = response;
 
-    for (let idx in users.value) {
-      let userPk = users.value[idx].userPk;
-      users.value[idx] = await fetchUser(userPk);
+    for (let idx in searchUsers.value) {
+      let userUuid = searchUsers.value[idx].userUuid;
+      searchUsers.value[idx] = await fetchUser(userUuid);
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
   }
 };
+
+
 </script>
 
 <style scoped>
@@ -406,6 +371,9 @@ const searchNickname = async function () {
 }
 .container {
   position: relative;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: center; */
 }
 
 .dropdown-content {
@@ -417,8 +385,9 @@ const searchNickname = async function () {
   right: 0;
   background-color: #f9f9f9;
   min-width: 160px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 9999;
+
 }
 
 .dropdown-content q-tab {
