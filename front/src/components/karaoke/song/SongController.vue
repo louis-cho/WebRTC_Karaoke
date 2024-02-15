@@ -91,7 +91,6 @@ const store = useKaraokeStore();
 
 const fileUrl = ref(undefined);
 const recordingId = ref(undefined);
-
 const selectedOption = ref("비공개");
 const videoUrl = ref("");
 const privacyOptions = ["전체공개", "친구공개", "비공개"];
@@ -99,6 +98,7 @@ const modalVisible = ref(false);
 const postContent = ref("");
 const singUser = ref(undefined);
 const songId = ref(undefined);
+const startTimeRef = ref(0);
 
 function startSong() {
   removeReserve()
@@ -109,6 +109,8 @@ function startSong() {
       }
       singing();
       startRecording();
+      console.log(store.song.length);
+      setTimeout(finishSong(), store.song.length * 1000);
     })
     .catch((error) => {});
 }

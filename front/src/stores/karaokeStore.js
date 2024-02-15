@@ -126,7 +126,7 @@ export const useKaraokeStore = defineStore("karaoke", {
 
         if (this.kicked == true) {
           alert("추방당했습니다.");
-          window.location.href = "/karaoke/";
+          window.location.href = "/";
         }
       });
 
