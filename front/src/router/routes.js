@@ -28,23 +28,28 @@ const routes = [
     component: () => import("@/pages/MessagePage.vue"),
   },
   {
-    path: "/my_profile",
-    component: () => import("@/pages/MyProfilePage.vue"),
+    path: "/feed/:userUUID",
+    name: "feed",
+    component: () => import("@/pages/UserFeedPage.vue"),
   },
   {
-    path: "/chat",
+    path: "/chat/:roomPk",
     component: () => import("@/pages/ChatPage.vue"),
   },
-  // path 추후 수정 필요
   {
-    path: '/feed_detail/:feedId',
-    name: 'feed_detail',
-    component: () => import('@/pages/FeedDetailPage.vue'),
+    path: "/feed_detail/:feedId",
+    name: "feed_detail",
+    component: () => import("@/pages/FeedDetailPage.vue"),
   },
   {
     path: "/info_edit",
     component: () => import("@/pages/InformationEditPage.vue"),
   },
+  // {
+  //   임시 추가
+  //   path: "/item1",
+  //   component: () => import("@/components/SearchUser.vue"),
+  // },
   {
     path: "/friend_list",
     component: () => import("@/pages/MyFriendList.vue"),
@@ -79,19 +84,6 @@ const routes = [
         next();
       }
     },
-  },
-
-  {
-    path: "/message",
-    component: () => import("@/pages/MessagePage.vue"),
-  },
-  {
-    path: "/my_profile",
-    component: () => import("@/pages/MyProfilePage.vue"),
-  },
-  {
-    path: "/chat",
-    component: () => import("@/pages/ChatPage.vue"),
   },
   {
     path: "/:catchAll(.*)*",

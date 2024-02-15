@@ -1,9 +1,5 @@
 import { ScoreDrawer } from "./ScoreDrawer.js";
 import { ToneDetector } from "./ToneDetector.js";
-import { ToneGenerator } from "./ToneGenerator.js";
-import { parseScore } from "./ScoreParser.js";
-import { Sharer } from "./Sharer.js";
-import { SongEditor } from "./SongEditor.js";
 import { createElem } from "./DOMUtil.js";
 
 const UPDATE_INTERVAL = 1000 / 60; // 애니메이션 업데이트 간격: 1/60 초
@@ -15,11 +11,17 @@ export class App {
     this.elapsed = 0; // 경과 시간
     this.inited = false; // 초기화 여부
     this.key = 0; // 음악 키
-    this.playMusic = true; // 음악 재생 상태
+    this.playMusic = false; // 음악 재생 상태
+    this.hasNextLyric = false;
     // 각각의 앱 구성 요소를 생성
-    this.sharer = new Sharer(); // 음악 공유기
-    this.songEditor = new SongEditor(); // 음악 편집기
     this.drawer = new ScoreDrawer(); // 악보 그리기 객체
+    this.score = "";
+    this.lyrics = []; // 렌더링 할 가사
+    this.lyricIndex = 0;
+    this.startTimeRef = 0;  // 노래 시작 시간(가사 렌더링에 필요)
+    this.lyricFlag = true;   // 윗가사를 update할지, 아랫가사를 update할지.
+    this.songLength = 0;
+    this.prelude = 0;
 
     // 앱 UI 생성
     this.createElements();
@@ -39,17 +41,13 @@ export class App {
 
     // UI 요소를 래퍼에 추가
     wrapper.appendChild(canvasContainer); // 악보 컨테이너 추가
-    // wrapper.appendChild(this.songEditor.render()); // 음악 편집기 추가
-    // wrapper.appendChild(this.sharer.render()); // 음악 공유기 추가
     this.wrapper = wrapper; // 앱 래퍼 엘리먼트 설정
-    this.bindEvents(); // 이벤트 핸들러 바인딩
   }
 
   // 앱 초기화
   async init() {
     this.audio = new AudioContext(); // 오디오 컨텍스트 생성
     this.detector = new ToneDetector(this.audio); // 톤 디텍터 생성
-    this.player = new ToneGenerator(this.audio); // 톤 발생기 생성
 
     // 톤 디텍터 이벤트 핸들러 등록
     this.detector.on("note", this.onNote.bind(this)); // 노트 이벤트 핸들러 등록
@@ -61,53 +59,28 @@ export class App {
     this.drawer.start([]); // 악보 그리기 시작
   }
 
-  // 이벤트 핸들러 바인딩
-  bindEvents() {
-    // 음악 공유기 이벤트 핸들러 등록
-    this.sharer.on("song-select", this.songSelected.bind(this));
-    // 음악 편집기 이벤트 핸들러 등록
-    this.songEditor.on("play", async () => {
-      if (!this.songEditor.score) {
-        window.alert("노래를 선택해주세요")
-        return;
-      } // 악보 렌더링이 안됐으면 무시
-      console.log(this.songEditor.score)
-      console.log(parseScore(this.songEditor.score))
-      this.playSong(parseScore(this.songEditor.score)); // 음악 재생
-    });
-    this.songEditor.on("stop", this.stopSong.bind(this)); // 음악 정지 이벤트 핸들러 등록
-    this.songEditor.on("key-up", this.keyUp.bind(this)); // 키 업 이벤트 핸들러 등록
-    this.songEditor.on("key-down", this.keyDown.bind(this)); // 키 다운 이벤트 핸들러 등록
-    // 음악 편집기 변경 이벤트 핸들러 등록
-    this.songEditor.on("change", (prop, value) => {
-      switch (prop) {
-        case "melody":
-          this.toggleSound(value); // 멜로디 토글
-          break;
-        case "volume":
-          this.setVolume(value); // 볼륨 설정
-          break;
-      }
-    });
-  }
-
-  // 음악 곡 선택 시
-  songSelected(song) {
-    console.log(song)
-    this.songEditor.score = song.score; // 선택된 곡의 스코어 설정
-  }
-
-
   // 악보 재생
   playSong() {
-    console.log(this.songEditor.score)
-    console.log(parseScore(this.songEditor.score))
-    this.drawer.start(parseScore(this.songEditor.score)); // 악보 그리기 시작
+    this.startTimeRef = Date.now()
+    this.playMusic = true;
+    this.hasNextLyric = true;
+    this.lyricIndex = 2;
+    this.lyricFlag = true;
+    this.drawer.lyricUpper = this.lyrics[0].lyric;
+    this.drawer.lyricLower = this.lyrics[1].lyric;
+    this.drawer._elapsed = -1 * this.prelude;
+    this.drawer.start(this.score); // 악보 그리기 시작
   }
 
   // 악보 정지
   stopSong() {
     this.drawer.start([]); // 악보 그리기 초기화
+    this.drawer.lyricUpper = "";
+    this.drawer.lyricLower = "";
+    this.drawer.isLastLyric = false;
+    this.drawer.lyricFlag = true;
+    this.playMusic = false;
+    this.lyricIndex = 1;
   }
 
   // 노트 이벤트 핸들러
@@ -117,6 +90,28 @@ export class App {
 
   // 애니메이션 루프
   loop(time) {
+    if(this.hasNextLyric) {
+      if(this.lyricIndex != 1) {
+        if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this.prelude) {
+          if(this.lyricFlag) {  // 윗가사 업데이트
+            this.drawer.lyricUpper = this.lyrics[this.lyricIndex].lyric;
+            this.lyricFlag = !this.lyricFlag
+            this.drawer.lyricFlag = !this.drawer.lyricFlag
+            this.lyricIndex++;
+          } else {  // 아랫가사 업데이트
+            this.drawer.lyricLower = this.lyrics[this.lyricIndex].lyric;
+            this.lyricFlag = !this.lyricFlag
+            this.drawer.lyricFlag = !this.drawer.lyricFlag
+            this.lyricIndex++;
+          }
+          if(this.lyricIndex >= this.lyrics.length) {
+            this.drawer.isLastLyric = true;
+            this.hasNextLyric = false;
+          }
+        }
+      }
+    }
+
     if (this.lastTime === 0) {
       this.lastTime = time; // 이전 프레임 시간 설정
     }
@@ -130,6 +125,9 @@ export class App {
     }
 
     this.render(); // 렌더링
+    if((Date.now() - this.startTimeRef) >= (this.songLength*1000)) {
+      this.stopSong();
+    }
     requestAnimationFrame(this.loop.bind(this)); // 다음 프레임 요청
   }
 
@@ -139,48 +137,10 @@ export class App {
 
     this.detector.update(delta); // 디텍터 업데이트
     this.drawer.update(delta); // 악보 그리기 업데이트
-    if (this.playMusic) {
-      const note = this.drawer.getCurrentNote(); // 현재 노트 가져오기
-      this.player.playNote(note, this.key); // 노트 재생
-    }
   }
 
   // 렌더링
   render() {
     this.drawer.render(); // 악보 그리기 렌더링
-  }
-
-  // 볼륨 설정
-  setVolume(v) {
-    this.player.setVolume(v); // 플레이어 볼륨 설정
-  }
-
-  // 사운드 토글
-  toggleSound(force) {
-    if (force === undefined) {
-      this.playMusic = !this.playMusic; // 상태 토글
-    } else {
-      this.playMusic = force; // 강제 설정
-    }
-    if (!this.playMusic) {
-      this.player.playTone(0); // 사운드 재생
-    }
-  }
-
-  // 키 업
-  keyUp() {
-    this.setKey(this.key + 1); // 키 증가
-  }
-
-  // 키 다운
-  keyDown() {
-    this.setKey(this.key - 1); // 키 감소
-  }
-
-  // 키 설정
-  setKey(key) {
-    this.key = key; // 키 설정
-    this.songEditor.key = key; // 음악 편집기의 키 설정
-    this.drawer.octav = this.key; // 악보 그리기의 옥타브 설정
   }
 }

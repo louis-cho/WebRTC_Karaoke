@@ -2,7 +2,7 @@
   <q-dialog v-model="store.toggleModals['reserve-list']">
     <q-card>
       <q-card-section style="min-width: 512px">
-        <q-layout>
+        <q-layout style="min-height: 512px">
           <q-header
             class="bg-transparent"
             style="border-bottom: 1px solid #ddd"
@@ -16,7 +16,7 @@
           </q-header>
 
           <q-page-container>
-            <q-page class="flex flex-center">
+            <q-page class="flex flex-start" style="min-height: 512px">
               <q-list>
                 <q-item v-for="list in lists" :key="list.id">
                   <q-item-section class="q-mb-md" style="min-width: 400px">
@@ -35,7 +35,13 @@
                     label="취소"
                     @click="
                       cancelReserve(
-                        list.userName + '&' + list.title + '&' + list.singer
+                        list.userName +
+                          '&' +
+                          list.songId +
+                          '&' +
+                          list.title +
+                          '&' +
+                          list.singer
                       )
                     "
                   />
@@ -51,56 +57,90 @@
 
 <script setup>
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
-import { ref, watchEffect } from "vue";
+import { onMounted, ref, watch } from "vue";
 import axios from "axios";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 const store = useKaraokeStore();
 
 const lists = ref([]);
 
-watchEffect(() => {
-  if (store.toggleModals["reserve-list"]) {
-    fetchReserveList();
-  }
+onMounted(() => {
+  fetchReserveList();
 });
+
+watch(
+  () => store.newReserve,
+  (newValue) => {
+    if (newValue === true) {
+      fetchReserveList();
+      store.newReserve = false;
+    }
+  }
+);
 
 function fetchReserveList() {
   lists.value = [];
 
   // API 호출을 통해 노래 데이터 가져오기
   axios
-    .post(store.APPLICATION_SERVER_URL + "/song/reserveList", {
-      sessionName: store.sessionName,
-    })
+    .post(
+      store.APPLICATION_SERVER_URL + "/song/reserveList",
+      {
+        sessionName: store.sessionName,
+      },
+      {
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
     .then((response) => {
       var id = 1;
       response.data.forEach((item) => {
         const parts = item.split("&");
 
-        if (parts.length === 3) {
-          const [userName, title, singer] = parts;
-          lists.value.push({ id, userName, title, singer });
+        if (parts.length === 4) {
+          const [userName, songId, title, singer] = parts;
+          if (id == 1) {
+            store.singUser = userName;
+          }
+
+          lists.value.push({ id, userName, songId, title, singer });
           id++;
         }
       });
-      console.log(response.data);
+      store.reservedSongsLength = lists.value.length;
+      store.reservedSongs = lists.value;
     })
     .catch((error) => {
-      console.error("Error fetching songs:", error);
+      alert(error.response.data);
     });
 }
 
 function cancelReserve(hashString) {
   axios
-    .post(store.APPLICATION_SERVER_URL + "/song/cancel", {
-      sessionName: store.sessionName,
-      hashString: hashString,
-    })
+    .post(
+      store.APPLICATION_SERVER_URL + "/song/cancel",
+      {
+        sessionName: store.sessionName,
+        hashString: hashString,
+      },
+      {
+        headers: {
+          Authorization: getCookie("Authorization"),
+          refreshToken: getCookie("refreshToken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
     .then((response) => {
-      fetchReserveList();
+      store.session.signal({ type: "reserve" });
     })
     .catch((error) => {
-      console.error("Error fetching songs:", error);
+      alert(error.response.data);
     });
 }
 

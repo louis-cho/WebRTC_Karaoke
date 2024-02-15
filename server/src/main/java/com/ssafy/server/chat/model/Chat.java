@@ -19,7 +19,7 @@ public class Chat {
     private String roomId; // 채팅방 번호 PK
 
     public enum MessageType{
-        ENTER, TALK, LEAVE, MEDIA;
+        ENTER, TALK, LEAVE, MEDIA, TYPE;
     }
 
     @Enumerated(EnumType.STRING)

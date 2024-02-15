@@ -1,9 +1,12 @@
 import app from "../config/preference.js";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 let pref = app;
 let stompClient;
 let roomId;
 let sender;
+
+let typingIndicatorTimer; // 전역 변수로 타이머를 저장
 
 function connectToChat(roomId, sender) {
 
@@ -57,6 +60,18 @@ function displayOldMessages(messages) {
     chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
 }
 
+document.getElementById('messageForm').addEventListener('change', (event) => {
+  event.preventDefault();
+  const typingMessage = {
+    type: 'TYPE',
+    roomId: rommId,
+    sender: sender,
+  };
+
+  stompClient.send(`/pub/.message.${roomId}`, {}, JSON.stringify(typingMessage));
+});
+
+
 document.getElementById('messageForm').addEventListener('submit', (event) => {
     event.preventDefault();
 
@@ -78,12 +93,56 @@ document.getElementById('messageForm').addEventListener('submit', (event) => {
 });
 
 function handleIncomingMessage(message) {
-    if (message) {
+    if (message.type == "TALK") {
         displayMessage(message);
+    } else if(message.type == "TYPE") {
+      displayTyping(message);
     }
 }
 
+function removeTypingIndicator(chatMessagesDiv) {
+  // 타이핑 표시 엘리먼트 제거
+  const typingIndicator = chatMessagesDiv.querySelector('p');
+  if (typingIndicator) {
+    chatMessagesDiv.removeChild(typingIndicator);
+  }
+}
+
+function displayTyping(message) {
+  const chatMessagesDiv = document.getElementById('chatMessages');
+
+  // 이전 타이머가 있다면 취소
+  if (typingIndicatorTimer) {
+    clearTimeout(typingIndicatorTimer);
+  }
+
+  // 기존 타이핑 표시 엘리먼트가 있다면 제거
+  removeTypingIndicator(chatMessagesDiv);
+
+  // 특별한 텍스트로 타이핑 중임을 나타냄
+  const typingIndicator = document.createElement('p');
+  typingIndicator.textContent = `${message.sender}: ...`;
+  chatMessagesDiv.appendChild(typingIndicator);
+
+  // 스크롤을 가장 아래로 이동
+  chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+
+  // 1초 후에 특별한 텍스트를 제거
+  typingIndicatorTimer = setTimeout(() => {
+    removeTypingIndicator(chatMessagesDiv);
+  }, 1000);
+}
+
 function displayMessage(message) {
+    // 이전 타이머가 있다면 취소
+    if (typingIndicatorTimer) {
+      clearTimeout(typingIndicatorTimer);
+    }
+
+
+    // 기존 타이핑 표시 엘리먼트가 있다면 제거
+    removeTypingIndicator(chatMessagesDiv);
+
     const chatMessagesDiv = document.getElementById('chatMessages');
     const messageElement = document.createElement('p');
     messageElement.textContent = `${message.sender}: ${message.message}`;
@@ -99,6 +158,11 @@ export async function fetchChatRoomList(userPk) {
   try {
     const response = await fetch(serverUrl, {
       method: 'GET',
+      headers: {
+        Authorization: getCookie("Authorization"),
+        refreshToken: getCookie("refreshToken"),
+        "Content-Type": "application/json",
+      },
     });
 
     const result = await response.json();

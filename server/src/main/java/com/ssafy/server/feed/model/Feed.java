@@ -6,6 +6,9 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
+/**
+ * feed 모델 클래스
+ */
 @Getter
 @Setter
 @ToString
@@ -15,11 +18,11 @@ public class Feed {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "feed_id")
-    private int feedId;
+    private Integer feedId;
     @Column(name = "user_pk")
-    private int userPk;
+    private Integer userPk;
     @Column(name = "song_id")
-    private int songId;
+    private Integer songId;
     @Column(name = "title")
     private String title;
     @Column(name = "content")
@@ -29,11 +32,11 @@ public class Feed {
     @Column(name = "video_url")
     private String videoUrl;
     @Column(name = "video_length")
-    private int videoLength;
+    private Integer videoLength;
     @Column(name = "status")
-    private char status;
+    private Character status;
     @Column(name = "total_point")
-    private int totalPoint;
+    private Integer totalPoint;
     @Column(name = "time")
     private String time;
 

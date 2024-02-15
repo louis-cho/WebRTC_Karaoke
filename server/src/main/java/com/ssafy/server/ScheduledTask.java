@@ -14,7 +14,7 @@ public class ScheduledTask {
     @Autowired
     private ChatService chatService;
 
-    @Scheduled(fixedRate = 10000) // 1 sec 마다 실행 (단위: 밀리초)
+    @Scheduled(fixedRate = 600000) // 1 sec 마다 실행 (단위: 밀리초)
     public void updateData() throws JsonProcessingException {
 
         //일정 주기마다 redis에 있는 신규 채팅 데이터를 MySQL에 저장 / 그 후 redis Cache 삭제

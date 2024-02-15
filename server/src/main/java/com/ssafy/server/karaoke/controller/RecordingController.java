@@ -6,12 +6,13 @@ import io.openvidu.java.client.OpenViduJavaClientException;
 import io.openvidu.java.client.Recording;
 import io.openvidu.java.client.RecordingProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,15 +38,13 @@ public class RecordingController {
         // RecordingProperties 객체를 빌드하여 녹화 설정을 생성함
         RecordingProperties properties = new RecordingProperties.Builder().outputMode(outputMode).hasAudio(hasAudio).hasVideo(hasVideo).build();
 
-        System.out.println("Starting recording for session " + sessionName + " with properties {outputMode=" + outputMode + ", hasAudio=" + hasAudio + ", hasVideo=" + hasVideo + "}");
-
         try {
             // OpenVidu 서버에서 녹화 시작
             Recording recording = openViduModel.getOpenvidu().startRecording(sessionName, properties);
             openViduModel.getSessionRecordings().put(sessionName, true);
             return new ResponseEntity<>(recording, HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("녹화 시작 중 오류 발생", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -54,15 +53,13 @@ public class RecordingController {
     public ResponseEntity<?> stopRecording(@RequestBody Map<String, Object> params) {
         String recordingId = (String) params.get("recordingId");
 
-        System.out.println("Stoping recording | {recordingId}=" + recordingId);
-
         try {
             // OpenVidu 서버에서 녹화 중지
             Recording recording = openViduModel.getOpenvidu().stopRecording(recordingId);
             openViduModel.getSessionRecordings().remove(recording.getSessionId());
             return new ResponseEntity<>(recording, HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("녹화 종료 중 오류 발생", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -71,45 +68,12 @@ public class RecordingController {
     public ResponseEntity<?> deleteRecording(@RequestBody Map<String, Object> params) {
         String recordingId = (String) params.get("recordingId");
 
-        System.out.println("Deleting recording | {recordingId}=" + recordingId);
-
         try {
             // OpenVidu 서버에서 녹화 삭제
             openViduModel.getOpenvidu().deleteRecording(recordingId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    // 특정 녹화 정보를 가져오는 엔드포인트
-    @RequestMapping(value = "/get/{recordingId}", method = RequestMethod.GET)
-    public ResponseEntity<?> getRecording(@PathVariable(value = "recordingId") String recordingId) {
-
-        System.out.println("Getting recording | {recordingId}=" + recordingId);
-
-        try {
-            // OpenVidu 서버에서 특정 녹화 정보를 가져옴
-            Recording recording = openViduModel.getOpenvidu().getRecording(recordingId);
-            return new ResponseEntity<>(recording, HttpStatus.OK);
-        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    // 모든 녹화 정보를 가져오는 엔드포인트
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ResponseEntity<?> listRecordings() {
-
-        System.out.println("Listing recordings");
-
-        try {
-            // OpenVidu 서버에서 모든 녹화 정보를 가져옴
-            List<Recording> recordings = openViduModel.getOpenvidu().listRecordings();
-
-            return new ResponseEntity<>(recordings, HttpStatus.OK);
-        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("녹화 삭제 중 오류 발생", HttpStatus.BAD_REQUEST);
         }
     }
 }

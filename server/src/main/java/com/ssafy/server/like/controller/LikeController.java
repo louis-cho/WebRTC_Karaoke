@@ -36,19 +36,17 @@ public class LikeController {
      * @return
      */
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<Boolean>> create(@RequestBody JsonNode jsonNode) {
+    public ResponseEntity<ApiResponse<Boolean>> create(@RequestHeader(name = "uuid") String uuid, @RequestBody JsonNode jsonNode) {
         int feedId = -1, userPk = -1;
         UUID userUUID = null;
         try {
             feedId = Integer.parseInt(jsonNode.get("feedId").asText());
-            if(jsonNode.get("uuid") != null) {
-                userUUID = UUID.fromString(jsonNode.get("uuid").asText());
+            if(uuid != null) {
+                userUUID = UUID.fromString(uuid);
                 userPk = userService.getUserPk(userUUID);
+            } else {
+                throw new Exception();
             }
-            else {
-                userPk = Integer.parseInt(jsonNode.get("userPk").asText());
-            }
-
             likeService.save(feedId, userPk);
         } catch(Exception e) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(LikeExceptionEnum.LIKE_CREATION_FAILED));
@@ -57,9 +55,19 @@ public class LikeController {
         return new ResponseEntity<>(ApiResponse.success(true), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/delete/{userPk}/{feedId}")
-    public ResponseEntity<ApiResponse<Boolean>> delete(@PathVariable int userPk, @PathVariable int feedId) {
+    @PostMapping("/delete")
+    public ResponseEntity<ApiResponse<Boolean>> delete(@RequestHeader(name = "uuid") String uuid, @RequestBody JsonNode jsonNode) {
+        int feedId = -1, userPk = -1;
+        UUID userUUID = null;
         try {
+            feedId = Integer.parseInt(jsonNode.get("feedId").asText());
+            if(uuid != null) {
+                userUUID = UUID.fromString(uuid);
+                userPk = userService.getUserPk(userUUID);
+            }
+            else {
+                throw new Exception();
+            }
             likeService.delete(userPk, feedId);
         } catch(Exception e) {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(LikeExceptionEnum.LIKE_DELETE_FAILED));
@@ -76,6 +84,20 @@ public class LikeController {
             throw new ApiException(ApiExceptionFactory.fromExceptionEnum(LikeExceptionEnum.LIKE_FETCH_ERROR));
         }
         return new ResponseEntity<>(ApiResponse.success(count), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/clicked/{feedId}")
+    public boolean isClicked(@RequestHeader(name = "uuid") String uuid, @PathVariable int feedId) {
+        int userPk = -1;
+        UUID userUUID = null;
+        if(uuid != null) {
+            userUUID = UUID.fromString(uuid);
+            userPk = userService.getUserPk(userUUID);
+
+            return likeService.isClicked(feedId, userPk);
+        }
+
+        return false;
     }
 
 }

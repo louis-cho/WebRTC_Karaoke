@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "@vueuse/core": "^9.1.0",
     "axios": "^1.6.5",
     "core-js": "3.9.1",
     "crypto-js": "^4.2.0",
@@ -23,10 +24,14 @@
     "openvidu-browser": "^2.29.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
-    "quasar": "^2.6.0",
+    "quasar": "^2.14.3",
     "routes": "^2.1.0",
+    "stompjs": "^2.3.3",
     "vue": "^3.4.15",
-    "vue-router": "^4.2.5"
+    "vue-pdf-embed": "^1.1.4",
+    "vue3-lottie": "^2.2.5",
+    "vue-router": "^4.2.5",
+    "event-source-polyfill": "1.0.31"
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.19.1",
@@ -39,8 +44,7 @@
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
     "postcss": "^8.4.14",
-    "prettier": "^2.5.1",
-    "webpack-bundle-analyzer": "^4.10.1"
+    "prettier": "^2.5.1"
   },
   "eslintConfig": {
     "root": true,
@@ -61,10 +65,6 @@
     "last 2 versions",
     "not dead"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:OpenVidu/openvidu.git"
-  },
   "engines": {
     "node": "^20 || ^18 || ^16",
     "npm": ">= 6.13.4",

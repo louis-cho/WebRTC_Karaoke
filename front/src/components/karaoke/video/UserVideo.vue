@@ -24,7 +24,8 @@ import OvVideo from "@/components/karaoke/video/OvVideo.vue";
 import axios from "axios";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import pref from "@/js/config/preference.js";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 const store = useKaraokeStore();
 
 const props = defineProps({
@@ -56,7 +57,11 @@ function kickUser() {
       connectionId: connectionId.value,
     },
     {
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: getCookie("Authorization"),
+        refreshToken: getCookie("refreshToken"),
+        "Content-Type": "application/json",
+      },
     }
   );
 }
@@ -65,7 +70,7 @@ function kickUser() {
 <style scoped>
 .flex-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: flex-end;
 }
 </style>

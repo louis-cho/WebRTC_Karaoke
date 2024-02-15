@@ -35,7 +35,6 @@ public class RecordingFileController {
 
     @PostMapping("/upload")
     public ResponseEntity<String> downloadAndUploadFile(@RequestBody Map<String, Object> params) throws IOException {
-        System.out.println("파일 업로드 시작!");
 
         // 파일 다운로드
         String fileUrl = (String) params.get("fileUrl");
@@ -53,7 +52,7 @@ public class RecordingFileController {
             IOUtils.copy(input, os);
             input.close();
         } catch (IOException ex) {
-            // do something.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("업로드 실패");
         }
 
         //jpa.png -> multipart 변환
@@ -65,7 +64,7 @@ public class RecordingFileController {
         Files.delete(file.toPath());
 
         if (s3FileUrl.isEmpty()) {    // 파일 업로드 실패한 경우
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("업로드 실패");
         } else {    // 파일 업로드 성공. fileUrl로 접속 시 해당 파일 열람 가능.
             return ResponseEntity.ok(s3FileUrl);
         }

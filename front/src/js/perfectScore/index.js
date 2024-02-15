@@ -11,4 +11,15 @@ export function noteFromPitch(frequency) {
 }
 
 // App 클래스를 인스턴스화하여 앱을 시작합니다.
-export const app = new App(document.querySelector("#app1"));
+// export const app = new App(document.querySelector("#app1"));
+
+let appInstance = null;
+
+export function initializeApp(div) {
+    // appInstance = new App(document.querySelector("#app1"));
+    appInstance = new App(div);
+}
+
+export function getAppInstance() {
+    return appInstance;
+}

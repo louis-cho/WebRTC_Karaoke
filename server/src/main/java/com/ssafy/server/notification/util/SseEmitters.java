@@ -13,16 +13,16 @@ public class SseEmitters {
 
     private static final AtomicLong counter = new AtomicLong();
 
-    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>(); //thread-safe한 자료구조.
+    private final Map<Integer, SseEmitter> emitters = new ConcurrentHashMap<>(); //thread-safe한 자료구조.
 
-    public SseEmitter add(String userId, SseEmitter emitter) {
-        this.emitters.put(userId, emitter);
+    public SseEmitter add(Integer userPk, SseEmitter emitter) {
+        this.emitters.put(userPk, emitter);
         log.info("new emitter added: {}", emitter);
         log.info("emitter list size: {}", emitters.size());
         log.info("emitter list: {}", emitters);
         emitter.onCompletion(() -> {
             log.info("onCompletion callback");
-            this.emitters.remove(userId, emitter);
+            this.emitters.remove(userPk, emitter);
         });
         emitter.onTimeout(() -> {
             log.info("onTimeout callback");
@@ -32,11 +32,11 @@ public class SseEmitters {
         return emitter;
     }
 
-    public SseEmitter getSseEmitter(String userId){
-        return emitters.get(userId);
+    public SseEmitter getSseEmitter(Integer userPk){
+        return emitters.get(userPk);
     }
-    public void remove(String userId, SseEmitter emitter){
-        emitters.remove(userId,emitter);
+    public void remove(Integer userPk, SseEmitter emitter){
+        emitters.remove(userPk, emitter);
     }
 
 }

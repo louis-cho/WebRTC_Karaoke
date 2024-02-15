@@ -12,7 +12,10 @@
                 </h2>
                 <div class="section-divider"></div>
               </div>
-              <ul class="chat-history q-mb-md">
+              <ul
+                class="chat-history q-mb-md"
+                style="max-height: 300px; overflow-y: scroll"
+              >
                 <li
                   v-for="(message, index) in store.messages"
                   :key="index"
@@ -26,24 +29,24 @@
               </ul>
             </q-card-section>
           </q-card>
-
-          <form id="chat-write" class="q-mt-md" @submit.prevent="sendMessage">
-            <q-input
-              type="text"
-              :placeholder="pref.app.kor.karaoke.session.message"
-              v-model="store.inputMessage"
-              outlined
-              dense
-              class="inline-input"
-              @keydown.enter="sendMessage"
-            />
-            <q-btn
-              @click="sendMessage"
-              color="primary"
-              :label="pref.app.kor.karaoke.session.send"
-            />
-          </form>
         </div>
+
+        <form id="chat-write" class="q-mt-md" @submit.prevent="sendMessage">
+          <q-input
+            type="text"
+            :placeholder="pref.app.kor.karaoke.session.message"
+            v-model="store.inputMessage"
+            outlined
+            dense
+            class="inline-input"
+            @keydown.enter="sendMessage"
+          />
+          <q-btn
+            @click="sendMessage"
+            color="primary"
+            :label="pref.app.kor.karaoke.session.send"
+          />
+        </form>
 
         <q-card-section class="q-mt-sm q-mb-sm float-right">
           <q-btn
@@ -70,7 +73,7 @@ function sendMessage(event) {
     // 다른 참가원에게 메시지 전송하기
     store.session.signal({
       data: JSON.stringify({
-        username: store.myUserName,
+        username: store.userName,
         message: store.inputMessage,
       }), // 메시지 데이터를 문자열로 변환해서 전송
       type: "chat", // 신호 타입을 'chat'으로 설정

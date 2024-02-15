@@ -2,7 +2,8 @@ import { defineStore } from "pinia";
 import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import pref from "@/js/config/preference.js";
-
+import useCookie from "@/js/cookie.js";
+const { setCookie, getCookie, removeCookie } = useCookie();
 export const useKaraokeStore = defineStore("karaoke", {
   state: () => ({
     APPLICATION_SERVER_URL: pref.app.api.protocol + pref.app.api.host,
@@ -15,14 +16,15 @@ export const useKaraokeStore = defineStore("karaoke", {
       "reserve-song": false,
       "reserve-list": false,
     },
-    audioFilter: false,
-    chatModal: false,
-    inputControllerModal: false,
-    inputSelectorModal: false,
+    singing: false,
+    singUser: undefined,
+    songMode: false,
+    newReserve: false,
+    singUserOut: false,
+    song: null,
 
     sessionName: undefined,
-    userName: "사용자" + Math.round(Math.random() * 100),
-    isPrivate: false,
+    userName: "로그인 하세요",
     isModerator: false,
     kicked: true,
 
@@ -50,6 +52,8 @@ export const useKaraokeStore = defineStore("karaoke", {
     selectedAudio: "", // 오디오 변경시 사용할 변수
     cameras: [],
     audios: [],
+    reservedSongs: [],
+    reservedSongsLength: 0,
   }),
   actions: {
     async createSession(
@@ -68,12 +72,17 @@ export const useKaraokeStore = defineStore("karaoke", {
         this.APPLICATION_SERVER_URL + "/karaoke/sessions/createSession",
         {
           sessionName: sessionName,
+          userName: this.userName,
           numberOfParticipants: numberOfParticipants,
           isPrivate: isPrivate,
           password: password,
         },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -92,19 +101,32 @@ export const useKaraokeStore = defineStore("karaoke", {
         });
 
         this.subscribers.push(subscriber);
+
+        this.session.signal({
+          data: JSON.stringify({ songMode: this.songMode }),
+          type: "songMode",
+        });
       });
 
       this.session.on("streamDestroyed", ({ stream }) => {
+        if (JSON.parse(stream.connection.data).clientData == this.singUser) {
+          this.mainStreamManager = this.publisher;
+          this.singUserOut = true;
+        }
+
         const index = this.subscribers.indexOf(stream.streamManager, 0);
         if (index >= 0) {
           this.subscribers.splice(index, 1);
         }
       });
 
-      this.session.on("sessionDisconnected", (event) => {
+      this.session.on("sessionDisconnected", () => {
+        console.log(this.kicked);
+        this.singing = false;
+
         if (this.kicked == true) {
           alert("추방당했습니다.");
-          window.location.href = "/#/karaoke/";
+          window.location.href = "/";
         }
       });
 
@@ -119,6 +141,37 @@ export const useKaraokeStore = defineStore("karaoke", {
         }
         this.messages.push(messageData);
       });
+
+      this.session.on("signal:songMode", (event) => {
+        const songModeData = JSON.parse(event.data);
+        this.songMode = songModeData.songMode;
+      });
+
+      this.session.on("signal:sing", (event) => {
+        const singData = JSON.parse(event.data);
+        this.singing = singData.singing;
+        this.singUser = singData.singUser;
+
+        if (singData.singUser == this.userName) {
+          this.muted = false;
+          this.mainStreamManager = this.publisher;
+        } else {
+          this.muted = true;
+          for (const subscriber of this.subscribers) {
+            if (
+              singData.singUser ==
+              JSON.parse(subscriber.stream.connection.data).clientData
+            ) {
+              this.mainStreamManager = subscriber;
+            }
+          }
+        }
+        this.publisher.publishAudio(!this.muted);
+      });
+
+      this.session.on("signal:reserve", () => {
+        this.newReserve = true;
+      });
     },
 
     async getToken(sessionName) {
@@ -126,11 +179,40 @@ export const useKaraokeStore = defineStore("karaoke", {
         this.joinSession();
       }
 
+      // 녹화 확인
+      const isRecording = await axios.post(
+        this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkRecording",
+        { sessionName: sessionName },
+        {
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (isRecording.data === "") {
+        alert("존재하지 않는 방입니다.");
+        return false;
+      }
+
+      if (isRecording.data) {
+        alert("노래 중에 입장이 불가능합니다.");
+        return false;
+      }
+
       // 인원수 확인
       const participants = await axios.post(
         this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkNumber",
         { sessionName: sessionName },
-        { headers: { "Content-Type": "application/json" } }
+        {
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (!participants.data) {
         alert("인원이 초과했습니다!");
@@ -141,7 +223,13 @@ export const useKaraokeStore = defineStore("karaoke", {
       const isPrivate = await axios.post(
         this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPrivate",
         { sessionName: sessionName },
-        { headers: { "Content-Type": "application/json" } }
+        {
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       // 비밀번호 확인
@@ -152,7 +240,13 @@ export const useKaraokeStore = defineStore("karaoke", {
         const response = await axios.post(
           this.APPLICATION_SERVER_URL + "/karaoke/sessions/checkPassword",
           { sessionName: sessionName, password: userInput },
-          { headers: { "Content-Type": "application/json" } }
+          {
+            headers: {
+              Authorization: getCookie("Authorization"),
+              refreshToken: getCookie("refreshToken"),
+              "Content-Type": "application/json",
+            },
+          }
         );
 
         if (!response.data) {
@@ -174,7 +268,11 @@ export const useKaraokeStore = defineStore("karaoke", {
           },
         },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            Authorization: getCookie("Authorization"),
+            refreshToken: getCookie("refreshToken"),
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -184,6 +282,8 @@ export const useKaraokeStore = defineStore("karaoke", {
           // 토근을 저장한다.
           this.token = token.data;
           this.sessionName = sessionName;
+          this.muted = false;
+          this.camerOff = false;
 
           // 원하는 속성으로 초기화된 발행자를 만듭니다.
           let publisher_tmp = this.OV.initPublisher(undefined, {
@@ -233,7 +333,11 @@ export const useKaraokeStore = defineStore("karaoke", {
             token: this.token,
           },
           {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              Authorization: getCookie("Authorization"),
+              refreshToken: getCookie("refreshToken"),
+              "Content-Type": "application/json",
+            },
           }
         );
       } else {
@@ -244,19 +348,44 @@ export const useKaraokeStore = defineStore("karaoke", {
             token: this.token,
           },
           {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              Authorization: getCookie("Authorization"),
+              refreshToken: getCookie("refreshToken"),
+              "Content-Type": "application/json",
+            },
           }
         );
       }
 
       // 모든 속성 비우기...
+      this.OV = undefined;
       this.session = undefined;
       this.mainStreamManager = undefined;
       this.publisher = undefined;
       this.subscribers = [];
-      this.OV = undefined;
       this.token = undefined;
+
       this.sessionName = undefined;
+      this.isModerator = false;
+      this.kicked = true;
+      this.inputMessage = "";
+      this.messages = [];
+      this.createModal = false;
+      this.updateModal = false;
+      this.toggleModals = {
+        "karaoke-chat": false,
+        "input-controller": false,
+        "reserve-song": false,
+        "reserve-list": false,
+      };
+      this.singing = false;
+      this.singUser = undefined;
+      this.songMode = false;
+      this.newReserve = false;
+      this.reservedSongs = [];
+      this.reservedSongsLength = 0;
+      this.singUserOut = false;
+      this.sing = null;
 
       // beforeunload 리스너 제거
       window.removeEventListener("beforeunload", this.leaveSession);
@@ -287,4 +416,5 @@ export const useKaraokeStore = defineStore("karaoke", {
       }
     },
   },
+  persist: true,
 });
