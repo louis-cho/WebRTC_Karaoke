@@ -10,7 +10,7 @@
 ## 링크
 [![EC2](https://img.shields.io/badge/EC2HOME-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)](https://i10a705.p.ssafy.io/)
 
-[![logo1-removebg-preview](/uploads/f209be2d2ca10643fce6737fb70ed623/logo1-removebg-preview.png)](https://i10a705.p.ssafy.io/)
+[![logo1-removebg-preview](/uploads/e3d970a864bb80feb02e45241800b1c9/logo1-removebg-preview.png)](https://i10a705.p.ssafy.io/)
 
 [![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/d3b9636405c8451499659f8d8b4ba876)
 
