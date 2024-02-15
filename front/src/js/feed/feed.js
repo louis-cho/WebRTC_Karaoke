@@ -4,7 +4,6 @@ import useCookie from "@/js/cookie.js";
 const { setCookie, getCookie, removeCookie } = useCookie();
 let pref = app;
 
-
 export async function fetchFeedList(pageNo, pageSize, select) {
   let serverUrl = '';
 
