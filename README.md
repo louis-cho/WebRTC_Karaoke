@@ -405,107 +405,128 @@ int userPk = userService.getUserPk(UUID.fromString(uuid));
 
 # 디렉토리 구조
 ```
-├─front
-│  ├─docker
-│  ├─public
-│  │  └─resources
-│  │      └─images
-│  └─src
-│      ├─assets
-│      │  ├─icon
-│      │  └─img
-│      ├─boot
-│      ├─components
-│      │  └─karaoke
-│      ├─css
-│      ├─js
-│      │  ├─chat
-│      │  ├─config
-│      │  ├─encrypt
-│      │  ├─karaoke
-│      │  ├─perfectScore
-│      │  └─websocket
-│      ├─layouts
-│      ├─pages
-│      ├─router
-│      └─stores
-└─server
-    └─src
-        ├─main
-        │  ├─java
-        │  │  └─com
-        │  │      └─ssafy
-        │  │          └─server
-        │  │              ├─audit
-        │  │              ├─chat
-        │  │              │  ├─controller
-        │  │              │  ├─model
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─comment
-        │  │              │  ├─controller
-        │  │              │  ├─model
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─common
-        │  │              │  └─util
-        │  │              ├─config
-        │  │              ├─exception
-        │  │              │  ├─feed
-        │  │              │  ├─like
-        │  │              │  ├─request
-        │  │              │  └─user
-        │  │              ├─feed
-        │  │              │  ├─controller
-        │  │              │  ├─model
-        │  │              │  ├─rank
-        │  │              │  │  ├─document
-        │  │              │  │  ├─model
-        │  │              │  │  └─service
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─hit
-        │  │              │  ├─controller
-        │  │              │  ├─document
-        │  │              │  ├─model
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─karaoke
-        │  │              │  ├─controller
-        │  │              │  ├─model
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─like
-        │  │              │  ├─controller
-        │  │              │  ├─document
-        │  │              │  ├─model
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─notification
-        │  │              ├─point
-        │  │              │  ├─controller
-        │  │              │  ├─model
-        │  │              │  │  ├─dto
-        │  │              │  │  └─entity
-        │  │              │  ├─repository
-        │  │              │  └─service
-        │  │              ├─syncdata
-        │  │              └─user
-        │  │                  ├─auth
-        │  │                  ├─controller
-        │  │                  ├─document
-        │  │                  ├─model
-        │  │                  ├─repository
-        │  │                  ├─secure
-        │  │                  ├─service
-        │  │                  └─util
-        │  └─resources
-        │      └─templates
-        └─test
-            └─java
-                └─com
-                    └─ssafy
-                        └─server
+front
+├─assets
+│  ├─font
+│  ├─icon
+│  └─img
+├─boot
+├─components
+│  ├─chat
+│  └─karaoke
+│      ├─list
+│      ├─session
+│      ├─song
+│      └─video
+├─css
+├─js
+│  ├─chat
+│  ├─comment
+│  ├─config
+│  ├─encrypt
+│  ├─feed
+│  ├─friends
+│  ├─hit
+│  ├─karaoke
+│  ├─like
+│  ├─perfectScore
+│  ├─song
+│  └─user
+├─layouts
+├─pages
+├─router
+└─stores
+
+server
+├─api
+├─audit
+├─auth
+│  ├─controller
+│  ├─model
+│  │  ├─dto
+│  │  └─entity
+│  ├─repository
+│  ├─service
+│  └─util
+├─chat
+│  ├─controller
+│  ├─model
+│  ├─repository
+│  └─service
+├─comment
+│  ├─controller
+│  ├─error
+│  ├─model
+│  ├─repository
+│  └─service
+├─common
+│  ├─error
+│  ├─filter
+│  └─util
+├─config
+├─feed
+│  ├─controller
+│  ├─error
+│  ├─model
+│  ├─rank
+│  │  ├─document
+│  │  └─service
+│  ├─repository
+│  └─service
+├─friends
+│  ├─controller
+│  ├─model
+│  │  └─dto
+│  ├─repository
+│  └─service
+├─hit
+│  ├─controller
+│  ├─document
+│  ├─error
+│  ├─model
+│  ├─repository
+│  └─service
+├─karaoke
+│  ├─controller
+│  ├─model
+│  ├─repository
+│  └─service
+├─like
+│  ├─controller
+│  ├─document
+│  ├─error
+│  ├─model
+│  ├─repository
+│  └─service
+├─notification
+│  ├─cotnoller
+│  ├─dto
+│  ├─entity
+│  ├─repository
+│  ├─service
+│  └─util
+├─point
+│  ├─controller
+│  ├─model
+│  │  ├─dto
+│  │  └─entity
+│  ├─repository
+│  └─service
+├─song
+│  ├─controller
+│  ├─model
+│  │  └─entity
+│  ├─repository
+│  └─service
+└─user
+    ├─controller
+    ├─document
+    ├─error
+    ├─model
+    ├─repository
+    ├─secure
+    ├─service
+    └─util
 ```
 
 <!-- <img src="https://capsule-render.vercel.app/api?section=footer&type=waving&color=#a374db&height=150" /> -->
