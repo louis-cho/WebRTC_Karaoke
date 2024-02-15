@@ -1,8 +1,8 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <nav-bar />
-    <q-page-container>
-      <div class="dm-container">
+    <q-page-container style="min-height: 400px; font-size:100%;">
+      <div class="dm-container" style="min-height: 400px; max-height: 700px;">
         <div class="content-container">
           <!-- 채팅방 정보 표시 -->
           <div class="chatroom-info">
@@ -16,7 +16,7 @@
             <h5 :title="roomName">{{ roomName }}</h5>
             <q-btn @click="openModal" color="primary" label="Invite" />
             <!-- 참여자 목록 -->
-            <div class="participant-list">
+            <div class="participant-list" style="font-size:50%;">
               <span class="participant-list-title">채팅방 참여자</span>
               <div class="participants-container">
                 <div class="participants">
@@ -36,7 +36,7 @@
           <!-- 채팅창 내역 -->
           <div
             class="chatting-container"
-            style="min-width: 600px; max-width: 600px"
+            style="min-width: 600px; max-width: 600px; font-size:65%;"
           >
             <div
               class="dm-messages"
@@ -728,6 +728,10 @@ const goBack = function () {
   transition: scrollTop 0.3s ease;
 }
 
+.dm-messages::-webkit-scrollbar {
+  display: none;
+}
+
 .message {
   padding: 10px;
 }
@@ -771,8 +775,13 @@ textarea {
 .participants-container {
   flex: 1;
   overflow-y: scroll;
-  max-height: 140px;
+  overflow-x: hidden;
+  max-height: 250px;
   margin-top: 20px;
+}
+
+.participants-container::-webkit-scrollbar {
+  display: none;
 }
 
 .participants {

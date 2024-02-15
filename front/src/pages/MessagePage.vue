@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR fFf">
     <nav-bar />
     <q-page-container style="max-width: 480px; position: absolute; left: 50%; margin-left:-15%">
-      <q-page style="min-width: 480px;">
+      <q-page style="min-width: 480px; min-height: 400px;">
         <div>
           <div class="flex justify-between items-center">
             <div>
@@ -34,7 +34,7 @@
           </p>
 
           <!-- Pagination -->
-          <div class="q-mt-md q-px-md" style="position: absolute; left: 50%; margin-left:-35%">
+          <div class="q-mt-md q-px-md" style="position: absolute; left: 50%; margin-left:-35%; font-size:100%;">
             <q-btn
               @click="prevPage"
               :disable="pageNumber === 1"
@@ -42,7 +42,7 @@
               label="Previous"
               class="q-mr-sm"
             />
-            <span class="text-body-2"
+            <span class="text-body-2" style="font-size:65%;"
               >Page {{ pageNumber }} of {{ totalPages }}</span
             >
             <q-btn
