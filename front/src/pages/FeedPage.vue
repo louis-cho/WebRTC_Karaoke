@@ -148,19 +148,21 @@ const goFeedDetail = (feedId) => {
 };
 
 onBeforeMount(async () => {
-  await fetchFeedData();
+  await fetchFeedData(0);
 });
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false);
 
 //가상 피드 데이터
-const fetchFeedData = async () => {
-  const newFeeds = await fetchFeedList(page++, amount);
+const fetchFeedData = async (select) => {
+  const newFeeds = await fetchFeedList(page++, amount, select);
 
   if(newFeeds == null) {
+    console.log("Gdgd")
     return;
   }
 
+  console.log(newFeeds)
   for (let elem of newFeeds) {
     elem.song = await fetchSong(elem.songId);
     elem.user = await fetchUser(elem.userUUID);

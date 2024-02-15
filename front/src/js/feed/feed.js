@@ -5,8 +5,22 @@ const { setCookie, getCookie, removeCookie } = useCookie();
 let pref = app;
 
 
-export async function fetchFeedList(pageNo, pageSize) {
-  const serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.fetchAll;
+export async function fetchFeedList(pageNo, pageSize, select) {
+  let serverUrl = '';
+
+  switch (select) {
+    case 0:
+      serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.fetchAll;
+      break;
+    case 1:
+      serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.fetchOld;
+      break;
+    case 2:
+      serverUrl = pref.app.api.protocol + pref.app.api.host + pref.app.api.feed.fetchTop100;
+      break;
+    default:
+      throw new Error('Invalid value for select parameter');
+  }
 
   return await fetch(`${serverUrl}?page=${pageNo}&size=${pageSize}`, {
     method: 'GET',
