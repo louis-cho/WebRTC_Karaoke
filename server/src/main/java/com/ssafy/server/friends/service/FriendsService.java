@@ -33,6 +33,9 @@ public class FriendsService {
         if(friends == null){
             friends = new Friends(fromUser, toUser);
         }
+
+        friends.setFromUserPk(fromUser);
+        friends.setToUserPk(toUser);
         friends.setStatus('1'); // 친구 요청 상태
 
         friendsRepository.save(friends);
