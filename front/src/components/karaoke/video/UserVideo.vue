@@ -70,7 +70,7 @@ function kickUser() {
 <style scoped>
 .flex-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: flex-end;
 }
 </style>

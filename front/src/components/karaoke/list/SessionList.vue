@@ -2,7 +2,13 @@
   <q-layout style="min-height: 500px">
     <q-page-container>
       <q-page style="min-height: 500px">
-        <q-header style="background-color: mediumorchid">
+        <q-header
+          style="
+            background-color: #be2ce2;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+          "
+        >
           <q-toolbar>
             <q-toolbar-title>
               {{ pref.app.kor.karaoke.list.sessionList }}
@@ -10,12 +16,18 @@
             <q-btn
               @click="openModal"
               :label="pref.app.kor.karaoke.list.createSession"
-              color="primary"
+              style="background-color: rgb(143, 22, 173)"
             />
           </q-toolbar>
         </q-header>
 
-        <q-page-container style="background-color: white">
+        <q-page-container
+          style="
+            background-color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+          "
+        >
           <q-item-section>
             <q-input
               type="text"

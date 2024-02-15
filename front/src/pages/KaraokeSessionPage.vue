@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf" v-if="store.session">
     <!-- 상단 AppBar -->
-    <q-header elevated class="custom-header">
+    <q-header class="custom-header">
       <div
         id="session-header"
         class="q-mb-md"
@@ -11,25 +11,27 @@
           justify-content: space-between;
         "
       >
-        <q-toolbar-title style="font-size: 35px">
+        <q-toolbar-title
+          style="color: black; font-size: 35px; margin-left: 10px"
+        >
           {{ decodeBase64(store.sessionName) }}
         </q-toolbar-title>
-        <div style="display: flex; gap: 5px">
+        <div style="display: flex; gap: 5px; margin-right: 10px">
           <q-btn
             v-if="!store.singing && store.isModerator"
             @click="changeSongMode()"
-            color="primary"
+            style="background-color: black"
             label="모드 바꾸기"
           />
           <q-btn
             @click="openInviteModal"
-            color="primary"
+            style="background-color: black"
             :label="pref.app.kor.karaoke.session.invite"
           />
           <q-btn
             v-if="store.isModerator"
             @click="openModal"
-            color="primary"
+            style="background-color: black"
             :label="pref.app.kor.karaoke.session.setting"
           />
           <q-btn
@@ -52,6 +54,7 @@
           <UserVideo :stream-manager="mainStreamManagerComputed" />
           <song-controller />
         </div>
+        <div style="width: 70px"></div>
         <song-mode />
       </div>
 
@@ -69,29 +72,33 @@
 
     <!-- 하단 메뉴바 -->
     <q-footer class="custom-footer">
-      <q-tabs align="justify" active-color="positive" indicator-color="primary">
+      <q-tabs align="justify" active-color="accent" indicator-color="accent">
         <q-tab
           name="karaoke-chat"
           :label="pref.app.kor.karaoke.session.chatting"
           @click="toggleModal('karaoke-chat')"
+          style="color: black"
         />
 
         <q-tab
           name="input-controller"
           :label="pref.app.kor.karaoke.session.input"
           @click="toggleModal('input-controller')"
+          style="color: black"
         />
 
         <q-tab
           name="reserve-song"
           :label="pref.app.kor.karaoke.session.reserve"
           @click="toggleModal('reserve-song')"
+          style="color: black"
         />
 
         <q-tab
           name="reserve-list"
           :label="pref.app.kor.karaoke.session.reserveList"
           @click="toggleModal('reserve-list')"
+          style="color: black"
         />
       </q-tabs>
     </q-footer>
@@ -168,11 +175,11 @@ function changeSongMode() {
 
 <style scoped>
 .custom-header {
-  background-color: skyblue;
+  background-color: rgba(255, 255, 255, 0);
   height: 60px;
 }
 .custom-footer {
-  background-color: skyblue;
+  background-color: rgba(255, 255, 255, 0);
 }
 
 #video-container {
