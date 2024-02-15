@@ -495,7 +495,7 @@ int userPk = userService.getUserPk(UUID.fromString(uuid));
 ### Application Client
 
 <div>
-OpenVidu를 사용하기 위해서는 라이브러리를 통해 객체를 만들어야합니다. 주로 사용하는 객체는 OpenVidu, Session, Token, Publisher, Subscriber 등이 있고 순서대로 객체를 만들어나가면 됩니다.
+OpenVidu를 사용하기 위해서는 라이브러리를 통해 객체를 만들어야합니다. 주로 사용하는 객체는 OpenVidu, Session, Connection, Publisher, Subscriber 등이 있고 순서대로 객체를 만들어나가면 됩니다.
 </div>
 
 ```javascript
@@ -575,8 +575,45 @@ session.connect(token.data, { clientData: userName }).then(() => {
 ### Application Server
 
 <div>
-
+Server에서는 Session, Connection, Recording 객체의 생성, 삭제 등의 관리를 합니다. 우선 Client의 요청을 받아 Session을 만듭니다. sessionName으로 세션을 관리하기 위해 customeSessionId를 설정합니다. Server에서 Object로 Session을 관리하도록 구현했지만 설명은 생략하겠습니다.
 </div>
+
+```java
+@RequestMapping(value = "/createSession", method = RequestMethod.POST)
+public ResponseEntity<String> createSession(@RequestBody Map<String, Object> params) {
+    String sessionName = (String) params.get("sessionName");
+
+    // SessionProperties를 설정해준다
+    SessionProperties sessionProperties = new SessionProperties.Builder().customSessionId(sessionName).build();
+
+    Session session = openViduModel.getOpenvidu().createSession(sessionProperties);
+    return ResponseEntity.ok(sessionName);
+}
+```
+
+<div>
+이후에 Client에서 Session 연결을 위한 토큰을 요청합니다. Server에서는 해당하는 Session에 Connection을 만들고 Connection의 Token을 반환합니다.
+</div>
+
+```java
+@RequestMapping(value = "/getToken", method = RequestMethod.POST)
+public ResponseEntity<String> getToken(@RequestBody Map<String, Object> params) {
+    String sessionName = (String) params.remove("sessionName");
+
+    // ConnectionProperties를 설정해준다
+    ConnectionProperties connectionProperties = ConnectionProperties.fromJson(params).build();
+
+    Connection connection = openViduModel.getMapSessions().get(sessionName).createConnection(connectionProperties);
+    String token = connection.getToken();
+    String connectionId = connection.getConnectionId();
+    return ResponseEntity.ok(token);
+}
+```
+
+<div>
+Client에서 유저가 Session을 나갈 경우 연결했던 Connection과 Session 등의 삭제 요청을 보냅니다. Server에서는 HashMap으로 Session에 해당하는 Token, Connection 등을 관리하고 있기 때문에 매우 간단하게 처리할 수 있습니다.
+</div>
+<br/>
 
 # SSE(Server Side Events)
 
