@@ -64,5 +64,8 @@ defineExpose({
 </script>
 
 <style scoped>
-/* 스타일링 추가 */
+#app1 {
+  width: 1000px;
+  height: 360px;
+}
 </style>
