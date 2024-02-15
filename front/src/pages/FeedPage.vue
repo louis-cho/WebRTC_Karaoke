@@ -140,7 +140,7 @@ import { fetchCommentCount } from "@/js/comment/comment.js";
 let pref = app;
 const feeds = ref([]);
 const router = useRouter();
-let select = 0;
+let select = 1;
 
 let page = 0;
 const amount = 3;
