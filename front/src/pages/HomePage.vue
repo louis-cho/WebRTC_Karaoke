@@ -1,8 +1,7 @@
 <template>
   <!-- class="bg-purple" -->
-  <nav-bar />
   <div id="back">
-
+    <nav-bar />
     <q-carousel
       v-model="slide"
       vertical
