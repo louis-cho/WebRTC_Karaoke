@@ -24,8 +24,32 @@
           class="search-button"
           color="primary"
           label="검색"
+          style="height: 40px; width: 45px;"
           dense
         />
+        <div class="q-pa-md">
+          <q-btn-dropdown color="primary" label="피드 정렬">
+            <q-list>
+              <q-item clickable v-close-popup @click="onItemClick(0)">
+                <q-item-section>
+                  <q-item-label>최신순</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onItemClick(1)">
+                <q-item-section>
+                  <q-item-label>오래된순</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onItemClick(2)">
+                <q-item-section>
+                  <q-item-label>랭킹순</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
       </div>
 
       <!-- 두번째 div -->
@@ -140,17 +164,43 @@ import { fetchCommentCount } from "@/js/comment/comment.js";
 let pref = app;
 const feeds = ref([]);
 const router = useRouter();
-let select = 1;
+const select = ref(0);
 
 let page = 0;
 const amount = 3;
+
+const onItemClick = (value) => {
+  // 클릭된 항목의 값에 따라 다른 동작 수행
+  switch (value) {
+        case 0:
+          select.value = 0;
+          page = 0;
+          feeds.value = [];
+          fetchFeedData(select.value);
+          break;
+        case 1:
+          select.value = 1;
+          page = 0;
+          feeds.value = [];
+          fetchFeedData(select.value);
+          break;
+        case 2:
+          select.value = 2;
+          page = 0;
+          feeds.value = [];
+          fetchFeedData(select.value);
+          break;
+        default:
+          break;
+      }
+};
 
 const goFeedDetail = (feedId) => {
   router.push({ name: "feed_detail", params: { feedId } });
 };
 
 onBeforeMount(async () => {
-  await fetchFeedData(select);
+  await fetchFeedData(select.value);
 });
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false);
@@ -164,7 +214,6 @@ const fetchFeedData = async (select) => {
   const newFeeds = await fetchFeedList(page++, amount, select);
 
   if(newFeeds == null) {
-    console.log("Gdgd")
     return;
   }
 
@@ -207,7 +256,7 @@ const handleScroll = async () => {
     loading.value = true;
 
     try {
-      await fetchFeedData(select);
+      await fetchFeedData(select.value);
     } catch (error) {
       console.error("Error fetching new feeds:", error);
     } finally {
@@ -260,6 +309,7 @@ const toggleLike = async (feedId) => {
   const likeStatus = await createLike
   console.log('라이크 상태',likeStatus)
 };
+
 </script>
 
 <style scoped>
@@ -385,7 +435,8 @@ const toggleLike = async (feedId) => {
 
 .search-container {
   display: flex;
-  margin-bottom: 20px;
+  flex-direction: row;
+  align-items: center;
 }
 
 .search-input {
