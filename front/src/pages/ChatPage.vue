@@ -1,6 +1,6 @@
 <template>
-    <nav-bar />
   <q-layout view="hHh lpR fFf">
+    <nav-bar />
     <q-page-container>
       <div class="dm-container">
         <div class="content-container">
@@ -51,22 +51,66 @@
                   ]"
                 >
                   <template v-if="message.sender != userUUID">
-                    {{ getNickname(message.sender) }}
+                    <div
+                      v-if="message.type === 'TALK'">
+                      <q-chat-message
+                        :name="getNickname(message.sender)"
+                        :text="[message.message]"
+                        bg-color="primary"
+                        text-color="white"
+                        size="auto"
+                      />
+                    </div>
+                    <div v-else-if="message.type === 'TYPE'">
+                      <q-chat-message
+                        :name="getNickname(message.sender)"
+                        bg-color="primary"
+                        text-color="white"
+                        size="1">
+                        <q-spinner-dots size="2rem" />
+                     </q-chat-message>
+                    </div>
+                    <div v-else-if="message.type === 'MEDIA'">
+                      <q-chat-message
+                        :name="getNickname(message.sender)"
+                        bg-color="primary"
+                        text-color="white"
+                        size="auto">
+                        <img
+                          class="message-img"
+                          :src="message.message"
+                          alt="MEDIA"
+                          @click="openOriginalImage(message.message)"
+                        />
+                      </q-chat-message>
+                    </div>
                   </template>
-                  <div
-                    v-if="message.type === 'TALK' || message.type === 'TYPE'"
-                  >
-                    {{ message.message }}
-                  </div>
-                  <div v-else-if="message.type === 'MEDIA'">
-                    <img
-                      class="message-img"
-                      :src="message.message"
-                      alt="MEDIA"
-                      @click="openOriginalImage(message.message)"
-                    />
-                  </div>
-                  <div v-else>Unknown message type: {{ message.type }}</div>
+                  <template v-else>
+                    <div
+                      v-if="message.type === 'TALK'"
+                    >
+                      <q-chat-message
+                        :text="[message.message]"
+                        bg-color="amber-7"
+                        size="auto"
+                        sent
+                      />
+                    </div>
+                    <div v-else-if="message.type === 'MEDIA'">
+                      <q-chat-message
+                        bg-color="amber-7"
+                        size="auto"
+                        sent>
+                        <img
+                          class="message-img"
+                          :src="message.message"
+                          alt="MEDIA"
+                          @click="openOriginalImage(message.message)"
+                        />
+                      </q-chat-message>
+                    </div>
+                  </template>
+                  <!-- <div v-else>Unknown message type: {{ message.type }}</div> -->
                 </div>
               </div>
             </div>
@@ -181,7 +225,6 @@ import axios from "axios";
 import NavBar from "@/layouts/NavBar.vue";
 import useCookie from "@/js/cookie.js";
 import { searchUser, fetchUser } from "@/js/user/user.js";
-import logoImage from "@/assets/icon/logo1-removebg-preview.png";
 
 const router = useRouter();
 
