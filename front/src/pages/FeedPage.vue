@@ -140,6 +140,7 @@ import { fetchCommentCount } from "@/js/comment/comment.js";
 let pref = app;
 const feeds = ref([]);
 const router = useRouter();
+let select = 0;
 
 let page = 0;
 const amount = 3;
@@ -149,7 +150,7 @@ const goFeedDetail = (feedId) => {
 };
 
 onBeforeMount(async () => {
-  await fetchFeedData(0);
+  await fetchFeedData(select);
 });
 const itemsPerLoad = 10; // 한 번에 로드할 피드 수
 const loading = ref(false);
@@ -206,7 +207,7 @@ const handleScroll = async () => {
     loading.value = true;
 
     try {
-      await fetchFeedData();
+      await fetchFeedData(select);
     } catch (error) {
       console.error("Error fetching new feeds:", error);
     } finally {
