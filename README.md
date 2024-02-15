@@ -1,11 +1,21 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=#a374db&height=150&section=header" />
 
-# 프로젝트 개요
+# 노래 해방 🎵
+![homePage](/uploads/82b358dc3a816ca1cf7360edab0021e2/homePage.png)
+
+## 프로젝트 소개
 - 내가 부른 노래를 sns형태로 공유 할 수 있는 웹 노래방 서비스
 - 실시간으로 사람들 앞에서 노래를 부르고, 피드에 공유할수 있습니다.
 
-# 배포 주소
-[![EC2](https://img.shields.io/badge/EC2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)](https://i10a705.p.ssafy.io/)
+## 링크
+[![EC2](https://img.shields.io/badge/EC2HOME-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)](https://i10a705.p.ssafy.io/)
+
+[![logo1-removebg-preview](/uploads/f209be2d2ca10643fce6737fb70ed623/logo1-removebg-preview.png)](https://i10a705.p.ssafy.io/)
+
+[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/d3b9636405c8451499659f8d8b4ba876)
+
+
+#개발 환경
 
 
 # 기술 스택
