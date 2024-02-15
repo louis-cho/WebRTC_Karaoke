@@ -147,18 +147,13 @@ function decodeBase64(encodedString) {
   return decodeURIComponent(escape(atob(encodedString)));
 }
 
-// document.addEventListener("keydown", function (e) {
-//   if ((e.ctrlKey && (e.key === "r" || e.key === "n")) || e.key === "F5") {
-//     e.preventDefault();
-//     alert("새로고침을 할 수 없습니다.");
-//   }
-// });
-
-window.addEventListener("beforeunload", function (e) {
-  e.preventDefault();
-  e.returnValue = ""; // 표준 이벤트 속성, 오래된 브라우저에서도 동작합니다.
-  alert("새로고침을 할 수 없습니다.");
+document.addEventListener("keydown", function (e) {
+  if ((e.ctrlKey && (e.key === "r" || e.key === "n")) || e.key === "F5") {
+    e.preventDefault();
+    alert("새로고침을 할 수 없습니다.");
+  }
 });
+
 </script>
 
 <style scoped>
