@@ -24,7 +24,7 @@
           @click="gotoUserFeed">
           </div>
 
-        <div class="width-100">
+        <div class="width-100" style="margin-left: 20px; padding-left: 0px;">
           <div class="space-between">
             <div>
               <p v-if="feed && feed.user">{{ feed.user.nickname }}</p>
@@ -35,7 +35,7 @@
             </div>
           </div>
           <div class="space-start">
-            <div v-if="feed && feed.song">
+            <div v-if="feed && feed.song" class="margin-right-20">
               <span>
                 {{ feed.song.title ? feed.song.title + "-" : "Default Title-" }}
               </span>
@@ -508,8 +508,8 @@ const closeModal = () => {
 
 .my-feed {
   /* padding: 20px; */
-  padding-left: 200px;
-  padding-right: 200px;
+  padding-left: 400px;
+  padding-right: 400px;
 }
 .profile {
   display: flex;
