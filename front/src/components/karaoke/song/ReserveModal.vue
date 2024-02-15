@@ -97,6 +97,7 @@ function reserveSong(songId) {
     .then((response) => {
       console.log(response.data);
       store.session.signal({ type: "reserve" });
+      searchQuery.value = "";
       closeModal();
     })
     .catch((error) => {
