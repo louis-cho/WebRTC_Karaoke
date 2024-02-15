@@ -101,6 +101,10 @@ const showSongInfoTimeOut = 9000;
 
 const choose = () => {
   // props로 내려온 songData 주입
+  if (props.songData == null) {
+    alert("노래 데이터가 아직 없어요,,,");
+    return;
+  }
   song.value = props.songData;
   songInfo.value.author = song.value.author;
   audio.value = new Audio(song.value.songUrl); // mp3 url 연결
@@ -169,6 +173,7 @@ const play = () => {
 const stop = () => {
   initDrawer();
   startTimeRef.value = 0;
+  song.value = null;
 
   if (audio.value != null) {
     audio.value.currentTime = 0;
