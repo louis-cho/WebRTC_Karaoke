@@ -160,9 +160,9 @@
 -   실시간 알림
 -   녹화된 영상을 sns 피드 형태로 공유
 -   DM
-  - 방생성
-  - 초대
-  - 실시간 채팅
+-   방생성
+-   초대
+-   실시간 채팅
 
 <br />
 
@@ -490,7 +490,7 @@ int userPk = userService.getUserPk(UUID.fromString(uuid));
 
 # OpenVidu
 
-<img src="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/uploads/d3aba65d32a825af084d40eb56ad8e18/openvidu-workflow-server.png" width="400" height="400"/>
+<img src="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/uploads/d3aba65d32a825af084d40eb56ad8e18/openvidu-workflow-server.png" width="500" height="500"/>
 
 ### Application Client
 
@@ -525,38 +525,51 @@ session.on('streamCreated', ({ stream }) => {
 </div>
 
 <div>
-얻어온 Toekn으로 Session을 연결합니다.
+얻어온 Token으로 Session을 연결합니다. 
 </div>
+
+```javascript
+session.connect(token.data, { clientData: userName }).then(() => {
+    // 원하는 속성으로 초기화된 발행자를 만듭니다.
+    let publisher_tmp = OV.initPublisher(undefined, {
+        audioSource: undefined, // 오디오의 소스. 정의되지 않으면 기본 마이크
+        videoSource: undefined, // 비디오의 소스. 정의되지 않으면 기본 웹캠
+        publishAudio: true, // 마이크 음소거 여부를 시작할지 여부
+        publishVideo: true, // 비디오 활성화 여부를 시작할지 여부
+        resolution: '320x240',
+        frameRate: 30, // 비디오의 프레임 속도
+        insertMode: 'APPEND', // 비디오가 대상 요소 'video-container'에 어떻게 삽입되는지
+        mirror: true, // 로컬 비디오를 반전할지 여부
+    });
+
+    console.log(publisher_tmp);
+
+    // 페이지에서 주요 비디오를 설정하여 웹캠을 표시하고 발행자를 저장합니다.
+    mainStreamManager = publisher_tmp;
+    publisher = publisher_tmp;
+
+    // --- 6) 스트림을 발행하고, 원격 스트림을 수신하려면 subscribeToRemote() 호출하기 ---
+    publisher.subscribeToRemote();
+    session.publish(this.publisher);
+    getMedia(); // 세션이 만들어졌을 때 미디어를 불러옵니다.
+});
+```
 
 ### Application Server
 
-@ExceptionHandler(ApiException.class) annotation을 통해 ApiException 클래스의 예외는 제네릭 타입의 일관된 리턴 타입 ResponseEntity<ApiResponse<?>>을 갖도록 구현하였습니다.
+<div>
 
-```java
-@RestControllerAdvice
-public class ApiExceptionAdvice {
+</div>
 
-    @ExceptionHandler(ApiException.class)
-    @ResponseStatus
-    public ResponseEntity<ApiResponse<?>> handleApiException(HttpServletRequest request, ApiException e) {
-
-        return ResponseEntity
-                .status(e.getStatus())
-                .body(ApiResponse.builder()
-                        .status(String.valueOf(e.getStatus()))
-                        .message(e.getCode())
-                        .data(null)
-                        .build());
-    }
-}
-```
 # SSE(Server Side Events)
+
 ### 알림 기능 구현
 
 로그인 시 Http 1.1 통신을 통해 SSE를 위한 연결을 설정합니다.<br>
 알림의 경우 단방향통신이기 때문에 SSE연결이 최적의 선택이 될 수 있었습니다.<br>
 
 ### BackEnd
+
 ```java
     // NotifcationController.java
     //요청보낸 유저의 구독(연결) 요청
@@ -570,6 +583,7 @@ public class ApiExceptionAdvice {
         return ResponseEntity.ok(emitter);
     }
 ```
+
 ```java
 //SseEmitter.java
 package com.ssafy.server.notification.util;
@@ -615,8 +629,11 @@ public class SseEmitters {
 
 }
 ```
+
 ### FrontEnd
+
 기본적으로 EventSource 객체를 이용해 SSE 연결 요청을 보낼수 있지만, 헤더에 인증 토큰을 추가하기위해 EventSourcePolyfill 객체를 사용했습니다.
+
 ```javascript
 //notificatinoStore.js
   state: () => ({
@@ -640,7 +657,8 @@ public class SseEmitters {
         // const { data: receivedConnectData } = e;
         console.log(' \'message\' event data shoud be notificationID: ', message.data);  // "connected!"
  ...
- ```
+```
+
 # 디렉토리 구조
 
 ```
