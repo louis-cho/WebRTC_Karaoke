@@ -14,9 +14,9 @@
 }
 
 body {
-  text-shadow: 1px 1px 1px #0ff;
+  text-shadow: 1px 1px 1px lightgray;
   color: #000;
-  font-size: 250%;
+  font-size: 150%;
   font-family: "YCloverBold", sans-serif; /* 지정한 폰트 사용 */
 }
 
