@@ -180,13 +180,6 @@ function changeSongMode() {
 
 /* 추가한 클래스로 반응형 스타일을 지정합니다. */
 .responsive-container {
-  flex-wrap: nowrap; /* 자식 요소들이 한 줄에 나오도록 설정 */
-}
-
-/* 미디어 쿼리를 사용하여 페이지 크기에 따라 스타일을 동적으로 조절합니다. */
-@media (max-width: 768px) {
-  .responsive-container {
-    flex-wrap: wrap; /* 페이지 크기가 작을 때는 요소들이 여러 줄에 나오도록 설정 */
-  }
+  flex-wrap: wrap; /* 자식 요소들이 한 줄에 나오도록 설정 */
 }
 </style>
