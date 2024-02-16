@@ -64,7 +64,7 @@
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
         </td>
         <td align="center">
-            <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#SSE">SSE</a>
+          <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/edit/develop/README.md?ref_type=heads#sseserver-side-events">SSE</a>
         </td>
     </tr>
     </tr>
