@@ -62,6 +62,7 @@
         </td>
         <td align="center">
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
+            <a href="#temp">DM</a>
         </td>
         <td align="center">
           <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/blob/develop/README.md#sseserver-side-events">SSE</a>
@@ -1382,7 +1383,7 @@ public void updateData() throws JsonProcessingException {
 <summary> <h2> 노래 데이터 </h2> </summary>
 <div markdown="1">
 
-## 퍼펙트 스코어
+<h3 id="temp"> 퍼펙트 스코어 </h3>
 
 ### 평가 데이터
 
