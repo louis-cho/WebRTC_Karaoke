@@ -50,12 +50,12 @@
       <tr height="50px">
         <td align="center">    
         <ul>    
-        <li><a href="#elastic-search" target="_self">Elastic Search</a></li>
-        <li><a href="#에러-처리" target="_self">에러 처리</a></li>
-        <li><a href="#회원-정보-암호화-관리" target="_self">암호화</a></li>
-        <li><a href="#좋아요-조회수-데이터-동기화" target="_self">데이터 동기화</a></li>
-        <li><a href="#프로시저-적용" target="_self">프로시저</a></li>
-        <li><a href="#시스템-내외부-user-key-구조" target="_self">user key 구조</a></li>
+        <li><a href="#elastic-search" >Elastic Search</a></li>
+        <li><a href="#%ec%97%90%eb%9f%ac-%ec%b2%98%eb%a6%ac">에러 처리</a></li>
+        <li><a href="#%ed%9a%8c%ec%9b%90-%ec%a0%95%eb%b3%b4-%ec%95%94%ed%98%b8%ed%99%94-%ea%b4%80%eb%a6%ac">암호화</a></li>
+        <li><a href="#%ec%a2%8b%ec%95%84%ec%9a%94-%ec%a1%b0%ed%9a%8c%ec%88%98-%eb%8d%b0%ec%9d%b4%ed%84%b0-%eb%8f%99%ea%b8%b0%ed%99%94">데이터 동기화</a></li>
+        <li><a href="#%ed%94%84%eb%a1%9c%ec%8b%9c%ec%a0%80-%ec%a0%81%ec%9a%a9" target="_self">프로시저</a></li>
+        <li><a href="#%ec%8b%9c%ec%8a%a4%ed%85%9c-%eb%82%b4%ec%99%b8%eb%b6%80-user-key-%ea%b5%ac%ec%a1%b0" target="_self">user key 구조</a></li>
         </ul>
         </td>
         </td>
