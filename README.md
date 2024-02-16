@@ -65,6 +65,7 @@
         </td>
         <td align="center">
             <a>으아아</a>
+            [SSE](#sse(server-side-events))
         </td>
     </tr>
     </tr>
