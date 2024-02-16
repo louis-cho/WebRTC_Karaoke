@@ -91,11 +91,11 @@ const filterApplied = ref(false);
 
 const selectedIndex = ref(2);
 const sliders = [
-  { delay: 100, intensity: 20, feedback: 30 },
-  { delay: 150, intensity: 40, feedback: 40 },
-  { delay: 200, intensity: 60, feedback: 50 },
-  { delay: 250, intensity: 80, feedback: 60 },
-  { delay: 300, intensity: 100, feedback: 70 },
+  { delay: 10000000, intensity: 0.2, feedback: 0.3 },
+  { delay: 15000000, intensity: 0.4, feedback: 0.4 },
+  { delay: 20000000, intensity: 0.6, feedback: 0.5 },
+  { delay: 25000000, intensity: 0.8, feedback: 0.6 },
+  { delay: 30000000, intensity: 1.0, feedback: 0.7 },
 ];
 
 // 필터를 적용해주는 함수
