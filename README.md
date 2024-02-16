@@ -224,6 +224,392 @@
 <br />
 
 <details>
+<summary> <h1> 디렉토리 구조 </h1> </summary>
+<div markdown="1">
+
+```
+front
+├─assets
+│  ├─font
+│  ├─icon
+│  └─img
+├─boot
+├─components
+│  ├─chat
+│  └─karaoke
+│      ├─list
+│      ├─session
+│      ├─song
+│      └─video
+├─css
+├─js
+│  ├─chat
+│  ├─comment
+│  ├─config
+│  ├─encrypt
+│  ├─feed
+│  ├─friends
+│  ├─hit
+│  ├─karaoke
+│  ├─like
+│  ├─perfectScore
+│  ├─song
+│  └─user
+├─layouts
+├─pages
+├─router
+└─stores
+
+server
+├─api
+├─audit
+├─auth
+│  ├─controller
+│  ├─model
+│  │  ├─dto
+│  │  └─entity
+│  ├─repository
+│  ├─service
+│  └─util
+├─chat
+│  ├─controller
+│  ├─model
+│  ├─repository
+│  └─service
+├─comment
+│  ├─controller
+│  ├─error
+│  ├─model
+│  ├─repository
+│  └─service
+├─common
+│  ├─error
+│  ├─filter
+│  └─util
+├─config
+├─feed
+│  ├─controller
+│  ├─error
+│  ├─model
+│  ├─rank
+│  │  ├─document
+│  │  └─service
+│  ├─repository
+│  └─service
+├─friends
+│  ├─controller
+│  ├─model
+│  │  └─dto
+│  ├─repository
+│  └─service
+├─hit
+│  ├─controller
+│  ├─document
+│  ├─error
+│  ├─model
+│  ├─repository
+│  └─service
+├─karaoke
+│  ├─controller
+│  ├─model
+│  ├─repository
+│  └─service
+├─like
+│  ├─controller
+│  ├─document
+│  ├─error
+│  ├─model
+│  ├─repository
+│  └─service
+├─notification
+│  ├─cotnoller
+│  ├─dto
+│  ├─entity
+│  ├─repository
+│  ├─service
+│  └─util
+├─point
+│  ├─controller
+│  ├─model
+│  │  ├─dto
+│  │  └─entity
+│  ├─repository
+│  └─service
+├─song
+│  ├─controller
+│  ├─model
+│  │  └─entity
+│  ├─repository
+│  └─service
+└─user
+    ├─controller
+    ├─document
+    ├─error
+    ├─model
+    ├─repository
+    ├─secure
+    ├─service
+    └─util
+```
+
+</div>
+</details>
+
+<details>
+<summary> <h1> 환경설정 </h1> </summary>
+<div markdown="1">
+
+## DOCKER에 OPENVIDU 띄우기
+
+-   DOCKER 설치 후, cmd 창에서
+
+```
+docker run -p 4443:4443 --rm -e OPENVIDU_SECRET=MY_SECRET -e OPENVIDU_RECORDING=true -e OPENVIDU_RECORDING_PATH=/opt/openvidu/recordings -v /var/run/docker.sock:/var/run/docker.sock -v /opt/openvidu/recordings:/opt/openvidu/recordings openvidu/openvidu-dev:2.29.0
+```
+
+## 백서버는 그대로 실행(port=5000)
+
+## 프론트 서버 띄우기
+
+```
+cd S10P12A705/front
+npm install
+npm run serve
+```
+
+-   이후 localhost:8080으로 접속해서 확인
+-   localhost:4443에서 connectionTest 가능
+-   필터 추가
+
+## ELK stack 설치 및 확인하기
+
+### 패키지 목록 업데이트
+
+```
+sudo apt-get update
+```
+
+### Docker 설치
+
+```
+sudo apt-get install docker.io
+```
+
+### Docker 서비스 시작
+
+```
+sudo systemctl start docker
+```
+
+### 부팅 시에 Docker 자동 실행 설정
+
+```
+sudo systemctl enable docker
+```
+
+### Docker Compose 설치
+
+```
+sudo apt-get install docker-compose
+```
+
+### gedit 텍스트 편집기 설치
+
+```
+sudo apt-get install gedit
+```
+
+```
+$ mkdir [프로젝트 폴더]
+$ cd [프로젝트 폴더]
+$ gedit docker-compose.yml
+```
+
+// docker-compose.yml
+
+```
+version: '3.6'
+services:
+  Elasticsearch:
+    image: elasticsearch:7.17.16
+    container_name: elasticsearch
+    restart: always
+    volumes:
+    - elastic_data:/usr/share/elasticsearch/data/
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      discovery.type: single-node
+    ports:
+    - '9200:9200'
+    - '9300:9300'
+    networks:
+      - elk
+
+  Logstash:
+    image: logstash:7.17.16
+    container_name: logstash
+    restart: always
+    volumes:
+    - ./logstash/:/logstash_dir
+    command: logstash -f /logstash_dir/logstash.conf
+    depends_on:
+      - Elasticsearch
+    ports:
+    - '9600:9600'
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+
+  Kibana:
+    image: kibana:7.17.16
+    container_name: kibana
+    restart: always
+    ports:
+    - '5601:5601'
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+      - Elasticsearch
+    networks:
+      - elk
+volumes:
+  elastic_data: {}
+
+networks:
+  elk:
+
+```
+
+// end of docker-compose.yml
+
+```
+$ mkdir logstash
+$ cd logstash
+$ gedit logstash.conf
+```
+
+// mysql 설정
+
+```
+# mysql connector java jar 다운로드
+wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.30/mysql-connector-java-8.0.30.jar
+
+# 압축 해제
+tar -xzf mysql-connector-java-8.0.30.tar.gz
+
+# Logstash 설치 디렉토리로 이동
+cd [logstash_dir]
+
+# 다운로드 받은 JAR 파일을 해당 디렉토리로 이동
+mv /path/to/mysql-connector-java-8.0.30.jar /path/to/logstash/
+```
+
+// logstash.conf
+
+```
+# synchronization with elasticseasrch & mysql
+input {
+
+  jdbc {
+    jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/testuser"
+    jdbc_user => "root"
+    jdbc_password => "1234"
+    jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
+    jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
+
+    statement => "SELECT * FROM likes WHERE timestamp > :sql_last_value"
+
+    schedule => "*/10 * * * * *"
+    use_column_value => true
+    tracking_column => "timestamp"
+    tracking_column_type => "timestamp"
+    clean_run => false
+    type => "like"
+  }
+
+  jdbc {
+    jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/testuser"
+    jdbc_user => "root"
+    jdbc_password => "1234"
+    jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
+    jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
+
+    statement => "SELECT * FROM hit WHERE timestamp > :sql_last_value"
+
+    schedule => "*/10 * * * * *"
+    use_column_value => true
+    tracking_column => "timestamp"
+    tracking_column_type => "timestamp"
+    clean_run => false
+    type => "hit"
+  }
+}
+
+filter {
+  # mutate {
+  #  remove_field => ["introduction", "profile_img_url", "role", "user_key"]
+  # }
+}
+
+output {
+  if [type] == "like" {
+    elasticsearch {
+      hosts => ["elasticsearch:9200"]
+      index => "likes"
+    }
+  }
+
+  if [type] == "hit" {
+  	elasticsearch {
+  	  hosts => ["elasticsearch:9200"]
+  	  index => "hit"
+  	}
+  }
+
+  stdout { codec => rubydebug }
+}
+
+
+filter {
+}
+
+output {
+  if [type] == "like" {
+    elasticsearch {
+      hosts => ["localhost:9200"]
+      index => "like"                             # index를 like로 데이터 동기화
+    }
+  }
+
+  if [type] == "view" {
+    elasticsearch {
+      hosts => ["localhost:9200"]
+      index => "hit"                              # index를 hit로 데이터 동기화
+    }
+  }
+}
+
+```
+
+// end of logstash-config
+
+```
+$ docker-compose up
+```
+
+localhost:5601로 접속하면 확인 가능
+
+</div>
+</details>
+
+<br />
+<br />
+<br />
+
+---
+
+<details>
 <summary> <h2> Elastic Search </h2> </summary>
 <div markdown="1">
 
@@ -1084,392 +1470,6 @@ if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this
           }
 }
 ```
-
-</div>
-</details>
-
-<br />
-<br />
-<br />
-
----
-
-<details>
-<summary> <h1> 디렉토리 구조 </h1> </summary>
-<div markdown="1">
-
-```
-front
-├─assets
-│  ├─font
-│  ├─icon
-│  └─img
-├─boot
-├─components
-│  ├─chat
-│  └─karaoke
-│      ├─list
-│      ├─session
-│      ├─song
-│      └─video
-├─css
-├─js
-│  ├─chat
-│  ├─comment
-│  ├─config
-│  ├─encrypt
-│  ├─feed
-│  ├─friends
-│  ├─hit
-│  ├─karaoke
-│  ├─like
-│  ├─perfectScore
-│  ├─song
-│  └─user
-├─layouts
-├─pages
-├─router
-└─stores
-
-server
-├─api
-├─audit
-├─auth
-│  ├─controller
-│  ├─model
-│  │  ├─dto
-│  │  └─entity
-│  ├─repository
-│  ├─service
-│  └─util
-├─chat
-│  ├─controller
-│  ├─model
-│  ├─repository
-│  └─service
-├─comment
-│  ├─controller
-│  ├─error
-│  ├─model
-│  ├─repository
-│  └─service
-├─common
-│  ├─error
-│  ├─filter
-│  └─util
-├─config
-├─feed
-│  ├─controller
-│  ├─error
-│  ├─model
-│  ├─rank
-│  │  ├─document
-│  │  └─service
-│  ├─repository
-│  └─service
-├─friends
-│  ├─controller
-│  ├─model
-│  │  └─dto
-│  ├─repository
-│  └─service
-├─hit
-│  ├─controller
-│  ├─document
-│  ├─error
-│  ├─model
-│  ├─repository
-│  └─service
-├─karaoke
-│  ├─controller
-│  ├─model
-│  ├─repository
-│  └─service
-├─like
-│  ├─controller
-│  ├─document
-│  ├─error
-│  ├─model
-│  ├─repository
-│  └─service
-├─notification
-│  ├─cotnoller
-│  ├─dto
-│  ├─entity
-│  ├─repository
-│  ├─service
-│  └─util
-├─point
-│  ├─controller
-│  ├─model
-│  │  ├─dto
-│  │  └─entity
-│  ├─repository
-│  └─service
-├─song
-│  ├─controller
-│  ├─model
-│  │  └─entity
-│  ├─repository
-│  └─service
-└─user
-    ├─controller
-    ├─document
-    ├─error
-    ├─model
-    ├─repository
-    ├─secure
-    ├─service
-    └─util
-```
-
-</div>
-</details>
-
-<details>
-<summary> <h1> 환경설정 </h1> </summary>
-<div markdown="1">
-
-## DOCKER에 OPENVIDU 띄우기
-
--   DOCKER 설치 후, cmd 창에서
-
-```
-docker run -p 4443:4443 --rm -e OPENVIDU_SECRET=MY_SECRET -e OPENVIDU_RECORDING=true -e OPENVIDU_RECORDING_PATH=/opt/openvidu/recordings -v /var/run/docker.sock:/var/run/docker.sock -v /opt/openvidu/recordings:/opt/openvidu/recordings openvidu/openvidu-dev:2.29.0
-```
-
-## 백서버는 그대로 실행(port=5000)
-
-## 프론트 서버 띄우기
-
-```
-cd S10P12A705/front
-npm install
-npm run serve
-```
-
--   이후 localhost:8080으로 접속해서 확인
--   localhost:4443에서 connectionTest 가능
--   필터 추가
-
-## ELK stack 설치 및 확인하기
-
-### 패키지 목록 업데이트
-
-```
-sudo apt-get update
-```
-
-### Docker 설치
-
-```
-sudo apt-get install docker.io
-```
-
-### Docker 서비스 시작
-
-```
-sudo systemctl start docker
-```
-
-### 부팅 시에 Docker 자동 실행 설정
-
-```
-sudo systemctl enable docker
-```
-
-### Docker Compose 설치
-
-```
-sudo apt-get install docker-compose
-```
-
-### gedit 텍스트 편집기 설치
-
-```
-sudo apt-get install gedit
-```
-
-```
-$ mkdir [프로젝트 폴더]
-$ cd [프로젝트 폴더]
-$ gedit docker-compose.yml
-```
-
-// docker-compose.yml
-
-```
-version: '3.6'
-services:
-  Elasticsearch:
-    image: elasticsearch:7.17.16
-    container_name: elasticsearch
-    restart: always
-    volumes:
-    - elastic_data:/usr/share/elasticsearch/data/
-    environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      discovery.type: single-node
-    ports:
-    - '9200:9200'
-    - '9300:9300'
-    networks:
-      - elk
-
-  Logstash:
-    image: logstash:7.17.16
-    container_name: logstash
-    restart: always
-    volumes:
-    - ./logstash/:/logstash_dir
-    command: logstash -f /logstash_dir/logstash.conf
-    depends_on:
-      - Elasticsearch
-    ports:
-    - '9600:9600'
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    networks:
-      - elk
-
-  Kibana:
-    image: kibana:7.17.16
-    container_name: kibana
-    restart: always
-    ports:
-    - '5601:5601'
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-    depends_on:
-      - Elasticsearch
-    networks:
-      - elk
-volumes:
-  elastic_data: {}
-
-networks:
-  elk:
-
-```
-
-// end of docker-compose.yml
-
-```
-$ mkdir logstash
-$ cd logstash
-$ gedit logstash.conf
-```
-
-// mysql 설정
-
-```
-# mysql connector java jar 다운로드
-wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.30/mysql-connector-java-8.0.30.jar
-
-# 압축 해제
-tar -xzf mysql-connector-java-8.0.30.tar.gz
-
-# Logstash 설치 디렉토리로 이동
-cd [logstash_dir]
-
-# 다운로드 받은 JAR 파일을 해당 디렉토리로 이동
-mv /path/to/mysql-connector-java-8.0.30.jar /path/to/logstash/
-```
-
-// logstash.conf
-
-```
-# synchronization with elasticseasrch & mysql
-input {
-
-  jdbc {
-    jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/testuser"
-    jdbc_user => "root"
-    jdbc_password => "1234"
-    jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
-    jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
-
-    statement => "SELECT * FROM likes WHERE timestamp > :sql_last_value"
-
-    schedule => "*/10 * * * * *"
-    use_column_value => true
-    tracking_column => "timestamp"
-    tracking_column_type => "timestamp"
-    clean_run => false
-    type => "like"
-  }
-
-  jdbc {
-    jdbc_connection_string => "jdbc:mysql://i10a705.p.ssafy.io:3306/testuser"
-    jdbc_user => "root"
-    jdbc_password => "1234"
-    jdbc_driver_library => "/logstash_dir/mysql-connector-java-8.0.30.jar"
-    jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
-
-    statement => "SELECT * FROM hit WHERE timestamp > :sql_last_value"
-
-    schedule => "*/10 * * * * *"
-    use_column_value => true
-    tracking_column => "timestamp"
-    tracking_column_type => "timestamp"
-    clean_run => false
-    type => "hit"
-  }
-}
-
-filter {
-  # mutate {
-  #  remove_field => ["introduction", "profile_img_url", "role", "user_key"]
-  # }
-}
-
-output {
-  if [type] == "like" {
-    elasticsearch {
-      hosts => ["elasticsearch:9200"]
-      index => "likes"
-    }
-  }
-
-  if [type] == "hit" {
-  	elasticsearch {
-  	  hosts => ["elasticsearch:9200"]
-  	  index => "hit"
-  	}
-  }
-
-  stdout { codec => rubydebug }
-}
-
-
-filter {
-}
-
-output {
-  if [type] == "like" {
-    elasticsearch {
-      hosts => ["localhost:9200"]
-      index => "like"                             # index를 like로 데이터 동기화
-    }
-  }
-
-  if [type] == "view" {
-    elasticsearch {
-      hosts => ["localhost:9200"]
-      index => "hit"                              # index를 hit로 데이터 동기화
-    }
-  }
-}
-
-```
-
-// end of logstash-config
-
-```
-$ docker-compose up
-```
-
-localhost:5601로 접속하면 확인 가능
 
 </div>
 </details>
