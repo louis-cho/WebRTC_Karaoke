@@ -64,7 +64,7 @@
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
         </td>
         <td align="center">
-          <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/blob/develop/README.md#sseserver-side-events">SSE</a>
+          <a href="#SSE">SSE</a>
         </td>
     </tr>
     </tr>
@@ -1079,7 +1079,7 @@ Client에서 유저가 Session을 나갈 경우 연결했던 Connection과 Sessi
 </details>
 
 <details>
-<summary> <h2> SSE(Server Side Events) </h2> </summary>
+<summary> <h2 id="SSE"> SSE(Server Side Events) </h2> </summary>
 <div markdown="1">
 
 ### 알림 기능 구현
