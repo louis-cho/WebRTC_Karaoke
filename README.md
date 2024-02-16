@@ -1380,10 +1380,10 @@ public void updateData() throws JsonProcessingException {
 </details>
 
 <details>
-<summary> <h2> 노래 데이터 </h2> </summary>
+<summary id="temp"> <h2> 노래 데이터 </h2> </summary>
 <div markdown="1">
 
-<h3 id="#temp"> 퍼펙트 스코어 </h3>
+## 퍼펙트 스코어
 
 ### 평가 데이터
 
