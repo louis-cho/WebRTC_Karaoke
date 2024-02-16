@@ -63,7 +63,7 @@
             <a href="#openvidu">OpenVidu</a>
         </td>
         <td align="center">
-            <a>으아아</a>
+<a href ="#%ed%94%bc%eb%93%9c-%eb%b0%8f-%ec%82%ac%ec%9a%a9%ec%9e%90-%ec%83%81%ed%98%b8%ec%9e%91%ec%9a%a9">피드 및 사용자 상호작용</a>
         </td>
         <td align="center">
             <a href="#%eb%85%b8%eb%9e%98-%eb%8d%b0%ec%9d%b4%ed%84%b0">노래 데이터</a>
@@ -72,7 +72,7 @@
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
         </td>
         <td align="center">
-          <a href= '#sseserver-side-events'>SSE</a>
+          <a href= '#%ec%95%8c%eb%a6%bc%ea%b8%b0%eb%8a%a5-with-sseserver-side-events'>알림기능(SSE)</a>
         </td>
     </tr>
     </tr>
