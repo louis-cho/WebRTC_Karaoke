@@ -58,7 +58,7 @@
             <a>으아아</a>
         </td>
         <td align="center">
-            <a>으아아</a>
+            <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#%EB%85%B8%EB%9E%98-%EB%8D%B0%EC%9D%B4%ED%84%B0">노래 데이터</a>
         </td>
         <td align="center">
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
@@ -168,49 +168,49 @@
 
 # 화면
 
-## << 노래방 일반 모드 >>
+<h3><< 노래방 일반 모드 >><h3>
 
 <img src="/uploads/39a924851f59db305db0f1ccf14005ce/normal-mode.png" width="800" height="400">
 
 <br />
 <br />
 
-## << 노래방 퍼펙트 스코어 >>
+<h3><< 노래방 퍼펙트 스코어 >><h3>
 
 <img src="/uploads/c4848e29b911cff24a9dc0d92759c570/perfect-score.png" width="800" height="400">
 
 <br />
 <br />
 
-## << 피드리스트 >>
+<h3><< 피드리스트 >><h3>
 
 <img src="/uploads/57592df339d391b1c65ddfe5ee29859a/feed-list.png" width="800" height="400">
 
 <br />
 <br />
 
-## << 피드 상세 >>
+<h3><< 피드 상세 >><h3>
 
 <img src="/uploads/f808399db06c7bb3eb31aa47cc2d4798/feed-detail.png" width="800" height="400">
 
 <br />
 <br />
 
-## << 채팅방 생성 >>
+<h3><< 채팅방 생성 >><h3>
 
 <img src="/uploads/b13d52a3c878680e960c28808ac13984/create-chat.png" width="800" height="400">
 
 <br />
 <br />
 
-## << 채팅방 >>
+<h3><< 채팅방 >><h3>
 
 <img src="/uploads/d3af37fefc5a341844137956cd7cbf65/chat-room.png" width="800" height="400">
 
 <br />
 <br />
 
-## << 알림 및 친구 목록 >>
+<h3><< 알림 및 친구 목록 >><h3>
 
 <img src="/uploads/89d24e72b88f78d2e568839f05ebe631/notification.png" width="800" height="400">
 
