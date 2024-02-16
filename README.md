@@ -70,7 +70,7 @@
             <a href="#%eb%85%b8%eb%9e%98-%eb%8d%b0%ec%9d%b4%ed%84%b0">노래 데이터</a>
         </td>
         <td align="center">
-            <a href="#DM(%ec%b1%84%ed%8c%85)">DM</a>
+            <a href="#dm%ec%b1%84%ed%8c%85">DM</a>
         </td>
         <td align="center">
           <a href= '#알림기능-with-sseserver-side-events'>알림기능(SSE)</a>
