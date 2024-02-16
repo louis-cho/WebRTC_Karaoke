@@ -59,6 +59,7 @@
         </td>
         <td align="center">
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#%EB%85%B8%EB%9E%98-%EB%8D%B0%EC%9D%B4%ED%84%B0">노래 데이터</a>
+            <a href="#dm">temp</a>
         </td>
         <td align="center">
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
@@ -1303,7 +1304,7 @@ user의 pk가 아닌 UUID를 사용하여 유저를 구분하므로 이를 서�
 </div>
 </details>
 
-### DM
+<h3 id="dm"> DM </h3>
 
 실시간 참여중인 사람들의 리스트도 확인할 수 있으며 예전 채팅은 페이지네이션 처리되어, 맨 위로 스크롤을 올릴 시 역방향 무한 스크롤 형태로 불러올 수 있습니다. 또한 이미지를 s3를 통해 업로드 할 수 있고, 상대방의 타이핑 여부도 확인할 수 있습니다.
 
