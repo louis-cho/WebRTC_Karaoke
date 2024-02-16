@@ -64,7 +64,7 @@
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
         </td>
         <td align="center">
-            <a>으아아</a>
+            <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#SSE">SSE</a>
         </td>
     </tr>
     </tr>
@@ -223,7 +223,9 @@
 
 <br />
 
-# Elastic Search
+<details>
+<summary> <h1> Elastic Search </h1> </summary>
+<div markdown="1">
 
 ### 유저 검색
 
@@ -343,7 +345,12 @@ output {
 }
 ```
 
-# 에러 처리
+</div>
+</details>
+
+<details>
+<summary> <h1> 에러 처리 </h1> </summary>
+<div markdown="1">
 
 ### 동일한 처리 구조
 
@@ -395,7 +402,12 @@ public enum LikeExceptionEnum implements ExceptionEnum {
 }
 ```
 
-# 회원 정보 암호화 관리
+</div>
+</details>
+
+<details>
+<summary> <h1> 회원 정보 암호화 관리 </h1> </summary>
+<div markdown="1">
 
 ### RSA 암복호화
 
@@ -452,7 +464,12 @@ public class RSAKeyManagerCleanupTask {
 }
 ```
 
-# 좋아요, 조회수 데이터 동기화
+</div>
+</details>
+
+<details>
+<summary> <h1> 좋아요, 조회수 데이터 동기화 </h1> </summary>
+<div markdown="1">
 
 좋아요, 조회수가 급증하는 게시글 피드에 대해 바로 DB write 요청이 일어난다면 많은 부하가 일어날 수 있습니다. 이를 해결하기 위해 Redis cache를 사용하여 DB write가 각 요청에 대해 매번 일어나는 것을 방지하였습니다.<br>
 사용자 요청에 대해 우선적으로는 Redis cache에 저장하였으며, 이를 일정 주기로 비동기 DB 동기화를 통해 해결하고자 했습니다.<br>
@@ -492,7 +509,12 @@ public class RSAKeyManagerCleanupTask {
     }
 ```
 
-# 프로시저 적용
+</div>
+</details>
+
+<details>
+<summary> <h1> 프로시저 적용 </h1> </summary>
+<div markdown="1">
 
 SQL을 백엔드 서버에서 생성하여 DB 요청하기 보다는 pre-compiled procedure를 통해 DB 작업 성능 개선을 이끌어 내며 한 번의 수많은 댓글을 로드하지 않고 페이지네이션을 통해 효율을 추구하였습니다.
 
@@ -512,7 +534,12 @@ BEGIN
 END
 ```
 
-# 시스템 내외부 user key 구조
+</div>
+</details>
+
+<details>
+<summary> <h1> 시스템 내외부 user key 구조 </h1> </summary>
+<div markdown="1">
 
 user key가 외부에 노출되면 해당 id의 유저를 특정할 수 있어 보안에 좋지 않은 방식이라 생각했습니다.<br>
 그럼에도 불구하고 Auto Increment 속성을 통해 생성 시각 별로 정렬되어 있으면서도, 데이터 조회에 있어서 빠른 int 형태의 user key를 쓰는 것이 성능면에서 좋다고 생각했습니다.<br>
@@ -532,7 +559,12 @@ int userPk = userService.getUserPk(UUID.fromString(uuid));
 클라이언트에게 노출되는 정보의 경우 int user key를 uuid user key로 변환하여 응답하도록 작성하였습니다.<br>
 이는 비단 유저 클래스 뿐 아니라 피드, 댓글, 좋아요 등에 담겨 있는 user key 정보도 마찬가지로 int 타입이 아닌 uuid를 반환하도록 적용되었습니다.
 
-# OpenVidu
+</div>
+</details>
+
+<details>
+<summary> <h1> OpenVidu </h1> </summary>
+<div markdown="1">
 
 <img src="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/uploads/d3aba65d32a825af084d40eb56ad8e18/openvidu-workflow-server.png" width="500" height="500"/>
 
@@ -657,9 +689,12 @@ public ResponseEntity<String> getToken(@RequestBody Map<String, Object> params) 
 <div>
 Client에서 유저가 Session을 나갈 경우 연결했던 Connection과 Session 등의 삭제 요청을 보냅니다. Server에서는 HashMap으로 Session에 해당하는 Token, Connection 등을 관리하고 있기 때문에 매우 간단하게 처리할 수 있습니다.
 </div>
-<br/>
+</div>
+</details>
 
-# SSE(Server Side Events)
+<details>
+<summary> <h1> SSE(Server Side Events) </h1> </summary>
+<div markdown="1">
 
 ### 알림 기능 구현
 
@@ -756,12 +791,20 @@ public class SseEmitters {
         console.log(' \'message\' event data shoud be notificationID: ', message.data);  // "connected!"
  ...
 ```
+
+</details>
+
 # DM(채팅)
+
 채팅 기능 구현을 위해 STOMP, Redis, RabbitMQ 등을 활용하였습니다. 메시지 구독 및 발행을 위해 RabbitMQ를 사용하였으며, WebSocket을 통해 클라이언트와 서버 간 실시간 통신을 구현하였습니다. 또한, 사용자 간 실시간 채팅 데이터와 이전 채팅 데이터를 관리하기 위해 Redis를 활용하였습니다. 이를 통해 안정적이고 확장 가능한 채팅 서비스를 제공할 수 있도록 구성하였습니다.
 
 ### STOMP / Redis / RabbitMQ
 
 WebSocketConfig 클래스는 WebSocket을 설정하는 역할을 합니다. STOMP 프로토콜을 사용하여 WebSocket 메시지 브로커를 활성화하고, 메시지 브로커의 구성 및 메시지 발행 및 구독 URL을 설정합니다.
+
+<details>
+<summary>WebSocketConfig 코드</summary>
+<div markdown="1">
 
 ```java
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
@@ -780,9 +823,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/api/ws")
         ...
 ```
+
+</div>
+</details>
+
 RabbitMQ와 Redis 설정 클래스 코드는 생략하겠습니다.
 
 front에서는 다음과 같은 방식으로 Stomp Connection을 합니다.
+
+<details>
+<summary>Stomp Connection 코드</summary>
+<div markdown="1">
+
 ```javascript
 onMounted(async () => {
   roomId.value = route.params.roomPk;
@@ -798,8 +850,17 @@ onMounted(async () => {
     );
 ```
 
+</div>
+</details>
+
 ### 방생성 및 유저 초대
+
 user의 pk가 아닌 UUID를 사용하여 유저를 구분하므로 이를 서버에서 userPk로 변환하여 조회하고, 채팅 리스트는 페이지네이션을 적용하여 채팅방 리스트를 로드합니다.
+
+<details>
+<summary>chatRoomList 코드</summary>
+<div markdown="1">
+
 ```java
 @GetMapping("/list/{userUuid}")
     public Page<UsersChats> chatRoomList(@PathVariable String userUuid,
@@ -812,7 +873,15 @@ user의 pk가 아닌 UUID를 사용하여 유저를 구분하므로 이를 서�
     ...
 ```
 
+</div>
+</details>
+
 유저 초대는 방생성 시에 초대할 유저를 선택할 수 있으며, 채팅방 입장 후에도 추가로 유저를 초대할 수 있습니다.
+
+<details>
+<summary>createChatRoom/inviteUser 코드</summary>
+<div markdown="1">
+
 ```java
     public ChatRoom createChatRoom(String roomName, long host, List<String> guests){
         ChatRoom chatRoom = new ChatRoom().create(roomName);
@@ -843,9 +912,15 @@ user의 pk가 아닌 UUID를 사용하여 유저를 구분하므로 이를 서�
 ```
 
 ### DM
+
 실시간 참여중인 사람들의 리스트도 확인할 수 있으며 예전 채팅은 페이지네이션 처리되어, 맨 위로 스크롤을 올릴 시 역방향 무한 스크롤 형태로 불러올 수 있습니다. 또한 이미지를 s3를 통해 업로드 할 수 있고, 상대방의 타이핑 여부도 확인할 수 있습니다.
 
-server에서는 아직 영구 데이터베이스에 저장되지 않은 채팅은 redis를 통해 불러오고, 오래된 대화 내역은 페이지네이션 처리를 하여 client에 전송합니다. 
+server에서는 아직 영구 데이터베이스에 저장되지 않은 채팅은 redis를 통해 불러오고, 오래된 대화 내역은 페이지네이션 처리를 하여 client에 전송합니다.
+
+<details>
+<summary>최신 메시지/기존 메시지 로드 코드</summary>
+<div markdown="1">
+
 ```java
 @GetMapping("/room/{chatRoomId}/newMsg")
     public ResponseEntity<List<Object>> loadNewMsg(@PathVariable String chatRoomId) {
@@ -884,7 +959,15 @@ server에서는 아직 영구 데이터베이스에 저장되지 않은 채팅�
     ...
 ```
 
+</div>
+</details>
+
 일정 주기마다 채팅 대화 데이터 내역을 배치 작업하며, 주기적으로 Redis Cache를 지워줍니다.
+
+<details>
+<summary>채팅 데이터 배치 스케줄러 코드</summary>
+<div markdown="1">
+
 ```java
 public void updateData() throws JsonProcessingException {
         Set<String> keySets = chatService.getRedisKeys();
@@ -898,11 +981,17 @@ public void updateData() throws JsonProcessingException {
                 ...
 ```
 
-# 노래 데이터
+</div>
+</details>
+
+<details>
+<summary> <h1> 노래 데이터 </h1> </summary>
+<div markdown="1">
 
 ## 퍼펙트 스코어
 
 ### 평가 데이터
+
 멜로디 악보를 토대로 MML(music macro language) 데이터를 만듭니다. MML 데이터는 템포, 옥타브, 음계, 박자, 가사 정보를 담고 있습니다.
 
 ```
@@ -918,6 +1007,7 @@ mmlData: `t68 o3 l4
 MML 데이터를 파싱한 결과로, 음계 및 해당 음의 시간 데이터를 가지고 화면에 레더링 합니다.
 
 ### 사용자 입력
+
 데이터 신호를 주파수로 바꿔주는 푸리에 변환을 통해, 입력으로 들어온 데이터를 주파수로 바꾸고 주파수를 다시 음계로 파싱합니다.
 음계와 시간데이터를 기반으로 화면에 렌더링합니다. 이를 평가 데이터와 비교합니다.
 
@@ -987,7 +1077,8 @@ if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this
 }
 ```
 
-
+</div>
+</details>
 
 # 디렉토리 구조
 
