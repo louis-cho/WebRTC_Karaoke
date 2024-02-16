@@ -186,6 +186,8 @@ gif 화면 추가
 회원가입 시 Elasticsearch에서 사용하는 UserDocument 타입 데이터를 저장합니다.<br>
 UserDocument는 userPk(int), nickname(String)을 갖고 있어 ElasticsearchRepository를 통해 유저 닉네임 기반 검색을 가능하게 합니다.<br>
 또한 유사도 있는 검색 결과도 보여줄 수 있도록 Elasticsearch Query의 fuzziness의 유연성을 설정하였습니다.
+<details>
+  <summary>코드 보기</summary>
 
 ```java
     // UserServiceImpl.java
@@ -199,12 +201,16 @@ UserDocument는 userPk(int), nickname(String)을 갖고 있어 ElasticsearchRepo
         return searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
     }
 ```
+</details>
 
 ### 인기 피드 랭킹 계산
 
 인기 피드 랭킹은 Elasticsearch에 동기화된 데이터를 스케줄링을 통해 일정 주기로 새롭게 추가된 데이터를 대상으로 계산됩니다.<br>
 각 피드 별 점수에 영향을 미치는 요인은 좋아요 개수와 조회수가 있으며 각각은 5:3의 가중치를 갖고 계산됩니다.<br>
 업데이트된 피드 랭킹은 상위 100개의 피드가 내림차순으로 정렬됩니다. 이 결과물은 조회가 자주 일어날 것이 예상되므로 메모리 변수 형태로 유지 관리합니다.<br>
+
+<details>
+  <summary>코드 보기</summary>
 
 ```java
     @Scheduled(cron = "0 */15 * * * *")
@@ -238,6 +244,8 @@ UserDocument는 userPk(int), nickname(String)을 갖고 있어 ElasticsearchRepo
     }
 ```
 
+</details>
+
 ### MySQL, Elasticsearch 동기화
 
 MySQL DB와 Elasticsearch Document는 서로 동기화되어 일관성을 유지해야 합니다. 이를 만족시키기 위해 logstash를 활용하였습니다. <br>
@@ -245,7 +253,10 @@ MySQL DB와 Elasticsearch Document는 서로 동기화되어 일관성을 유지
 좋아요, 조회수 정보는 각 DB SELECT 문을 통해 fetch 시 timestamp를 기준으로 새로운 데이터만 가져오도록 작성하였습니다. <br>
 이를 각각의 Elasticsearch Document에 해당하는 index로 데이터를 전달하도록 설정하였습니다.
 
-```
+<details>
+  <summary>코드 보기</summary>
+
+```conf
 input {
 
   jdbc {
@@ -298,6 +309,7 @@ output {
   }
 }
 ```
+</details>
 
 # 에러 처리
 
@@ -308,6 +320,9 @@ output {
 ### Generic Type. 일관된 반환 타입
 
 @ExceptionHandler(ApiException.class) annotation을 통해 ApiException 클래스의 예외는 제네릭 타입의 일관된 리턴 타입 ResponseEntity<ApiResponse<?>>을 갖도록 구현하였습니다.
+
+<details>
+  <summary>코드 보기</summary>
 
 ```java
 @RestControllerAdvice
@@ -327,10 +342,14 @@ public class ApiExceptionAdvice {
     }
 }
 ```
+</details>
 
 ### 에러 정의. Enum Type 활용
 
 각 도메인 별 에러 타입을 Enum Type을 통해 일관성을 갖춰 구현하였습니다. 테스트 단계에서 요청 실패에 대해서 어떤 예외가 발생했는지 빠르게 파악하고 관리할 수 있도록 하였습니다.
+
+<details>
+  <summary>코드 보기</summary>
 
 ```JAVA
 public enum CommentExceptionEnum implements ExceptionEnum {
@@ -351,6 +370,8 @@ public enum LikeExceptionEnum implements ExceptionEnum {
 }
 ```
 
+</details>
+
 # 회원 정보 암호화 관리
 
 ### RSA 암복호화
@@ -360,6 +381,9 @@ RSA 2048 bit + bcrypt hash를 기반으로 제작하였습니다. <br>
 jsbn, prng4, rng, rsa js 파일을 es6 형태에 맞게 포팅하였으며 이를 통해 서버 응답으로 넘어온 modulus, exponent public key를 기반으로 비밀번호 암호화를 수행합니다.<br>
 공개키로 암호화된 정보는 서버 측의 비밀키로 복호화한 원문 패스워드와 SALTING 기능이 내장된 bcrypt 해싱 결과를 DB로부터 가져와 비교합니다.<br>
 이를 통해 사용자 비밀번호 원문을 저장하지 않고 로그인 인증 성공/실패 판단이 가능합니다.
+
+<details>
+  <summary>코드 보기</summary>
 
 ```javascript
     // 암호화 과정 (클라이언트)
@@ -383,10 +407,15 @@ jsbn, prng4, rng, rsa js 파일을 es6 형태에 맞게 포팅하였으며 이�
    UserAuth userAuth = new UserAuth(id, hashedPassword);
 ```
 
+</details>
+
 ### RSA Key Manager
 
 비대칭키 쌍은 서버 메모리 변수로 관리됩니다. RSA Key Manager는 싱글톤 패턴으로 관리되며, 내부에는 각 클라이언트의 마지막 조회 시각을 의미하는 lastRequest와 클라이언트의 ip를 key 값으로 rsa key pair가 저장된 hash map이 존재합니다.<br>
 이는 스케줄러를 통해 일정 주기마다 마지막 키 조회 요청으로부터 10분이 지난 키는 삭제하여 메모리 낭비를 줄일 수 있도록 작성하였습니다.
+
+<details>
+  <summary>코드 보기</summary>
 
 ```java
 public class RSAKeyManager { // 클라이언트 ip 를 키로 관리하는 비대칭키 쌍 & 마지막 요청 시각
@@ -408,11 +437,16 @@ public class RSAKeyManagerCleanupTask {
 }
 ```
 
+</details>
+
 # 좋아요, 조회수 데이터 동기화
 
 좋아요, 조회수가 급증하는 게시글 피드에 대해 바로 DB write 요청이 일어난다면 많은 부하가 일어날 수 있습니다. 이를 해결하기 위해 Redis cache를 사용하여 DB write가 각 요청에 대해 매번 일어나는 것을 방지하였습니다.<br>
 사용자 요청에 대해 우선적으로는 Redis cache에 저장하였으며, 이를 일정 주기로 비동기 DB 동기화를 통해 해결하고자 했습니다.<br>
 또한 게시글에 대한 통계 정보를 관리하는 테이블을 생성하여 각 게시글의 좋아요, 조회수 정보를 빠르게 확인할 수 있도록 구현하였습니다.<br>
+
+<details>
+  <summary>코드 보기</summary>
 
 ```java
     @Async
@@ -447,12 +481,16 @@ public class RSAKeyManagerCleanupTask {
         return CompletableFuture.completedFuture(null);
     }
 ```
+</details>
 
 # 프로시저 적용
 
 SQL을 백엔드 서버에서 생성하여 DB 요청하기 보다는 pre-compiled procedure를 통해 DB 작업 성능 개선을 이끌어 내며 한 번의 수많은 댓글을 로드하지 않고 페이지네이션을 통해 효율을 추구하였습니다.
 
-```
+<details>
+  <summary>코드 보기</summary>
+
+```sql
 CREATE DEFINER=`root`@`%` PROCEDURE `GetCommentsByFeedIdWithPagination`(
     IN feedIdParam INT,
     IN startIndexParam INT,
@@ -467,6 +505,7 @@ BEGIN
     LIMIT startIndexParam, pageSizeParam;
 END
 ```
+</details>
 
 # 시스템 내외부 user key 구조
 
