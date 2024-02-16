@@ -179,7 +179,9 @@ gif 화면 추가
 
 <br />
 
-# Elastic Search
+<details>
+<summary> <h1> Elastic Search </h1> </summary>
+<div markdown="1">
 
 ### 유저 검색
 
@@ -298,8 +300,12 @@ output {
   }
 }
 ```
+</div>
+</details>
 
-# 에러 처리
+<details>
+<summary> <h1> 에러 처리 </h1> </summary>
+<div markdown="1">
 
 ### 동일한 처리 구조
 
@@ -350,8 +356,13 @@ public enum LikeExceptionEnum implements ExceptionEnum {
     ...
 }
 ```
+</div>
+</details>
 
-# 회원 정보 암호화 관리
+
+<details>
+<summary> <h1> 회원 정보 암호화 관리 </h1> </summary>
+<div markdown="1">
 
 ### RSA 암복호화
 
@@ -407,8 +418,14 @@ public class RSAKeyManagerCleanupTask {
     }
 }
 ```
+</div>
+</details>
 
-# 좋아요, 조회수 데이터 동기화
+
+<details>
+<summary> <h1> 좋아요, 조회수 데이터 동기화 </h1> </summary>
+<div markdown="1">
+
 
 좋아요, 조회수가 급증하는 게시글 피드에 대해 바로 DB write 요청이 일어난다면 많은 부하가 일어날 수 있습니다. 이를 해결하기 위해 Redis cache를 사용하여 DB write가 각 요청에 대해 매번 일어나는 것을 방지하였습니다.<br>
 사용자 요청에 대해 우선적으로는 Redis cache에 저장하였으며, 이를 일정 주기로 비동기 DB 동기화를 통해 해결하고자 했습니다.<br>
@@ -447,8 +464,12 @@ public class RSAKeyManagerCleanupTask {
         return CompletableFuture.completedFuture(null);
     }
 ```
+</div>
+</details>
 
-# 프로시저 적용
+<details>
+<summary> <h1> 프로시저 적용 </h1> </summary>
+<div markdown="1">
 
 SQL을 백엔드 서버에서 생성하여 DB 요청하기 보다는 pre-compiled procedure를 통해 DB 작업 성능 개선을 이끌어 내며 한 번의 수많은 댓글을 로드하지 않고 페이지네이션을 통해 효율을 추구하였습니다.
 
@@ -467,8 +488,12 @@ BEGIN
     LIMIT startIndexParam, pageSizeParam;
 END
 ```
+</div>
+</details>
 
-# 시스템 내외부 user key 구조
+<details>
+<summary> <h1> 시스템 내외부 user key 구조 </h1> </summary>
+<div markdown="1">
 
 user key가 외부에 노출되면 해당 id의 유저를 특정할 수 있어 보안에 좋지 않은 방식이라 생각했습니다.<br>
 그럼에도 불구하고 Auto Increment 속성을 통해 생성 시각 별로 정렬되어 있으면서도, 데이터 조회에 있어서 빠른 int 형태의 user key를 쓰는 것이 성능면에서 좋다고 생각했습니다.<br>
@@ -487,8 +512,13 @@ int userPk = userService.getUserPk(UUID.fromString(uuid));
 
 클라이언트에게 노출되는 정보의 경우 int user key를 uuid user key로 변환하여 응답하도록 작성하였습니다.<br>
 이는 비단 유저 클래스 뿐 아니라 피드, 댓글, 좋아요 등에 담겨 있는 user key 정보도 마찬가지로 int 타입이 아닌 uuid를 반환하도록 적용되었습니다.
+</div>
+</details>
 
-# OpenVidu
+
+<details>
+<summary> <h1> OpenVidu </h1> </summary>
+<div markdown="1">
 
 <img src="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/uploads/d3aba65d32a825af084d40eb56ad8e18/openvidu-workflow-server.png" width="500" height="500"/>
 
@@ -613,9 +643,12 @@ public ResponseEntity<String> getToken(@RequestBody Map<String, Object> params) 
 <div>
 Client에서 유저가 Session을 나갈 경우 연결했던 Connection과 Session 등의 삭제 요청을 보냅니다. Server에서는 HashMap으로 Session에 해당하는 Token, Connection 등을 관리하고 있기 때문에 매우 간단하게 처리할 수 있습니다.
 </div>
-<br/>
+</div>
+</details>
 
-# SSE(Server Side Events)
+<details>
+<summary> <h1> SSE(Server Side Events) </h1> </summary>
+<div markdown="1">
 
 ### 알림 기능 구현
 
@@ -712,8 +745,13 @@ public class SseEmitters {
         console.log(' \'message\' event data shoud be notificationID: ', message.data);  // "connected!"
  ...
 ```
+</div>
+</details>
 
-# 노래 데이터
+
+<details>
+<summary> <h1> 노래 데이터 </h1> </summary>
+<div markdown="1">
 
 ## 퍼펙트 스코어
 
@@ -801,7 +839,8 @@ if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this
           }
 }
 ```
-
+</div>
+</details>
 
 
 # 디렉토리 구조
