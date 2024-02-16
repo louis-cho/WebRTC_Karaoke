@@ -736,6 +736,73 @@ MML 데이터를 파싱한 결과로, 음계 및 해당 음의 시간 데이터�
 데이터 신호를 주파수로 바꿔주는 푸리에 변환을 통해, 입력으로 들어온 데이터를 주파수로 바꾸고 주파수를 다시 음계로 파싱합니다.
 음계와 시간데이터를 기반으로 화면에 렌더링합니다. 이를 평가 데이터와 비교합니다.
 
+```
+correlate(buffer, sampleRate) {
+    if (this.isSilentBuffer(buffer)) return -1; // 무음 버퍼인지 확인
+
+    const threshold = 0.2; // 임계값 설정
+    const buf = this.trimBuffer(buffer, threshold); // 임계값을 기준으로 버퍼 자르기
+    const size = buf.length; // 버퍼 크기
+
+    const c = new Array(size).fill(0); // 교차 상관 함수 배열 초기화
+
+    // 교차 상관 함수 계산
+    for (let i = 0; i < size; i++) {
+      for (let j = 0; j < size - i; j++) {
+        c[i] = c[i] + buf[j] * buf[j + i];
+      }
+    }
+
+    let d = 0;
+    while (c[d] > c[d + 1]) d++; // 최대값 위치 계산
+
+    let maxval = -1,
+      maxpos = -1;
+    // 최대값 찾기
+    for (let i = d; i < size; i++) {
+      if (c[i] > maxval) {
+        maxval = c[i];
+        maxpos = i;
+      }
+    }
+
+    let T0 = maxpos;
+    const x1 = c[T0 - 1],
+      x2 = c[T0],
+      x3 = c[T0 + 1];
+    const a = (x1 + x3 - 2 * x2) / 2;
+    const b = (x3 - x1) / 2;
+    if (a) T0 = T0 - b / (2 * a);
+
+    return sampleRate / T0; // 주파수 반환
+  }
+```
+
+## 가사
+
+MML 데이터를 파싱한 결과에는 음과 그 음에 해당 하는 가사, 그리고 그 음이 시작하는 시간값(노래 시작시간 0인 기준)이 있습니다.
+이 데이터를 한번더 파싱하여 줄바꿈을 기준으로 마디 별 시작 시간을 담고 있는 데이터를 반환받습니다.
+노래 시작 시, 시간을 변수에 저장하고, 애니메이션이 진행되는 동안 계속해서 (현재 시간) - (노래 시작 시간)값을 갱신하며,
+그 값이 가사 마디의 시작 시간을 넘어 가면 렌더링 하는 방식으로 구현하였습니다.
+
+```
+// 애니메이션 함수 내부
+if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this.prelude) {
+          if(this.lyricFlag) {  // 윗가사 업데이트
+            this.drawer.lyricUpper = this.lyrics[this.lyricIndex].lyric;
+            this.lyricFlag = !this.lyricFlag
+            this.drawer.lyricFlag = !this.drawer.lyricFlag
+            this.lyricIndex++;
+          } else {  // 아랫가사 업데이트
+            this.drawer.lyricLower = this.lyrics[this.lyricIndex].lyric;
+            this.lyricFlag = !this.lyricFlag
+            this.drawer.lyricFlag = !this.drawer.lyricFlag
+            this.lyricIndex++;
+          }
+}
+```
+
+
 
 # 디렉토리 구조
 
