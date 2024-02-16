@@ -66,7 +66,7 @@
             <a>으아아</a>
         </td>
         <td align="center">
-            <a href="#노래-데이터">노래 데이터</a>
+            <a href="#노래-데이터" target="_self">노래 데이터</a>
         </td>
         <td align="center">
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
