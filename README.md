@@ -61,7 +61,7 @@
             <a>으아아</a>
         </td>
         <td align="center">
-            <a>으아아</a>
+            <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
         </td>
         <td align="center">
             <a>으아아</a>
@@ -160,9 +160,9 @@
 -   실시간 알림
 -   녹화된 영상을 sns 피드 형태로 공유
 -   DM
--   방생성
--   초대
--   실시간 채팅
+    -   방생성
+    -   초대
+    -   실시간 채팅
 
 <br />
 
@@ -186,8 +186,6 @@ gif 화면 추가
 회원가입 시 Elasticsearch에서 사용하는 UserDocument 타입 데이터를 저장합니다.<br>
 UserDocument는 userPk(int), nickname(String)을 갖고 있어 ElasticsearchRepository를 통해 유저 닉네임 기반 검색을 가능하게 합니다.<br>
 또한 유사도 있는 검색 결과도 보여줄 수 있도록 Elasticsearch Query의 fuzziness의 유연성을 설정하였습니다.
-<details>
-  <summary>코드 보기</summary>
 
 ```java
     // UserServiceImpl.java
@@ -201,16 +199,12 @@ UserDocument는 userPk(int), nickname(String)을 갖고 있어 ElasticsearchRepo
         return searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
     }
 ```
-</details>
 
 ### 인기 피드 랭킹 계산
 
 인기 피드 랭킹은 Elasticsearch에 동기화된 데이터를 스케줄링을 통해 일정 주기로 새롭게 추가된 데이터를 대상으로 계산됩니다.<br>
 각 피드 별 점수에 영향을 미치는 요인은 좋아요 개수와 조회수가 있으며 각각은 5:3의 가중치를 갖고 계산됩니다.<br>
 업데이트된 피드 랭킹은 상위 100개의 피드가 내림차순으로 정렬됩니다. 이 결과물은 조회가 자주 일어날 것이 예상되므로 메모리 변수 형태로 유지 관리합니다.<br>
-
-<details>
-  <summary>코드 보기</summary>
 
 ```java
     @Scheduled(cron = "0 */15 * * * *")
@@ -244,8 +238,6 @@ UserDocument는 userPk(int), nickname(String)을 갖고 있어 ElasticsearchRepo
     }
 ```
 
-</details>
-
 ### MySQL, Elasticsearch 동기화
 
 MySQL DB와 Elasticsearch Document는 서로 동기화되어 일관성을 유지해야 합니다. 이를 만족시키기 위해 logstash를 활용하였습니다. <br>
@@ -253,10 +245,7 @@ MySQL DB와 Elasticsearch Document는 서로 동기화되어 일관성을 유지
 좋아요, 조회수 정보는 각 DB SELECT 문을 통해 fetch 시 timestamp를 기준으로 새로운 데이터만 가져오도록 작성하였습니다. <br>
 이를 각각의 Elasticsearch Document에 해당하는 index로 데이터를 전달하도록 설정하였습니다.
 
-<details>
-  <summary>코드 보기</summary>
-
-```conf
+```
 input {
 
   jdbc {
@@ -309,7 +298,6 @@ output {
   }
 }
 ```
-</details>
 
 # 에러 처리
 
@@ -320,9 +308,6 @@ output {
 ### Generic Type. 일관된 반환 타입
 
 @ExceptionHandler(ApiException.class) annotation을 통해 ApiException 클래스의 예외는 제네릭 타입의 일관된 리턴 타입 ResponseEntity<ApiResponse<?>>을 갖도록 구현하였습니다.
-
-<details>
-  <summary>코드 보기</summary>
 
 ```java
 @RestControllerAdvice
@@ -342,14 +327,10 @@ public class ApiExceptionAdvice {
     }
 }
 ```
-</details>
 
 ### 에러 정의. Enum Type 활용
 
 각 도메인 별 에러 타입을 Enum Type을 통해 일관성을 갖춰 구현하였습니다. 테스트 단계에서 요청 실패에 대해서 어떤 예외가 발생했는지 빠르게 파악하고 관리할 수 있도록 하였습니다.
-
-<details>
-  <summary>코드 보기</summary>
 
 ```JAVA
 public enum CommentExceptionEnum implements ExceptionEnum {
@@ -370,8 +351,6 @@ public enum LikeExceptionEnum implements ExceptionEnum {
 }
 ```
 
-</details>
-
 # 회원 정보 암호화 관리
 
 ### RSA 암복호화
@@ -381,9 +360,6 @@ RSA 2048 bit + bcrypt hash를 기반으로 제작하였습니다. <br>
 jsbn, prng4, rng, rsa js 파일을 es6 형태에 맞게 포팅하였으며 이를 통해 서버 응답으로 넘어온 modulus, exponent public key를 기반으로 비밀번호 암호화를 수행합니다.<br>
 공개키로 암호화된 정보는 서버 측의 비밀키로 복호화한 원문 패스워드와 SALTING 기능이 내장된 bcrypt 해싱 결과를 DB로부터 가져와 비교합니다.<br>
 이를 통해 사용자 비밀번호 원문을 저장하지 않고 로그인 인증 성공/실패 판단이 가능합니다.
-
-<details>
-  <summary>코드 보기</summary>
 
 ```javascript
     // 암호화 과정 (클라이언트)
@@ -407,15 +383,10 @@ jsbn, prng4, rng, rsa js 파일을 es6 형태에 맞게 포팅하였으며 이�
    UserAuth userAuth = new UserAuth(id, hashedPassword);
 ```
 
-</details>
-
 ### RSA Key Manager
 
 비대칭키 쌍은 서버 메모리 변수로 관리됩니다. RSA Key Manager는 싱글톤 패턴으로 관리되며, 내부에는 각 클라이언트의 마지막 조회 시각을 의미하는 lastRequest와 클라이언트의 ip를 key 값으로 rsa key pair가 저장된 hash map이 존재합니다.<br>
 이는 스케줄러를 통해 일정 주기마다 마지막 키 조회 요청으로부터 10분이 지난 키는 삭제하여 메모리 낭비를 줄일 수 있도록 작성하였습니다.
-
-<details>
-  <summary>코드 보기</summary>
 
 ```java
 public class RSAKeyManager { // 클라이언트 ip 를 키로 관리하는 비대칭키 쌍 & 마지막 요청 시각
@@ -437,16 +408,11 @@ public class RSAKeyManagerCleanupTask {
 }
 ```
 
-</details>
-
 # 좋아요, 조회수 데이터 동기화
 
 좋아요, 조회수가 급증하는 게시글 피드에 대해 바로 DB write 요청이 일어난다면 많은 부하가 일어날 수 있습니다. 이를 해결하기 위해 Redis cache를 사용하여 DB write가 각 요청에 대해 매번 일어나는 것을 방지하였습니다.<br>
 사용자 요청에 대해 우선적으로는 Redis cache에 저장하였으며, 이를 일정 주기로 비동기 DB 동기화를 통해 해결하고자 했습니다.<br>
 또한 게시글에 대한 통계 정보를 관리하는 테이블을 생성하여 각 게시글의 좋아요, 조회수 정보를 빠르게 확인할 수 있도록 구현하였습니다.<br>
-
-<details>
-  <summary>코드 보기</summary>
 
 ```java
     @Async
@@ -481,16 +447,12 @@ public class RSAKeyManagerCleanupTask {
         return CompletableFuture.completedFuture(null);
     }
 ```
-</details>
 
 # 프로시저 적용
 
 SQL을 백엔드 서버에서 생성하여 DB 요청하기 보다는 pre-compiled procedure를 통해 DB 작업 성능 개선을 이끌어 내며 한 번의 수많은 댓글을 로드하지 않고 페이지네이션을 통해 효율을 추구하였습니다.
 
-<details>
-  <summary>코드 보기</summary>
-
-```sql
+```
 CREATE DEFINER=`root`@`%` PROCEDURE `GetCommentsByFeedIdWithPagination`(
     IN feedIdParam INT,
     IN startIndexParam INT,
@@ -505,7 +467,6 @@ BEGIN
     LIMIT startIndexParam, pageSizeParam;
 END
 ```
-</details>
 
 # 시스템 내외부 user key 구조
 
@@ -750,6 +711,147 @@ public class SseEmitters {
         // const { data: receivedConnectData } = e;
         console.log(' \'message\' event data shoud be notificationID: ', message.data);  // "connected!"
  ...
+```
+# DM(채팅)
+채팅 기능 구현을 위해 STOMP, Redis, RabbitMQ 등을 활용하였습니다. 메시지 구독 및 발행을 위해 RabbitMQ를 사용하였으며, WebSocket을 통해 클라이언트와 서버 간 실시간 통신을 구현하였습니다. 또한, 사용자 간 실시간 채팅 데이터와 이전 채팅 데이터를 관리하기 위해 Redis를 활용하였습니다. 이를 통해 안정적이고 확장 가능한 채팅 서비스를 제공할 수 있도록 구성하였습니다.
+
+### STOMP / Redis / RabbitMQ
+
+WebSocketConfig 클래스는 WebSocket을 설정하는 역할을 합니다. STOMP 프로토콜을 사용하여 WebSocket 메시지 브로커를 활성화하고, 메시지 브로커의 구성 및 메시지 발행 및 구독 URL을 설정합니다.
+
+```java
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    // WebSocket 구성 및 메시지 브로커 설정
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableStompBrokerRelay("/exchange")
+                ...
+        config.setApplicationDestinationPrefixes("/pub");
+    }
+
+    // WebSocket 엔드포인트 등록
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/api/ws")
+        ...
+```
+RabbitMQ와 Redis 설정 클래스 코드는 생략하겠습니다.
+
+front에서는 다음과 같은 방식으로 Stomp Connection을 합니다.
+```javascript
+onMounted(async () => {
+  roomId.value = route.params.roomPk;
+  const socket = new WebSocket(`${pref.app.api.websocket}/api/ws`);
+  stompClient.value = Stomp.over(socket);
+
+  stompClient.value.connect({}, () => {
+    stompClient.value.subscribe(
+      `/exchange/chat.exchange/room.${roomId.value}`,
+      (message) => {
+        handleIncomingMessage(JSON.parse(message.body));
+      }
+    );
+```
+
+### 방생성 및 유저 초대
+user의 pk가 아닌 UUID를 사용하여 유저를 구분하므로 이를 서버에서 userPk로 변환하여 조회하고, 채팅 리스트는 페이지네이션을 적용하여 채팅방 리스트를 로드합니다.
+```java
+@GetMapping("/list/{userUuid}")
+    public Page<UsersChats> chatRoomList(@PathVariable String userUuid,
+                                         @RequestParam(name="page", defaultValue = "0") int page,
+                                         @RequestParam(name="size", defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
+        long pk = userService.getUserPk(UUID.fromString(userUuid));
+        return chatRoomService.findAllRoomByUserId(pk, pageable);
+    }
+    ...
+```
+
+유저 초대는 방생성 시에 초대할 유저를 선택할 수 있으며, 채팅방 입장 후에도 추가로 유저를 초대할 수 있습니다.
+```java
+    public ChatRoom createChatRoom(String roomName, long host, List<String> guests){
+        ChatRoom chatRoom = new ChatRoom().create(roomName);
+        chatRoom.setRoomPk(chatRoomRepository.save(chatRoom).getRoomPk());
+        UsersChats hostChats = new UsersChats(host, chatRoom.getRoomPk(), String.valueOf(LocalDateTime.now()));
+        usersChatsRepository.save(hostChats);
+        inviteUser(guests, chatRoom.getRoomPk());
+        return chatRoom;
+    }
+
+    //roomId에 userId로 유저 초대하기
+    public void inviteUser(List<String> guests, long roomId){
+        String localTime = String.valueOf(LocalDateTime.now());
+        for(String guest : guests){
+            long pk = userService.getUserPk(UUID.fromString(guest));
+            Optional<UsersChats> existingChat = usersChatsRepository.findByUserPkAndRoomPk(pk, roomId);
+            if (existingChat.isPresent()) {
+                UsersChats guestChats = existingChat.get();
+                guestChats.setStatus('1');
+                usersChatsRepository.save(guestChats);
+            }
+            else {
+                UsersChats guestChats = new UsersChats(pk, roomId, localTime);
+                usersChatsRepository.save(guestChats);
+            }
+        }
+    }
+```
+
+### DM
+실시간 참여중인 사람들의 리스트도 확인할 수 있으며 예전 채팅은 페이지네이션 처리되어, 맨 위로 스크롤을 올릴 시 역방향 무한 스크롤 형태로 불러올 수 있습니다. 또한 이미지를 s3를 통해 업로드 할 수 있고, 상대방의 타이핑 여부도 확인할 수 있습니다.
+
+server에서는 아직 영구 데이터베이스에 저장되지 않은 채팅은 redis를 통해 불러오고, 오래된 대화 내역은 페이지네이션 처리를 하여 client에 전송합니다. 
+```java
+@GetMapping("/room/{chatRoomId}/newMsg")
+    public ResponseEntity<List<Object>> loadNewMsg(@PathVariable String chatRoomId) {
+        return ResponseEntity.ok(chatService.loadFromRedis(chatRoomId,false, false));
+    }
+
+    @GetMapping("/room/{chatRoomId}/oldMsg")
+    public ResponseEntity<List<Object>> loadOldMsg( @PathVariable String chatRoomId,
+                                                    @RequestParam(defaultValue = "1") int page,
+                                                    @RequestParam(defaultValue = "10") int size) throws JsonProcessingException {
+
+        List<Object> res = chatService.loadFromRedis(chatRoomId, true, false);
+
+        if (res.isEmpty()) {
+            List<Chat> chatList = chatService.loadFromJPA(chatRoomId);
+            for (Chat chat : chatList) {
+                chatService.saveToRedis(chat, true);
+            }
+
+            res = chatService.loadFromRedis(chatRoomId, true, false);
+        }
+
+        int maxPage = (res.size() + size - 1) / size;
+
+        if (page > maxPage) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
+        page = Math.min(page, maxPage);
+
+        int startIndex = (maxPage - page) * size;
+        int endIndex = Math.min(startIndex + size, res.size());
+        List<Object> paginatedRes = res.subList(startIndex, endIndex);
+        return ResponseEntity.ok(paginatedRes);
+    }
+    ...
+```
+
+일정 주기마다 채팅 대화 데이터 내역을 배치 작업하며, 주기적으로 Redis Cache를 지워줍니다.
+```java
+public void updateData() throws JsonProcessingException {
+        Set<String> keySets = chatService.getRedisKeys();
+        for(String keyName : keySets){
+            if(keyName.startsWith("chat")) {
+                String keyNumStr = keyName.replaceAll("[^0-9]", "");
+                chatService.saveToJPA(chatService.loadFromRedis(keyNumStr, false, true));
+            }
+            else if(keyName.startsWith("oldChat")){
+                chatService.deleteKeyInRedis(keyName);
+                ...
 ```
 
 # 노래 데이터
