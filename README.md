@@ -61,7 +61,7 @@
             <a>으아아</a>
         </td>
         <td align="center">
-            <a>으아아</a>
+            <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
         </td>
         <td align="center">
             <a>으아아</a>
@@ -160,17 +160,61 @@
 -   실시간 알림
 -   녹화된 영상을 sns 피드 형태로 공유
 -   DM
--   방생성
--   초대
--   실시간 채팅
+    -   방생성
+    -   초대
+    -   실시간 채팅
 
 <br />
 
 # 화면
 
-<<도메인 별로>>
-gif 화면 추가
+## << 노래방 일반 모드 >>
 
+<img src="/uploads/39a924851f59db305db0f1ccf14005ce/normal-mode.png" width="800" height="400">
+
+<br />
+<br />
+
+## << 노래방 퍼펙트 스코어 >>
+
+<img src="/uploads/c4848e29b911cff24a9dc0d92759c570/perfect-score.png" width="800" height="400">
+
+<br />
+<br />
+
+## << 피드리스트 >>
+
+<img src="/uploads/57592df339d391b1c65ddfe5ee29859a/feed-list.png" width="800" height="400">
+
+<br />
+<br />
+
+## << 피드 상세 >>
+
+<img src="/uploads/f808399db06c7bb3eb31aa47cc2d4798/feed-detail.png" width="800" height="400">
+
+<br />
+<br />
+
+## << 채팅방 생성 >>
+
+<img src="/uploads/b13d52a3c878680e960c28808ac13984/create-chat.png" width="800" height="400">
+
+<br />
+<br />
+
+## << 채팅방 >>
+
+<img src="/uploads/d3af37fefc5a341844137956cd7cbf65/chat-room.png" width="800" height="400">
+
+<br />
+<br />
+
+## << 알림 및 친구 목록 >>
+
+<img src="/uploads/89d24e72b88f78d2e568839f05ebe631/notification.png" width="800" height="400">
+
+<br />
 <br />
 
 # 아키넥처 구성도
@@ -745,6 +789,188 @@ public class SseEmitters {
         console.log(' \'message\' event data shoud be notificationID: ', message.data);  // "connected!"
  ...
 ```
+# DM(채팅)
+채팅 기능 구현을 위해 STOMP, Redis, RabbitMQ 등을 활용하였습니다. 메시지 구독 및 발행을 위해 RabbitMQ를 사용하였으며, WebSocket을 통해 클라이언트와 서버 간 실시간 통신을 구현하였습니다. 또한, 사용자 간 실시간 채팅 데이터와 이전 채팅 데이터를 관리하기 위해 Redis를 활용하였습니다. 이를 통해 안정적이고 확장 가능한 채팅 서비스를 제공할 수 있도록 구성하였습니다.
+
+### STOMP / Redis / RabbitMQ
+
+WebSocketConfig 클래스는 WebSocket을 설정하는 역할을 합니다. STOMP 프로토콜을 사용하여 WebSocket 메시지 브로커를 활성화하고, 메시지 브로커의 구성 및 메시지 발행 및 구독 URL을 설정합니다.
+
+<details>
+<summary>WebSocketConfig 코드</summary>
+<div markdown="1">
+
+```java
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    // WebSocket 구성 및 메시지 브로커 설정
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableStompBrokerRelay("/exchange")
+                ...
+        config.setApplicationDestinationPrefixes("/pub");
+    }
+
+    // WebSocket 엔드포인트 등록
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/api/ws")
+        ...
+```
+
+</div>
+</details>
+
+RabbitMQ와 Redis 설정 클래스 코드는 생략하겠습니다.
+
+front에서는 다음과 같은 방식으로 Stomp Connection을 합니다.
+<details>
+<summary>Stomp Connection 코드</summary>
+<div markdown="1">
+
+```javascript
+onMounted(async () => {
+  roomId.value = route.params.roomPk;
+  const socket = new WebSocket(`${pref.app.api.websocket}/api/ws`);
+  stompClient.value = Stomp.over(socket);
+
+  stompClient.value.connect({}, () => {
+    stompClient.value.subscribe(
+      `/exchange/chat.exchange/room.${roomId.value}`,
+      (message) => {
+        handleIncomingMessage(JSON.parse(message.body));
+      }
+    );
+```
+
+</div>
+</details>
+
+### 방생성 및 유저 초대
+user의 pk가 아닌 UUID를 사용하여 유저를 구분하므로 이를 서버에서 userPk로 변환하여 조회하고, 채팅 리스트는 페이지네이션을 적용하여 채팅방 리스트를 로드합니다.
+<details>
+<summary>chatRoomList 코드</summary>
+<div markdown="1">
+
+```java
+@GetMapping("/list/{userUuid}")
+    public Page<UsersChats> chatRoomList(@PathVariable String userUuid,
+                                         @RequestParam(name="page", defaultValue = "0") int page,
+                                         @RequestParam(name="size", defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
+        long pk = userService.getUserPk(UUID.fromString(userUuid));
+        return chatRoomService.findAllRoomByUserId(pk, pageable);
+    }
+    ...
+```
+
+</div>
+</details>
+
+유저 초대는 방생성 시에 초대할 유저를 선택할 수 있으며, 채팅방 입장 후에도 추가로 유저를 초대할 수 있습니다.
+<details>
+<summary>createChatRoom/inviteUser 코드</summary>
+<div markdown="1">
+
+```java
+    public ChatRoom createChatRoom(String roomName, long host, List<String> guests){
+        ChatRoom chatRoom = new ChatRoom().create(roomName);
+        chatRoom.setRoomPk(chatRoomRepository.save(chatRoom).getRoomPk());
+        UsersChats hostChats = new UsersChats(host, chatRoom.getRoomPk(), String.valueOf(LocalDateTime.now()));
+        usersChatsRepository.save(hostChats);
+        inviteUser(guests, chatRoom.getRoomPk());
+        return chatRoom;
+    }
+
+    //roomId에 userId로 유저 초대하기
+    public void inviteUser(List<String> guests, long roomId){
+        String localTime = String.valueOf(LocalDateTime.now());
+        for(String guest : guests){
+            long pk = userService.getUserPk(UUID.fromString(guest));
+            Optional<UsersChats> existingChat = usersChatsRepository.findByUserPkAndRoomPk(pk, roomId);
+            if (existingChat.isPresent()) {
+                UsersChats guestChats = existingChat.get();
+                guestChats.setStatus('1');
+                usersChatsRepository.save(guestChats);
+            }
+            else {
+                UsersChats guestChats = new UsersChats(pk, roomId, localTime);
+                usersChatsRepository.save(guestChats);
+            }
+        }
+    }
+```
+
+</div>
+</details>
+
+### DM
+실시간 참여중인 사람들의 리스트도 확인할 수 있으며 예전 채팅은 페이지네이션 처리되어, 맨 위로 스크롤을 올릴 시 역방향 무한 스크롤 형태로 불러올 수 있습니다. 또한 이미지를 s3를 통해 업로드 할 수 있고, 상대방의 타이핑 여부도 확인할 수 있습니다.
+
+server에서는 아직 영구 데이터베이스에 저장되지 않은 채팅은 redis를 통해 불러오고, 오래된 대화 내역은 페이지네이션 처리를 하여 client에 전송합니다.
+<details>
+<summary>최신 메시지/기존 메시지 로드 코드</summary>
+<div markdown="1">
+
+```java
+@GetMapping("/room/{chatRoomId}/newMsg")
+    public ResponseEntity<List<Object>> loadNewMsg(@PathVariable String chatRoomId) {
+        return ResponseEntity.ok(chatService.loadFromRedis(chatRoomId,false, false));
+    }
+
+    @GetMapping("/room/{chatRoomId}/oldMsg")
+    public ResponseEntity<List<Object>> loadOldMsg( @PathVariable String chatRoomId,
+                                                    @RequestParam(defaultValue = "1") int page,
+                                                    @RequestParam(defaultValue = "10") int size) throws JsonProcessingException {
+
+        List<Object> res = chatService.loadFromRedis(chatRoomId, true, false);
+
+        if (res.isEmpty()) {
+            List<Chat> chatList = chatService.loadFromJPA(chatRoomId);
+            for (Chat chat : chatList) {
+                chatService.saveToRedis(chat, true);
+            }
+
+            res = chatService.loadFromRedis(chatRoomId, true, false);
+        }
+
+        int maxPage = (res.size() + size - 1) / size;
+
+        if (page > maxPage) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
+        page = Math.min(page, maxPage);
+
+        int startIndex = (maxPage - page) * size;
+        int endIndex = Math.min(startIndex + size, res.size());
+        List<Object> paginatedRes = res.subList(startIndex, endIndex);
+        return ResponseEntity.ok(paginatedRes);
+    }
+    ...
+```
+
+</div>
+</details>
+
+일정 주기마다 채팅 대화 데이터 내역을 배치 작업하며, 주기적으로 Redis Cache를 지워줍니다.
+<details>
+<summary>채팅 데이터 배치 스케줄러 코드</summary>
+<div markdown="1">
+
+```java
+public void updateData() throws JsonProcessingException {
+        Set<String> keySets = chatService.getRedisKeys();
+        for(String keyName : keySets){
+            if(keyName.startsWith("chat")) {
+                String keyNumStr = keyName.replaceAll("[^0-9]", "");
+                chatService.saveToJPA(chatService.loadFromRedis(keyNumStr, false, true));
+            }
+            else if(keyName.startsWith("oldChat")){
+                chatService.deleteKeyInRedis(keyName);
+                ...
+```
+
 </div>
 </details>
 
