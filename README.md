@@ -66,7 +66,7 @@
             <a href="#openvidu">OpenVidu</a>
         </td>
         <td align="center">
-            <a href =#피드-및-사용자-상호작용">피드 및 사용자 상호작용</a>
+            <a href ="#피드-및-사용자-상호작용">피드 및 사용자 상호작용</a>
         </td>
         <td align="center">
             <a href="#%eb%85%b8%eb%9e%98-%eb%8d%b0%ec%9d%b4%ed%84%b0">노래 데이터</a>
@@ -75,7 +75,7 @@
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
         </td>
         <td align="center">
-          <a href= '#sseserver-side-events'>알림기능(SSE)</a>
+          <a href= '#알림기능-with-sseserver-side-events'>알림기능(SSE)</a>
           <div>인프라</div>
         </td>
     </tr>
@@ -1091,7 +1091,7 @@ Client에서 유저가 Session을 나갈 경우 연결했던 Connection과 Sessi
 </details>
 
 <details id="SSE">
-<summary> <h2> SSE(Server Side Events) </h2> </summary>
+<summary> <h2> 알림기능 with SSE(Server Side Events) </h2> </summary>
 <div markdown="1">
 
 ### 알림 기능 구현
