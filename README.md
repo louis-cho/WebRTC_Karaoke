@@ -722,7 +722,7 @@ public class SseEmitters {
 
 ```
 {
-mmlData: `t60 o3 l4
+mmlData: `t68 o3 l4
   d'동'g.'해'f+8'물'e'과\t' g'백'd'두'c-'산'd'이\n' g'마'a8'르'b8'고\t'b+.'닳'b8'도' a2'록\n'.r
   >d.'하'c8'느'<b'님'a'이\t' g'보'f+8'우'e8d'하'c-'사\n' d'우'g'리'a8'나'a8'라\t'b'만' g2.'세\n'r
   f+.'무'g8a'궁'f+'화\t' b.'삼'>c8d'천'<b'리\n' a'화'g'려'f+'강'g a2.'산\n'r
