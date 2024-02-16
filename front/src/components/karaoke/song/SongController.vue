@@ -94,6 +94,7 @@ const modalVisible = ref(false);
 const postContent = ref("");
 const singUser = ref(undefined);
 const songId = ref(undefined);
+const timerId = ref(undefined);
 
 function startSong() {
   removeReserve()
@@ -104,13 +105,14 @@ function startSong() {
       }
       singing();
       startRecording();
-      setTimeout(finishSong, store.song.length * 1000);
+      timerId.value = setTimeout(finishSong, store.song.length * 1000);
     })
     .catch((error) => {});
 }
 
 function stopSong() {
   singing();
+  clearTimeout(timerId.value);
 
   stopRecording()
     .then(() => {
@@ -121,6 +123,7 @@ function stopSong() {
 
 function finishSong() {
   singing();
+  clearTimeout(timerId.value);
 
   stopRecording()
     .then(async () => {

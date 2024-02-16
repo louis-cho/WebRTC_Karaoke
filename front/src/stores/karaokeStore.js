@@ -48,10 +48,6 @@ export const useKaraokeStore = defineStore("karaoke", {
     // 카메라 및 오디오 설정을 위한 변수
     muted: false, // 기본은 음소거 비활성화
     camerOff: false, // 기본 카메라 활성화
-    selectedCamera: "", // 카메라 변경시 사용할 변수
-    selectedAudio: "", // 오디오 변경시 사용할 변수
-    cameras: [],
-    audios: [],
     reservedSongs: [],
     reservedSongsLength: 0,
   }),
@@ -295,7 +291,7 @@ export const useKaraokeStore = defineStore("karaoke", {
             resolution: "320x240",
             frameRate: 30, // 비디오의 프레임 속도
             insertMode: "APPEND", // 비디오가 대상 요소 'video-container'에 어떻게 삽입되는지
-            mirror: false, // 로컬 비디오를 반전할지 여부
+            mirror: true, // 로컬 비디오를 반전할지 여부
           });
 
           console.log(publisher_tmp);
@@ -307,7 +303,6 @@ export const useKaraokeStore = defineStore("karaoke", {
           // --- 6) 스트림을 발행하고, 원격 스트림을 수신하려면 subscribeToRemote() 호출하기 ---
           this.publisher.subscribeToRemote();
           this.session.publish(this.publisher);
-          this.getMedia(); // 세션이 만들어졌을 때 미디어를 불러옵니다.
         })
         .catch((error) => {
           console.log(
@@ -398,22 +393,6 @@ export const useKaraokeStore = defineStore("karaoke", {
 
         resolve(userInput);
       });
-    },
-
-    // 캠, 오디오 등 기기와 관련된 함수
-    // 카메라와 오디오를 가져옴.
-    async getMedia() {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        this.cameras = devices.filter((device) => device.kind === "videoinput");
-        this.audios = devices.filter((device) => device.kind === "audioinput");
-
-        // 첫번째 카메라와 오디오를 선택
-        this.selectedCamera = this.cameras[0];
-        this.selectedAudio = this.audios[0];
-      } catch (error) {
-        console.error("Error getting media devices:", error);
-      }
     },
   },
   persist: true,
