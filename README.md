@@ -66,7 +66,7 @@
             <a href="#openvidu">OpenVidu</a>
         </td>
         <td align="center">
-            <a>으아아</a>
+            <a href =#피드-및-사용자-상호작용">피드 및 사용자 상호작용</a>
         </td>
         <td align="center">
             <a href="#%eb%85%b8%eb%9e%98-%eb%8d%b0%ec%9d%b4%ed%84%b0">노래 데이터</a>
@@ -75,7 +75,8 @@
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
         </td>
         <td align="center">
-          <a href= '#sseserver-side-events'>SSE</a>
+          <a href= '#sseserver-side-events'>알림기능(SSE)</a>
+          <div>인프라</div>
         </td>
     </tr>
     </tr>
@@ -1486,7 +1487,7 @@ if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this
 </details>
 
 <details>
-<summary> 피드 및 사용자 상호작용</summary>
+<summary> <h2> 피드 및 사용자 상호작용 <h2> </summary>
 <div markdown="1">
 
 ### FeedPage, FeedDetailPage
