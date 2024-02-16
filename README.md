@@ -1088,6 +1088,12 @@ if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this
 </div>
 </details>
 
+<br />
+<br />
+<br />
+
+---
+
 <details>
 <summary> <h1> 디렉토리 구조 </h1> </summary>
 <div markdown="1">
@@ -1219,12 +1225,6 @@ server
 
 </div>
 </details>
-
-<br />
-<br />
-<br />
-
----
 
 <details>
 <summary> <h1> 환경설정 </h1> </summary>
