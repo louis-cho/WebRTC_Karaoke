@@ -1479,3 +1479,29 @@ if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this
 
 </div>
 </details>
+
+<details>
+<summary> 피드 및 사용자 상호작용</summary>
+<div markdown="1">
+
+### FeedPage, FeedDetailPage
+
+핸드스크롤을 통해 무한스크롤 기능을 구현하여 가시성이 좋게 구현하였습니다. 피드 검색 창을 구현하여 닉네임과 노래 제목으로 검색할 수 있습니다. <br>
+전체 피드가 정렬되고 각 피드의 디테일 페이지로 이동할 수 있습니다.<br>
+좋아요, 조회수, 댓글 수를 계산하여 가져왔습니다. <br>
+Feed CRUD를 구현하였습니다. <br>
+
+### HomePage
+
+홈페이지의 로그인 여부에 따라 로그인/회원가입 혹은 기능 네브바가 보일 수 있도록 구현하였습니다. <br>
+
+### UserFeedPage
+
+개인 유저들의 사용자 정보와 피드가 보이는 페이지를 구현하였습니다. 전체 친구 수, 좋아요 수, 댓글 수를 계산하여 화면에 출력되게 하였습니다. 
+피드는 Amazon s3에 업로드된 영상을 업로드하였습니다. 
+
+### FeedUploadModal
+
+영상 녹화 후 피드를 업로드 및 수정할 수 있는 모달을 Quasar를 사용하여 생성하였습니다. 모달의 영상과, 게시글 내용, 공개 범위를 설정하여 업로드할 수 있습니다. 
+</div>
+</details>
