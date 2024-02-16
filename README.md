@@ -48,11 +48,17 @@
             <a href="https://github.com/bum19">이준범</a>
         </td>
       <tr height="50px">
-        <td align="center">
-            <a>으아아</a>
+        <td align="center">        
+        <a href="#elastic">Elastic Search</a>
+        <a href="#error">에러 처리</a>
+        <a href="#encrypt">회원 정보 암호화 관리</a>
+        <a href="#sync">좋아요, 조회수 데이터 동기화</a>
+        <a href="#procedure">프로시저 적용</a>
+        <a href="#userkey">시스템 내외부 user key 구조</a>
+        </td>
         </td>
         <td align="center">
-            <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#openvidu">OpenVidu</a>
+            <a href="#openvidu">OpenVidu</a>
         </td>
         <td align="center">
             <a>으아아</a>
@@ -610,7 +616,7 @@ localhost:5601로 접속하면 확인 가능
 ---
 
 <details>
-<summary> <h2> Elastic Search </h2> </summary>
+<summary> <h2 id="elastic"> Elastic Search </h2> </summary>
 <div markdown="1">
 
 ### 유저 검색
@@ -735,7 +741,7 @@ output {
 </details>
 
 <details>
-<summary> <h2> 에러 처리 </h2> </summary>
+<summary> <h2 id="error"> 에러 처리 </h2> </summary>
 <div markdown="1">
 
 ### 동일한 처리 구조
@@ -792,7 +798,7 @@ public enum LikeExceptionEnum implements ExceptionEnum {
 </details>
 
 <details>
-<summary> <h2> 회원 정보 암호화 관리 </h2> </summary>
+<summary> <h2 id="encrypt"> 회원 정보 암호화 관리 </h2> </summary>
 <div markdown="1">
 
 ### RSA 암복호화
@@ -854,7 +860,7 @@ public class RSAKeyManagerCleanupTask {
 </details>
 
 <details>
-<summary> <h2> 좋아요, 조회수 데이터 동기화 </h2> </summary>
+<summary> <h2 id="sync"> 좋아요, 조회수 데이터 동기화 </h2> </summary>
 <div markdown="1">
 
 좋아요, 조회수가 급증하는 게시글 피드에 대해 바로 DB write 요청이 일어난다면 많은 부하가 일어날 수 있습니다. 이를 해결하기 위해 Redis cache를 사용하여 DB write가 각 요청에 대해 매번 일어나는 것을 방지하였습니다.<br>
@@ -899,7 +905,7 @@ public class RSAKeyManagerCleanupTask {
 </details>
 
 <details>
-<summary> <h2> 프로시저 적용 </h2> </summary>
+<summary> <h2 id="procedure"> 프로시저 적용 </h2> </summary>
 <div markdown="1">
 
 SQL을 백엔드 서버에서 생성하여 DB 요청하기 보다는 pre-compiled procedure를 통해 DB 작업 성능 개선을 이끌어 내며 한 번의 수많은 댓글을 로드하지 않고 페이지네이션을 통해 효율을 추구하였습니다.
@@ -924,7 +930,7 @@ END
 </details>
 
 <details>
-<summary> <h2> 시스템 내외부 user key 구조 </h2> </summary>
+<summary> <h2 id="userkey"> 시스템 내외부 user key 구조 </h2> </summary>
 <div markdown="1">
 
 user key가 외부에 노출되면 해당 id의 유저를 특정할 수 있어 보안에 좋지 않은 방식이라 생각했습니다.<br>
