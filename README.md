@@ -59,10 +59,11 @@
         </td>
         <td align="center">
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#%EB%85%B8%EB%9E%98-%EB%8D%B0%EC%9D%B4%ED%84%B0">노래 데이터</a>
+            <a href="#temp">DM</a>
         </td>
         <td align="center">
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
-            <a href="#temp">DM</a>
+            
         </td>
         <td align="center">
           <a href= '#SSE'>SSE</a>
