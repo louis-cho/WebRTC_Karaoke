@@ -792,9 +792,12 @@ public class SseEmitters {
  ...
 ```
 
+</div>
 </details>
 
-# DM(채팅)
+<details>
+<summary> <h1> DM(채팅) </h1> </summary>
+<div markdown="1">
 
 채팅 기능 구현을 위해 STOMP, Redis, RabbitMQ 등을 활용하였습니다. 메시지 구독 및 발행을 위해 RabbitMQ를 사용하였으며, WebSocket을 통해 클라이언트와 서버 간 실시간 통신을 구현하였습니다. 또한, 사용자 간 실시간 채팅 데이터와 이전 채팅 데이터를 관리하기 위해 Redis를 활용하였습니다. 이를 통해 안정적이고 확장 가능한 채팅 서비스를 제공할 수 있도록 구성하였습니다.
 
@@ -981,6 +984,8 @@ public void updateData() throws JsonProcessingException {
                 ...
 ```
 
+</div>
+</details>
 </div>
 </details>
 
