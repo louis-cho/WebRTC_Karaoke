@@ -739,6 +739,10 @@ public class SseEmitters {
 
 WebSocketConfig 클래스는 WebSocket을 설정하는 역할을 합니다. STOMP 프로토콜을 사용하여 WebSocket 메시지 브로커를 활성화하고, 메시지 브로커의 구성 및 메시지 발행 및 구독 URL을 설정합니다.
 
+<details>
+<summary>WebSocketConfig 코드</summary>
+<div markdown="1">
+
 ```java
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
@@ -756,9 +760,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/api/ws")
         ...
 ```
+
+</div>
+</details>
+
 RabbitMQ와 Redis 설정 클래스 코드는 생략하겠습니다.
 
 front에서는 다음과 같은 방식으로 Stomp Connection을 합니다.
+<details>
+<summary>Stomp Connection 코드</summary>
+<div markdown="1">
+
 ```javascript
 onMounted(async () => {
   roomId.value = route.params.roomPk;
@@ -774,8 +786,15 @@ onMounted(async () => {
     );
 ```
 
+</div>
+</details>
+
 ### 방생성 및 유저 초대
 user의 pk가 아닌 UUID를 사용하여 유저를 구분하므로 이를 서버에서 userPk로 변환하여 조회하고, 채팅 리스트는 페이지네이션을 적용하여 채팅방 리스트를 로드합니다.
+<details>
+<summary>chatRoomList 코드</summary>
+<div markdown="1">
+
 ```java
 @GetMapping("/list/{userUuid}")
     public Page<UsersChats> chatRoomList(@PathVariable String userUuid,
@@ -788,7 +807,14 @@ user의 pk가 아닌 UUID를 사용하여 유저를 구분하므로 이를 서�
     ...
 ```
 
+</div>
+</details>
+
 유저 초대는 방생성 시에 초대할 유저를 선택할 수 있으며, 채팅방 입장 후에도 추가로 유저를 초대할 수 있습니다.
+<details>
+<summary>createChatRoom/inviteUser 코드</summary>
+<div markdown="1">
+
 ```java
     public ChatRoom createChatRoom(String roomName, long host, List<String> guests){
         ChatRoom chatRoom = new ChatRoom().create(roomName);
@@ -818,10 +844,17 @@ user의 pk가 아닌 UUID를 사용하여 유저를 구분하므로 이를 서�
     }
 ```
 
+</div>
+</details>
+
 ### DM
 실시간 참여중인 사람들의 리스트도 확인할 수 있으며 예전 채팅은 페이지네이션 처리되어, 맨 위로 스크롤을 올릴 시 역방향 무한 스크롤 형태로 불러올 수 있습니다. 또한 이미지를 s3를 통해 업로드 할 수 있고, 상대방의 타이핑 여부도 확인할 수 있습니다.
 
-server에서는 아직 영구 데이터베이스에 저장되지 않은 채팅은 redis를 통해 불러오고, 오래된 대화 내역은 페이지네이션 처리를 하여 client에 전송합니다. 
+server에서는 아직 영구 데이터베이스에 저장되지 않은 채팅은 redis를 통해 불러오고, 오래된 대화 내역은 페이지네이션 처리를 하여 client에 전송합니다.
+<details>
+<summary>최신 메시지/기존 메시지 로드 코드</summary>
+<div markdown="1">
+
 ```java
 @GetMapping("/room/{chatRoomId}/newMsg")
     public ResponseEntity<List<Object>> loadNewMsg(@PathVariable String chatRoomId) {
@@ -860,7 +893,14 @@ server에서는 아직 영구 데이터베이스에 저장되지 않은 채팅�
     ...
 ```
 
+</div>
+</details>
+
 일정 주기마다 채팅 대화 데이터 내역을 배치 작업하며, 주기적으로 Redis Cache를 지워줍니다.
+<details>
+<summary>채팅 데이터 배치 스케줄러 코드</summary>
+<div markdown="1">
+
 ```java
 public void updateData() throws JsonProcessingException {
         Set<String> keySets = chatService.getRedisKeys();
@@ -873,6 +913,9 @@ public void updateData() throws JsonProcessingException {
                 chatService.deleteKeyInRedis(keyName);
                 ...
 ```
+
+</div>
+</details>
 
 # 노래 데이터
 
