@@ -72,7 +72,7 @@
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
         </td>
         <td align="center">
-          <a href= '#%ec%95%8c%eb%a6%bc%ea%b8%b0%eb%8a%a5-with-sseserver-side-events'>알림기능(SSE)</a>
+          <a href= '%ec%95%8c%eb%a6%bc%ea%b8%b0%eb%8a%a5-with-sseserver-side-events'>알림기능(SSE)</a>
         </td>
     </tr>
     </tr>
@@ -1087,7 +1087,7 @@ Client에서 유저가 Session을 나갈 경우 연결했던 Connection과 Sessi
 </details>
 
 <details id="SSE">
-<summary> <h2> SSE(Server Side Events) </h2> </summary>
+<summary> <h2> 알림기능 with SSE(Server Side Events) </h2> </summary>
 <div markdown="1">
 
 ### 알림 기능 구현
@@ -1483,7 +1483,7 @@ if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this
 </details>
 
 <details>
-<summary> 피드 및 사용자 상호작용</summary>
+<summary> <h2> 피드 및 사용자 상호작용 </h2> </summary>
 <div markdown="1">
 
 ### FeedPage, FeedDetailPage
