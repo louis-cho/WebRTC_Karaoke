@@ -49,6 +49,8 @@
         </td>
       <tr height="50px">
         <td align="center">    
+        <details>
+        <summary>기술 </summary>
         <ul>    
         <li><a href="#elastic-search" >Elastic Search</a></li>
         <li><a href="#%ec%97%90%eb%9f%ac-%ec%b2%98%eb%a6%ac">에러 처리</a></li>
@@ -57,6 +59,7 @@
         <li><a href="#%ed%94%84%eb%a1%9c%ec%8b%9c%ec%a0%80-%ec%a0%81%ec%9a%a9" target="_self">프로시저</a></li>
         <li><a href="#%ec%8b%9c%ec%8a%a4%ed%85%9c-%eb%82%b4%ec%99%b8%eb%b6%80-user-key-%ea%b5%ac%ec%a1%b0" target="_self">user key 구조</a></li>
         </ul>
+        </details>
         </td>
         </td>
         <td align="center">
