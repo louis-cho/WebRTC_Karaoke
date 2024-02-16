@@ -52,10 +52,10 @@
         <ul>    
         <li><a href="#elastic-search">Elastic Search</a></li>
         <li><a href="#에러-처리">에러 처리</a></li>
-        <li><a href="#회원-정보-암호화-관리">회원 정보 암호화 관리</a></li>
-        <li><a href="#좋아요-조회수-데이터-동기화">좋아요, 조회수 데이터 동기화</a></li>
-        <li><a href="#프로시저-적용">프로시저 적용</a></li>
-        <li><a href="#시스템-내외부-user-key-구조">시스템 내외부 user key 구조</a></li>
+        <li><a href="#회원-정보-암호화-관리">암호화</a></li>
+        <li><a href="#좋아요-조회수-데이터-동기화">데이터 동기화</a></li>
+        <li><a href="#프로시저-적용">프로시저</a></li>
+        <li><a href="#시스템-내외부-user-key-구조">user key 구조</a></li>
         </ul>
         </td>
         </td>
