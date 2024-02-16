@@ -168,6 +168,14 @@
 
 # 화면
 
+<img src="/uploads/39a924851f59db305db0f1ccf14005ce/normal-mode.png" width="200" height="100">
+<img src="/uploads/c4848e29b911cff24a9dc0d92759c570/perfect-score.png" width="200" height="100">
+<img src="/uploads/57592df339d391b1c65ddfe5ee29859a/feed-list.png" width="200" height="100">
+<img src="/uploads/f808399db06c7bb3eb31aa47cc2d4798/feed-detail.png" width="200" height="100">
+<img src="/uploads/b13d52a3c878680e960c28808ac13984/create-chat.png" width="200" height="100">
+<img src="/uploads/d3af37fefc5a341844137956cd7cbf65/chat-room.png" width="200" height="100">
+<img src="/uploads/89d24e72b88f78d2e568839f05ebe631/notification.png" width="200" height="100">
+
 
 ![normal-mode](/uploads/39a924851f59db305db0f1ccf14005ce/normal-mode.png)
 
