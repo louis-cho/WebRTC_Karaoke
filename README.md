@@ -1082,7 +1082,7 @@ Client에서 유저가 Session을 나갈 경우 연결했던 Connection과 Sessi
 
 <details id="SSE">
 <summary> <h2> SSE(Server Side Events) </h2> </summary>
-<div markdown="1">
+<div id="SSE" markdown="1">
 
 ### 알림 기능 구현
 
