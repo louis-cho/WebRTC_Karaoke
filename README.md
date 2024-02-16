@@ -52,7 +52,7 @@
             <a>으아아</a>
         </td>
         <td align="center">
-            <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#openvidu">OpenVidu</a>
+            <a href="#OpenVidu">OpenVidu</a>
         </td>
         <td align="center">
             <a>으아아</a>
@@ -949,7 +949,7 @@ int userPk = userService.getUserPk(UUID.fromString(uuid));
 </details>
 
 <details>
-<summary> <h2> OpenVidu </h2> </summary>
+<summary> <h2 id="OpenVidu"> OpenVidu </h2> </summary>
 <div markdown="1">
 
 <img src="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/uploads/d3aba65d32a825af084d40eb56ad8e18/openvidu-workflow-server.png" width="500" height="500"/>
