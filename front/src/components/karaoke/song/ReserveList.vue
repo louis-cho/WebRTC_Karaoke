@@ -115,9 +115,7 @@ function fetchReserveList() {
       store.reservedSongsLength = lists.value.length;
       store.reservedSongs = lists.value;
     })
-    .catch((error) => {
-      alert(error.response.data);
-    });
+    .catch((error) => {});
 }
 
 function cancelReserve(hashString) {

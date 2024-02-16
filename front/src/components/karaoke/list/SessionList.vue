@@ -121,9 +121,7 @@ onMounted(() => {
     .then((response) => {
       pages.value = response.data;
     })
-    .catch((error) => {
-      alert(error.response.data);
-    });
+    .catch((error) => {});
 });
 
 const openModal = () => {

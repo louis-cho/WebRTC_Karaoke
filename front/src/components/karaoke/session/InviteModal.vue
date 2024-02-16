@@ -59,17 +59,20 @@ onMounted(async () => {
   const pageNo = 0; //실제 page로 변경해야함
   const sizeNo = 10; //실제 size로 변경해야함
   friendList.value = await fetchFriendList(pageNo, sizeNo);
-
+  console.log("친구리스트 :",friendList.value )
   // Transform friendList to friendIdAndName
   friendIdAndNameList.value = await Promise.all(
     friendList.value.map(async (friend) => {
-      const userKey =
-        friend.fromUserKey === getCookie("uuid")
-          ? friend.toUserKey
-          : friend.fromUserkey;
+
+    console.log("friend.fromUserKey", friend.fromUserKey)
+    console.log("friend.toUserKey", friend.toUserKey)
+    console.log(`getCookie("uuid")`,getCookie('uuid'))
+      const userKey = friend.fromUserKey === getCookie("uuid") ? friend.toUserKey : friend.fromUserKey;
       // Fetch the user name using getUserName function
+      console.log("userKey :",userKey)
       const user = await fetchUser(userKey);
       const nickname = user.nickname;
+      console.log('nickname : ',nickname)
 
       // Return the new object with userKey and name
       return { userKey, nickname };

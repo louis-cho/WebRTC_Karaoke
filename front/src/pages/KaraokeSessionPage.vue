@@ -106,7 +106,6 @@
 
   <karaoke-chat />
   <input-controller />
-  <recording-video />
   <reserve-modal />
   <reserve-list />
 
