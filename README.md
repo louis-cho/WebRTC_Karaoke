@@ -224,7 +224,7 @@
 <br />
 
 <details>
-<summary> <h1> Elastic Search </h1> </summary>
+<summary> <h2> Elastic Search </h2> </summary>
 <div markdown="1">
 
 ### 유저 검색
@@ -349,7 +349,7 @@ output {
 </details>
 
 <details>
-<summary> <h1> 에러 처리 </h1> </summary>
+<summary> <h2> 에러 처리 </h2> </summary>
 <div markdown="1">
 
 ### 동일한 처리 구조
@@ -406,7 +406,7 @@ public enum LikeExceptionEnum implements ExceptionEnum {
 </details>
 
 <details>
-<summary> <h1> 회원 정보 암호화 관리 </h1> </summary>
+<summary> <h2> 회원 정보 암호화 관리 </h2> </summary>
 <div markdown="1">
 
 ### RSA 암복호화
@@ -468,7 +468,7 @@ public class RSAKeyManagerCleanupTask {
 </details>
 
 <details>
-<summary> <h1> 좋아요, 조회수 데이터 동기화 </h1> </summary>
+<summary> <h2> 좋아요, 조회수 데이터 동기화 </h2> </summary>
 <div markdown="1">
 
 좋아요, 조회수가 급증하는 게시글 피드에 대해 바로 DB write 요청이 일어난다면 많은 부하가 일어날 수 있습니다. 이를 해결하기 위해 Redis cache를 사용하여 DB write가 각 요청에 대해 매번 일어나는 것을 방지하였습니다.<br>
@@ -513,7 +513,7 @@ public class RSAKeyManagerCleanupTask {
 </details>
 
 <details>
-<summary> <h1> 프로시저 적용 </h1> </summary>
+<summary> <h2> 프로시저 적용 </h2> </summary>
 <div markdown="1">
 
 SQL을 백엔드 서버에서 생성하여 DB 요청하기 보다는 pre-compiled procedure를 통해 DB 작업 성능 개선을 이끌어 내며 한 번의 수많은 댓글을 로드하지 않고 페이지네이션을 통해 효율을 추구하였습니다.
@@ -538,7 +538,7 @@ END
 </details>
 
 <details>
-<summary> <h1> 시스템 내외부 user key 구조 </h1> </summary>
+<summary> <h2> 시스템 내외부 user key 구조 </h2> </summary>
 <div markdown="1">
 
 user key가 외부에 노출되면 해당 id의 유저를 특정할 수 있어 보안에 좋지 않은 방식이라 생각했습니다.<br>
@@ -563,7 +563,7 @@ int userPk = userService.getUserPk(UUID.fromString(uuid));
 </details>
 
 <details>
-<summary> <h1> OpenVidu </h1> </summary>
+<summary> <h2> OpenVidu </h2> </summary>
 <div markdown="1">
 
 <img src="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/uploads/d3aba65d32a825af084d40eb56ad8e18/openvidu-workflow-server.png" width="500" height="500"/>
@@ -693,7 +693,7 @@ Client에서 유저가 Session을 나갈 경우 연결했던 Connection과 Sessi
 </details>
 
 <details>
-<summary> <h1> SSE(Server Side Events) </h1> </summary>
+<summary> <h2> SSE(Server Side Events) </h2> </summary>
 <div markdown="1">
 
 ### 알림 기능 구현
@@ -796,7 +796,7 @@ public class SseEmitters {
 </details>
 
 <details>
-<summary> <h1> DM(채팅) </h1> </summary>
+<summary> <h2> DM(채팅) </h2> </summary>
 <div markdown="1">
 
 채팅 기능 구현을 위해 STOMP, Redis, RabbitMQ 등을 활용하였습니다. 메시지 구독 및 발행을 위해 RabbitMQ를 사용하였으며, WebSocket을 통해 클라이언트와 서버 간 실시간 통신을 구현하였습니다. 또한, 사용자 간 실시간 채팅 데이터와 이전 채팅 데이터를 관리하기 위해 Redis를 활용하였습니다. 이를 통해 안정적이고 확장 가능한 채팅 서비스를 제공할 수 있도록 구성하였습니다.
@@ -993,7 +993,7 @@ public void updateData() throws JsonProcessingException {
 </details>
 
 <details>
-<summary> <h1> 노래 데이터 </h1> </summary>
+<summary> <h2> 노래 데이터 </h2> </summary>
 <div markdown="1">
 
 ## 퍼펙트 스코어
@@ -1088,7 +1088,9 @@ if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this
 </div>
 </details>
 
-# 디렉토리 구조
+<details>
+<summary> <h1> 디렉토리 구조 </h1> </summary>
+<div markdown="1">
 
 ```
 front
@@ -1215,33 +1217,18 @@ server
     └─util
 ```
 
+</div>
+</details>
+
 <br />
 <br />
 <br />
 
 ---
 
-# firstPjtTest
-
-공통테스트
-
-## src/pages/HomePage.vue
-
--   vertical carousel
--   일단 페이지 문구만 기입함
--   로그인/회원가입 진행되는 모달 만듦(src/components/StartTest.vue)
--   > src/components/SignIn.vue는 로그인 모달, 회원가입 모달 따로 만든 것
-
--   써드 파티 로그인은 더 공부해야 함
--   홈페이지 배경색, 아이콘, gif 추후 추가 해야함
-
-# OPENVIDU TEST
-
-## 기존 server 변경점
-
--   application.properities 값 추가
--   OpenViduAPI.java 파일 추가
--   build.gradle에 dependency 추가
+<details>
+<summary> <h1> 환경설정 </h1> </summary>
+<div markdown="1">
 
 ## DOCKER에 OPENVIDU 띄우기
 
@@ -1483,3 +1470,6 @@ $ docker-compose up
 ```
 
 localhost:5601로 접속하면 확인 가능
+
+</div>
+</details>
