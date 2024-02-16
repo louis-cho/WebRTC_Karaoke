@@ -73,7 +73,7 @@
             <a href="#dm%ec%b1%84%ed%8c%85">DM</a>
         </td>
         <td align="center">
-          <a href= '#알림기능-with-sseserver-side-events'>알림기능(SSE)</a>
+          <a href= '#%ec%95%8c%eb%a6%bc%ea%b8%b0%eb%8a%a5-with-sseserver-side-events'>알림기능(SSE)</a>
           <div>인프라</div>
         </td>
     </tr>
