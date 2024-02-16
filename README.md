@@ -52,7 +52,7 @@
             <a>으아아</a>
         </td>
         <td align="center">
-            <a href="https://lab.ssafy.com/-/ide/project/s10-webmobile1-sub2/S10P12A705/edit/develop/-/README.md#L491">OpenVidu</a>
+            <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#openvidu">OpenVidu</a>
         </td>
         <td align="center">
             <a>으아아</a>
