@@ -17,27 +17,27 @@
 
 <table>
     <tr height="140px">
-        <td align="center" width="130px">
+        <td align="center" width="150px">
             <a href="https://github.com/louis-cho"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/38391852?v=4"/></a>
             <br />
             <a href="https://github.com/louis-cho">조현우</a>
         </td>
-        <td align="center" width="130px">
+        <td align="center" width="150px">
             <a href="https://github.com/gardengo"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/48192100?v=4"/></a>
             <br />
             <a href="https://github.com/gardengo">고정원</a>
         </td>
-        <td align="center" width="130px">
+        <td align="center" width="150px">
             <a href="https://github.com/seroh00"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/139421118?v=4"/></a>
             <br />
             <a href="https://github.com/seroh00">노성은</a>
         </td>
-        <td align="center" width="130px">
+        <td align="center" width="150px">
             <a href="https://github.com/jsong98"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/79959903?v=4"/></a>
             <br />
             <a href="https://github.com/jsong98">송준석</a>
         </td>
-        <td align="center" width="130px">
+        <td align="center" width="150px">
             <a href="https://github.com/madirony"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/48685874?v=4"/></a>
             <br />
             <a href="https://github.com/madirony">연정흠</a>
@@ -49,30 +49,32 @@
         </td>
       <tr height="50px">
         <td align="center">    
-        <ul>    
-        <li><a href="#elastic-search" >Elastic Search</a></li>
-        <li><a href="#%ec%97%90%eb%9f%ac-%ec%b2%98%eb%a6%ac">에러 처리</a></li>
-        <li><a href="#%ed%9a%8c%ec%9b%90-%ec%a0%95%eb%b3%b4-%ec%95%94%ed%98%b8%ed%99%94-%ea%b4%80%eb%a6%ac">암호화</a></li>
-        <li><a href="#%ec%a2%8b%ec%95%84%ec%9a%94-%ec%a1%b0%ed%9a%8c%ec%88%98-%eb%8d%b0%ec%9d%b4%ed%84%b0-%eb%8f%99%ea%b8%b0%ed%99%94">데이터 동기화</a></li>
-        <li><a href="#%ed%94%84%eb%a1%9c%ec%8b%9c%ec%a0%80-%ec%a0%81%ec%9a%a9" target="_self">프로시저</a></li>
-        <li><a href="#%ec%8b%9c%ec%8a%a4%ed%85%9c-%eb%82%b4%ec%99%b8%eb%b6%80-user-key-%ea%b5%ac%ec%a1%b0" target="_self">user key 구조</a></li>
-        </ul>
+        <details>
+        <summary>기술 </summary> 
+        <a href="#elastic-search" >ELK</a><br>
+        <a href="#%ec%97%90%eb%9f%ac-%ec%b2%98%eb%a6%ac">에러 처리</a><br>
+        <a href="#%ed%9a%8c%ec%9b%90-%ec%a0%95%eb%b3%b4-%ec%95%94%ed%98%b8%ed%99%94-%ea%b4%80%eb%a6%ac">암호화</a><br>
+        <a href="#%ec%a2%8b%ec%95%84%ec%9a%94-%ec%a1%b0%ed%9a%8c%ec%88%98-%eb%8d%b0%ec%9d%b4%ed%84%b0-%eb%8f%99%ea%b8%b0%ed%99%94">데이터 동기화</a><br>
+        <a href="#%ed%94%84%eb%a1%9c%ec%8b%9c%ec%a0%80-%ec%a0%81%ec%9a%a9" target="_self">프로시저</a><br>
+        <a href="#%ec%8b%9c%ec%8a%a4%ed%85%9c-%eb%82%b4%ec%99%b8%eb%b6%80-user-key-%ea%b5%ac%ec%a1%b0" target="_self">user key 구조</a>
+        </details>
         </td>
         </td>
         <td align="center">
             <a href="#openvidu">OpenVidu</a>
         </td>
         <td align="center">
-<a href ="#%ed%94%bc%eb%93%9c-%eb%b0%8f-%ec%82%ac%ec%9a%a9%ec%9e%90-%ec%83%81%ed%98%b8%ec%9e%91%ec%9a%a9">피드 및 사용자 상호작용</a>
+            <a href ="#%ed%94%bc%eb%93%9c-%eb%b0%8f-%ec%82%ac%ec%9a%a9%ec%9e%90-%ec%83%81%ed%98%b8%ec%9e%91%ec%9a%a9">피드 및 사용자 상호작용</a>
         </td>
         <td align="center">
             <a href="#%eb%85%b8%eb%9e%98-%eb%8d%b0%ec%9d%b4%ed%84%b0">노래 데이터</a>
         </td>
         <td align="center">
-            <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
+            <a href="#dm%ec%b1%84%ed%8c%85">DM</a>
         </td>
         <td align="center">
-          <a href= "%ec%95%8c%eb%a6%bc%ea%b8%b0%eb%8a%a5-with-sseserver-side-events">알림기능(SSE)</a>
+          <a href= '#%ec%95%8c%eb%a6%bc%ea%b8%b0%eb%8a%a5-with-sseserver-side-events'>알림기능(SSE)</a>
+          <div>인프라</div>
         </td>
     </tr>
     </tr>
@@ -1086,7 +1088,7 @@ Client에서 유저가 Session을 나갈 경우 연결했던 Connection과 Sessi
 </div>
 </details>
 
-<details>
+<details id="SSE">
 <summary> <h2> 알림기능 with SSE(Server Side Events) </h2> </summary>
 <div markdown="1">
 
@@ -1483,7 +1485,7 @@ if((Date.now() - this.startTimeRef) >= this.lyrics[this.lyricIndex-1].start+this
 </details>
 
 <details>
-<summary> <h2> 피드 및 사용자 상호작용 </h2> </summary>
+<summary> <h2> 피드 및 사용자 상호작용 <h2> </summary>
 <div markdown="1">
 
 ### FeedPage, FeedDetailPage
