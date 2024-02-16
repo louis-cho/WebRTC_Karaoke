@@ -14,6 +14,7 @@
               </div>
               <ul
                 class="chat-history q-mb-md"
+                ref="messagesContainer"
                 style="max-height: 300px; overflow-y: scroll"
               >
                 <li
@@ -61,10 +62,12 @@
 </template>
 
 <script setup>
+import { ref, nextTick, onMounted, watch } from "vue";
 import { useKaraokeStore } from "@/stores/karaokeStore.js";
 import pref from "@/js/config/preference.js";
 
 const store = useKaraokeStore();
+const messagesContainer = ref(null);
 
 // 채팅창 구현을 위한 함수 제작
 function sendMessage(event) {
@@ -85,6 +88,37 @@ function sendMessage(event) {
 function closeModal() {
   store.toggleModals["karaoke-chat"] = false;
 }
+
+watch(
+  messagesContainer,
+  (newValue) => {
+    if (newValue) {
+      if (messagesContainer.value) {
+        messagesContainer.value.scrollTop =
+          messagesContainer.value.scrollHeight;
+      }
+    }
+  },
+  { deep: true, immediate: true }
+);
+
+watch(
+  store.messages,
+  (newValue) => {
+    if (newValue) {
+      nextTick(() => {
+        scrollMessagesContainer();
+      });
+    }
+  },
+  { deep: true, immediate: true }
+);
+
+const scrollMessagesContainer = () => {
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+  }
+};
 </script>
 
 <style scoped>
