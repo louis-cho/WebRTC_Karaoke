@@ -62,7 +62,6 @@
         </td>
         <td align="center">
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
-            <a href="#temp">DM</a>
         </td>
         <td align="center">
           <a href= '#SSE'>SSE</a>
