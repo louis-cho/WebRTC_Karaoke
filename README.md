@@ -48,13 +48,15 @@
             <a href="https://github.com/bum19">이준범</a>
         </td>
       <tr height="50px">
-        <td align="center">        
-        <a href="#elastic">Elastic Search</a>
-        <a href="#error">에러 처리</a>
-        <a href="#encrypt">회원 정보 암호화 관리</a>
-        <a href="#sync">좋아요, 조회수 데이터 동기화</a>
-        <a href="#procedure">프로시저 적용</a>
-        <a href="#userkey">시스템 내외부 user key 구조</a>
+        <td align="center">    
+        <ul>    
+        <li><a href="#elastic-search">Elastic Search</a></li>
+        <li><a href="#에러-처리">에러 처리</a></li>
+        <li><a href="#회원-정보-암호화-관리">암호화</a></li>
+        <li><a href="#좋아요-조회수-데이터-동기화">데이터 동기화</a></li>
+        <li><a href="#프로시저-적용">프로시저</a></li>
+        <li><a href="#시스템-내외부-user-key-구조">user key 구조</a></li>
+        </ul>
         </td>
         </td>
         <td align="center">
@@ -64,13 +66,13 @@
             <a>으아아</a>
         </td>
         <td align="center">
-            <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#%EB%85%B8%EB%9E%98-%EB%8D%B0%EC%9D%B4%ED%84%B0">노래 데이터</a>
+            <a href="#노래-데이터">노래 데이터</a>
         </td>
         <td align="center">
             <a href="https://lab.ssafy.com/s10-webmobile1-sub2/S10P12A705/-/tree/develop?ref_type=heads#dm%EC%B1%84%ED%8C%85">DM</a>
         </td>
         <td align="center">
-          <a href= '#SSE'>SSE</a>
+          <a href= '#sseserver-side-events'>SSE</a>
         </td>
     </tr>
     </tr>
