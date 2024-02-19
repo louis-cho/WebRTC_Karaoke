@@ -178,9 +178,37 @@
 
 # 화면
 
+<h3><< 노래방 만들기 >><h3>
+
+![방만들기](/uploads/252045b2c262008fcc819592730c5e4e/방만들기.gif)
+
+<br />
+<br />
+
+<h3><< 노래방 입력설정 >><h3>
+
+![입력설정](/uploads/75ab66006646f525ceea73307cf24d16/입력설정.gif)
+
+<br />
+<br />
+
+<h3><< 노래방 노래예약 >><h3>
+
+![노래_예약](/uploads/31e1368a53bc5683af3ff418a26a30e7/노래_예약.gif)
+
+<br />
+<br />
+
+<h3><< 노래방 채팅 >><h3>
+
+![노래방_채팅_기능](/uploads/16d184a9c4001a7a4ac4c1ac74b7d336/노래방_채팅_기능.gif)
+
+<br />
+<br />
+
 <h3><< 노래방 일반 모드 >><h3>
 
-<img src="/uploads/39a924851f59db305db0f1ccf14005ce/normal-mode.png" width="800" height="400">
+![전체_노래방](/uploads/66185a3047b5624351a02682cf6db95a/전체_노래방.gif)
 
 <br />
 <br />
@@ -192,37 +220,34 @@
 <br />
 <br />
 
-<h3><< 피드리스트 >><h3>
+
+
+<h3><< 피드리스트 및 피드 상세 >><h3>
 
 <img src="/uploads/57592df339d391b1c65ddfe5ee29859a/feed-list.png" width="800" height="400">
+![피드_기능](/uploads/03378246ff12bb438886ef40d4c854af/피드_기능.gif)
+<br />
+<br />
+
+<h3><< 피드 업로드 >><h3>
+
+![피드_업로드](/uploads/31d8ac38fa55abcbd461db9eadfafc56/피드_업로드.gif)
+
 
 <br />
 <br />
 
-<h3><< 피드 상세 >><h3>
+<h3><< 채팅 >><h3>
 
-<img src="/uploads/f808399db06c7bb3eb31aa47cc2d4798/feed-detail.png" width="800" height="400">
-
-<br />
-<br />
-
-<h3><< 채팅방 생성 >><h3>
-
-<img src="/uploads/b13d52a3c878680e960c28808ac13984/create-chat.png" width="800" height="400">
+![채팅_기능](/uploads/c07fac176fabeb2fe6fc3ef930604902/채팅_기능.gif)
 
 <br />
 <br />
 
-<h3><< 채팅방 >><h3>
 
-<img src="/uploads/d3af37fefc5a341844137956cd7cbf65/chat-room.png" width="800" height="400">
+<h3><< 친구 목록 >><h3>
 
-<br />
-<br />
-
-<h3><< 알림 및 친구 목록 >><h3>
-
-<img src="/uploads/89d24e72b88f78d2e568839f05ebe631/notification.png" width="800" height="400">
+![친구목록](/uploads/02e693754b4e9f5218e64a01ecac9333/친구목록.gif)
 
 <br />
 <br />
