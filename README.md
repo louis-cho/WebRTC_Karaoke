@@ -224,7 +224,6 @@
 
 <h3><< 피드리스트 및 피드 상세 >><h3>
 
-<img src="/uploads/57592df339d391b1c65ddfe5ee29859a/feed-list.png" width="800" height="400">
 ![피드_기능](/uploads/03378246ff12bb438886ef40d4c854af/피드_기능.gif)
 <br />
 <br />
