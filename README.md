@@ -48,12 +48,12 @@
         </td>
       <tr height="50px">
         <td align="center">    
-          <a href="#elastic-search" >ELK</a><br>
-          <a href="#%ec%97%90%eb%9f%ac-%ec%b2%98%eb%a6%ac">에러 처리</a><br>
-          <a href="#%ed%9a%8c%ec%9b%90-%ec%a0%95%eb%b3%b4-%ec%95%94%ed%98%b8%ed%99%94-%ea%b4%80%eb%a6%ac">암호화</a><br>
-          <a href="#%ec%a2%8b%ec%95%84%ec%9a%94-%ec%a1%b0%ed%9a%8c%ec%88%98-%eb%8d%b0%ec%9d%b4%ed%84%b0-%eb%8f%99%ea%b8%b0%ed%99%94">데이터 동기화</a><br>
-          <a href="#%ed%94%84%eb%a1%9c%ec%8b%9c%ec%a0%80-%ec%a0%81%ec%9a%a9" target="_self">프로시저</a><br>
-          <a href="#%ec%8b%9c%ec%8a%a4%ed%85%9c-%eb%82%b4%ec%99%b8%eb%b6%80-user-key-%ea%b5%ac%ec%a1%b0" target="_self">user key 구조</a>
+          <a href="#-elastic-search-" >ELK</a><br>
+          <a href="#-%EC%97%90%EB%9F%AC-%EC%B2%98%EB%A6%AC-">에러 처리</a><br>
+          <a href="#-%ED%9A%8C%EC%9B%90-%EC%A0%95%EB%B3%B4-%EC%95%94%ED%98%B8%ED%99%94-%EA%B4%80%EB%A6%AC-">비밀번호 암호화</a><br>
+          <a href="#-%EC%A2%8B%EC%95%84%EC%9A%94-%EC%A1%B0%ED%9A%8C%EC%88%98-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%8F%99%EA%B8%B0%ED%99%94-">좋아요,조회수 데이터 동기화</a><br>
+          <a href="#-%ED%94%84%EB%A1%9C%EC%8B%9C%EC%A0%80-%EC%A0%81%EC%9A%A9-">프로시저</a><br>
+          <a href="#-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EB%82%B4%EC%99%B8%EB%B6%80-user-key-%EA%B5%AC%EC%A1%B0-" target="_self">user key 구조</a>
         </td>
         </td>
         <td align="center">
