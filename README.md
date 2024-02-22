@@ -1,6 +1,5 @@
 # 노래 해방 🎵
-
-![homePage](/uploads/82b358dc3a816ca1cf7360edab0021e2/homePage.png)
+![메인페이지](https://github.com/jsong98/NoraeHaebang/assets/79959903/b7eb29cc-d0a1-4c3c-9fb6-ffa978b32854)
 
 <br />
 
@@ -49,12 +48,15 @@
         </td>
       <tr height="50px">
         <td align="center">    
+        <details>
+        <summary>기술 </summary> 
         <a href="#elastic-search" >ELK</a><br>
         <a href="#%ec%97%90%eb%9f%ac-%ec%b2%98%eb%a6%ac">에러 처리</a><br>
         <a href="#%ed%9a%8c%ec%9b%90-%ec%a0%95%eb%b3%b4-%ec%95%94%ed%98%b8%ed%99%94-%ea%b4%80%eb%a6%ac">암호화</a><br>
         <a href="#%ec%a2%8b%ec%95%84%ec%9a%94-%ec%a1%b0%ed%9a%8c%ec%88%98-%eb%8d%b0%ec%9d%b4%ed%84%b0-%eb%8f%99%ea%b8%b0%ed%99%94">데이터 동기화</a><br>
         <a href="#%ed%94%84%eb%a1%9c%ec%8b%9c%ec%a0%80-%ec%a0%81%ec%9a%a9" target="_self">프로시저</a><br>
         <a href="#%ec%8b%9c%ec%8a%a4%ed%85%9c-%eb%82%b4%ec%99%b8%eb%b6%80-user-key-%ea%b5%ac%ec%a1%b0" target="_self">user key 구조</a>
+        </details>
         </td>
         </td>
         <td align="center">
@@ -80,7 +82,7 @@
 
 ## 링크
 
-[![logo1-removebg-preview](/uploads/62539bb6b1639ad6fda02617b81db772/logo1-removebg-preview.png)](https://i10a705.p.ssafy.io/)
+[![logo](https://github.com/jsong98/NoraeHaebang/assets/79959903/8bf4fa0c-7b8e-4724-a462-815c66b9e7d8)](https://i10a705.p.ssafy.io/)
 
 [![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/d3b9636405c8451499659f8d8b4ba876)
 
@@ -103,48 +105,27 @@
 
 ## Back-end
 
-<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
-<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
-<img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
-<img src="https://img.shields.io/badge/JPA-000000?style=for-the-badge&logo=jpa&logoColor=white"/>
-<img src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white"/>
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"> <img src="https://img.shields.io/badge/JPA-000000?style=for-the-badge&logo=jpa&logoColor=white"/> <img src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white"/>
 
 ## Front-end
 
-<img alt="JavaScript" src ="https://img.shields.io/badge/JavaScript-F7DF1E.svg?&style=for-the-badge&logo=JavaScript&logoColor=black"/>
-<img src="https://img.shields.io/badge/vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white">
-<img src="https://img.shields.io/badge/Quasar-16B7FB?style=for-the-badge&logo=Quasar&logoColor=white"/>
-<img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white">
-<img alt="Static Badge" src="https://img.shields.io/badge/pinia-F3F781.svg?style=for-the-badge">
-<img alt="Static Badge" src="https://img.shields.io/badge/axios-FF00FF.svg?style=for-the-badge&logo=axios&logoColor=black">
+<img alt="JavaScript" src ="https://img.shields.io/badge/JavaScript-F7DF1E.svg?&style=for-the-badge&logo=JavaScript&logoColor=black"/> <img src="https://img.shields.io/badge/vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white"> <img src="https://img.shields.io/badge/Quasar-16B7FB?style=for-the-badge&logo=Quasar&logoColor=white"/> <img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white"> <img alt="Static Badge" src="https://img.shields.io/badge/pinia-F3F781.svg?style=for-the-badge"> <img alt="Static Badge" src="https://img.shields.io/badge/axios-FF00FF.svg?style=for-the-badge&logo=axios&logoColor=black">
 
 ## DB
 
-<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-<img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
-<img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
+<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"> <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white">
 
 ## Dev-Ops
 
-<img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
-<img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white">
-<img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white">
-<img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
+<img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"> <img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white"> <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
 
 ## 협업Tools
 
-<img src="https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white">
-<img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white">
-<img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
-<img src="https://img.shields.io/badge/gitlab-FC6D26?style=for-the-badge&logo=gitlab&logoColor=white">
+<img src="https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white"> <img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white"> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white"> <img src="https://img.shields.io/badge/gitlab-FC6D26?style=for-the-badge&logo=gitlab&logoColor=white">
 
 ## ETC
 
-<img src="https://img.shields.io/badge/webrtc-FFE033?style=for-the-badge&logo=webrtc&logoColor=white">
-<img src="https://img.shields.io/badge/rabbitmq-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white">
-<img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">
-<img src="https://img.shields.io/badge/logstash-005571?style=for-the-badge&logo=logstash&logoColor=white">
-<img src="https://img.shields.io/badge/kibana-005571?style=for-the-badge&logo=kibana&logoColor=white">
+<img src="https://img.shields.io/badge/webrtc-FFE033?style=for-the-badge&logo=webrtc&logoColor=white"> <img src="https://img.shields.io/badge/rabbitmq-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white"> <img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white"> <img src="https://img.shields.io/badge/logstash-005571?style=for-the-badge&logo=logstash&logoColor=white"> <img src="https://img.shields.io/badge/kibana-005571?style=for-the-badge&logo=kibana&logoColor=white">
 
 <br />
 
@@ -177,42 +158,48 @@
 
 <h3><< 노래방 만들기 >><h3>
 
-![방만들기](/uploads/252045b2c262008fcc819592730c5e4e/방만들기.gif)
+![노래방만들기](https://github.com/jsong98/NoraeHaebang/assets/79959903/40b0c18e-2838-41f0-9179-a4b6cebe76f6)
+
 
 <br />
 <br />
 
 <h3><< 노래방 입력설정 >><h3>
+    
+![노래방입력설정](https://github.com/jsong98/NoraeHaebang/assets/79959903/85c864ff-2493-45a8-8140-239412d9cf7c)
 
-![입력설정](/uploads/75ab66006646f525ceea73307cf24d16/입력설정.gif)
 
 <br />
 <br />
 
 <h3><< 노래방 노래예약 >><h3>
 
-![노래_예약](/uploads/31e1368a53bc5683af3ff418a26a30e7/노래_예약.gif)
+![노래방노래예약](https://github.com/jsong98/NoraeHaebang/assets/79959903/e6723ea8-71e3-4fa8-957e-941d7b02af15)
+
 
 <br />
 <br />
 
 <h3><< 노래방 채팅 >><h3>
 
-![노래방_채팅_기능](/uploads/16d184a9c4001a7a4ac4c1ac74b7d336/노래방_채팅_기능.gif)
+![노래방채팅](https://github.com/jsong98/NoraeHaebang/assets/79959903/45d231ab-d1f5-475d-a17d-a0fd47d4c9a6)
+
 
 <br />
 <br />
 
 <h3><< 노래방 일반 모드 >><h3>
 
-![전체_노래방](/uploads/66185a3047b5624351a02682cf6db95a/전체_노래방.gif)
+![노래방일반모드](https://github.com/jsong98/NoraeHaebang/assets/79959903/25d080c9-6247-48ff-8c12-55860f5ceaa8)
+
 
 <br />
 <br />
 
 <h3><< 노래방 퍼펙트 스코어 >><h3>
 
-<img src="/uploads/c4848e29b911cff24a9dc0d92759c570/perfect-score.png" width="800" height="400">
+![노래방퍼펙트스코어](https://github.com/jsong98/NoraeHaebang/assets/79959903/f28cc924-c49e-4b54-aa50-76f8cbe9d78f)
+
 
 <br />
 <br />
@@ -221,13 +208,14 @@
 
 <h3><< 피드리스트 및 피드 상세 >><h3>
 
-![피드_기능](/uploads/03378246ff12bb438886ef40d4c854af/피드_기능.gif)
+![피드리스트및상세](https://github.com/jsong98/NoraeHaebang/assets/79959903/d63fc713-9359-4f8d-bfa3-746aee627fca)
+
 <br />
 <br />
 
 <h3><< 피드 업로드 >><h3>
 
-![피드_업로드](/uploads/31d8ac38fa55abcbd461db9eadfafc56/피드_업로드.gif)
+![피드업로드](https://github.com/jsong98/NoraeHaebang/assets/79959903/e8b8770c-08a1-453b-b5e3-7d730833b2dd)
 
 
 <br />
@@ -235,7 +223,8 @@
 
 <h3><< 채팅 >><h3>
 
-![채팅_기능](/uploads/c07fac176fabeb2fe6fc3ef930604902/채팅_기능.gif)
+![채팅](https://github.com/jsong98/NoraeHaebang/assets/79959903/030209d5-48a8-4144-b22d-44368c830c2a)
+
 
 <br />
 <br />
@@ -243,14 +232,16 @@
 
 <h3><< 친구 목록 >><h3>
 
-![친구목록](/uploads/02e693754b4e9f5218e64a01ecac9333/친구목록.gif)
+![친구목록](https://github.com/jsong98/NoraeHaebang/assets/79959903/172ee245-78aa-4840-a4fc-09dffd487aa8)
+
 
 <br />
 <br />
 
 # 아키넥처 구성도
 
-![a705.drawio](/uploads/2f07ef3d0808a1239f11647ffaeb4f9a/a705.drawio.png)
+![아키텍처](https://github.com/jsong98/NoraeHaebang/assets/79959903/d8ecf23e-bb00-4528-835e-55c1882b3d84)
+
 
 <br />
 
