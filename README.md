@@ -77,15 +77,6 @@
     
 </table>
 
-## 링크
-
-[![logo](https://github.com/jsong98/NoraeHaebang/assets/79959903/8bf4fa0c-7b8e-4724-a462-815c66b9e7d8)](https://i10a705.p.ssafy.io/)
-
-[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://www.notion.so/d3b9636405c8451499659f8d8b4ba876)
-
-[![ERD Cloud](https://img.shields.io/badge/ERDCloud-000000?style=for-the-badge&logo=ERDCloud&logoColor=white)](https://www.erdcloud.com/d/3SsAyJ6rGXSMzyPcw)
-
-[![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](<https://www.figma.com/file/cnHpMUN4kpZ55qLu2FKBD6/%5BNEW%5D-Quick-UXUI-Wireframe-templates!-(%EA%B8%B0%ED%9A%8D%EC%9E%90%EC%99%80-%EB%94%94%EC%9E%90%EC%9D%B4%EB%84%88%EB%A5%BC-%EC%9C%84%ED%95%9C-UXUI-%ED%99%94%EB%A9%B4%EA%B8%B0%ED%9A%8D%EC%84%9C%2F%ED%99%94%EB%A9%B4%EC%84%A4%EA%B3%84%EC%84%9C-%ED%85%9C%ED%94%8C%EB%A6%BF)-(Community)?type=design&node-id=103-2&mode=design&t=VZrVBeL6BKOWOGX8-0>)
 
 <br />
 
@@ -235,12 +226,18 @@
 <br />
 <br />
 
-# 아키넥처 구성도
+# 아키텍처 구성도
 
 ![아키텍처](https://github.com/jsong98/NoraeHaebang/assets/79959903/d8ecf23e-bb00-4528-835e-55c1882b3d84)
 
 
 <br />
+
+# ERD
+
+![ERD](https://github.com/gardengo/NoraeHaebang/assets/48192100/ea75efad-58c5-49a1-9c24-bc553d868e56)
+
+</br>
 
 <details>
 <summary> <h1> 디렉토리 구조 </h1> </summary>
