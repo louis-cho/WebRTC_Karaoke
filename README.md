@@ -57,19 +57,19 @@
         </td>
         </td>
         <td align="center">
-            <a href="#openvidu">OpenVidu</a>
+            <a href="#-openvidu-">OpenVidu</a>
         </td>
         <td align="center">
-            <a href ="#%ed%94%bc%eb%93%9c-%eb%b0%8f-%ec%82%ac%ec%9a%a9%ec%9e%90-%ec%83%81%ed%98%b8%ec%9e%91%ec%9a%a9">피드 및 사용자 상호작용</a>
+            <a href ="#-%EC%95%8C%EB%A6%BC%EA%B8%B0%EB%8A%A5-with-sseserver-side-events-">피드 및 사용자 상호작용</a>
         </td>
         <td align="center">
-            <a href="#%eb%85%b8%eb%9e%98-%eb%8d%b0%ec%9d%b4%ed%84%b0">노래 데이터</a>
+            <a href="#-%EB%85%B8%EB%9E%98-%EB%8D%B0%EC%9D%B4%ED%84%B0-">노래 데이터</a>
         </td>
         <td align="center">
-            <a href="#dm%ec%b1%84%ed%8c%85">DM</a>
+            <a href="#-dm%EC%B1%84%ED%8C%85-">DM</a>
         </td>
         <td align="center">
-          <a href= '#%ec%95%8c%eb%a6%bc%ea%b8%b0%eb%8a%a5-with-sseserver-side-events'>알림기능(SSE)</a>
+          <a href= '#-%EC%95%8C%EB%A6%BC%EA%B8%B0%EB%8A%A5-with-sseserver-side-events-'>알림기능(SSE)</a>
           <div>인프라</div>
         </td>
     </tr>
