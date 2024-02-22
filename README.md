@@ -17,7 +17,7 @@
 <table>
     <tr height="140px">
         <td align="center" width="150px">
-            <a href="https://github.com/louis-cho"><img height="100px" width="100px" src="https://avatars.githubusercontent.com/u/38391852?v=4"/></a>
+            <a href="https://github.com/louis-cho"><img height="100px" width="200px" src="https://avatars.githubusercontent.com/u/38391852?v=4"/></a>
             <br />
             <a href="https://github.com/louis-cho">조현우</a>
         </td>
